@@ -2,24 +2,23 @@
   Generic Block Implementation
 */
 
-var Block = SirTrevor.Block = function(options){
-  this.blockTypeId = _.uniqueId('block-');
+var Format = SirTrevor.Format = function(options){
+  this.formatId = _.uniqueId('format-');
   this._configure(options || {});
+  this.className = SirTrevor.options.baseCSSClass + "-format-" + this.options.className;
   this.initialize.apply(this, arguments);
 };
 
-var blockOptions = ["toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML"];
+var formatOptions = ["title", "className", "cmd", "keyCode"];
 
 _.extend(Block.prototype, {
   
   initialize: function(){},
-  loadData: function(){},
-  onDrop: function(){},
   
   _configure: function(options) {
     if (this.options) options = _.extend({}, this.options, options);
-    for (var i = 0, l = blockOptions.length; i < l; i++) {
-      var attr = blockOptions[i];
+    for (var i = 0, l = formatOptions.length; i < l; i++) {
+      var attr = formatOptions[i];
       if (options[attr]) this[attr] = options[attr];
     }
     this.options = options;
