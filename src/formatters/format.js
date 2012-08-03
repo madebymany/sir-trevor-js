@@ -2,7 +2,7 @@
   Generic Block Implementation
 */
 
-var Format = SirTrevor.Format = function(options){
+var Format = SirTrevor.Formatter = function(options){
   this.formatId = _.uniqueId('format-');
   this._configure(options || {});
   this.className = SirTrevor.options.baseCSSClass + "-format-" + this.options.className;
@@ -11,7 +11,7 @@ var Format = SirTrevor.Format = function(options){
 
 var formatOptions = ["title", "className", "cmd", "keyCode"];
 
-_.extend(Block.prototype, {
+_.extend(Format.prototype, {
   
   initialize: function(){},
   
