@@ -1,0 +1,1 @@
+//=collate alt-resources

@@ -1,0 +1,1 @@
+//=set testobj { "name": "Bob" }

@@ -1,0 +1,14 @@
+// Alias for a primitive type
+type Int = Number
+
+// Alias for a structural type
+type Person = {name: String, age: Int}
+
+// Function with aliased type annotation
+let personName (p: Person) = p.name
+console.log (personName {name: "Brian", age: 21})
+
+// Value with aliased type annotation
+let ben: Person = {name: "Ben", age: 18}
+let anyName a = a.name
+console.log (anyName ben)

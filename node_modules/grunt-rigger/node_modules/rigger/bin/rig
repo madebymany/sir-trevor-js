@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+require('../')(process.argv[2], function(err, output) {
+    if (! err) {
+        process.stdout.write(output);
+    }
+    else {
+        console.log(err);
+        process.exit(1);
+    }
+});
