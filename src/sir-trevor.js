@@ -36,6 +36,7 @@
   
   //= helpers
   //= vendor
+  //= extensions
   //= block-type.js
   //= block.js
   //= formatter.js

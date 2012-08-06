@@ -78,6 +78,7 @@ _.extend(SirTrevorEditor.prototype, {
 
     this.options.blockStore.data = [];
     
+    // Loop through blocks to validate
     for (var type in this.blocks) {
       
       if (this.blocks.hasOwnProperty(type)) {
@@ -89,7 +90,9 @@ _.extend(SirTrevorEditor.prototype, {
           result = block.validate();
           
           if (!result) {
-            console.log(block.errors);
+            console.log(block.errors); // Show our errors.
+          } else {
+            block.serialize();
           }
         } 
       }

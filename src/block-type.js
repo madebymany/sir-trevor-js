@@ -13,7 +13,7 @@ var BlockType = SirTrevor.BlockType = function(options){
   this.initialize.apply(this, arguments);
 };
 
-var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML", "validate"];
+var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML", "validate", "serialize", "deserialize"];
 
 _.extend(BlockType.prototype, {
   
@@ -21,6 +21,12 @@ _.extend(BlockType.prototype, {
   
   loadData: function(block) {},
   validate: function(block) {},
+  serialize: function(block) {},
+  deserialize: function(block) {},
+  
+  toData: function() {
+    
+  },
   
   // 'Private' methods
   _configure: function(options) {

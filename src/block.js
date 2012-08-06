@@ -5,7 +5,7 @@ var Block = SirTrevor.Block = function(instance, type, data) {
   this.blockID = _.uniqueId(type.blockTypeID + '_block-');
   this.instance = instance; // SirTrevor.Editor instance
   this.blockType = type;
-  
+  this.data = data;
   this.wrapperEl = $('<div>', { 
     'class': instance.options.baseCSSClass + "-block", 
     id: this.blockID,
@@ -26,6 +26,14 @@ _.extend(Block.prototype, {
   render: function() {
     this.instance.$wrapper.append(this.$el);
     this.$el.wrap(this.wrapperEl);
+    
+    // Has data already?
+    if (!_.isUndefined(this.data)) {
+      
+    }
+    
+    this.$el.data('block', this.blockType.toData());
+    
   },
   
   remove: function() {
@@ -40,6 +48,14 @@ _.extend(Block.prototype, {
     this.errors = []; 
     var result = this.blockType.validate(this); // Delegate to blocktype
     return result;
+  },
+  
+  serialize: function() {
+    this.blockType.serialize(this); 
+  },
+  
+  deserialize: function() {
+    this.blockType.deserialize(this); 
   },
   
   /*

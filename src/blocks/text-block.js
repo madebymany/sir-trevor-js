@@ -10,9 +10,11 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
   toolbarEnabled: true,
   dropEnabled: false,
   limit: 0,
+  
   editorHTML: function() {
     return _.template(template, this);
   },
+  
   validate: function(block) {
     console.log(block.$el.html().length);
     if( block.$el.html().length === 0) {
@@ -20,5 +22,17 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
       return false;
     }
     return true;
+  },
+  
+  serialize: function(block) {
+    /* Store this data as markdown on the block */
+    var blockData = block.$el.data('block'),
+        content = block.$el.html();
+        
+    blockData.data.text = convertToMarkdown(content, block.type);
+  },
+  
+  deserialize: function(block) {
+    
   }
 });
