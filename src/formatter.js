@@ -5,7 +5,7 @@
 var Format = SirTrevor.Formatter = function(options){
   this.formatId = _.uniqueId('format-');
   this._configure(options || {});
-  this.className = SirTrevor.options.baseCSSClass + "-format-" + this.options.className;
+  this.className = SirTrevor.DEFAULTS.baseCSSClass + "-format-" + this.options.className;
   this.initialize.apply(this, arguments);
 };
 

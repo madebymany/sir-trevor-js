@@ -10,12 +10,14 @@
    initialize function of SirTrevor
   */
   
-  var DEFAULTS = {
+  SirTrevor.DEFAULTS = {
+    el: null,
     baseCSSClass: "sir-trevor",
     storage: "json",
     blockStore: {
       "data": []
     },
+    defaultType: "TextBlock",
     blockIndex: 0,
     spinner: {
       lines: 9, 
@@ -29,7 +31,6 @@
     }
   }; 
 
-  SirTrevor.options = DEFAULTS;
   SirTrevor.BlockTypes = {};
   SirTrevor.Formatters = {};
   
@@ -42,16 +43,7 @@
   //= blocks
   /* Default Formatters */
   //= formatters
-  
-  /* Initialize */
-  SirTrevor.initialize = function(options) {
-   this.options = _.extend({}, DEFAULTS, options || {});
-   this.build();
-  };
-  
-  SirTrevor.build = function() {
-    
-  };
-  
+  //= sir-trevor-editor.js
+
 }(jQuery, _));
 

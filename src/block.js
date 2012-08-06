@@ -23,10 +23,10 @@ _.extend(BlockType.prototype, {
     /* Generic load data function for when we're not provided with one */
   },
   
-  createInstance: function(){
+  createInstance: function(instance, data){
     // Check to see that we haven't met our limit
-    var block = new SirTrevor.Block(this);
-    this.instances[block.blockID] = block;
+    var block = new SirTrevor.Block(instance, this, data || {});
+    return block;
   },
   
   removeInstance: function(name){
@@ -60,15 +60,15 @@ _.extend(BlockType.prototype, {
 
 /* A Block representation */
 
-var Block = SirTrevor.Block = function(parent){
+var Block = SirTrevor.Block = function(instance, type, data){
   this.blockID = _.uniqueId(parent.blockTypeID + '-block-');
-  this.parent = parent;
+  this.instance = instance;
+  this.parent = type;
   this._setElement();
+  this.render();
 };
 
 _.extend(Block.prototype, {
-  
-  initialize: function(){},
   
   $: function(selector) {
     return this.$el.find(selector);
@@ -76,6 +76,14 @@ _.extend(Block.prototype, {
   
   loadData: function() {
     this.parent.loadData(); // Super
+  },
+  
+  render: function(){
+    this.instance.$wrapper.append(this.$el);
+  },
+  
+  remove: function(){
+    this.$el.remove();
   },
   
   /*

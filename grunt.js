@@ -29,7 +29,7 @@ module.exports = function(grunt) {
     },
     
     watch: {
-      files: '<config:lint.files>',
+      files: 'src/sir-trevor-editor.js',
       tasks: 'default'
     },
 

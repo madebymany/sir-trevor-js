@@ -1,3 +1,7 @@
+/*
+  Text Block
+*/
+
 var template = '<div class="<%= className %>" contenteditable="true"></div>';
 
 SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({ 
