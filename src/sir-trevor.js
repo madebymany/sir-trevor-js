@@ -3,6 +3,8 @@
   var root = this,
       SirTrevor;
    
+  SirTrevor = root.SirTrevor = {}; 
+   
   /* 
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
@@ -27,7 +29,8 @@
     }
   }; 
       
-  SirTrevor = root.SirTrevor = {};
+  
+  SirTrevor.options = {};
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   
