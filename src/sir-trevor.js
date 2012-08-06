@@ -30,7 +30,7 @@
   }; 
 
   SirTrevor.options = DEFAULTS;
-  SirTrevor.Blocks = {};
+  SirTrevor.BlockTypes = {};
   SirTrevor.Formatters = {};
   
   //= helpers

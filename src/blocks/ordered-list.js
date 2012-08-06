@@ -2,7 +2,7 @@
   Ordered List
 */
 
-SirTrevor.Blocks.OrderedList = new SirTrevor.Block({ 
+SirTrevor.BlockTypes.OrderedList = new SirTrevor.BlockType({ 
   title: "Ordered List",
   className: "ordered-list",
   toolbarEnabled: true,

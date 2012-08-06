@@ -4,7 +4,7 @@
 
 var template = '<div class="<%= className %>" contenteditable="true"></div>';
 
-SirTrevor.Blocks.BlockQuote = new SirTrevor.Block({ 
+SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({ 
   title: "Quote",
   className: "block-quote",
   toolbarEnabled: true,

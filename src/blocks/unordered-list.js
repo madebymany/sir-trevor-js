@@ -2,7 +2,7 @@
   Unordered List
 */
 
-SirTrevor.Blocks.UnorderedList = new SirTrevor.Block({ 
+SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({ 
   title: "Unordered List",
   className: "unordered-list",
   toolbarEnabled: true,
