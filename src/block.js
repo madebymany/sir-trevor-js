@@ -11,6 +11,7 @@ var Block = SirTrevor.Block = function(instance, type, data) {
     id: this.blockID,
     "data-type": this.blockType.blockType() 
   });
+  this.errors = [];
     
   this._setElement();
   this.render();
@@ -22,17 +23,23 @@ _.extend(Block.prototype, {
     return this.$el.find(selector);
   },
   
-  loadData: function() {
-    this.blockType.loadData(); // Super
-  },
-  
-  render: function(){
+  render: function() {
     this.instance.$wrapper.append(this.$el);
     this.$el.wrap(this.wrapperEl);
   },
   
-  remove: function(){
+  remove: function() {
     this.$el.parent().remove();
+  },
+  
+  loadData: function() {
+    this.blockType.loadData(this); // Delegate to blocktype
+  },
+  
+  validate: function() {
+    this.errors = []; 
+    var result = this.blockType.validate(this); // Delegate to blocktype
+    return result;
   },
   
   /*

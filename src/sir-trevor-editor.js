@@ -6,7 +6,7 @@
   BlockTypes are global however.
 */
 
-var SirTrevorEditor = SirTrevor.Editor = function(options){
+var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.blockTypes = {};
   this.formatters = {};
   this.blocks = {};
@@ -45,6 +45,12 @@ _.extend(SirTrevorEditor.prototype, {
        return false;
      }
      
+     if (currentBlockCount + 1 == blockType.limit) {
+       this.marker.find('[data-type="' + type + '"]')
+                  .addClass('inactive')
+                  .attr('title','You have reached the limit for this type of block');
+     }
+     
      var block = new SirTrevor.Block(this, blockType, {});  
      
      if (_.isUndefined(this.blocks[type])) {
@@ -65,10 +71,29 @@ _.extend(SirTrevorEditor.prototype, {
   /* Handlers */
   
   onFormSubmit: function(e) {
+    
     e.preventDefault();
     
+    var blockLength, block, result;
+
     this.options.blockStore.data = [];
     
+    for (var type in this.blocks) {
+      
+      if (this.blocks.hasOwnProperty(type)) {
+        blockLength = this.blocks[type].length;
+
+        for (var i = 0; i < blockLength; i++) {
+          
+          block = this.blocks[type][i];
+          result = block.validate();
+          
+          if (!result) {
+            console.log(block.errors);
+          }
+        } 
+      }
+    }
     
     return false;
   },
@@ -109,7 +134,7 @@ _.extend(SirTrevorEditor.prototype, {
         })
       );
       
-    this.$wrapper = this.$form.find('#' + this.ID);  
+    this.$wrapper = this.$form.find('#' + this.ID); 
   },
   
   _setBlocksAndFormatters: function() {

@@ -13,15 +13,14 @@ var BlockType = SirTrevor.BlockType = function(options){
   this.initialize.apply(this, arguments);
 };
 
-var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML"];
+var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML", "validate"];
 
 _.extend(BlockType.prototype, {
   
-  initialize: function(){},
+  initialize: function() {},
   
-  loadData: function(){
-    /* Generic load data function for when we're not provided with one */
-  },
+  loadData: function(block) {},
+  validate: function(block) {},
   
   // 'Private' methods
   _configure: function(options) {
@@ -33,7 +32,7 @@ _.extend(BlockType.prototype, {
     this.options = options;
   },
   
-  blockType: function(){
+  blockType: function() {
     var objName = "";
     for (var block in SirTrevor.BlockTypes) {
       if (SirTrevor.BlockTypes[block] == this) {

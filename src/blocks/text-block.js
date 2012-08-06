@@ -13,4 +13,12 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
   editorHTML: function() {
     return _.template(template, this);
   },
+  validate: function(block) {
+    console.log(block.$el.html().length);
+    if( block.$el.html().length === 0) {
+      block.errors.push('You must enter some content');
+      return false;
+    }
+    return true;
+  }
 });
