@@ -28,32 +28,30 @@
       shadow: false
     }
   }; 
-      
-  
-  SirTrevor.options = {};
+
+  SirTrevor.options = DEFAULTS;
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   
-  //= vendor/pubsub.js
-  //= vendor/spin.min.js
-  //= blocks/block.js
-  //= formatters/format.js
+  //= helpers
+  //= vendor
+  //= block.js
+  //= formatter.js
   
-  /* Blocks */
-  //= blocks/text-block.js
-  //= blocks/block-quote.js
-  //= blocks/unordered-list.js
-  
-  /* Formatters */
-  //= formatters/base.js
+  /* Default Blocks */
+  //= blocks
+  /* Default Formatters */
+  //= formatters
   
   /* Initialize */
-  
   SirTrevor.initialize = function(options) {
    this.options = _.extend({}, DEFAULTS, options || {});
+   this.build();
   };
   
-  
+  SirTrevor.build = function() {
+    
+  };
   
 }(jQuery, _));
 
