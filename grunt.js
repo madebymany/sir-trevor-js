@@ -27,6 +27,11 @@ module.exports = function(grunt) {
         dest: 'lib/sir-trevor.min.js'
       }
     },
+    
+    watch: {
+      files: '<config:lint.files>',
+      tasks: 'lint qunit'
+    },
 
     jshint: {
       options: {
@@ -44,7 +49,6 @@ module.exports = function(grunt) {
       },
       globals: {
         jQuery: true,
-        Backbone: true,
         _: true
       }
     },
