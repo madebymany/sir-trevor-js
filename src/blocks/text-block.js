@@ -24,15 +24,7 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
     return true;
   },
   
-  serialize: function(block) {
-    /* Store this data as markdown on the block */
-    var blockData = block.$el.data('block'),
-        content = block.$el.html();
-        
-    blockData.data.text = convertToMarkdown(content, block.type);
-  },
-  
-  deserialize: function(block) {
-    
+  loadData: function(block, data){
+    block.$('.text-block').html(toHTML(data.text));
   }
 });

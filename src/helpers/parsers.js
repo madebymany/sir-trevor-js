@@ -1,5 +1,5 @@
 
-function convertToMarkdown(html, type){
+function convertToMarkdown(html, type) {
   
   var markdown;
   
@@ -26,4 +26,13 @@ function convertToMarkdown(html, type){
   if(type == "BlockQuote") markdown = markdown.replace(/^(.+)$/mg,"> $1");
 
   return markdown;
+}
+
+function toHTML(markdown) {
+  markdown = markdown.replace(/^ - (.+)$/mg,"<li>$1</li>");
+  return  markdown.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
+                  .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
+                  .replace(/\[(.+)\]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links
+                  .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>")                // Bold
+                  .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>");                     // Italic
 }

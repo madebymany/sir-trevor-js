@@ -15,6 +15,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this._ensureAndSetElements();
   this._setBlocksAndFormatters();
   this._bindFunctions();
+  this.from_json();
   this.build();
 };
 
@@ -25,8 +26,17 @@ _.extend(SirTrevorEditor.prototype, {
   initialize: function() {},
   
   build: function() {
-    // Create a default instance
-    this.createBlock(this.options.defaultType);
+    
+    if (this.options.blockStore.data.length === 0) {
+      // Create a default instance
+      this.createBlock(this.options.defaultType);
+    } else {
+      // We have data. Build our blocks from here.
+      _.each(this.options.blockStore.data, _.bind(function(block){
+        this.createBlock(block.type, block.data);
+      }, this));
+    }
+     
     this.attach();
   },
   
@@ -34,7 +44,7 @@ _.extend(SirTrevorEditor.prototype, {
     this.$form.on('submit', this.onFormSubmit);
   },
   
-  createBlock: function(type) {
+  createBlock: function(type, data) {
     if (this._blockTypeAvailable(type)) {
       
      var blockType = SirTrevor.BlockTypes[type],
@@ -51,7 +61,7 @@ _.extend(SirTrevorEditor.prototype, {
                   .attr('title','You have reached the limit for this type of block');
      }
      
-     var block = new SirTrevor.Block(this, blockType, {});  
+     var block = new SirTrevor.Block(this, blockType, data || {});  
      
      if (_.isUndefined(this.blocks[type])) {
        this.blocks[type] = [];
@@ -65,6 +75,7 @@ _.extend(SirTrevorEditor.prototype, {
     if (!_.isUndefined(this.blocks[block.type][block.ID])) {
       block.remove();
       this.blocks[type][name] = null;
+      delete this.blocks[type][name];
     }
   },
   
@@ -87,21 +98,46 @@ _.extend(SirTrevorEditor.prototype, {
         for (var i = 0; i < blockLength; i++) {
           
           block = this.blocks[type][i];
-          result = block.validate();
           
-          if (!result) {
-            console.log(block.errors); // Show our errors.
-          } else {
-            block.serialize();
-          }
+          /*
+            Save the blocks state and push to the blockStore object
+          */
+          
+          block.save();
+          
+         // result = block.validate();
+          
+         // if (!result) {
+        //    console.log(block.errors); // Show our errors.
+       //   } else {
+            
+       //   }
+          this.options.blockStore.data.push(block.$el.data('block'));
         } 
       }
     }
+    
+    // Empty or JSON-ify
+    this.$el.val((this.options.blockStore.data.length === 0) ? '' : this.to_json());
+    console.log(this.to_json());
     
     return false;
   },
   
   /* Privates */
+  
+  to_json: function() {
+    return JSON.stringify(this.options.blockStore);
+  },
+  
+  from_json: function() {
+    var content = this.$el.val();
+    if (content.length > 0) {
+      this.options.blockStore = JSON.parse(content);
+    } else {
+      this.options.blockStore = [];
+    }
+  },
   
   _blockTypeAvailable: function(t) {
     return !_.isUndefined(this.blockTypes[t]);

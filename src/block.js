@@ -1,18 +1,16 @@
 /* A Block representation */
 
-var Block = SirTrevor.Block = function(instance, type, data) {
+var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   
-  this.blockID = _.uniqueId(type.blockTypeID + '_block-');
+  this.blockID = _.uniqueId(parentBlockType.blockTypeID + '_block-');
   this.instance = instance; // SirTrevor.Editor instance
-  this.blockType = type;
+  this.blockType = parentBlockType;
+  
   this.data = data;
-  this.wrapperEl = $('<div>', { 
-    'class': instance.options.baseCSSClass + "-block", 
-    id: this.blockID,
-    "data-type": this.blockType.blockType() 
-  });
+  this.type = this.blockType.blockType();  // Cache the blocktype. 
+
   this.errors = [];
-    
+  
   this._setElement();
   this.render();
 };
@@ -24,16 +22,23 @@ _.extend(Block.prototype, {
   },
   
   render: function() {
-    this.instance.$wrapper.append(this.$el);
-    this.$el.wrap(this.wrapperEl);
+    
+    this.instance.$wrapper.append(
+      $('<div>', { 
+        'class': this.instance.options.baseCSSClass + "-block", 
+        id: this.blockID,
+        "data-type": this.type,
+        html: this.$el
+      })
+    );
     
     // Has data already?
-    if (!_.isUndefined(this.data)) {
-      
+    if (!_.isUndefined(this.data) && !_.isEmpty(this.data)) {
+      this.loadData();
     }
     
-    this.$el.data('block', this.blockType.toData());
-    
+    // And save the state
+    this.save();
   },
   
   remove: function() {
@@ -41,21 +46,32 @@ _.extend(Block.prototype, {
   },
   
   loadData: function() {
-    this.blockType.loadData(this); // Delegate to blocktype
+    this._super("loadData", this.data);
   },
   
   validate: function() {
     this.errors = []; 
-    var result = this.blockType.validate(this); // Delegate to blocktype
+    var result = this._super("validate");
     return result;
   },
   
-  serialize: function() {
-    this.blockType.serialize(this); 
+  /* Save the state of this block onto the blocks data attr */
+  save: function() {
+    var data = this.$el.data('block');
+    if (_.isUndefined(data)) {
+      // Create our data object on the element
+      this.$el.data('block', this.to_json(this.data));
+    } else {
+      // We need to grab the state and save it here.
+      this._super('toData');
+    }
   },
   
-  deserialize: function() {
-    this.blockType.deserialize(this); 
+  to_json: function(data) {
+    return {
+      type: this.type,
+      data: data
+    };
   },
   
   /*
@@ -63,8 +79,25 @@ _.extend(Block.prototype, {
   */
   _setElement: function(){
     var el = (_.isFunction(this.blockType.editorHTML)) ? this.blockType.editorHTML() : this.blockType.editorHTML;
+    
+    // Wrap in a block
+    var block = $('<div>', {
+      'class': 'block_editor',
+      html: el
+    });
+    
     // Set our element references
-    this.$el = $(el);
+    this.$el = block;
     this.el = this.$el[0];
+  },
+  
+  /* A wrapper to call our parent object */
+  _super: function(functionName, args) {
+   // if (_.has(this.blockType,functionName) && _.isFunction(this.blockType[functionName])) {
+     console.log(functionName, args);
+     return this.blockType[functionName](this, args);
+  //  } else {
+   //   console.log('Function doesnt exist');
+  //  }
   }
 });

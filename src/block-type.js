@@ -13,19 +13,32 @@ var BlockType = SirTrevor.BlockType = function(options){
   this.initialize.apply(this, arguments);
 };
 
-var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML", "validate", "serialize", "deserialize"];
+var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML", "validate", "loadData", "toData"];
 
 _.extend(BlockType.prototype, {
   
   initialize: function() {},
   
-  loadData: function(block) {},
+  loadData: function(block, data) {},
   validate: function(block) {},
-  serialize: function(block) {},
-  deserialize: function(block) {},
   
-  toData: function() {
+  /*
+    Generic toData implementation.
+    Can be overwritten, although hopefully this will cover most situations
+  */
+  toData: function(block) {
     
+    var bl = block.$el,
+        dataStruct = bl.data('block'),
+        content;
+    
+    /* Simple to start. Add conditions later */
+    if (block.$('.text-block').length > 0) {
+      content = block.$('.text-block').html();
+      if (content.length > 0) {
+        dataStruct.data.text = convertToMarkdown(content, block.type);
+      }
+    }
   },
   
   // 'Private' methods
