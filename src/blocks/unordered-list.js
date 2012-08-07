@@ -8,5 +8,12 @@ SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({
   toolbarEnabled: true,
   dropEnabled: false,
   limit: 0,
-  editorHTML: ""
+  editorHTML: "",
+  
+  onBlockRender: function(block){
+    // Put in a list
+    block.$('.text-block').focus();
+    document.execCommand("insertUnorderedList",false,false);
+  }
+  
 });

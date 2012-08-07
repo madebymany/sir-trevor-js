@@ -13,7 +13,21 @@ var BlockType = SirTrevor.BlockType = function(options){
   this.initialize.apply(this, arguments);
 };
 
-var blockTypeOptions = ["className", "toolbarEnabled", "dropEnabled", "title", "limit", "editorHTML", "dropzoneHTML", "validate", "loadData", "toData"];
+var blockTypeOptions = [
+  "className", 
+  "toolbarEnabled", 
+  "dropEnabled", 
+  "title", 
+  "limit", 
+  "editorHTML", 
+  "dropzoneHTML", 
+  "validate", 
+  "loadData", 
+  "toData",
+  "onBlockRender",
+  "beforeBlockRender",
+  "onBlockActivated"
+];
 
 _.extend(BlockType.prototype, {
   
@@ -40,6 +54,11 @@ _.extend(BlockType.prototype, {
       }
     }
   },
+  
+  /* Callback methods that can be overriden */
+  onBlockRender: function(block){},
+  beforeBlockRender: function(block){},
+  onBlockActivated: function(block){},
   
   // 'Private' methods
   _configure: function(options) {

@@ -16,21 +16,23 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
 };
 
 _.extend(Block.prototype, {
-  
+    
   $: function(selector) {
     return this.$el.find(selector);
   },
   
   render: function() {
     
-    this.instance.$wrapper.append(
-      $('<div>', { 
-        'class': this.instance.options.baseCSSClass + "-block", 
-        id: this.blockID,
-        "data-type": this.type,
-        html: this.$el
-      })
-    );
+    this._super("beforeBlockRender");
+    
+    var block = $('<div>', { 
+      'class': this.instance.options.baseCSSClass + "-block", 
+      id: this.blockID,
+      "data-type": this.type,
+      html: this.$el
+    });
+    
+    this.instance.$wrapper.append(block);
     
     // Has data already?
     if (!_.isUndefined(this.data) && !_.isEmpty(this.data)) {
@@ -39,6 +41,63 @@ _.extend(Block.prototype, {
     
     // And save the state
     this.save();
+    
+    // Set ready state
+    block.addClass('block-ready');
+    
+    // Add UI elements
+    block.append($('<span>',{ 'class': 'handle', draggable: true }));
+    block.append($('<span>',{ 'class': 'delete' }));
+    
+    // Stop events propagating through to the container
+    block.bind('click', halt)
+      .bind('drop', halt)
+      .bind('mouseover', halt)
+      .bind('mouseout', halt)
+      .bind('dragleave', halt)
+      .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
+      .bind('mouseout', function(ev){ $(this).removeClass('active'); });
+    
+    // Enable formatting keyboard input
+    var formatter;
+    for (var name in this.instance.formatters) {
+      if (this.instance.formatters.hasOwnProperty(name)) {
+        formatter = SirTrevor.Formatters[name];
+        if (!_.isUndefined(formatter.keyCode)) {
+          var ctrlDown = false;
+
+          block
+            .on('keyup','.text-block', function(ev) {
+              if(ev.which == 17 || ev.which == 224) { 
+                ctrlDown = false;
+              }
+            })
+            .on('keydown','.text-block', { formatter: formatter }, function(ev) {
+              if(ev.which == 17 || ev.which == 224) { 
+                ctrlDown = true;
+              }  
+              if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
+                document.execCommand(ev.data.formatter.cmd, false, true);
+                ev.preventDefault();
+              }
+            });
+        }
+      }
+    }
+    
+    // TODO: Paste abstraction
+    /*block.find('.paste-block')
+      .bind('click', function(){
+        $(this).select();
+      })
+      .bind('paste', function(ev){ console.log('Pasted'); }); */
+    
+    // Do we have a dropzone?
+    if (this.blockType.dropEnabled) {
+      //dom_block.bind('drop', this.onDrop);
+    }
+    
+    this._super("onBlockRender");
   },
   
   remove: function() {
@@ -48,6 +107,8 @@ _.extend(Block.prototype, {
   loadData: function() {
     this._super("loadData", this.data);
   },
+  
+  
   
   validate: function() {
     this.errors = []; 
@@ -93,11 +154,6 @@ _.extend(Block.prototype, {
   
   /* A wrapper to call our parent object */
   _super: function(functionName, args) {
-   // if (_.has(this.blockType,functionName) && _.isFunction(this.blockType[functionName])) {
-     console.log(functionName, args);
      return this.blockType[functionName](this, args);
-  //  } else {
-   //   console.log('Function doesnt exist');
-  //  }
   }
 });
