@@ -5,7 +5,7 @@
 function flattern(obj){
   var x = {};
   _.each(obj, function(a,b) {
-    x[a] = true;
+    x[(_.isArray(obj)) ? a : b] = true;
   });
   return x;
 }

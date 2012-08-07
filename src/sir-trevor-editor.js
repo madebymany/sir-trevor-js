@@ -12,11 +12,13 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.blocks = {};
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId(this.options.baseCSSClass + "-");
-  this._ensureAndSetElements();
-  this._setBlocksAndFormatters();
-  this._bindFunctions();
-  this.from_json();
-  this.build();
+
+  if (this._ensureAndSetElements()) {
+    this._setBlocksAndFormatters();
+    this._bindFunctions();
+    this.from_json();
+    this.build();
+  }
 };
 
 _.extend(SirTrevorEditor.prototype, {
@@ -26,7 +28,6 @@ _.extend(SirTrevorEditor.prototype, {
   initialize: function() {},
   
   build: function() {
-    
     if (this.options.blockStore.data.length === 0) {
       // Create a default instance
       this.createBlock(this.options.defaultType);
@@ -119,8 +120,6 @@ _.extend(SirTrevorEditor.prototype, {
     
     // Empty or JSON-ify
     this.$el.val((this.options.blockStore.data.length === 0) ? '' : this.to_json());
-    console.log(this.to_json());
-    
     return false;
   },
   
@@ -135,7 +134,7 @@ _.extend(SirTrevorEditor.prototype, {
     if (content.length > 0) {
       this.options.blockStore = JSON.parse(content);
     } else {
-      this.options.blockStore = [];
+      this.options.blockStore.data = [];
     }
   },
   
@@ -149,6 +148,10 @@ _.extend(SirTrevorEditor.prototype, {
   
   _ensureAndSetElements: function() {
     
+    if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
+      return false;
+    }
+     
     this.$el = this.options.el;
     this.el = this.options.el[0];
     this.$form = this.$el.parents('form');
@@ -174,6 +177,7 @@ _.extend(SirTrevorEditor.prototype, {
       );
       
     this.$wrapper = this.$form.find('#' + this.ID); 
+    return true;
   },
   
   _setBlocksAndFormatters: function() {

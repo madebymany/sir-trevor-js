@@ -11,14 +11,11 @@
   */
   
   SirTrevor.DEFAULTS = {
-    el: null,
     baseCSSClass: "sir-trevor",
-    storage: "json",
     blockStore: {
-      "data": []
+      data: []
     },
     defaultType: "TextBlock",
-    blockIndex: 0,
     spinner: {
       lines: 9, 
       length: 3, 
@@ -30,7 +27,7 @@
       shadow: false
     }
   }; 
-
+  
   SirTrevor.BlockTypes = {};
   SirTrevor.Formatters = {};
   
