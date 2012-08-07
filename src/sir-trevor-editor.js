@@ -73,10 +73,14 @@ _.extend(SirTrevorEditor.prototype, {
   },
   
   removeBlock: function(block) {
-    if (!_.isUndefined(this.blocks[block.type][block.ID])) {
-      block.remove();
-      this.blocks[type][name] = null;
-      delete this.blocks[type][name];
+    if (!_.isUndefined(this.blocks[block.type])) {
+      _.each(this.blocks[block.type], function(item, i){
+        if (item.blockID === block.blockID) {
+          
+          this.blocks[item.type] = undefined;
+          //item.remove();
+        }
+      });
     }
   },
   

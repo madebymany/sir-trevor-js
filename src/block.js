@@ -12,10 +12,13 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   this.errors = [];
   
   this._setElement();
+  this._bindFunctions();
   this.render();
 };
 
 _.extend(Block.prototype, {
+  
+  bound: ["handleDeleteClick"],
     
   $: function(selector) {
     return this.$el.find(selector);
@@ -25,7 +28,7 @@ _.extend(Block.prototype, {
     
     this._super("beforeBlockRender");
     
-    var block = $('<div>', { 
+    this.$block = block = $('<div>', { 
       'class': this.instance.options.baseCSSClass + "-block", 
       id: this.blockID,
       "data-type": this.type,
@@ -92,10 +95,11 @@ _.extend(Block.prototype, {
       })
       .bind('paste', function(ev){ console.log('Pasted'); }); */
     
-    // Do we have a dropzone?
-    if (this.blockType.dropEnabled) {
-      //dom_block.bind('drop', this.onDrop);
-    }
+    // Do we have a dropzone? 
+    if (this.blockType.dropEnabled) {}
+    
+    // Delete
+    block.find('.delete').bind('click', this.handleDeleteClick);
     
     this._super("onBlockRender");
   },
@@ -107,9 +111,7 @@ _.extend(Block.prototype, {
   loadData: function() {
     this._super("loadData", this.data);
   },
-  
-  
-  
+
   validate: function() {
     this.errors = []; 
     var result = this._super("validate");
@@ -135,6 +137,14 @@ _.extend(Block.prototype, {
     };
   },
   
+  // Event handlers
+  handleDeleteClick: function(ev){
+    if (confirm('Are you sure you wish to delete this content?')) {
+      this.instance.removeBlock(this);
+      halt(ev);
+    }
+  },
+  
   /*
     Our template is always either a string or a function
   */
@@ -155,5 +165,9 @@ _.extend(Block.prototype, {
   /* A wrapper to call our parent object */
   _super: function(functionName, args) {
      return this.blockType[functionName](this, args);
+  },
+  
+  _bindFunctions: function(){
+    _.bindAll(this, this.bound);
   }
 });
