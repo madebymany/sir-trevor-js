@@ -43,7 +43,6 @@ _.extend(BlockType.prototype, {
     Can be overwritten, although hopefully this will cover most situations
   */
   toData: function(block) {
-    
     var bl = block.$el,
         dataStruct = bl.data('block'),
         content;

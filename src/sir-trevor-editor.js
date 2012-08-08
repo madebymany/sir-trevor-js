@@ -31,7 +31,6 @@ _.extend(SirTrevorEditor.prototype, {
   
   build: function() {
     this.marker.render();
-    
     if (this.options.blockStore.data.length === 0) {
       // Create a default instance
       this.createBlock(this.options.defaultType);
@@ -41,7 +40,6 @@ _.extend(SirTrevorEditor.prototype, {
         this.createBlock(block.type, block.data);
       }, this));
     }
-    
     this.attach();
   },
   
@@ -99,6 +97,17 @@ _.extend(SirTrevorEditor.prototype, {
     
     // Loop through blocks to validate
     var blockIterator = function(block,index) {
+      // Find our block
+      block = $(block);
+      var _block = _.find(this.blocks, function(b){ return (b.blockID == block.attr('id')); });
+      
+      if (_.isUndefined(_block) || _.isEmpty(_block) || typeof _block != SirTrevor.Block) {
+        var data = _block.save();
+        console.log(data);
+        if(!_.isEmpty(data)) {
+          this.options.blockStore.data.push(data);
+        }
+      }
       
     };
     _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));

@@ -24,7 +24,7 @@ _.extend(Block.prototype, {
     url: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/m,
     video: /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/
   },
-    
+  
   $: function(selector) {
     return this.$el.find(selector);
   },
@@ -68,8 +68,8 @@ _.extend(Block.prototype, {
       .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
       .bind('mouseout', function(ev){ $(this).removeClass('active'); });
     
-    block.find('.block-above').bind('mouseover', this.onMouseOverAbove);
-    block.find('.block-below').bind('mouseover', this.onMouseOverBelow);
+   // block.find('.block-above').bind('mouseover', this.onMouseOverAbove);
+  //  block.find('.block-below').bind('mouseover', this.onMouseOverBelow);
     
     // Enable formatting keyboard input
     var formatter;
@@ -150,6 +150,7 @@ _.extend(Block.prototype, {
       // We need to grab the state and save it here.
       this._super('toData');
     }
+    return this.$el.data('block');
   },
   
   to_json: function(data) {
@@ -158,6 +159,7 @@ _.extend(Block.prototype, {
       data: data
     };
   },
+  
   
   // Event handlers
   
@@ -189,9 +191,7 @@ _.extend(Block.prototype, {
     _.delay(_.bind(timed, this, ev), 100);
   },
   
-  onContentDrop: function(){
-    
-  },
+  onContentDrop: function(){},
   
   parseUrlInput: function(text){
     var url = text.match(this.regexs.url);

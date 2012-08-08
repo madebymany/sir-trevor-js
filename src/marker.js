@@ -68,34 +68,7 @@ _.extend(Marker.prototype, {
     
   },
   
-  show: function(ev){
-    // Cache a reference
-    var wrapper = this.instance.$wrapper;
-    
-    if (ev.type == 'dragover') {
-      this.$p.text(this.options.dropText);
-      this.$btns.hide();
-    } else {
-      this.$p.text(this.options.addText);
-      this.$btns.show();
-    }
-    
-    var mouse_enter = (ev) ? ev.originalEvent.pageY - wrapper.offset().top : 0,
-        blocks = wrapper.find("." + this.instance.options.baseCSSClass + "-block");
-    
-    if (blocks.length > 0) {
-      
-      var closest = _.find(blocks, function(item){ return isElementNear($(item), 5, ev); });
-            
-      if (!_.isEmpty(closest)) {
-        $(closest).before(this.$el);
-      } else if (mouse_enter > 0) {
-        $(blocks.last()).after(this.$el);
-      } else {
-        $(blocks.first()).before(this.$el);
-      }
-    }
-    
+  show: function(){
     this.$el.show();
   },
   

@@ -16,8 +16,21 @@ SirTrevor.BlockTypes.OrderedList = new SirTrevor.BlockType({
   },
   
   onBlockRender: function(block){
+    
+    block.$('.text-block').bind('click', function(){
+      if($(this).html().length === 0){
+        document.execCommand("insertOrderedList",false,false);
+      }
+    });
+    
     // Put in a list
-    block.$('.text-block').focus();
-    document.execCommand("insertOrderedList",false,false);
+    if (_.isEmpty(block.data)) {
+      block.$('.text-block').focus().click();
+    }
+    
+  },
+    
+  loadData: function(block, data){
+    block.$('.text-block').html("<ol>" + toHTML(data.text) + "</ol>");
   }
 });

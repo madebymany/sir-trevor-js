@@ -14,6 +14,12 @@ function convertToMarkdown(html, type) {
                        .replace(/^(.+)$/mg," - $1");
   }
   
+  if(type == "OrderedList") {
+    markdown = markdown.replace(/<\/li>/mg,"\n")
+                       .replace(/<\/?[^>]+(>|$)/g, "")
+                       .replace(/^(.+)$/mg," 1. $1");
+  }
+  
   markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
                  .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
                  .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
@@ -30,6 +36,7 @@ function convertToMarkdown(html, type) {
 
 function toHTML(markdown) {
   markdown = markdown.replace(/^ - (.+)$/mg,"<li>$1</li>");
+  markdown = markdown.replace(/^ 1. (.+)$/mg,"<li>$1</li>");
   return  markdown.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
                   .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
                   .replace(/\[(.+)\]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links

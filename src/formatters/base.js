@@ -25,3 +25,17 @@ SirTrevor.Formatters.Unlink = new SirTrevor.Formatter({
   className: "link",
   cmd: "unlink"
 });
+
+SirTrevor.Formatters.Heading1 = new SirTrevor.Formatter({
+  title: "H1",
+  className: "heading h1",
+  cmd: "heading",
+  param: "H1"
+});
+
+SirTrevor.Formatters.Heading2 = new SirTrevor.Formatter({
+  title: "H2",
+  className: "heading h2",
+  cmd: "heading",
+  param: "H2"
+});
