@@ -18,7 +18,12 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
 
 _.extend(Block.prototype, {
   
-  bound: ["handleDeleteClick"],
+  bound: ["onDeleteClick", "onContentPasted", "onMouseOverAbove", "onMouseOverBelow"],
+  
+  regexs: {
+    url: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/m,
+    video: /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/
+  },
     
   $: function(selector) {
     return this.$el.find(selector);
@@ -32,10 +37,12 @@ _.extend(Block.prototype, {
       'class': this.instance.options.baseCSSClass + "-block", 
       id: this.blockID,
       "data-type": this.type,
-      html: this.$el
+      html: this.el
     });
     
-    this.instance.$wrapper.append(block);
+    // Insert before the marker
+    this.instance.marker.hide();
+    this.instance.marker.$el.before(block);
     
     // Has data already?
     if (!_.isUndefined(this.data) && !_.isEmpty(this.data)) {
@@ -60,6 +67,9 @@ _.extend(Block.prototype, {
       .bind('dragleave', halt)
       .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
       .bind('mouseout', function(ev){ $(this).removeClass('active'); });
+    
+    block.find('.block-above').bind('mouseover', this.onMouseOverAbove);
+    block.find('.block-below').bind('mouseover', this.onMouseOverBelow);
     
     // Enable formatting keyboard input
     var formatter;
@@ -88,18 +98,30 @@ _.extend(Block.prototype, {
       }
     }
     
-    // TODO: Paste abstraction
-    /*block.find('.paste-block')
-      .bind('click', function(){
-        $(this).select();
-      })
-      .bind('paste', function(ev){ console.log('Pasted'); }); */
+    // Hanlde pastes
+    block.find('.paste-block')
+      .bind('click', function(){ $(this).select(); })
+      .bind('paste', this.onContentPasted); 
     
     // Do we have a dropzone? 
     if (this.blockType.dropEnabled) {}
     
     // Delete
-    block.find('.delete').bind('click', this.handleDeleteClick);
+    block.find('.delete').bind('click', this.onDeleteClick);
+    
+    // Handle text blocks
+    if (block.find('.text-block').length > 0) {
+      document.execCommand("styleWithCSS", false, false);
+      document.execCommand("insertBrOnReturn", false, true);
+    }
+    
+    // Focus if we're adding an empty block
+    if (_.isEmpty(this.data)) {
+      var inputs = block.find('[contenteditable="true"], input');
+      if (inputs.length > 0 && !block.dropEnabled) {
+        inputs[0].focus();
+      }
+    }
     
     this._super("onBlockRender");
   },
@@ -138,11 +160,41 @@ _.extend(Block.prototype, {
   },
   
   // Event handlers
-  handleDeleteClick: function(ev){
+  
+  onMouseOverAbove: function(ev) {
+    var item = $(ev.target).parents("." + this.instance.options.baseCSSClass + "-block");
+    this.instance.marker.$el.after(item);
+    this.instance.marker.$el.show();
+  },
+  
+  onMouseOverBelow: function(ev) {
+    var item = $(ev.target).parents("." + this.instance.options.baseCSSClass + "-block");
+    this.instance.marker.$el.before(item);
+    this.instance.marker.$el.show();
+  },
+  
+  onDeleteClick: function(ev) {
     if (confirm('Are you sure you wish to delete this content?')) {
       this.instance.removeBlock(this);
       halt(ev);
     }
+  },
+  
+  onContentPasted: function(ev) {
+    // We need a little timeout here
+    var timed = function(ev){ 
+      // Delegate this off to the super method that can be overwritten
+      this._super("onContentPasted", ev);
+    };
+    _.delay(_.bind(timed, this, ev), 100);
+  },
+  
+  onContentDrop: function(){
+    
+  },
+  
+  parseUrlInput: function(text){
+    var url = text.match(this.regexs.url);
   },
   
   /*
@@ -154,7 +206,7 @@ _.extend(Block.prototype, {
     // Wrap in a block
     var block = $('<div>', {
       'class': 'block_editor',
-      html: el
+      html: "<div class='block-above'></div>" + el + "<div class='block-below'></div>"
     });
     
     // Set our element references
@@ -168,6 +220,9 @@ _.extend(Block.prototype, {
   },
   
   _bindFunctions: function(){
-    _.bindAll(this, this.bound);
+    var args = [];
+    args.push(this);
+    args.join(this.bound);
+    _.bindAll.apply(this, args);
   }
 });

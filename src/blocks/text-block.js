@@ -26,5 +26,19 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
   
   loadData: function(block, data){
     block.$('.text-block').html(toHTML(data.text));
+  },
+  
+  onBlockRender: function(block){
+    
+  },
+  
+  onContentPasted: function(block, event){
+    console.log('Content pasted');
+  },
+  
+  onDrop: function(block){
+    console.log('Drop');
   }
+  
+  
 });

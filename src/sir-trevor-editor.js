@@ -9,9 +9,11 @@
 var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.blockTypes = {};
   this.formatters = {};
-  this.blocks = {};
+  this.blockCounts = {}; // Cached block type counts
+  this.blocks = []; // Block references
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId(this.options.baseCSSClass + "-");
+  this.marker = new SirTrevor.Marker(this.options.marker, this);
 
   if (this._ensureAndSetElements()) {
     this._setBlocksAndFormatters();
@@ -28,6 +30,8 @@ _.extend(SirTrevorEditor.prototype, {
   initialize: function() {},
   
   build: function() {
+    this.marker.render();
+    
     if (this.options.blockStore.data.length === 0) {
       // Create a default instance
       this.createBlock(this.options.defaultType);
@@ -37,7 +41,7 @@ _.extend(SirTrevorEditor.prototype, {
         this.createBlock(block.type, block.data);
       }, this));
     }
-     
+    
     this.attach();
   },
   
@@ -49,7 +53,7 @@ _.extend(SirTrevorEditor.prototype, {
     if (this._blockTypeAvailable(type)) {
       
      var blockType = SirTrevor.BlockTypes[type],
-         currentBlockCount = (_.isUndefined(this.blocks[type])) ? 0 : this.blocks[type].length;
+         currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
      
      // Can we have another one of these blocks?
      if (currentBlockCount > blockType.limit) {
@@ -64,24 +68,23 @@ _.extend(SirTrevorEditor.prototype, {
      
      var block = new SirTrevor.Block(this, blockType, data || {});  
      
-     if (_.isUndefined(this.blocks[type])) {
-       this.blocks[type] = [];
+     if (_.isUndefined(this.blockCounts[type])) {
+       this.blockCounts[type] = 0;
      }
      
-     this.blocks[type].push(block);
+     this.blocks.push(block);
+     this.blockCounts[type] = currentBlockCount + 1;
     }
   },
   
   removeBlock: function(block) {
-    if (!_.isUndefined(this.blocks[block.type])) {
-      _.each(this.blocks[block.type], function(item, i){
-        if (item.blockID === block.blockID) {
-          
-          this.blocks[item.type] = undefined;
-          //item.remove();
-        }
-      });
-    }
+    // Blocks exist purely on the dom. 
+    // Remove the block and decrement the blockCount
+    block.remove();
+    this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
+    // Remove the block from our store
+    this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
+    if(_.isUndefined(this.blocks)) this.blocks = [];
   },
   
   /* Handlers */
@@ -95,33 +98,11 @@ _.extend(SirTrevorEditor.prototype, {
     this.options.blockStore.data = [];
     
     // Loop through blocks to validate
-    for (var type in this.blocks) {
+    var blockIterator = function(block,index) {
       
-      if (this.blocks.hasOwnProperty(type)) {
-        blockLength = this.blocks[type].length;
+    };
+    _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
 
-        for (var i = 0; i < blockLength; i++) {
-          
-          block = this.blocks[type][i];
-          
-          /*
-            Save the blocks state and push to the blockStore object
-          */
-          
-          block.save();
-          
-         // result = block.validate();
-          
-         // if (!result) {
-        //    console.log(block.errors); // Show our errors.
-       //   } else {
-            
-       //   }
-          this.options.blockStore.data.push(block.$el.data('block'));
-        } 
-      }
-    }
-    
     // Empty or JSON-ify
     this.$el.val((this.options.blockStore.data.length === 0) ? '' : this.to_json());
     return false;
@@ -164,7 +145,7 @@ _.extend(SirTrevorEditor.prototype, {
     this.$el
       .wrap(
         $('<div>', { 
-          'class': this.options.baseCSSClass + "_outer"
+          'class': this.options.baseCSSClass
         })
       )
       .wrap(
@@ -176,6 +157,7 @@ _.extend(SirTrevorEditor.prototype, {
         $('<div>', {
           id: this.ID,
           'class': this.options.baseCSSClass + "_container",
+          'style': 'padding: 20px;',
           dropzone: 'copy link move'
         })
       );
@@ -190,7 +172,10 @@ _.extend(SirTrevorEditor.prototype, {
   },
   
   _bindFunctions: function(){
-    _.bindAll(this, this.bound);
+     var args = [];
+      args.push(this);
+      args.join(this.bound);
+      _.bindAll.apply(this, args);
   }
   
 });

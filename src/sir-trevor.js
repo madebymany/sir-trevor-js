@@ -25,6 +25,12 @@
       speed: 1.4, 
       trail: 57, 
       shadow: false
+    },
+    marker: {
+      baseCSSClass: "marker",
+      buttonClass: "button",
+      addText: "Click to add:",
+      dropText: "Drop to place content"
     }
   }; 
   
@@ -42,6 +48,8 @@
   //= blocks
   /* Default Formatters */
   //= formatters
+  /* Marker */
+  //= marker.js
   //= sir-trevor-editor.js
 
 }(jQuery, _));

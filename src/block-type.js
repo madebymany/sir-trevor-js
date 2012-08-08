@@ -24,6 +24,8 @@ var blockTypeOptions = [
   "validate", 
   "loadData", 
   "toData",
+  "onDrop",
+  "onContentPasted",
   "onBlockRender",
   "beforeBlockRender",
   "onBlockActivated"
@@ -59,6 +61,8 @@ _.extend(BlockType.prototype, {
   onBlockRender: function(block){},
   beforeBlockRender: function(block){},
   onBlockActivated: function(block){},
+  onDrop: function(block){},
+  onContentPasted: function(block, event){},
   
   // 'Private' methods
   _configure: function(options) {
