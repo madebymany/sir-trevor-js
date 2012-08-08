@@ -1,7 +1,3 @@
-/*
-  Generic Block Implementation
-*/
-
 var Format = SirTrevor.Formatter = function(options){
   this.formatId = _.uniqueId('format-');
   this._configure(options || {});

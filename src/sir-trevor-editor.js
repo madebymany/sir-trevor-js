@@ -7,20 +7,25 @@
 */
 
 var SirTrevorEditor = SirTrevor.Editor = function(options) {
+  
   this.blockTypes = {};
   this.formatters = {};
   this.blockCounts = {}; // Cached block type counts
   this.blocks = []; // Block references
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId(this.options.baseCSSClass + "-");
-  this.marker = new SirTrevor.Marker(this.options.marker, this);
-
+  
   if (this._ensureAndSetElements()) {
+    
+    this.marker = new SirTrevor.Marker(this.options.marker, this);
+    this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
+    
     this._setBlocksAndFormatters();
     this._bindFunctions();
     this.from_json();
     this.build();
   }
+  
 };
 
 _.extend(SirTrevorEditor.prototype, {
@@ -30,7 +35,11 @@ _.extend(SirTrevorEditor.prototype, {
   initialize: function() {},
   
   build: function() {
+    
+    // Render marker & format bar
     this.marker.render();
+    this.formatBar.render();
+    
     if (this.options.blockStore.data.length === 0) {
       // Create a default instance
       this.createBlock(this.options.defaultType);

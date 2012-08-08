@@ -31,7 +31,8 @@
       buttonClass: "button",
       addText: "Click to add:",
       dropText: "Drop to place content"
-    }
+    },
+    formatBar: {}
   }; 
   
   SirTrevor.BlockTypes = {};
@@ -50,6 +51,8 @@
   //= formatters
   /* Marker */
   //= marker.js
+  /* FormatBar */
+  //= format-bar.js
   //= sir-trevor-editor.js
 
 }(jQuery, _));
