@@ -19,17 +19,6 @@ SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({
     block.$('input').val(data.cite);
   },
   
-  toData: function(block){
-    var bl = block.$el,
-        dataStruct = bl.data('block'),
-        content;
-    
-    /* Simple to start. Add conditions later */
-    content = block.$('.text-block').html();
-    dataStruct.data.text = block.instance._toMarkdown(content, block.type);
-    dataStruct.data.cite = block.$('input').val();
-  },
-  
   toMarkdown: function(markdown) {
     return markdown.replace(/^(.+)$/mg,"> $1");
   }

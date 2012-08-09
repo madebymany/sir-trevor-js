@@ -56,6 +56,30 @@ _.extend(BlockType.prototype, {
         dataStruct.data.text = block.instance._toMarkdown(content, block.type);
       }
     }
+    
+    var hasTextAndData = (!_.isUndefined(dataStruct.data.text) || block.$('.text-block').length === 0);
+    
+    // Add any inputs to the data attr
+    if(block.$('input[type="text"]').not('.paste-block').length > 0) {
+      block.$('input[type="text"]').each(function(index,input){
+        input = $(input);
+        if (input.val().length > 0 && hasTextAndData) {
+          dataStruct.data[input.attr('name')] = input.val();
+        }
+      });
+    }
+    
+    block.$('select').each(function(index,input){
+      input = $(input);
+      if(input.val().length > 0 && hasTextAndData) {
+        dataStruct.data[input.attr('name')] = input.val();
+      }
+    });
+    
+    block.$('input[type="file"]').each(function(index,input) {
+      input = $(input);
+      dataStruct.data.file = input.data('json');
+    });
   },
   
   /* Callback methods that can be overriden */
