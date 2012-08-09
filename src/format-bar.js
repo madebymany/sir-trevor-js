@@ -49,7 +49,14 @@ _.extend(FormatBar.prototype, Events, {
     halt(ev);
     var btn = $(ev.target),
         format = SirTrevor.Formatters[btn.attr('data-type')];
-    document.execCommand(btn.attr('data-cmd'), false, format.param);
+     
+    // Do we have a click function defined on this formatter?     
+    if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
+      format.onClick(); // Delegate
+    } else {
+      // Call default
+      document.execCommand(btn.attr('data-cmd'), false, format.param);
+    }   
   }
   
 });

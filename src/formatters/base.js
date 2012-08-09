@@ -21,9 +21,25 @@ SirTrevor.Formatters.Underline = new SirTrevor.Formatter({
 });
 
 SirTrevor.Formatters.Link = new SirTrevor.Formatter({
+  
   title: "Link",
   className: "link",
-  cmd: "CreateLink"
+  cmd: "CreateLink",
+  
+  onClick: function() {
+    
+    var link = prompt("Enter a link"),
+        link_regex = /(ftp|http|https):\/\/./;
+    
+    if(link.length > 0) {
+      
+     if (!link_regex.test(link)) { 
+       link = "http://" + link; 
+     }
+     
+     document.execCommand(this.cmd, false, link);
+    }
+  }
 });
 
 SirTrevor.Formatters.Unlink = new SirTrevor.Formatter({
@@ -39,14 +55,11 @@ SirTrevor.Formatters.Heading1 = new SirTrevor.Formatter({
   param: "H1",
   
   toMarkdown: function(markdown) {
-    return markdown;
-    //return markdown.replace(/<\/h1>/mg,"\n")
-                   //.replace(/^(.+)$/mg,"#$1");
+    return markdown.replace(/<h1>([^*|_]+)<\/h1>/mg,"#$1#\n"); 
   },
   
   toHTML: function(html) {
-    return html;
-    //return html.replace(/^#(.+)$/mg,"<h1>$1</h1>");
+    return html.replace(/(?:#)([^*|_]+)(?:#)/mg,"<h1>$1</h1>"); 
   }
     
 });
@@ -58,13 +71,10 @@ SirTrevor.Formatters.Heading2 = new SirTrevor.Formatter({
   param: "H2",
   
   toMarkdown: function(markdown) {
-    return markdown;
-    //return markdown.replace(/<\/h2>/mg,"\n")
-                   //.replace(/^(.+)$/mg,"##$1");
+    return markdown.replace(/<h2>([^*|_]+)<\/h2>/mg,"##$1##\n"); 
   },
   
   toHTML: function(html) {
-    return html;
-   // return html.replace(/^##(.+)$/mg,"<h2>$1</h2>");
+    return html.replace(/(?:##)([^*|_]+)(?:##)/mg,"<h2>$1</h2>"); 
   }
 });

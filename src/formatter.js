@@ -5,7 +5,7 @@ var Format = SirTrevor.Formatter = function(options){
   this.initialize.apply(this, arguments);
 };
 
-var formatOptions = ["title", "className", "cmd", "keyCode", "param", "toMarkdown", "toHTML"];
+var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick", "toMarkdown", "toHTML"];
 
 _.extend(Format.prototype, {
   
