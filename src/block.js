@@ -16,7 +16,7 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   this.render();
 };
 
-_.extend(Block.prototype, {
+_.extend(Block.prototype, Events, {
   
   bound: ["onDeleteClick", "onContentPasted", "onMouseOverAbove", "onMouseOverBelow"],
   
@@ -217,12 +217,5 @@ _.extend(Block.prototype, {
   /* A wrapper to call our parent object */
   _super: function(functionName, args) {
      return this.blockType[functionName](this, args);
-  },
-  
-  _bindFunctions: function(){
-    var args = [];
-    args.push(this);
-    args.join(this.bound);
-    _.bindAll.apply(this, args);
   }
 });

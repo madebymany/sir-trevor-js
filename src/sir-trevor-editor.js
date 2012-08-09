@@ -28,7 +28,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   
 };
 
-_.extend(SirTrevorEditor.prototype, {
+_.extend(SirTrevorEditor.prototype, Events, {
   
   bound: ['onFormSubmit'],
   
@@ -189,12 +189,88 @@ _.extend(SirTrevorEditor.prototype, {
     this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
   },
   
-  _bindFunctions: function(){
-     var args = [];
-      args.push(this);
-      args.join(this.bound);
-      _.bindAll.apply(this, args);
-  }
+  _toMarkdown: function(content, type) {
+    /* 
+      Generic Markdown parser. Takes HTML and returns Markdown (obvs)
+      This can be extended through your formatters.
+    */
+    
+    var markdown;
+    
+    markdown = content.replace(/\n/mg,"")
+                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
+                      .replace(/<\/?b>/g,"**")
+                      .replace(/<\/?STRONG>/g,"**")                   // Bold
+                      .replace(/<\/?i>/g,"_")
+                      .replace(/<\/?EM>/g,"_");                        // Italic
+
+    // Use custom formatters toMarkdown functions (if any exist)
+    var formatName, format;
+    for(formatName in this.formatters) {
+      if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
+        format = SirTrevor.Formatters[formatName];
+        // Do we have a toMarkdown function?
+        if (!_.isUndefined(format.toMarkdown) && _.isFunction(format.toMarkdown)) {
+          markdown = format.toMarkdown(markdown);
+        }
+      }
+    }
+    
+    // Use custom block toMarkdown functions (if any exist)
+    var block;
+    if (SirTrevor.BlockTypes.hasOwnProperty(type)) {
+      block = SirTrevor.BlockTypes[type];
+      // Do we have a toMarkdown function?
+      if (!_.isUndefined(block.toMarkdown) && _.isFunction(block.toMarkdown)) {
+        markdown = block.toMarkdown(markdown);
+      }
+    }
+     
+    // Do our generic stripping out
+    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
+                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
+                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
+                   .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
+                   .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
+                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities 
+                   .replace(/&lt;/g,"<").replace(/&gt;/g,">")                                  // Encoding
+                   .replace(/<\/?[^>]+(>|$)/g, "");                                            // Strip remaining HTML
+                   
+    return markdown;
+  },
   
+  _toHTML: function(markdown, type) {
+    var html = markdown;
+    
+    // Use custom formatters toHTML functions (if any exist)
+    var formatName, format;
+    for(formatName in this.formatters) {
+      if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
+        format = SirTrevor.Formatters[formatName];
+        // Do we have a toMarkdown function?
+        if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
+          html = format.toHTML(html);
+        }
+      }
+    }
+    
+    // Use custom block toHTML functions (if any exist)
+    var block;
+    if (SirTrevor.BlockTypes.hasOwnProperty(type)) {
+      block = SirTrevor.BlockTypes[type];
+      // Do we have a toMarkdown function?
+      if (!_.isUndefined(block.toHTML) && _.isFunction(block.toHTML)) {
+        html = block.toHTML(html);
+      }
+    }
+    
+    html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
+                .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
+                .replace(/\[(.+)\]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links
+                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>")                // Bold
+                .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>");                     // Italic
+       
+    return html;  
+  }
 });
 

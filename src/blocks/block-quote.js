@@ -3,6 +3,7 @@
 */
 
 SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({ 
+  
   title: "Quote",
   className: "block-quote",
   toolbarEnabled: true,
@@ -14,7 +15,7 @@ SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({
   },
   
   loadData: function(block, data){
-    block.$('.text-block').html(toHTML(data.text));
+    block.$('.text-block').html(block.instance._toHTML(data.text, block.type));
     block.$('input').val(data.cite);
   },
   
@@ -25,7 +26,12 @@ SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({
     
     /* Simple to start. Add conditions later */
     content = block.$('.text-block').html();
-    dataStruct.data.text = convertToMarkdown(content, block.type);
+    dataStruct.data.text = block.instance._toMarkdown(content, block.type);
     dataStruct.data.cite = block.$('input').val();
+  },
+  
+  toMarkdown: function(markdown) {
+    return markdown.replace(/^(.+)$/mg,"> $1");
   }
+  
 });

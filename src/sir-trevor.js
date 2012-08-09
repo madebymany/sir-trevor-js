@@ -11,6 +11,7 @@
   */
   
   SirTrevor.DEFAULTS = {
+    
     baseCSSClass: "sir-trevor",
     blockStore: {
       data: []
@@ -32,11 +33,23 @@
       addText: "Click to add:",
       dropText: "Drop to place content"
     },
-    formatBar: {}
+    formatBar: {
+      baseCSSClass: "formatting-control"
+    }
   }; 
   
   SirTrevor.BlockTypes = {};
   SirTrevor.Formatters = {};
+  
+  var Events = {
+    bound: [],
+    _bindFunctions: function(){
+      var args = [];
+      args.push(this);
+      args.join(this.bound);
+      _.bindAll.apply(this, args);
+    }
+  };
   
   //= helpers
   //= vendor

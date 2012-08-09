@@ -31,6 +31,16 @@ SirTrevor.BlockTypes.OrderedList = new SirTrevor.BlockType({
   },
     
   loadData: function(block, data){
-    block.$('.text-block').html("<ol>" + toHTML(data.text) + "</ol>");
+    block.$('.text-block').html("<ol>" + block.instance._toHTML(data.text, block.type) + "</ol>");
+  },
+  
+  toMarkdown: function(markdown){
+    return markdown.replace(/<\/li>/mg,"\n")
+                   .replace(/<\/?[^>]+(>|$)/g, "")
+                   .replace(/^(.+)$/mg," 1. $1");
+  },
+  
+  toHTML: function(html) {
+    return html.replace(/^ 1. (.+)$/mg,"<li>$1</li>");
   }
 });

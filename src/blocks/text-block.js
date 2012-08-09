@@ -25,7 +25,7 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
   },
   
   loadData: function(block, data){
-    block.$('.text-block').html(toHTML(data.text));
+    block.$('.text-block').html(block.instance._toHTML(data.text, block.type));
   },
   
   onBlockRender: function(block){

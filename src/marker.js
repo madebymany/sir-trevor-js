@@ -10,7 +10,7 @@ var Marker = SirTrevor.Marker = function(options, editorInstance){
   this._bindFunctions();
 };
 
-_.extend(Marker.prototype, {
+_.extend(Marker.prototype, Events, {
   
   bound: ["onButtonClick", "show", "hide"],
   
@@ -80,13 +80,6 @@ _.extend(Marker.prototype, {
     halt(ev);
     var button = $(ev.target);
     this.instance.createBlock(button.attr('data-type'), {});
-  },
-  
-  _bindFunctions: function(){
-    var args = [];
-    args.push(this);
-    args.join(this.bound);
-    _.bindAll.apply(this, args);
   }
 });
 

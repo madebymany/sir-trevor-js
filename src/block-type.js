@@ -28,7 +28,9 @@ var blockTypeOptions = [
   "onContentPasted",
   "onBlockRender",
   "beforeBlockRender",
-  "onBlockActivated"
+  "onBlockActivated",
+  "toMarkdown",
+  "toHTML"
 ];
 
 _.extend(BlockType.prototype, {
@@ -51,7 +53,7 @@ _.extend(BlockType.prototype, {
     if (block.$('.text-block').length > 0) {
       content = block.$('.text-block').html();
       if (content.length > 0) {
-        dataStruct.data.text = convertToMarkdown(content, block.type);
+        dataStruct.data.text = block.instance._toMarkdown(content, block.type);
       }
     }
   },

@@ -15,8 +15,7 @@ SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({
     return _.template(template, this);
   },
   
-  onBlockRender: function(block){
-
+  onBlockRender: function(block) {
     block.$('.text-block').bind('click', function(){
       if($(this).html().length === 0){
         document.execCommand("insertUnorderedList",false,false);
@@ -31,6 +30,16 @@ SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({
   },
     
   loadData: function(block, data){
-    block.$('.text-block').html("<ul>" + toHTML(data.text) + "</ul>");
+    block.$('.text-block').html("<ul>" + block.instance._toHTML(data.text, block.type) + "</ul>");
+  },
+  
+  toMarkdown: function(markdown) {
+    return markdown.replace(/<\/li>/mg,"\n")
+                   .replace(/<\/?[^>]+(>|$)/g, "")
+                   .replace(/^(.+)$/mg," - $1"); 
+  },
+  
+  toHTML: function(html) {
+    return html.replace(/^ - (.+)$/mg,"<li>$1</li>");
   }
 });
