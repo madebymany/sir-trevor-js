@@ -49,32 +49,13 @@ _.extend(Marker.prototype, Events, {
       }
     }
     
-    // Bind events
-    /*this.$el.bind('dragover', halt);
-    this.$el.bind('mouseover', halt);
-    this.$el.children().bind('mouseover', halt);
-    
-    this.instance.$wrapper.bind('mouseover', this.show);
-    
-    var hideEditor = function(ev){
-      var target = $(ev.target);
-      if (!target.parents('span').hasClass('sir-trevor-marker') && !target.hasClass('sir-trevor-marker')) { }
-    };
-    
-    ; */
+    this.$el.addClass('ready');
   },
-  
-  remove: function(){
     
-  },
-  
-  show: function(){
-    this.$el.show();
-  },
-  
-  hide: function(){
-    this.$el.hide();
-  },
+  /* Convienience methods */
+  show: function(){ this.$el.show(); },
+  hide: function(){ this.$el.hide(); },
+  remove: function(){ this.$el.remove(); },
   
   onButtonClick: function(ev){
     halt(ev);

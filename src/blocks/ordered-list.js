@@ -15,23 +15,22 @@ SirTrevor.BlockTypes.OrderedList = new SirTrevor.BlockType({
     return _.template(template, this);
   },
   
-  onBlockRender: function(block){
+  onBlockRender: function(){
     
-    block.$('.text-block').bind('click', function(){
+    this.$('.text-block').bind('click', function(){
       if($(this).html().length === 0){
         document.execCommand("insertOrderedList",false,false);
       }
     });
     
     // Put in a list
-    if (_.isEmpty(block.data)) {
-      block.$('.text-block').focus().click();
+    if (_.isEmpty(this.data)) {
+      this.$('.text-block').focus().click();
     }
-    
   },
     
-  loadData: function(block, data){
-    block.$('.text-block').html("<ol>" + block.instance._toHTML(data.text, block.type) + "</ol>");
+  loadData: function(data){
+    this.$('.text-block').html("<ol>" + this.instance._toHTML(data.text, this.type) + "</ol>");
   },
   
   toMarkdown: function(markdown){

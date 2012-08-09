@@ -15,26 +15,27 @@ SirTrevor.BlockTypes.TextBlock = new SirTrevor.BlockType({
     return _.template(template, this);
   },
   
-  validate: function(block) {
-    console.log(block.$el.html().length);
-    if( block.$el.html().length === 0) {
-      block.errors.push('You must enter some content');
+  validate: function() {
+    console.log(this.$el.html().length);
+    if( this.$el.html().length === 0) {
+      this.errors.push('You must enter some content');
       return false;
     }
     return true;
   },
   
-  loadData: function(block, data){
-    block.$('.text-block').html(block.instance._toHTML(data.text, block.type));
+  loadData: function(data){
+    this.$('.text-block').html(this.instance._toHTML(data.text, this.type));
   },
   
-  onBlockRender: function(block){},
+  onBlockRender: function(){
+  },
   
-  onContentPasted: function(block, event){
+  onContentPasted: function(event){
     console.log('Content pasted');
   },
   
-  onDrop: function(block){
+  onDrop: function(){
     console.log('Drop');
   }
   

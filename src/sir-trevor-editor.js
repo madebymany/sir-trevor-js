@@ -24,8 +24,8 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
     this._bindFunctions();
     this.from_json();
     this.build();
+    
   }
-  
 };
 
 _.extend(SirTrevorEditor.prototype, Events, {
@@ -67,10 +67,12 @@ _.extend(SirTrevorEditor.prototype, Events, {
        return false;
      }
      
-     if (currentBlockCount + 1 == blockType.limit) {
-       this.marker.find('[data-type="' + type + '"]')
+     if (currentBlockCount + 1 > blockType.limit) {
+       this.marker.$el.find('[data-type="' + type + '"]')
                   .addClass('inactive')
                   .attr('title','You have reached the limit for this type of block');
+                  
+       return false;            
      }
      
      var block = new SirTrevor.Block(this, blockType, data || {});  
@@ -112,7 +114,6 @@ _.extend(SirTrevorEditor.prototype, Events, {
       
       if (_.isUndefined(_block) || _.isEmpty(_block) || typeof _block != SirTrevor.Block) {
         var data = _block.save();
-        console.log(data);
         if(!_.isEmpty(data)) {
           this.options.blockStore.data.push(data);
         }

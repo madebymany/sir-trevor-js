@@ -18,5 +18,27 @@ _.extend(Format.prototype, {
       if (options[attr]) this[attr] = options[attr];
     }
     this.options = options;
+  },
+  
+  _bindToBlock: function(block) {
+    
+    var formatter = this,
+        ctrlDown = false;
+        
+    block
+      .on('keyup','.text-block', function(ev) {
+        if(ev.which == 17 || ev.which == 224) { 
+          ctrlDown = false;
+        }
+      })
+      .on('keydown','.text-block', { formatter: formatter }, function(ev) {
+        if(ev.which == 17 || ev.which == 224) { 
+          ctrlDown = true;
+        }  
+        if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
+          document.execCommand(ev.data.formatter.cmd, false, true);
+          ev.preventDefault();
+        }
+      });
   }
 });

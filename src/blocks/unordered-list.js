@@ -15,22 +15,22 @@ SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({
     return _.template(template, this);
   },
   
-  onBlockRender: function(block) {
-    block.$('.text-block').bind('click', function(){
+  onBlockRender: function() {
+    this.$('.text-block').bind('click', function(){
       if($(this).html().length === 0){
         document.execCommand("insertUnorderedList",false,false);
       }
     });
     
     // Put in a list
-    if (_.isEmpty(block.data)) {
+    if (_.isEmpty(this.data)) {
       block.$('.text-block').focus().click();
     }
     
   },
     
-  loadData: function(block, data){
-    block.$('.text-block').html("<ul>" + block.instance._toHTML(data.text, block.type) + "</ul>");
+  loadData: function(data){
+    this.$('.text-block').html("<ul>" + this.insta3nce._toHTML(data.text, this.type) + "</ul>");
   },
   
   toMarkdown: function(markdown) {

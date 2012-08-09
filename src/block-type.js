@@ -44,24 +44,24 @@ _.extend(BlockType.prototype, {
     Generic toData implementation.
     Can be overwritten, although hopefully this will cover most situations
   */
-  toData: function(block) {
-    var bl = block.$el,
+  toData: function() {
+    var bl = this.$el,
         dataStruct = bl.data('block'),
         content;
     
     /* Simple to start. Add conditions later */
-    if (block.$('.text-block').length > 0) {
-      content = block.$('.text-block').html();
+    if (this.$('.text-block').length > 0) {
+      content = this.$('.text-block').html();
       if (content.length > 0) {
-        dataStruct.data.text = block.instance._toMarkdown(content, block.type);
+        dataStruct.data.text = this.instance._toMarkdown(content, this.type);
       }
     }
     
-    var hasTextAndData = (!_.isUndefined(dataStruct.data.text) || block.$('.text-block').length === 0);
+    var hasTextAndData = (!_.isUndefined(dataStruct.data.text) || this.$('.text-block').length === 0);
     
     // Add any inputs to the data attr
-    if(block.$('input[type="text"]').not('.paste-block').length > 0) {
-      block.$('input[type="text"]').each(function(index,input){
+    if(this.$('input[type="text"]').not('.paste-block').length > 0) {
+      this.$('input[type="text"]').each(function(index,input){
         input = $(input);
         if (input.val().length > 0 && hasTextAndData) {
           dataStruct.data[input.attr('name')] = input.val();
@@ -69,25 +69,25 @@ _.extend(BlockType.prototype, {
       });
     }
     
-    block.$('select').each(function(index,input){
+    this.$('select').each(function(index,input){
       input = $(input);
       if(input.val().length > 0 && hasTextAndData) {
         dataStruct.data[input.attr('name')] = input.val();
       }
     });
     
-    block.$('input[type="file"]').each(function(index,input) {
+    this.$('input[type="file"]').each(function(index,input) {
       input = $(input);
       dataStruct.data.file = input.data('json');
     });
   },
   
-  /* Callback methods that can be overriden */
-  onBlockRender: function(block){},
-  beforeBlockRender: function(block){},
-  onBlockActivated: function(block){},
-  onDrop: function(block){},
-  onContentPasted: function(block, event){},
+  /* Callback methods that can be overriden - all are bound to a 'Block' instance, NOT the block type */
+  onBlockRender: function(){},
+  beforeBlockRender: function(){},
+  onBlockActivated: function(){},
+  onDrop: function(){},
+  onContentPasted: function(ev){},
   
   // 'Private' methods
   _configure: function(options) {

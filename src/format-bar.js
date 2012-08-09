@@ -41,9 +41,14 @@ _.extend(FormatBar.prototype, Events, {
       }
     }
     
+    this.$el.addClass('ready');
+    
   },
-  show: function(){},
-  hide: function(){},
+  
+  /* Convienience methods */
+  show: function(){ this.$el.show(); },
+  hide: function(){ this.$el.hide(); },
+  remove: function(){ this.$el.remove(); },
   
   onFormatButtonClick: function(ev){
     halt(ev);

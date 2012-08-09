@@ -77,23 +77,7 @@ _.extend(Block.prototype, Events, {
       if (this.instance.formatters.hasOwnProperty(name)) {
         formatter = SirTrevor.Formatters[name];
         if (!_.isUndefined(formatter.keyCode)) {
-          var ctrlDown = false;
-
-          block
-            .on('keyup','.text-block', function(ev) {
-              if(ev.which == 17 || ev.which == 224) { 
-                ctrlDown = false;
-              }
-            })
-            .on('keydown','.text-block', { formatter: formatter }, function(ev) {
-              if(ev.which == 17 || ev.which == 224) { 
-                ctrlDown = true;
-              }  
-              if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
-                document.execCommand(ev.data.formatter.cmd, false, true);
-                ev.preventDefault();
-              }
-            });
+          formatter._bindToBlock(block);
         }
       }
     }
@@ -216,6 +200,8 @@ _.extend(Block.prototype, Events, {
   
   /* A wrapper to call our parent object */
   _super: function(functionName, args) {
-     return this.blockType[functionName](this, args);
+    if (!_.isUndefined(this.blockType[functionName])) {
+      _.bind(this.blockType[functionName], this, args)();
+    }
   }
 });

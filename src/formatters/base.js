@@ -31,7 +31,7 @@ SirTrevor.Formatters.Link = new SirTrevor.Formatter({
     var link = prompt("Enter a link"),
         link_regex = /(ftp|http|https):\/\/./;
     
-    if(link.length > 0) {
+    if(link && link.length > 0) {
       
      if (!link_regex.test(link)) { 
        link = "http://" + link; 
