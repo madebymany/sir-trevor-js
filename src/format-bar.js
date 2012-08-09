@@ -22,7 +22,7 @@ _.extend(FormatBar.prototype, Events, {
       "class": this.className
     });
     
-    this.instance.$wrapper.before(bar);
+    this.instance.$wrapper.prepend(bar);
     this.$el = bar;
     
     var formats = this.instance.formatters,
@@ -41,7 +41,7 @@ _.extend(FormatBar.prototype, Events, {
       }
     }
     
-    this.$el.addClass('ready');
+    this.$el.addClass('sir-trevor-item-ready');
     
   },
   

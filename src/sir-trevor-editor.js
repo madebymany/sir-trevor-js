@@ -36,6 +36,8 @@ _.extend(SirTrevorEditor.prototype, Events, {
   
   build: function() {
     
+    this.$el.hide();
+    
     // Render marker & format bar
     this.marker.render();
     this.formatBar.render();
@@ -49,7 +51,10 @@ _.extend(SirTrevorEditor.prototype, Events, {
         this.createBlock(block.type, block.data);
       }, this));
     }
+    
     this.attach();
+    
+    this.$wrapper.addClass('sir-trevor-ready');
   },
   
   attach: function() {
@@ -91,6 +96,7 @@ _.extend(SirTrevorEditor.prototype, Events, {
     // Remove the block and decrement the blockCount
     block.remove();
     this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
+    
     // Remove the block from our store
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
     if(_.isUndefined(this.blocks)) this.blocks = [];
@@ -99,7 +105,6 @@ _.extend(SirTrevorEditor.prototype, Events, {
   /* Handlers */
   
   onFormSubmit: function(e) {
-    
     e.preventDefault();
     
     var blockLength, block, result;
@@ -127,19 +132,21 @@ _.extend(SirTrevorEditor.prototype, Events, {
     return false;
   },
   
-  /* Privates */
-  
   to_json: function() {
     return JSON.stringify(this.options.blockStore);
   },
   
   from_json: function() {
     var content = this.$el.val();
+    this.options.blockStore.data = [];
+    
     if (content.length > 0) {
-      this.options.blockStore = JSON.parse(content);
-    } else {
-      this.options.blockStore.data = [];
-    }
+      try{
+        this.options.blockStore = JSON.parse(content);
+      } catch(e) {
+        console.log('Sorry there has been a problem with parsing the JSON');
+      }
+    } 
   },
   
   _blockTypeAvailable: function(t) {
@@ -161,25 +168,12 @@ _.extend(SirTrevorEditor.prototype, Events, {
     this.$form = this.$el.parents('form');
     
     // Wrap our element in lots of containers *eww*
-    this.$el
-      .wrap(
-        $('<div>', { 
-          'class': this.options.baseCSSClass
-        })
-      )
-      .wrap(
-        $('<div>', { 
-          'class': this.options.baseCSSClass + "_dragleave"
-        })
-      )
-      .wrap(
-        $('<div>', {
-          id: this.ID,
-          'class': this.options.baseCSSClass + "_container",
-          'style': 'padding: 20px;',
-          dropzone: 'copy link move'
-        })
-      );
+    this.$el.wrap($('<div>', { 
+                    id: this.ID,
+                    'class': this.options.baseCSSClass + " " + this.options.baseCSSClass + "_dragleave",
+                    dropzone: 'copy link move'
+                  })
+                );
       
     this.$wrapper = this.$form.find('#' + this.ID); 
     return true;
@@ -194,8 +188,7 @@ _.extend(SirTrevorEditor.prototype, Events, {
     /* 
       Generic Markdown parser. Takes HTML and returns Markdown (obvs)
       This can be extended through your formatters.
-    */
-    
+    */    
     var markdown;
     
     markdown = content.replace(/\n/mg,"")

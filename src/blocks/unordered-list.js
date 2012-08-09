@@ -5,7 +5,7 @@
 var template = '<div class="text-block <%= className %>" contenteditable="true"></div>';
 
 SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({ 
-  title: "Unordered List",
+  title: "List",
   className: "unordered-list",
   toolbarEnabled: true,
   dropEnabled: false,
@@ -24,13 +24,13 @@ SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({
     
     // Put in a list
     if (_.isEmpty(this.data)) {
-      block.$('.text-block').focus().click();
+      this.$('.text-block').focus().click();
     }
     
   },
     
   loadData: function(data){
-    this.$('.text-block').html("<ul>" + this.insta3nce._toHTML(data.text, this.type) + "</ul>");
+    this.$('.text-block').html("<ul>" + this.instance._toHTML(data.text, this.type) + "</ul>");
   },
   
   toMarkdown: function(markdown) {

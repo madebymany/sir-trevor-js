@@ -5,7 +5,7 @@
 var template = '<div class="text-block <%= className %>" contenteditable="true"></div>';
 
 SirTrevor.BlockTypes.OrderedList = new SirTrevor.BlockType({ 
-  title: "Ordered List",
+  title: "List",
   className: "ordered-list",
   toolbarEnabled: true,
   dropEnabled: false,

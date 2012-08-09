@@ -49,12 +49,59 @@ _.extend(Marker.prototype, Events, {
       }
     }
     
-    this.$el.addClass('ready');
+    // Bind our marker to the wrapper
+    this.instance.$wrapper.bind('mouseover', this.show);
+    this.instance.$wrapper.bind('mouseout', this.hide);
+    
+    this.$el.addClass('sir-trevor-item-ready');    
   },
     
-  /* Convienience methods */
-  show: function(){ this.$el.show(); },
-  hide: function(){ this.$el.hide(); },
+  show: function(ev){ 
+  
+    if(ev.type == 'dragover') {
+      
+    } else {
+      
+    }
+    
+    var mouse_enter = (ev) ? ev.originalEvent.pageY - this.instance.$wrapper.offset().top : 0;
+    
+    // Do we have any sedit blocks?
+    if (this.instance.blocks.length > 0) {
+    
+      // Find the closest block to this position
+      var closest_block = false,
+          wrapper = this.instance.$wrapper,
+          blockClass = "." + this.instance.options.baseCSSClass + "-block";
+      
+      var blockIterator = function(block, index) {
+        block = $(block);
+        var block_top = block.position().top - 35,
+            block_bottom = block.position().top + block.outerHeight(true) - 35;
+    
+        if(block_top <= mouse_enter && mouse_enter < block_bottom) {
+          closest_block = block;
+        }
+      };
+      _.each(wrapper.find(blockClass), _.bind(blockIterator, this));
+      
+      // Position it
+      if (closest_block) {
+        closest_block.before(this.$el);
+      } else if(mouse_enter > 0) {
+        wrapper.find(blockClass).last().after(this.$el);
+      } else {
+        wrapper.find(blockClass).first().before(this.$el);
+      }
+    }
+    this.$el.addClass('sir-trevor-item-ready');
+  },
+
+  hide: function(ev){ 
+    this.$el.removeClass('sir-trevor-item-ready'); 
+  },
+  
+  
   remove: function(){ this.$el.remove(); },
   
   onButtonClick: function(ev){

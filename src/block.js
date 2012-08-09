@@ -52,9 +52,6 @@ _.extend(Block.prototype, Events, {
     // And save the state
     this.save();
     
-    // Set ready state
-    block.addClass('block-ready');
-    
     // Add UI elements
     block.append($('<span>',{ 'class': 'handle', draggable: true }));
     block.append($('<span>',{ 'class': 'delete' }));
@@ -106,6 +103,9 @@ _.extend(Block.prototype, Events, {
         inputs[0].focus();
       }
     }
+    
+    // Set ready state
+    block.addClass('sir-trevor-item-ready');
     
     this._super("onBlockRender");
   },
@@ -189,7 +189,7 @@ _.extend(Block.prototype, Events, {
     
     // Wrap in a block
     var block = $('<div>', {
-      'class': 'block_editor',
+      'class': 'block-editor ' + this.blockType.className + '-block',
       html: "<div class='block-above'></div>" + el + "<div class='block-below'></div>"
     });
     

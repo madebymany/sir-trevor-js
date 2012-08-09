@@ -18,6 +18,7 @@
     },
     defaultType: "TextBlock",
     spinner: {
+      className: 'spinner',
       lines: 9, 
       length: 3, 
       width: 2, 
