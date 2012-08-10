@@ -86,7 +86,10 @@ _.extend(BlockType.prototype, {
   onBlockRender: function(){},
   beforeBlockRender: function(){},
   onBlockActivated: function(){},
-  onDrop: function(){},
+  
+  /* Generic handler */
+  onDrop: function(transferData){},
+  
   onContentPasted: function(ev){},
   
   // 'Private' methods

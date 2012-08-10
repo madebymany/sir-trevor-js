@@ -18,3 +18,37 @@ function isElementNear($element, distance, event) {
 
   return ( x > left && x < right && y > top && y < bottom );
 }
+
+/* 
+  Drop Area Plugin from @maccman
+  http://blog.alexmaccaw.com/svbtle-image-uploading
+  --
+  Tweaked so we use the parent class of dropzone
+*/
+
+(function($){
+  function dragEnter(e) {
+    $(e.target).addClass("dragOver");
+    halt(e);
+    return false;
+  }
+
+  function dragOver(e) {
+    e.originalEvent.dataTransfer.dropEffect = "copy";
+    halt(e);
+    return false;
+  }
+
+  function dragLeave(e) {
+    $(e.target).removeClass("dragOver");
+    halt(e);
+    return false;
+  }
+
+  $.fn.dropArea = function(){
+    this.bind("dragenter", dragEnter).
+         bind("dragover",  dragOver).
+         bind("dragleave", dragLeave);
+    return this;
+  };
+})(jQuery);

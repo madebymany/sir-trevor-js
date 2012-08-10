@@ -20,9 +20,9 @@
     spinner: {
       className: 'spinner',
       lines: 9, 
-      length: 3, 
+      length: 6, 
       width: 2, 
-      radius: 3, 
+      radius: 5, 
       color: '#000', 
       speed: 1.4, 
       trail: 57, 

@@ -150,6 +150,7 @@ _.extend(SirTrevorEditor.prototype, Events, {
       try{
         this.options.blockStore = JSON.parse(content);
       } catch(e) {
+        console.log(e);
         console.log('Sorry there has been a problem with parsing the JSON');
       }
     } 

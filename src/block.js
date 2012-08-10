@@ -18,7 +18,7 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
 
 _.extend(Block.prototype, Events, {
   
-  bound: ["onDeleteClick", "onContentPasted", "onBlockFocus"],
+  bound: ["onDeleteClick", "onContentPasted", "onBlockFocus", "onDrop"],
   
   regexs: {
     url: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/m,
@@ -43,6 +43,16 @@ _.extend(Block.prototype, Events, {
     // Insert before the marker
     this.instance.marker.hide();
     this.instance.marker.$el.before(block);
+    
+    // Do we have a dropzone? 
+    if (this.blockType.dropEnabled) {
+      this.$dropzone = $("<div>", {
+        html: this.blockType.dropzoneHTML,
+        class: "dropzone"
+      });
+      this.$block.append(this.$dropzone);
+      this.$el.hide();
+    }
     
     // Has data already?
     if (!_.isUndefined(this.data) && !_.isEmpty(this.data)) {
@@ -84,9 +94,6 @@ _.extend(Block.prototype, Events, {
       .bind('click', function(){ $(this).select(); })
       .bind('paste', this.onContentPasted); 
     
-    // Do we have a dropzone? 
-    if (this.blockType.dropEnabled) {}
-    
     // Delete
     block.find('.delete').bind('click', this.onDeleteClick);
     
@@ -97,6 +104,12 @@ _.extend(Block.prototype, Events, {
       
       // Bind our text block to show the marker
       block.find('.text-block').focus(this.onBlockFocus);
+    }
+    
+    if (this.blockType.dropEnabled) {
+      // Bind our drop event
+      this.$dropzone.dropArea();
+      this.$dropzone.bind('drop', this.onDrop);
     }
     
     // Focus if we're adding an empty block
@@ -147,6 +160,19 @@ _.extend(Block.prototype, Events, {
     };
   },
   
+  loading: function() {
+    this.spinner = new Spinner(this.instance.options.spinner);
+    this.spinner.spin(this.$block[0]);
+    this.$block.addClass('loading');
+  },
+  
+  ready: function() {
+    this.$block.removeClass('loading');
+    if (!_.isUndefined(this.spinner)) {
+      this.spinner.stop();
+      delete this.spinner;
+    }
+  },
   
   // Event handlers
 
@@ -170,7 +196,32 @@ _.extend(Block.prototype, Events, {
     _.delay(_.bind(timed, this, ev), 100);
   },
   
-  onContentDrop: function(){},
+  onDrop: function(e) {
+    
+    e.preventDefault();
+    e = e.originalEvent;
+  
+    var el = $(e.target),
+        types = e.dataTransfer.types,
+        type, data = [];
+        
+    /*
+      Check the type we just received,
+      delegate it away to our blockTypes to process
+    */    
+    
+    if (!_.isUndefined(types))
+    {
+      if (_.include(types, 'Files')) 
+      {
+        this._super("onDrop", e.dataTransfer);
+      } 
+      else if (_.include(types, 'text/plain') || _.include(types, 'text/uri-list')) 
+      {
+        this._super("onDrop", e.dataTransfer);
+      }
+    }
+  },
   
   parseUrlInput: function(text){
     var url = text.match(this.regexs.url);
