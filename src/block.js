@@ -75,9 +75,6 @@ _.extend(Block.prototype, Events, {
       .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
       .bind('mouseout', function(ev){ $(this).removeClass('active'); });
     
-   // block.find('.block-above').bind('mouseover', this.onMouseOverAbove);
-  //  block.find('.block-below').bind('mouseover', this.onMouseOverBelow);
-    
     // Enable formatting keyboard input
     var formatter;
     for (var name in this.instance.formatters) {
@@ -236,7 +233,7 @@ _.extend(Block.prototype, Events, {
     // Wrap in a block
     var block = $('<div>', {
       'class': 'block-editor ' + this.blockType.className + '-block',
-      html: "<div class='block-above'></div>" + el + "<div class='block-below'></div>"
+      html: el
     });
     
     // Set our element references
