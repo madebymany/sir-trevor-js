@@ -49,6 +49,9 @@ _.extend(Marker.prototype, Events, {
       }
     }
     
+    // Do we have any buttons?
+    if(this.$btns.children().length === 0) this.$el.addClass('hidden');
+    
     // Bind our marker to the wrapper
     this.instance.$wrapper.bind('mouseover', this.show);
     this.instance.$wrapper.bind('mouseout', this.hide);
@@ -59,9 +62,11 @@ _.extend(Marker.prototype, Events, {
   show: function(ev){ 
   
     if(ev.type == 'dragover') {
-      
+      this.$p.text(this.options.dropText);
+      this.$btns.hide();
     } else {
-      
+      this.$p.text(this.options.addText);
+      this.$btns.show();
     }
     
     var mouse_enter = (ev) ? ev.originalEvent.pageY - this.instance.$wrapper.offset().top : 0;
@@ -98,15 +103,21 @@ _.extend(Marker.prototype, Events, {
   },
 
   hide: function(ev){ 
+    //this.instance.formatBar.hide();
     this.$el.removeClass('sir-trevor-item-ready'); 
   },
-  
   
   remove: function(){ this.$el.remove(); },
   
   onButtonClick: function(ev){
     halt(ev);
     var button = $(ev.target);
+    
+    if (button.hasClass('inactive')) {
+      alert('You cannot create any more blocks of this type');
+      return false;
+    }
+    
     this.instance.createBlock(button.attr('data-type'), {});
   }
 });

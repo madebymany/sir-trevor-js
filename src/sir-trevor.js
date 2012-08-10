@@ -36,11 +36,15 @@
     },
     formatBar: {
       baseCSSClass: "formatting-control"
-    }
+    },
+    blockLimit: 0
   }; 
   
   SirTrevor.BlockTypes = {};
   SirTrevor.Formatters = {};
+  SirTrevor.instances = [];
+  
+  var formBound = false; // Flag to tell us once we've bound our submit event
   
   var Events = {
     bound: [],
@@ -68,6 +72,23 @@
   /* FormatBar */
   //= format-bar.js
   //= sir-trevor-editor.js
+
+  /* We need a form handler here to handle all the form submits */
+  
+  SirTrevor.bindFormSubmit = function(form) {
+    if (!formBound) {
+      form.bind('submit', this.onFormSubmit);
+      formBound = true;
+    }
+  };
+  
+  SirTrevor.onFormSubmit = function(ev) {
+    // Loop through all of our instances and do our form submits on them
+    _.each(SirTrevor.instances, function(inst, i) {
+      inst.onFormSubmit();
+    });
+    return false;
+  };
 
 }(jQuery, _));
 

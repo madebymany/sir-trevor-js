@@ -18,7 +18,7 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
 
 _.extend(Block.prototype, Events, {
   
-  bound: ["onDeleteClick", "onContentPasted", "onMouseOverAbove", "onMouseOverBelow"],
+  bound: ["onDeleteClick", "onContentPasted", "onBlockFocus"],
   
   regexs: {
     url: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/m,
@@ -94,6 +94,9 @@ _.extend(Block.prototype, Events, {
     if (block.find('.text-block').length > 0) {
       document.execCommand("styleWithCSS", false, false);
       document.execCommand("insertBrOnReturn", false, true);
+      
+      // Bind our text block to show the marker
+      block.find('.text-block').focus(this.onBlockFocus);
     }
     
     // Focus if we're adding an empty block
@@ -146,17 +149,9 @@ _.extend(Block.prototype, Events, {
   
   
   // Event handlers
-  
-  onMouseOverAbove: function(ev) {
-    var item = $(ev.target).parents("." + this.instance.options.baseCSSClass + "-block");
-    this.instance.marker.$el.after(item);
-    this.instance.marker.$el.show();
-  },
-  
-  onMouseOverBelow: function(ev) {
-    var item = $(ev.target).parents("." + this.instance.options.baseCSSClass + "-block");
-    this.instance.marker.$el.before(item);
-    this.instance.marker.$el.show();
+
+  onBlockFocus: function(ev) {
+    this.instance.formatBar.show(this.$el);
   },
   
   onDeleteClick: function(ev) {

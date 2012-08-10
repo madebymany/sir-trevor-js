@@ -8,7 +8,7 @@ SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({
   className: "block-quote",
   toolbarEnabled: true,
   dropEnabled: false,
-  limit: 0,
+  limit: 1,
   
   editorHTML: function() {
     return _.template('<blockquote class="text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input data-maxlength="140" name="cite" class="input-string" type="text" /></div>', this);

@@ -25,6 +25,8 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
     this.from_json();
     this.build();
     
+    SirTrevor.instances.push(this); // Store a reference to this instance
+    SirTrevor.bindFormSubmit(this.$form);
   }
 };
 
@@ -53,31 +55,23 @@ _.extend(SirTrevorEditor.prototype, Events, {
     }
     
     this.attach();
-    
     this.$wrapper.addClass('sir-trevor-ready');
   },
   
   attach: function() {
-    this.$form.on('submit', this.onFormSubmit);
+    //this.$form.on('submit', this.onFormSubmit);
   },
   
   createBlock: function(type, data) {
     if (this._blockTypeAvailable(type)) {
       
      var blockType = SirTrevor.BlockTypes[type],
-         currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
-     
+         currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
+         totalBlockCounts = this.blocks.length;
+    
      // Can we have another one of these blocks?
-     if (currentBlockCount > blockType.limit) {
+     if (currentBlockCount > blockType.limit || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
        return false;
-     }
-     
-     if (currentBlockCount + 1 > blockType.limit) {
-       this.marker.$el.find('[data-type="' + type + '"]')
-                  .addClass('inactive')
-                  .attr('title','You have reached the limit for this type of block');
-                  
-       return false;            
      }
      
      var block = new SirTrevor.Block(this, blockType, data || {});  
@@ -87,7 +81,19 @@ _.extend(SirTrevorEditor.prototype, Events, {
      }
      
      this.blocks.push(block);
-     this.blockCounts[type] = currentBlockCount + 1;
+     currentBlockCount++;
+     this.blockCounts[type] = currentBlockCount;
+     
+     // Check to see if we can add any more blocks
+     if (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit) {
+       this.marker.$el.addClass('hidden');
+     }
+      
+     if (currentBlockCount >= blockType.limit) {
+       this.marker.$el.find('[data-type="' + type + '"]')
+        .addClass('inactive')
+        .attr('title','You have reached the limit for this type of block');
+     } 
     }
   },
   
@@ -104,8 +110,7 @@ _.extend(SirTrevorEditor.prototype, Events, {
   
   /* Handlers */
   
-  onFormSubmit: function(e) {
-    e.preventDefault();
+  onFormSubmit: function() {
     
     var blockLength, block, result;
 

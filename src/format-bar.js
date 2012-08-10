@@ -41,13 +41,26 @@ _.extend(FormatBar.prototype, Events, {
       }
     }
     
-    this.$el.addClass('sir-trevor-item-ready');
+    if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
     
+    this.$el.hide();
+    this.$el.bind('mouseover', halt);
   },
   
   /* Convienience methods */
-  show: function(){ this.$el.show(); },
-  hide: function(){ this.$el.hide(); },
+  show: function(relativeEl){ 
+    this.$el.css({
+      top: relativeEl.offset().top - 44
+    });
+    this.$el.show();
+    this.$el.addClass('sir-trevor-item-ready'); 
+  },
+
+  hide: function(relativeEl){ 
+    this.$el.hide();
+    this.$el.removeClass('sir-trevor-item-ready'); 
+  },
+  
   remove: function(){ this.$el.remove(); },
   
   onFormatButtonClick: function(ev){
@@ -62,6 +75,8 @@ _.extend(FormatBar.prototype, Events, {
       // Call default
       document.execCommand(btn.attr('data-cmd'), false, format.param);
     }   
+    // Make sure we still show the bar
+    this.$el.addClass('sir-trevor-item-ready'); 
   }
   
 });
