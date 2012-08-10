@@ -98,7 +98,7 @@ _.extend(BlockType.prototype, {
     }
     this.options = options;
   },
-  
+    
   blockType: function() {
     var objName = "";
     for (var block in SirTrevor.BlockTypes) {

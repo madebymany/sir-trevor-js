@@ -67,10 +67,11 @@ _.extend(SirTrevorEditor.prototype, Events, {
       
      var blockType = SirTrevor.BlockTypes[type],
          currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
-         totalBlockCounts = this.blocks.length;
+         totalBlockCounts = this.blocks.length,
+         blockTypeLimit = this._getBlockTypeLimit(type);
     
      // Can we have another one of these blocks?
-     if (currentBlockCount > blockType.limit || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
+     if (currentBlockCount > blockTypeLimit || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
        return false;
      }
      
@@ -89,7 +90,7 @@ _.extend(SirTrevorEditor.prototype, Events, {
        this.marker.$el.addClass('hidden');
      }
       
-     if (currentBlockCount >= blockType.limit) {
+     if (currentBlockCount >= blockTypeLimit) {
        this.marker.$el.find('[data-type="' + type + '"]')
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
@@ -152,6 +153,14 @@ _.extend(SirTrevorEditor.prototype, Events, {
         console.log('Sorry there has been a problem with parsing the JSON');
       }
     } 
+  },
+  
+  _getBlockTypeLimit: function(t) {
+    if (this._blockTypeAvailable(t)) {
+      // Do we have a custom limit defined?
+      return (_.isUndefined(this.options.blockTypeLimits[t])) ? this.blockTypes[t].limit : this.options.blockTypeLimits[t];
+    }
+    return 0;
   },
   
   _blockTypeAvailable: function(t) {

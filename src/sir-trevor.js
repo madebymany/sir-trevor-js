@@ -37,7 +37,8 @@
     formatBar: {
       baseCSSClass: "formatting-control"
     },
-    blockLimit: 0
+    blockLimit: 0,
+    blockTypeLimits: {}
   }; 
   
   SirTrevor.BlockTypes = {};
