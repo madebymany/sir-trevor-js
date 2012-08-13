@@ -9,6 +9,15 @@ var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick",
 
 _.extend(Format.prototype, {
   
+  title: '',
+  className: '',
+  cmd: null,
+  keyCode: null,
+  param: null,
+  onClick: function(){},
+  toMarkdown: function(markdown){ return markdown; },
+  toHTML: function(html){ return html; },
+  
   initialize: function(){},
   
   _configure: function(options) {
@@ -42,3 +51,5 @@ _.extend(Format.prototype, {
       });
   }
 });
+
+Format.extend = extend; // Allow our Formatters to be extended.
