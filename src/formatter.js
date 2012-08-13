@@ -14,7 +14,6 @@ _.extend(Format.prototype, {
   cmd: null,
   keyCode: null,
   param: null,
-  onClick: function(){},
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
   

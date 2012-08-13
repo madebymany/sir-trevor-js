@@ -42,6 +42,7 @@ _.extend(Block.prototype, FunctionBind, {
     });
     
     // Insert before the marker
+    this.instance.formatBar.hide();
     this.instance.marker.hide();
     this.instance.marker.$el.before(block);
     
@@ -101,7 +102,7 @@ _.extend(Block.prototype, FunctionBind, {
       document.execCommand("styleWithCSS", false, false);
       document.execCommand("insertBrOnReturn", false, true);
       
-      // Bind our text block to show the marker
+      // Bind our text block to show the format bar
       block.find('.text-block').focus(this.onBlockFocus);
     }
     
@@ -135,8 +136,15 @@ _.extend(Block.prototype, FunctionBind, {
 
   validate: function() {
     this.errors = []; 
-    var result = this._super("validate");
-    return result;
+    this.$('.error').removeClass('error');
+    this.$('.error-marker').remove();
+    return this._super("validate");
+  },
+  
+  showErrors: function() {
+    _.each(this.errors, _.bind(function(error){
+      
+    }, this));
   },
   
   /* Save the state of this block onto the blocks data attr */
@@ -246,7 +254,7 @@ _.extend(Block.prototype, FunctionBind, {
   /* A wrapper to call our parent object */
   _super: function(functionName, args) {
     if (!_.isUndefined(this.blockType[functionName])) {
-      _.bind(this.blockType[functionName], this, args)();
+      return _.bind(this.blockType[functionName], this, args)();
     }
   }
 });

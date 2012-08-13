@@ -103,7 +103,6 @@ _.extend(Marker.prototype, FunctionBind, {
   },
 
   hide: function(ev){ 
-    //this.instance.formatBar.hide();
     this.$el.removeClass('sir-trevor-item-ready'); 
   },
   

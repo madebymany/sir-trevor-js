@@ -46,7 +46,6 @@ _.extend(BlockType.prototype, {
   
   initialize: function() {},
   
-  validate: function() {},
   loadData: function(data) {},
   onBlockRender: function(){},
   beforeBlockRender: function(){},
@@ -96,6 +95,33 @@ _.extend(BlockType.prototype, {
       input = $(input);
       dataStruct.data.file = input.data('json');
     });
+  },
+  
+  /*
+    Generic validator
+    --
+    We look for 'required' properties on any fields / editable areas. 
+    If we don't find any, then skip. If we do find some, then run validators against each of these.
+  */
+  
+  validate: function() {
+    var fields = this.$('.required'),
+        errors = 0;
+        
+    _.each(fields, _.bind(function(field) {
+      field = $(field);
+      var content = (field.attr('contenteditable')) ? field.text() : field.val();
+        
+      if (content.length === 0) {
+        // Error!
+        field.addClass('error').before($("<div>", {
+          'class': 'error-marker',
+          'html': '!'
+        }));
+      } 
+    }, this));
+    
+    return (errors === 0);
   },
   
   /* Helper / convienience methods */

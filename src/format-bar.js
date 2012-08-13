@@ -44,13 +44,14 @@ _.extend(FormatBar.prototype, FunctionBind, {
     if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
     
     this.$el.hide();
+    this.$el.bind('mouseout', halt);
     this.$el.bind('mouseover', halt);
   },
   
   /* Convienience methods */
   show: function(relativeEl){ 
     this.$el.css({
-      top: relativeEl.offset().top - 44
+      top: relativeEl.offset().top - (parseInt(this.$el.height()))
     });
     this.$el.show();
     this.$el.addClass('sir-trevor-item-ready'); 

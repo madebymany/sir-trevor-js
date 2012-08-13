@@ -9,7 +9,7 @@ var BlockQuote = SirTrevor.BlockType.extend({
   limit: 0,
   
   editorHTML: function() {
-    return _.template('<blockquote class="text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input data-maxlength="140" name="cite" class="input-string" type="text" /></div>', this);
+    return _.template('<blockquote class="required text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input data-maxlength="140" name="cite" class="input-string required" type="text" /></div>', this);
   },
   
   loadData: function(data){

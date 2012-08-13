@@ -111,6 +111,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     // Remove the block from our store
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
     if(_.isUndefined(this.blocks)) this.blocks = [];
+    this.formatBar.hide();
   },
   
   /*
@@ -119,7 +120,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   */
   onFormSubmit: function() {
     
-    var blockLength, block, result;
+    var blockLength, block, result, errors = 0;
 
     this.options.blockStore.data = [];
     
@@ -129,11 +130,15 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       block = $(block);
       var _block = _.find(this.blocks, function(b){ return (b.blockID == block.attr('id')); });
       
-      if (_.isUndefined(_block) || _.isEmpty(_block) || typeof _block != SirTrevor.Block) {
-        var data = _block.save();
-        if(!_.isEmpty(data)) {
-          this.options.blockStore.data.push(data);
-        }
+      if (!_.isUndefined(_block) || !_.isEmpty(_block) || typeof _block == SirTrevor.Block) {
+        // Validate our block
+        if(_block.validate())
+        {
+          var data = _block.save();
+          if(!_.isEmpty(data)) {
+            this.options.blockStore.data.push(data);
+          }
+        } else errors++;
       }
       
     };
@@ -315,8 +320,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
                 .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
                 .replace(/\[(.+)\]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links
-                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>")                // Bold
-                .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>");                     // Italic
+                .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>")                   // Italic
+                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>");                // Bold
        
     return html;  
   }
