@@ -57,6 +57,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         this.createBlock(block.type, block.data);
       }, this));
     }
+        
     this.$wrapper.addClass('sir-trevor-ready');
   },
   
@@ -99,6 +100,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
      } 
+     
+     // Check to see if we can re-order
+     if(currentBlockCount > 1) {
+       this.$wrapper.addClass('reorderable');
+     }
     }
   },
   
@@ -112,6 +118,10 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
     if(_.isUndefined(this.blocks)) this.blocks = [];
     this.formatBar.hide();
+    
+    if(this.blocks.length <= 1) {
+      this.$wrapper.removeClass('reorderable');
+    }
   },
   
   /*

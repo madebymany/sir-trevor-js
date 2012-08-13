@@ -19,7 +19,7 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
 
 _.extend(Block.prototype, FunctionBind, {
   
-  bound: ["onDeleteClick", "onContentPasted", "onBlockFocus", "onDrop"],
+  bound: ["onDeleteClick", "onContentPasted", "onBlockFocus", "onDrop", "onDragStart", "onDragEnd"],
   
   regexs: {
     url: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/m,
@@ -115,10 +115,19 @@ _.extend(Block.prototype, FunctionBind, {
     // Focus if we're adding an empty block
     if (_.isEmpty(this.data)) {
       var inputs = block.find('[contenteditable="true"], input');
-      if (inputs.length > 0 && !block.dropEnabled) {
+      if (inputs.length > 0 && !this.blockType.dropEnabled) {
         inputs[0].focus();
       }
     }
+    
+    // Reorderable
+    block.find('.handle')
+      .dropArea()
+      .bind('dragstart', this.onDragStart)
+      .bind('drag', this.instance.marker.show)
+      .bind('dragenter', this.instance.marker.show)
+      .bind('dragend', this.onDragEnd)
+      .bind('dragleave', function(){});
     
     // Set ready state
     block.addClass('sir-trevor-item-ready');
@@ -182,7 +191,20 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   // Event handlers
-
+  
+  onDragStart: function(ev){
+    var item = $(ev.target);
+    ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
+    ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
+    item.parent().addClass('dragging');
+    this.instance.formatBar.hide();
+  },
+  
+  onDragEnd: function(ev){
+    var item = $(ev.target);
+    item.parent().removeClass('dragging');
+  },
+  
   onBlockFocus: function(ev) {
     this.instance.formatBar.show(this.$el);
   },

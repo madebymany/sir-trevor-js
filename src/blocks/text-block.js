@@ -2,12 +2,12 @@
   Text Block
 */
 
-var template = '<div class="<%= className %>" contenteditable="true"></div>';
+var template = '<div class="required <%= className %>" contenteditable="true"></div>';
 
 var TextBlock = SirTrevor.BlockType.extend({ 
   
   title: "Text",
-  className: "text-block required",
+  className: "text-block",
   
   editorHTML: function() {
     return _.template(template, this);

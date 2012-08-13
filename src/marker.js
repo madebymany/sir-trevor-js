@@ -12,7 +12,7 @@ var Marker = SirTrevor.Marker = function(options, editorInstance){
 
 _.extend(Marker.prototype, FunctionBind, {
   
-  bound: ["onButtonClick", "show", "hide"],
+  bound: ["onButtonClick", "show", "hide", "onDrop"],
   
   render: function() {
     
@@ -52,6 +52,10 @@ _.extend(Marker.prototype, FunctionBind, {
     // Do we have any buttons?
     if(this.$btns.children().length === 0) this.$el.addClass('hidden');
     
+    // Bind the drop function onto here
+    this.$el.dropArea();
+    this.$el.bind('drop', this.onDrop);
+    
     // Bind our marker to the wrapper
     this.instance.$wrapper.bind('mouseover', this.show);
     this.instance.$wrapper.bind('mouseout', this.hide);
@@ -60,8 +64,7 @@ _.extend(Marker.prototype, FunctionBind, {
   },
     
   show: function(ev){ 
-  
-    if(ev.type == 'dragover') {
+    if(ev.type == 'drag') {
       this.$p.text(this.options.dropText);
       this.$btns.hide();
     } else {
@@ -104,6 +107,18 @@ _.extend(Marker.prototype, FunctionBind, {
 
   hide: function(ev){ 
     this.$el.removeClass('sir-trevor-item-ready'); 
+  },
+  
+  onDrop: function(ev){
+    halt(ev);
+    
+    var marker = $(ev.target),
+        item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+        block = $('#' + item_id);
+        
+    if (!_.isUndefined(item_id) && !_.isEmpty(block)) {
+      marker.after(block);
+    }
   },
   
   remove: function(){ this.$el.remove(); },
