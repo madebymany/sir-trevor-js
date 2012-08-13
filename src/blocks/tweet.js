@@ -23,14 +23,11 @@ var Tweet = SirTrevor.BlockType.extend({
     var input = $(event.target),
         val = input.val();
     
-    // Validate the URL
-    
-    // Pass to the 'onDrop' function
-    this._super("onDrop", val);
+    // Pass this to the same handler as onDrop
+    this._super("handleTwitterDropPaste", val);
   },
-
-  onDrop: function(transferData){
-    var url = transferData.getData('text/plain');
+  
+  handleTwitterDropPaste: function(url){
     
     if(_.isURI(url)) 
     {
@@ -82,6 +79,12 @@ var Tweet = SirTrevor.BlockType.extend({
         }
       }
     }
+    
+  },
+
+  onDrop: function(transferData){
+    var url = transferData.getData('text/plain');
+    this._super("handleTwitterDropPaste", url);
   }
 });
 

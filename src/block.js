@@ -90,7 +90,8 @@ _.extend(Block.prototype, FunctionBind, {
     // Hanlde pastes
     block.find('.paste-block')
       .bind('click', function(){ $(this).select(); })
-      .bind('paste', this.onContentPasted); 
+      .bind('paste', this.onContentPasted)
+      .bind('submit', this.onContentPasted); 
     
     // Delete
     block.find('.delete').bind('click', this.onDeleteClick);
