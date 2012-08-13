@@ -125,7 +125,6 @@ _.extend(Block.prototype, FunctionBind, {
       .dropArea()
       .bind('dragstart', this.onDragStart)
       .bind('drag', this.instance.marker.show)
-      .bind('dragenter', this.instance.marker.show)
       .bind('dragend', this.onDragEnd)
       .bind('dragleave', function(){});
     
@@ -203,6 +202,7 @@ _.extend(Block.prototype, FunctionBind, {
   onDragEnd: function(ev){
     var item = $(ev.target);
     item.parent().removeClass('dragging');
+    this.instance.marker.hide();
   },
   
   onBlockFocus: function(ev) {
