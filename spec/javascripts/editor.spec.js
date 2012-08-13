@@ -1,14 +1,31 @@
 describe("a SirTrevor.Editor instance", function(){
   
-  var editor = new SirTrevor.Editor(),
-      element = $("<textarea>");
+  var editor, editor_with_options, element = $("<textarea>");
+  
+  beforeEach(function (){
+    
+    editor = new SirTrevor.Editor();
+    
+    editor_with_options = new SirTrevor.Editor(
+      { el: element, 
+        defaultCSSClass: "test-class", 
+        blockTypeLimits: { 
+          "TextBlock": 1 
+        } 
+      }
+    );
+    
+  });
+  
+  afterEach(function (){
+    editor = null;
+    editor_with_options = null;
+  });
   
   it("should fail if no element is passed", function() {
     expect(editor.$el).toBe(undefined);
     expect(editor.el).toBe(undefined);
   });
-  
-  var editor_with_options = new SirTrevor.Editor({ el: element, defaultCSSClass: "test-class" });
   
   it("should have a unique identifier", function(){
     expect(editor_with_options.ID).not.toBe(editor.ID);
@@ -60,6 +77,17 @@ describe("a SirTrevor.Editor instance", function(){
     var type = "TextBlock";
     editor_with_options.createBlock(type, {});
     expect(editor_with_options.blockCounts[type]).toBe(2); // Default block and this block
+  });
+  
+  it("should not be possible to create a block if the editor specific block limits have been exceeded", function(){
+    
+    var type = "TextBlock";
+    editor_with_options.createBlock(type, {});
+    expect(editor_with_options.blockCounts[type]).toBe(2); // Default block and this block
+    
+    editor_with_options.createBlock(type, {});
+    expect(editor_with_options.blockCounts[type]).toBe(2); // And another block
+    
   });
   
 });

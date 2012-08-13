@@ -157,11 +157,18 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   */
   from_json: function() {
     var content = this.$el.val();
-    this.options.blockStore.data = [];
+    this.options.blockStore = { data: [] };
     
     if (content.length > 0) {
       try{
-        this.options.blockStore = JSON.parse(content);
+        
+        // Ensure the JSON string has a data element that's an array
+        var str = JSON.parse(content);
+        
+        if (!_.isUndefined(str.data) && (_.isArray(str.data) && !_.isEmpty(str.data))) {
+          // Set it
+          this.options.blockStore = str;
+        } 
       } catch(e) {
         console.log('Sorry there has been a problem with parsing the JSON');
         console.log(e);
