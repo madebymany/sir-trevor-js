@@ -45,5 +45,4 @@ describe("a Block", function(){
   it("should have the block type serialized in the data of the element", function(){
     expect(block.$el.data('block').type).toBe("TextBlock");
   });
-  
 });

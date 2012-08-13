@@ -2,21 +2,19 @@
   Block Quote
 */
 
-SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({ 
+var BlockQuote = SirTrevor.BlockType.extend({ 
   
   title: "Quote",
   className: "block-quote",
-  toolbarEnabled: true,
-  dropEnabled: false,
-  limit: 1,
+  limit: 0,
   
   editorHTML: function() {
     return _.template('<blockquote class="text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input data-maxlength="140" name="cite" class="input-string" type="text" /></div>', this);
   },
   
   loadData: function(data){
-    block.$('.text-block').html(block.instance._toHTML(data.text, this.type));
-    block.$('input').val(data.cite);
+    this.$('.text-block').html(this.instance._toHTML(data.text, this.type));
+    this.$('input').val(data.cite);
   },
   
   toMarkdown: function(markdown) {
@@ -24,3 +22,5 @@ SirTrevor.BlockTypes.BlockQuote = new SirTrevor.BlockType({
   }
   
 });
+
+SirTrevor.BlockTypes.BlockQuote = new BlockQuote();

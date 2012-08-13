@@ -2,13 +2,11 @@
 var template = '<p>Drop gist link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
 var gist_template = '<div class="gist"><%= div %></div>';
 
-SirTrevor.BlockTypes.Gist = new SirTrevor.BlockType({ 
+var Gist = SirTrevor.BlockType.extend({ 
   
   title: "Gist",
   className: "gist-block",
-  toolbarEnabled: true,
   dropEnabled: true,
-  limit: 0,
   
   editorHTML: "<div></div>",
   
@@ -102,3 +100,5 @@ SirTrevor.BlockTypes.Gist = new SirTrevor.BlockType({
     }
   }
 });
+
+SirTrevor.BlockTypes.Gist = new Gist();

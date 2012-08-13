@@ -2,15 +2,11 @@
 var template = '<p>Drop tweet link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
 var tweet_template = '<div class="tweet media"><div class="img"><img src="<%= user.profile_image_url %>" class="tweet-avatar"></div><div class="bd tweet-body"><p><a href="http://twitter.com/#!/<%= user.screen_name %>">@<%= user.screen_name %></a>: <%= text %></p><time><%= created_at %></time></div></div>';
 
-SirTrevor.BlockTypes.Tweet = new SirTrevor.BlockType({ 
+var Tweet = SirTrevor.BlockType.extend({ 
   
   title: "Tweet",
   className: "tweet",
-  toolbarEnabled: true,
   dropEnabled: true,
-  limit: 0,
-  
-  editorHTML: "<div></div>",
   
   dropzoneHTML: template,
   
@@ -88,3 +84,5 @@ SirTrevor.BlockTypes.Tweet = new SirTrevor.BlockType({
     }
   }
 });
+
+SirTrevor.BlockTypes.Tweet = new Tweet();

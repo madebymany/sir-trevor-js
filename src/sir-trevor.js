@@ -47,7 +47,8 @@
   
   var formBound = false; // Flag to tell us once we've bound our submit event
   
-  var Events = {
+  /* Generic function binding utility, used by lots of our classes */
+  var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
       var args = [];

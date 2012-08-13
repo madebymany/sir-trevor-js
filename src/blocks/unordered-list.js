@@ -4,12 +4,10 @@
 
 var template = '<div class="text-block <%= className %>" contenteditable="true"></div>';
 
-SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({ 
+UnorderedList = SirTrevor.BlockType.extend({ 
+  
   title: "List",
   className: "unordered-list",
-  toolbarEnabled: true,
-  dropEnabled: false,
-  limit: 0,
   
   editorHTML: function() {
     return _.template(template, this);
@@ -43,3 +41,5 @@ SirTrevor.BlockTypes.UnorderedList = new SirTrevor.BlockType({
     return html.replace(/^ - (.+)$/mg,"<li>$1</li>");
   }
 });
+
+SirTrevor.BlockTypes.UnorderedList = new UnorderedList();

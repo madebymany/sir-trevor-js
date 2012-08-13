@@ -10,7 +10,7 @@ var Marker = SirTrevor.Marker = function(options, editorInstance){
   this._bindFunctions();
 };
 
-_.extend(Marker.prototype, Events, {
+_.extend(Marker.prototype, FunctionBind, {
   
   bound: ["onButtonClick", "show", "hide"],
   

@@ -12,7 +12,7 @@ var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
   this._bindFunctions();
 };
 
-_.extend(FormatBar.prototype, Events, {
+_.extend(FormatBar.prototype, FunctionBind, {
   
   bound: ["onFormatButtonClick"],
   

@@ -30,14 +30,18 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   }
 };
 
-_.extend(SirTrevorEditor.prototype, Events, {
+_.extend(SirTrevorEditor.prototype, FunctionBind, {
   
   bound: ['onFormSubmit'],
   
   initialize: function() {},
   
+  /*
+    Build the Editor instance. 
+    Check to see if we've been passed JSON already, and if not try and create a default block.
+    If we have JSON then we need to build all of our blocks from this.
+  */
   build: function() {
-    
     this.$el.hide();
     
     // Render marker & format bar
@@ -53,15 +57,15 @@ _.extend(SirTrevorEditor.prototype, Events, {
         this.createBlock(block.type, block.data);
       }, this));
     }
-    
-    this.attach();
     this.$wrapper.addClass('sir-trevor-ready');
   },
   
-  attach: function() {
-    //this.$form.on('submit', this.onFormSubmit);
-  },
-  
+  /*
+    Create an instance of a block from an available type. 
+    We have to check the number of blocks we're allowed to create before adding one and handle fails accordingly.
+    A block will have a reference to an Editor instance & the parent BlockType.
+    We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
+  */
   createBlock: function(type, data) {
     if (this._blockTypeAvailable(type)) {
       
@@ -109,8 +113,10 @@ _.extend(SirTrevorEditor.prototype, Events, {
     if(_.isUndefined(this.blocks)) this.blocks = [];
   },
   
-  /* Handlers */
-  
+  /*
+    Handle a form submission of this Editor instance.
+    Validate all of our blocks, and serialise all data onto the JSON objects
+  */
   onFormSubmit: function() {
     
     var blockLength, block, result;
@@ -138,10 +144,17 @@ _.extend(SirTrevorEditor.prototype, Events, {
     return false;
   },
   
+  /*
+    Turn our JSON blockStore into a string
+  */  
   to_json: function() {
     return JSON.stringify(this.options.blockStore);
   },
   
+  /* 
+    Try and load our data from the defined element.
+    Store it on our blockStore property for later re-use.
+  */
   from_json: function() {
     var content = this.$el.val();
     this.options.blockStore.data = [];
@@ -150,20 +163,29 @@ _.extend(SirTrevorEditor.prototype, Events, {
       try{
         this.options.blockStore = JSON.parse(content);
       } catch(e) {
-        console.log(e);
         console.log('Sorry there has been a problem with parsing the JSON');
+        console.log(e);
       }
     } 
   },
   
+  /*
+    Get Block Type Limit
+    --
+    returns the limit for this block, which can be set on a per Editor instance, or on a global blockType scope.
+  */
   _getBlockTypeLimit: function(t) {
     if (this._blockTypeAvailable(t)) {
-      // Do we have a custom limit defined?
       return (_.isUndefined(this.options.blockTypeLimits[t])) ? this.blockTypes[t].limit : this.options.blockTypeLimits[t];
     }
     return 0;
   },
   
+  /* 
+    Availability helper methods
+    --
+    Checks if the object exists within the instance of the Editor.
+  */
   _blockTypeAvailable: function(t) {
     return !_.isUndefined(this.blockTypes[t]);
   },
@@ -194,16 +216,22 @@ _.extend(SirTrevorEditor.prototype, Events, {
     return true;
   },
   
+  
+  /*
+    Set our blockTypes and formatters.
+    These will either be set on a per Editor instance, or set on a global scope.
+  */
   _setBlocksAndFormatters: function() {
     this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.BlockTypes : this.options.blockTypes);
     this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
   },
   
+  /*
+    A very generic HTML -> Markdown parser
+    Looks for available formatters / blockTypes toMarkdown methods and calls these if they exist.
+  */
   _toMarkdown: function(content, type) {
-    /* 
-      Generic Markdown parser. Takes HTML and returns Markdown (obvs)
-      This can be extended through your formatters.
-    */    
+
     var markdown;
     
     markdown = content.replace(/\n/mg,"")
@@ -248,6 +276,10 @@ _.extend(SirTrevorEditor.prototype, Events, {
     return markdown;
   },
   
+  /*
+    A very generic Markdown -> HTML parser
+    Looks for available formatters / blockTypes toMarkdown methods and calls these if they exist.
+  */
   _toHTML: function(markdown, type) {
     var html = markdown;
     

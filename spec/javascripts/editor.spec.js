@@ -53,13 +53,13 @@ describe("a SirTrevor.Editor instance", function(){
   
   it("should create a default block when there is no JSON provided in the element", function(){
     // The blocks object on the editor should contain the default block
-    expect(editor_with_options.blocks[editor_with_options.options.defaultType].length).toBe(1); 
+    expect(editor_with_options.blockCounts[editor_with_options.options.defaultType]).toBe(1); 
   });
   
   it("should be able to create a block of an available type", function(){
     var type = "TextBlock";
     editor_with_options.createBlock(type, {});
-    expect(editor_with_options.blocks[type].length).toBe(2); // Default block and this block
+    expect(editor_with_options.blockCounts[type]).toBe(2); // Default block and this block
   });
   
 });

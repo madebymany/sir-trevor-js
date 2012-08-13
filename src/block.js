@@ -3,8 +3,9 @@
 var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   
   this.blockID = _.uniqueId(parentBlockType.blockTypeID + '_block-');
+  
   this.instance = instance; // SirTrevor.Editor instance
-  this.blockType = parentBlockType;
+  this.blockType = parentBlockType; // SirTrevor.BlockType
   
   this.data = data;
   this.type = this.blockType.blockType();  // Cache the blocktype. 
@@ -16,7 +17,7 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   this.render();
 };
 
-_.extend(Block.prototype, Events, {
+_.extend(Block.prototype, FunctionBind, {
   
   bound: ["onDeleteClick", "onContentPasted", "onBlockFocus", "onDrop"],
   

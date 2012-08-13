@@ -1,8 +1,8 @@
 /*
   Generic Block Type Implementation
   --
-  SirTrevor 0..N BlockTypes
-  BlockType 0..Limit Blocks
+  Designed to be extended in a Backbone way to create new instances.
+  Lots of the properties / methods defined 
 */
 
 var BlockType = SirTrevor.BlockType = function(options){
@@ -35,11 +35,27 @@ var blockTypeOptions = [
 
 _.extend(BlockType.prototype, {
   
+  /* Defaults to be overriden if required */
+  className: '',
+  title: '',
+  limit: 0,
+  editorHTML: '<div></div>',
+  dropzoneHTML: '<div></div>',
+  toolbarEnabled: true,
+  dropEnabled: false,
+  
   initialize: function() {},
   
-  loadData: function(block, data) {},
-  validate: function(block) {},
-  
+  validate: function() {},
+  loadData: function(data) {},
+  onBlockRender: function(){},
+  beforeBlockRender: function(){},
+  onBlockActivated: function(){},
+  onDrop: function(transferData){},
+  onContentPasted: function(ev){},
+  toMarkdown: function(markdown){ return markdown; },
+  toHTML: function(html){ return html; },
+    
   /*
     Generic toData implementation.
     Can be overwritten, although hopefully this will cover most situations
@@ -82,26 +98,8 @@ _.extend(BlockType.prototype, {
     });
   },
   
-  /* Callback methods that can be overriden - all are bound to a 'Block' instance, NOT the block type */
-  onBlockRender: function(){},
-  beforeBlockRender: function(){},
-  onBlockActivated: function(){},
+  /* Helper / convienience methods */
   
-  /* Generic handler */
-  onDrop: function(transferData){},
-  
-  onContentPasted: function(ev){},
-  
-  // 'Private' methods
-  _configure: function(options) {
-    if (this.options) options = _.extend({}, this.options, options);
-    for (var i = 0, l = blockTypeOptions.length; i < l; i++) {
-      var attr = blockTypeOptions[i];
-      if (options[attr]) this[attr] = options[attr];
-    }
-    this.options = options;
-  },
-    
   blockType: function() {
     var objName = "";
     for (var block in SirTrevor.BlockTypes) {
@@ -110,5 +108,19 @@ _.extend(BlockType.prototype, {
       }
     } 
     return objName;
+  },
+  
+  /* Configure */
+  
+  _configure: function(options) {
+    if (this.options) options = _.extend({}, this.options, options);
+    for (var i = 0, l = blockTypeOptions.length; i < l; i++) {
+      var attr = blockTypeOptions[i];
+      if (options[attr]) this[attr] = options[attr];
+    }
+    this.options = options;
   }
+  
 });
+
+BlockType.extend = extend; // Allow our BlockTypes to be extended.

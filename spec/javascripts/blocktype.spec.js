@@ -1,24 +1,41 @@
 describe("when creating a BlockType", function(){
   
-  var template = "<div></div>"; 
-  var NewBlockType = SirTrevor.BlockTypes.NewBlockType = new SirTrevor.BlockType({
+  var NewBlockType;
+  
+  beforeEach(function (){
+    var template = "<div></div>"; 
+    NewBlockType = SirTrevor.BlockType.extend({
+
+      editorHTML: function(){
+        return _.template(template, this);
+      },
+
+      loadData: function(data){
+        return "Test";
+      },
+
+      validate: function(){
+        return "Test";
+      },
+
+      toData: function(){
+        return "Test";
+      },
+      
+      anUnsualFunction: function(){
+        return "I like this function";
+      },
+
+      aNiceVariable: true
+    });
     
-    editorHTML: function(){
-      return _.template(template, this);
-    },
+    SirTrevor.BlockTypes.NewBlockType = new NewBlockType();
     
-    loadData: function(block, data){
-      return "Test";
-    },
-    
-    validate: function(block){
-      return "Test";
-    },
-    
-    toData: function(block){
-      return "Test";
-    }
-    
+  });
+  
+  afterEach(function(){
+    SirTrevor.BlockTypes.NewBlockType = null;
+    delete SirTrevor.BlockTypes.NewBlockType;
   });
   
   it("should be possible to create a new BlockType", function(){
@@ -39,6 +56,14 @@ describe("when creating a BlockType", function(){
   
   it("should be possible to override the toData function", function(){
     expect(SirTrevor.BlockTypes.NewBlockType.toData()).toBe("Test");
+  });
+  
+  it("should be possible to add any function to the blockType", function(){
+    expect(SirTrevor.BlockTypes.NewBlockType.anUnsualFunction).not.toBe(undefined);
+  });
+  
+  it("should be possible to add any variable to the blockType", function(){
+    expect(SirTrevor.BlockTypes.NewBlockType.aNiceVariable).not.toBe(undefined);
   });
   
 });
