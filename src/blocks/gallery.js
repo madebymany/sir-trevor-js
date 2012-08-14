@@ -35,9 +35,11 @@ var Gallery = SirTrevor.BlockType.extend({
     
     var list = $('<li>', {
       id: _.uniqueId('gallery-item'),
-      html: img,
-      data: item
+      class: 'gallery-item',
+      html: img
     });
+    
+    list.data('block', item);
     
     this.$el.find('ul').append(list);
     
@@ -70,15 +72,25 @@ var Gallery = SirTrevor.BlockType.extend({
       }, this))
       
       .bind('drop', _.bind(function(ev){
+        
         var item = $(ev.target);
         this.$el.find('ul li.dragover').removeClass('dragover');
         
         // Get the item
         var target = $('#' + ev.originalEvent.dataTransfer.getData("text/plain"));
         
-        if (target.length > 0) {
-          item.parent().after(target);
+        if (target.length > 0 && target.hasClass('gallery-item')) {
+          item.parent().before(target);
         }
+        
+        // Reindex the data
+        var dataStruct = this.$el.data('block');
+        dataStruct.data = [];
+        
+        _.each(this.$('li.gallery-item'), function(li){
+          li = $(li);
+          dataStruct.data.push(li.data('block'));
+        });
                 
       }, this));
   },

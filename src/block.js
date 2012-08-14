@@ -230,6 +230,8 @@ _.extend(Block.prototype, FunctionBind, {
     var el = $(e.target),
         types = e.dataTransfer.types,
         type, data = [];
+    
+    this.$dropzone.removeClass('dragOver');
         
     /*
       Check the type we just received,
