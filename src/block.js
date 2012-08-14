@@ -69,7 +69,7 @@ _.extend(Block.prototype, FunctionBind, {
     block.append($('<span>',{ 'class': 'delete' }));
     
     // Stop events propagating through to the container
-    block.bind('click', halt)
+    block
       .bind('drop', halt)
       .bind('mouseover', halt)
       .bind('mouseout', halt)
@@ -241,15 +241,46 @@ _.extend(Block.prototype, FunctionBind, {
     
     if (!_.isUndefined(types))
     {
-      if (_.include(types, 'Files')) 
+      if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) 
       {
         this._super("onDrop", e.dataTransfer);
       } 
-      else if (_.include(types, 'text/plain') || _.include(types, 'text/uri-list')) 
-      {
-        this._super("onDrop", e.dataTransfer);
-      }
     }
+  },
+  
+  /*
+    Generic Upload Attachment Function
+    Designed to handle any attachments
+  */
+  
+  uploadAttachment: function(file, callback){
+    
+    var uid  = [this.instance.ID, (new Date()).getTime(), 'raw'].join('-');
+    
+    var data = new FormData();
+    
+    data.append('attachment[name]', file.name);
+    data.append('attachment[file]', file);
+    data.append('attachment[uid]', uid);
+    
+    var callbackSuccess = function(data){
+    
+      if (!_.isUndefined(callback) && _.isFunction(callback)) {
+        _.bind(callback, this)(data); // Invoke with a reference to 'this' (the block)
+      }
+      
+    };
+    
+    $.ajax({
+      url: this.instance.options.uploadUrl,
+      data: data,
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      success: _.bind(callbackSuccess, this)
+    });
+    
   },
   
   parseUrlInput: function(text){

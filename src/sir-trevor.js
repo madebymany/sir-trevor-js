@@ -38,7 +38,9 @@
       baseCSSClass: "formatting-control"
     },
     blockLimit: 0,
-    blockTypeLimits: {}
+    blockTypeLimits: {},
+    uploadUrl: '/attachments',
+    baseImageUrl: '/sir-trevor-uploads/'
   }; 
   
   SirTrevor.BlockTypes = {};
@@ -85,6 +87,8 @@
   };
   
   SirTrevor.onFormSubmit = function(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
     // Loop through all of our instances and do our form submits on them
     _.each(SirTrevor.instances, function(inst, i) {
       inst.onFormSubmit();
