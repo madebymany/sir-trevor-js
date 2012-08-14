@@ -71,6 +71,8 @@ _.extend(Block.prototype, FunctionBind, {
     // Stop events propagating through to the container
     block
       .bind('drop', halt)
+      .bind('mouseover', halt)
+      .bind('mouseout', halt)
       .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
       .bind('mouseout', function(ev){ $(this).removeClass('active'); });
     
