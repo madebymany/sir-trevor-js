@@ -8,6 +8,28 @@ A rebuild of the ITV news editor, with the Javascript pulled out of Ruby gem and
 
 Grab the `sir-trevor.js` or `sir-trevor.min.js` file from the `lib` directory. This is the core Sir Trevor instance with the default Formatters and BlockTypes.
 
+Create an instance of SirTrevor.Editor as follows (always wrap it in a document ready block)
+
+``
+  $(function(){
+    new SirTrevor.Editor({
+      el: $('.sir-trevor')
+    });
+  });
+``
+
+Your HTML should look something like this:
+
+``
+  <form>
+    <textarea class="sir-trevor"></textarea>
+    <input type="submit">
+  </form>
+``
+
+
+
+
 ## Structure 
 
 ### BlockTypes
