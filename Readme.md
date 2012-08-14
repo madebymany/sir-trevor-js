@@ -10,25 +10,20 @@ Grab the `sir-trevor.js` or `sir-trevor.min.js` file from the `lib` directory. T
 
 Create an instance of SirTrevor.Editor as follows (always wrap it in a document ready block)
 
-``
-  $(function(){
-    new SirTrevor.Editor({
-      el: $('.sir-trevor')
+  <script>
+    $(function(){
+      new SirTrevor.Editor({
+        el: $('.sir-trevor')
+      });
     });
-  });
-``
+  </script>
 
 Your HTML should look something like this:
 
-``
   <form>
     <textarea class="sir-trevor"></textarea>
     <input type="submit">
   </form>
-``
-
-
-
 
 ## Structure 
 
