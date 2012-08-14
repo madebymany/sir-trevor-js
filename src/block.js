@@ -21,11 +21,6 @@ _.extend(Block.prototype, FunctionBind, {
   
   bound: ["onDeleteClick", "onContentPasted", "onBlockFocus", "onDrop", "onDragStart", "onDragEnd"],
   
-  regexs: {
-    url: /^((http[s]?|ftp):\/)?\/?([^:\/\s]+)((\/\w+)*\/)([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$/m,
-    video: /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/
-  },
-  
   $: function(selector) {
     return this.$el.find(selector);
   },
