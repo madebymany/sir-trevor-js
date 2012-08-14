@@ -145,7 +145,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         if(_block.validate())
         {
           var data = _block.save();
-          if(!_.isEmpty(data)) {
+          if(!_.isEmpty(data.data)) {
             this.options.blockStore.data.push(data);
           }
         } else errors++;

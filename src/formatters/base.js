@@ -86,5 +86,5 @@ SirTrevor.Formatters.Bold = new Bold();
 SirTrevor.Formatters.Italic = new Italic();
 SirTrevor.Formatters.Link = new Link();
 SirTrevor.Formatters.Unlink = new UnLink();
-SirTrevor.Formatters.Heading1 = new Heading1();
-SirTrevor.Formatters.Heading2 = new Heading2();
+//SirTrevor.Formatters.Heading1 = new Heading1();
+//SirTrevor.Formatters.Heading2 = new Heading2();

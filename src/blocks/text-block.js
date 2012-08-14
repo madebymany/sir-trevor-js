@@ -2,7 +2,7 @@
   Text Block
 */
 
-var template = '<div class="required <%= className %>" contenteditable="true"></div>';
+var tb_template = '<div class="required <%= className %>" contenteditable="true"></div>';
 
 var TextBlock = SirTrevor.BlockType.extend({ 
   
@@ -10,7 +10,7 @@ var TextBlock = SirTrevor.BlockType.extend({
   className: "text-block",
   
   editorHTML: function() {
-    return _.template(template, this);
+    return _.template(tb_template, this);
   },
   
   loadData: function(data){
