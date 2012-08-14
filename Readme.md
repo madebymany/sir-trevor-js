@@ -8,6 +8,8 @@ A rebuild of the ITV news editor, with the Javascript pulled out of Ruby gem and
 
 Grab the `sir-trevor.js` or `sir-trevor.min.js` file from the `lib` directory. This is the core Sir Trevor instance with the default Formatters and BlockTypes.
 
+Include a reference to `sir-trevor.css` in your head, located in the `lib` folder. 
+
 Create an instance of SirTrevor.Editor as follows (always wrap it in a document ready block)
 
     <script>
@@ -31,10 +33,14 @@ You can limit the types of Blocks in the editor by passing a `blockTypes` array 
       $(function(){
         new SirTrevor.Editor({
           el: $('.sir-trevor'),
-          blockTypes: ['TextBlock', 'QuoteBlock'] // This instance will now only have these types available to it
+          blockTypes: ['TextBlock', 'BlockQuote'] // This instance will now only have these types available to it
         });
       });
     </script>
+
+Your SirTrevor editor instance will be bound to the submission of it's parent form element. On submission of the form the editor will validate and then serialise all of the Blocks on the page, storing the resulting JSON into the `<textarea>` you provided. You can them do as you wish with this on your server-side processing. 
+  
+   
 
 ## Structure 
 
