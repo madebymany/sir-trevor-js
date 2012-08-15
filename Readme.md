@@ -49,6 +49,39 @@ You can limit the types of Blocks in the editor by passing a `blockTypes` array 
 
 Your SirTrevor editor instance will be bound to the submission of it's parent form element. On submission of the form the editor will validate and then serialise all of the Blocks on the page, storing the resulting JSON into the `<textarea>` you provided. You can them do as you wish with this on your server-side processing. 
   
+A `SirTrevor.Editor` accepts the following options:
+  
+    {
+      baseCSSClass: "sir-trevor",
+      defaultType: "TextBlock",
+      spinner: {
+        className: 'spinner',
+        lines: 9, 
+        length: 6, 
+        width: 2, 
+        radius: 5, 
+        color: '#000', 
+        speed: 1.4, 
+        trail: 57, 
+        shadow: false
+      },
+      marker: {
+        baseCSSClass: "marker",
+        buttonClass: "button",
+        addText: "Click to add:",
+        dropText: "Drop to place content"
+      },
+      formatBar: {
+        baseCSSClass: "formatting-control"
+      },
+      blockLimit: 0,
+      blockTypeLimits: {},
+      uploadUrl: '/attachments',
+      baseImageUrl: '/sir-trevor-uploads/'
+    }
+
+Changing the `baseCSSClass` will break **all** the default CSS. Be careful.
+
 ## Flow
 
 ### Loading data:
@@ -97,5 +130,73 @@ Rich text block types (Text, Quote, Lists etc) use an *ultra* simple formatting 
 
 ## Extending Sir Trevor
 
+### Creating your own BlockTypes
 
+A Block in it's simplest form is made up of some HTML markup, a function that tells it how to render from the JSON data (`loadData`) and a function that tells it how to get serialised into JSON (`toData`).  
 
+A BlockType is defined as follows:
+
+    var NewBlockType = SirTrevor.BlockType.extend({ 
+      
+      // Variables to be modfified
+      
+      className: 'new-block', // String; CSS class given to block
+      title: 'New Block', // String; title displayed 
+      limit: 0, // Integer; default block limit per editor instance
+      editorHTML: '<div></div>', // String or Function; for HTML to be rendered inside the block
+      dropzoneHTML: '<div class="dropzone"></div>', // String; HTML for the dropzone  
+      toolbarEnabled: true, // Boolean; show this block in the new Blocks toolbar
+      dropEnabled: false, // Boolean; Enable drop capabilities for this block
+
+      // Functions to be extended
+      // Note, these functions all have 'this' bound to the Block and not the BlockType
+
+      loadData: function(data) {},
+      toData: function(){},
+      onDrop: function(transferData){},
+      onContentPasted: function(ev){},
+      
+      onBlockRender: function(){},
+      beforeBlockRender: function(){},
+      onBlockActivated: function(){},
+      
+      toMarkdown: function(markdown){ return markdown; },
+      toHTML: function(html){ return html; },
+      
+    });
+
+Once you have extended the `BlockType` object you have to make it available to SirTrevor by adding it to the BlockTypes object
+
+    SirTrevor.BlockTypes.NewBlock = new NewBlockType();     
+    
+#### `loadData`
+
+By default we don't provide a `loadData` method for each Block Type, this is because each block will have different requirements for how to transform the JSON data into the block to be edited. 
+
+`loadData` has `this` bound to the block being rendered and *not* the BlockType. It gets passed `data` which is the JSON block data representation. 
+
+An example `loadData` function is as follows:
+
+      loadData: function(data) {
+        this.$('input').val(data.cite); // See 'Elements' below for more on this.$()
+      }
+
+Remember, loadData is *only* ever fired if data exists on the block when re-rendering. 
+
+#### `toData`
+
+`toData` is designed to take the block and all of it's inputs and save the blocks state as JSON on a data attribute on the block. By default the `toData` function will work with a variety of inputs, content editable blocks and selects. However, the `toData` function as it stands may not meet your block requirements, so it may be necessary to override this function.  
+
+#### Elements
+
+When we render a block, we set quite a few element shorthands.  
+
+    $el       // Refers to the inner portion of the block (usually the 'editorHTML' you provided)
+    el        // $el[0]
+    $block    // The entire block, including the outer
+    $dropzone // The dropzone HTML
+    
+Also, we set a shorthand for a find method on the `$el`
+
+    $('selector')       // equivilant to $el.find('selector')
+    

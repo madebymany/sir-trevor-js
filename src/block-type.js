@@ -40,7 +40,7 @@ _.extend(BlockType.prototype, {
   title: '',
   limit: 0,
   editorHTML: '<div></div>',
-  dropzoneHTML: '<div></div>',
+  dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
   toolbarEnabled: true,
   dropEnabled: false,
   

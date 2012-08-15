@@ -110,6 +110,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   position: relative;
   margin: 0 0 22px 0;
   font-size: 14px;
+  overflow: hidden;
 }
 
 /* Dragging */
