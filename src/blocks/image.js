@@ -2,7 +2,7 @@
   Simple Image Block
 */
 
-var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input type=\"file\" /></div>";
+var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input type=\"file\" /></div><button>...or choose a file</button>";
 
 
 var ImageBlock = SirTrevor.BlockType.extend({ 
@@ -18,7 +18,7 @@ var ImageBlock = SirTrevor.BlockType.extend({
     this.loading();
     this.$dropzone.hide();
     this.$el.html($('<img>', {
-      src: data.raw
+      src: data.file.url
     }));
     this.$el.show();
     this.ready();

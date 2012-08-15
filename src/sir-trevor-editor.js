@@ -68,6 +68,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
   */
   createBlock: function(type, data) {
+    
+    type = _.capitalize(type); // Proper case
+    
     if (this._blockTypeAvailable(type)) {
       
      var blockType = SirTrevor.BlockTypes[type],
@@ -156,7 +159,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
 
     // Empty or JSON-ify
     this.$el.val((this.options.blockStore.data.length === 0) ? '' : this.to_json());
-    return false;
+    return errors;
   },
   
   /*
@@ -245,7 +248,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   */
   _setBlocksAndFormatters: function() {
     this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.BlockTypes : this.options.blockTypes);
-    this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
+    this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);    
   },
   
   /*

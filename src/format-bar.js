@@ -49,9 +49,9 @@ _.extend(FormatBar.prototype, FunctionBind, {
   },
   
   /* Convienience methods */
-  show: function(relativeEl){ 
+  show: function(relativeEl){
     this.$el.css({
-      top: relativeEl.offset().top - (parseInt(this.$el.height()))
+      top: relativeEl.position().top
     });
     this.$el.show();
     this.$el.addClass('sir-trevor-item-ready'); 

@@ -45,7 +45,7 @@ _.extend(Block.prototype, FunctionBind, {
     if (this.blockType.dropEnabled) {
       this.$dropzone = $("<div>", {
         html: this.blockType.dropzoneHTML,
-        class: "dropzone"
+        class: "dropzone " + this.blockType.className + '-block'
       });
       this.$block.append(this.$dropzone);
       this.$el.hide();
@@ -200,7 +200,7 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   onBlockFocus: function(ev) {
-    this.instance.formatBar.show(this.$el);
+    this.instance.formatBar.show(this.$block);
   },
   
   onDeleteClick: function(ev) {

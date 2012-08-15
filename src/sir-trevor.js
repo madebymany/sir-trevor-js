@@ -87,13 +87,15 @@
   };
   
   SirTrevor.onFormSubmit = function(ev) {
-    ev.preventDefault();
-    ev.stopPropagation();
     // Loop through all of our instances and do our form submits on them
+    var errors = 0;
     _.each(SirTrevor.instances, function(inst, i) {
-      inst.onFormSubmit();
+      errors += inst.onFormSubmit();
     });
-    return false;
+    
+    if(errors > 0) {
+      ev.preventDefault();
+    } 
   };
 
 }(jQuery, _));

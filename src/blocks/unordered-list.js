@@ -7,7 +7,7 @@ var template = '<div class="text-block <%= className %>" contenteditable="true">
 UnorderedList = SirTrevor.BlockType.extend({ 
   
   title: "List",
-  className: "unordered-list",
+  className: "list",
   
   editorHTML: function() {
     return _.template(template, this);
@@ -42,4 +42,4 @@ UnorderedList = SirTrevor.BlockType.extend({
   }
 });
 
-SirTrevor.BlockTypes.UnorderedList = new UnorderedList();
+SirTrevor.BlockTypes.Ul = new UnorderedList();

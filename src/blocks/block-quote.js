@@ -23,4 +23,4 @@ var BlockQuote = SirTrevor.BlockType.extend({
   
 });
 
-SirTrevor.BlockTypes.BlockQuote = new BlockQuote();
+SirTrevor.BlockTypes.Quote = new BlockQuote();

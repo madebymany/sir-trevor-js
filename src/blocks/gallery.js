@@ -29,8 +29,10 @@ var Gallery = SirTrevor.BlockType.extend({
   
   renderGalleryThumb: function(item) {
     
+    if(_.isUndefined(item.data.file)) return false;
+    
     var img = $("<img>", {
-      src: item.data.raw
+      src: item.data.file.thumb.url
     });
     
     var list = $('<li>', {

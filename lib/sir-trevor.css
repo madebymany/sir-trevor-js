@@ -2,11 +2,12 @@
 body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor {
   position: relative;
-  padding: 40px 0 30px 0;
+  padding: 10px 0;
+  z-index: 1;
 }
 /* Typography reset */
 .sir-trevor { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-.sir-trevor , .sir-trevor button, .sir-trevor input, .sir-trevor select, .sir-trevor textarea { font-family: "Helvetica Neue", 'Arial', sans-serif; color: #222; }
+.sir-trevor , .sir-trevor button, .sir-trevor input, .sir-trevor select, .sir-trevor textarea, .sir-trevor blockquote { font-family: "Helvetica Neue", 'Arial', sans-serif; color: #222; }
 /* Generics */
 .sir-trevor .hidden { display: none !important; visibility: hidden; }
 
@@ -16,6 +17,13 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   top: 50%; left: 50%;
   margin-top: 65px;
   margin-left: -25px;
+}
+
+.sir-trevor * {
+  -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+         -ms-box-sizing: border-box;
+             box-sizing: border-box;
 }
 
 /* Formatting Control Bar */
@@ -31,7 +39,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   z-index: 102;
   display: box;
   box-sizing: border-box;
-  margin: -18px 0 0 0;
+  margin: -32px 0 0 0;
   top: 0;
 }
 
@@ -77,6 +85,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   font-weight: bold;
   margin: 0;
   padding: 0 16px 0 0;
+  color: #9B8816;
 }
 
 .sir-trevor .sir-trevor-marker .buttons {
@@ -85,14 +94,39 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 }
 
 .sir-trevor .sir-trevor-marker .buttons a {
-  padding: 25px 13px 8px;
+  padding: 27px 13px 8px;
   margin: 0;
   border-left: 1px dotted #DAC962;
   color: #AF9B24;
-  height: 13px;
-  font-size: 9px;
+  height: 45px;
+  font-size: 8px;
   display: inline-block;
   text-decoration: none;
+  background-repeat: no-repeat;
+  background-position: center 9px;
+}
+
+/* Button graphics */
+
+.sir-trevor .sir-trevor-marker .buttons a.new-block-quote {
+  background-image: url(images/sir-trevor/icons/block_editor_blockquote.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-image,
+.sir-trevor .sir-trevor-marker .buttons a.new-gallery {
+  background-image: url(images/sir-trevor/icons/block_editor_image.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-text {
+  background-image: url(images/sir-trevor/icons/block_editor_text.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-list {
+  background-image: url(images/sir-trevor/icons/block_editor_list.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-tweet {
+  background-image: url(images/sir-trevor/icons/block_editor_tweet.png);
 }
 
 .sir-trevor .sir-trevor-marker .buttons a:last-child {
@@ -100,8 +134,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 }
 
 .sir-trevor .sir-trevor-marker .buttons a:hover {
-  background: #DAC962;
-  color: #fff;
+
 }
 
 /* Blocks */
@@ -140,7 +173,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   border: 1px dotted #B3B3B3;
   padding: 20px;
   text-align: center;
-  margin: 20px 70px;
+  margin: 0 40px;
 }
 
 .sir-trevor-block .dropzone.dragOver {
@@ -149,11 +182,35 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 .sir-trevor .sir-trevor-block .dropzone p {
   font-size: 20px;
+  line-height: 50px;
+  display: inline-block;
   color: #666;
 }
 
-.sir-trevor .sir-trevor-block .dropzone label {}
-.sir-trevor .sir-trevor-block .dropzone input[type=text] {}
+
+.sir-trevor-block .dropzone input[type="file"] {
+  position: absolute;
+  z-index: 50;
+  opacity: 0;
+  cursor: pointer;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.sir-trevor-block .dropzone button {
+  background: #5F5F5F;
+  border-radius: 4px;
+  border: none;
+  padding: 4px 16px;
+  color: white;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.sir-trevor .sir-trevor-block .dropzone label { width: 50%; display: inline; font-weight: normal; color: #666; }
+.sir-trevor .sir-trevor-block .dropzone input[type=text] { width: 50%; display: inline-block; margin-right: 0 }
 
 /* Generic block styles */
 
@@ -263,6 +320,8 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 .sir-trevor .sir-trevor-block blockquote {
   padding: 5px; margin: 0;
+  font-size: 14px;
+  font-style: none;
 }
 
 /* Tweet block */
@@ -275,6 +334,12 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 .tweet-block .tweet p {
   margin: 0 0 10px 0;
+}
+
+.sir-trevor .dropzone.tweet-block p {
+  padding-left: 70px;
+  line-height: 50px;
+  background: url(images/sir-trevor/icons/new_tweet.png) no-repeat 0 0;
 }
 
 /* Markdown Block */
@@ -309,6 +374,13 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 /*
   Image block
 */
+
+.sir-trevor .dropzone.image-block p,
+.sir-trevor .dropzone.gallery-block p  {
+  padding-left: 70px;
+  line-height: 50px;
+  background: url(images/sir-trevor/icons/new_image.png) no-repeat 0 0;
+}
 
 .sir-trevor .image-block img {
   width: 100%;
@@ -351,32 +423,32 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 }
 
 
+
+
 /* Handle and delete */
 
 .sir-trevor .sir-trevor-block .handle {
   width: 10px;
   height: 100%;
-  cursor: no-drop;
+  cursor: move;
   position: absolute;
   left: 0;
   top: 0;
-  background: #606060;
-}
-
-.sir-trevor.reorderable .sir-trevor-block .handle {
-  cursor: move;
+  display: none;
+  background: #606060 url(images/sir-trevor/icons/handle.gif) repeat-y;
 }
 
 .sir-trevor .sir-trevor-block .delete {
   width: 15px; height: 15px;
-  background: #fff;
   border: 1px solid #B3B3B3;
   position: absolute; 
   top: 5px; right : 5px;
   cursor: pointer;
   display: none;
+  background: #fff url(images/sir-trevor/icons/close.gif) no-repeat;
 }
 
+.sir-trevor .sir-trevor-block.active .handle,
 .sir-trevor .sir-trevor-block.active .delete {
   display: block;
 }

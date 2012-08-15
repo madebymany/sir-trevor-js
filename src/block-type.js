@@ -118,6 +118,7 @@ _.extend(BlockType.prototype, {
           'class': 'error-marker',
           'html': '!'
         }));
+        errors++;
       } 
     }, this));
     
