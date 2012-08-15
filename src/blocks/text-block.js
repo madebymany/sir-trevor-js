@@ -18,4 +18,4 @@ var TextBlock = SirTrevor.BlockType.extend({
   }
 });
 
-SirTrevor.BlockTypes.TextBlock = new TextBlock();
+SirTrevor.BlockTypes.Text = new TextBlock();

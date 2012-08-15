@@ -16,7 +16,7 @@
     blockStore: {
       data: []
     },
-    defaultType: "TextBlock",
+    defaultType: "Text",
     spinner: {
       className: 'spinner',
       lines: 9, 

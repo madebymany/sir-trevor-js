@@ -164,7 +164,7 @@ _.extend(Block.prototype, FunctionBind, {
   
   to_json: function(data) {
     return {
-      type: this.type,
+      type: this.type.toLowerCase(),
       data: data
     };
   },
