@@ -46,6 +46,8 @@ _.extend(FormatBar.prototype, FunctionBind, {
     this.$el.hide();
     this.$el.bind('mouseout', halt);
     this.$el.bind('mouseover', halt);
+    
+    this.instance.$wrapper.bind('click', this.onWrapperClick);
   },
   
   /* Convienience methods */
@@ -56,8 +58,19 @@ _.extend(FormatBar.prototype, FunctionBind, {
     this.$el.show();
     this.$el.addClass('sir-trevor-item-ready'); 
   },
+  
+  onWrapperClick: function(ev){
+    var item = $(ev.target),
+        parent = item.parent();
+        
+    if(!(item.hasClass(this.className) || parent.hasClass(this.className) || item.hasClass('text-block') || parent.hasClass('text-block'))) {
+      this.hide();
+    }
+    
+    return false;
+  },
 
-  hide: function(relativeEl){ 
+  hide: function(){ 
     this.$el.hide();
     this.$el.removeClass('sir-trevor-item-ready'); 
   },
