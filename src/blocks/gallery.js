@@ -2,7 +2,7 @@
   Gallery
 */
 
-var dropzone_templ = "<p>Drop image block here</p>";
+var dropzone_templ = "<p>Drop images here</p><div class=\"input submit\"><input type=\"file\" multiple=\"multiple\" /></div><button>...or choose file(s)</button>";
 
 var Gallery = SirTrevor.BlockType.extend({ 
   
@@ -41,6 +41,26 @@ var Gallery = SirTrevor.BlockType.extend({
       html: img
     });
     
+    list.append($("<span>", {
+      class: 'delete',
+      click: _.bind(function(e){
+        // Remove this item
+        halt(e);
+        
+        if (confirm('Are you sure you wish to delete this image?')) {
+          $(e.target).parent().remove();
+        
+          var dataStruct = this.$el.data('block');
+          dataStruct.data = [];
+        
+          _.each(this.$('li.gallery-item'), function(li){
+            li = $(li);
+            dataStruct.data.push(li.data('block'));
+          });
+        }
+      }, this)
+    }));
+    
     list.data('block', item);
     
     this.$el.find('ul').append(list);
@@ -75,14 +95,20 @@ var Gallery = SirTrevor.BlockType.extend({
       
       .bind('drop', _.bind(function(ev){
         
-        var item = $(ev.target);
+        var item = $(ev.target),
+            parent = item.parent();
+            
+        item = (item.hasClass('gallery-item') ? item : parent);    
+        
         this.$el.find('ul li.dragover').removeClass('dragover');
         
         // Get the item
         var target = $('#' + ev.originalEvent.dataTransfer.getData("text/plain"));
         
+        if(target.attr('id') === item.attr('id')) return false;
+        
         if (target.length > 0 && target.hasClass('gallery-item')) {
-          item.parent().before(target);
+          item.before(target);
         }
         
         // Reindex the data
@@ -99,34 +125,52 @@ var Gallery = SirTrevor.BlockType.extend({
   
   onBlockRender: function(){
     // We need to setup this block for reordering
-    
+     /* Setup the upload button */
+      this.$dropzone.find('button').bind('click', halt);
+      this.$dropzone.find('input').on('change', _.bind(function(ev){
+        this._super("onDrop", ev.currentTarget);
+      }, this));
   },
   
-  onDrop: function(tD){
-    var item_id = tD.getData("text/plain"),
-        block = $('#' + item_id),
-        dataStruct = this.$el.data('block');
-    
-    if (/Image/.test(block.attr('data-type'))) {
-      // It's an image block!
-      var _block = _.find(this.instance.blocks, function(item){ return (item.blockID == block.attr('id')); }),
-          data = _block.$el.data('block');
+  onDrop: function(transferData){
+        
+    if (transferData.files.length > 0) {
+      // Multi files 'ere
+      var l = transferData.files.length,
+          file, urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
+          
+      this.loading();
       
-      // Add to our list
-      if (!_.isArray(dataStruct.data)) {
-        dataStruct.data = [];
+      
+      while (l--) {
+        file = transferData.files[l];
+        if (/image/.test(file.type)) {
+          // Inc the upload count
+          this.uploadsCount += 1;
+          this.$el.show();
+          
+          /* Upload */
+          this.uploadAttachment(file, function(data){
+            
+            this.uploadsCount -= 1;
+            var dataStruct = this.$el.data('block');
+            data = { type: "image", data: data };
+            
+            // Add to our struct
+            if (!_.isArray(dataStruct.data)) {
+              dataStruct.data = [];
+            }
+            dataStruct.data.push(data);
+            
+            // Pass this off to our render gallery thumb method
+            this._super('renderGalleryThumb', data);
+            
+            if(this.uploadsCount === 0) {
+              this.ready();
+            }
+          });
+        }
       }
-      
-      dataStruct.data.push(data);
-      
-      // Get the image
-      this.$el.show();
-      
-      this._super("renderGalleryThumb", data);
-      
-      // Delete a reference (we have it in the gallery now)
-      this.instance.removeBlock(_block);
-      this.instance.marker.hide(); // Just in case
     }
   },
   

@@ -2,7 +2,7 @@
 body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor {
   position: relative;
-  padding: 10px 0;
+  padding: 45px 0;
   z-index: 1;
 }
 /* Typography reset */
@@ -31,7 +31,6 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor .sir-trevor-formatting-control {
   background: #e9e9e9;
   border: 1px solid #dadada;
-  border-left: 0; border-right: 0;
   padding: 10px 0;
   text-align: center;
   position: absolute;
@@ -39,7 +38,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   z-index: 102;
   display: box;
   box-sizing: border-box;
-  margin: -32px 0 0 0;
+  margin: -41px 0 0 0;
   top: 0;
 }
 
@@ -66,8 +65,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   display: block;
   cursor: pointer;
   background: #F5F297;
-  border-top: 1px dotted #DAC962;
-  border-bottom: 1px dotted #DAC962;
+  border: 1px dotted #DAC962;
   height: 46px;
   text-align: center;
   vertical-align: top;
@@ -129,6 +127,10 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   background-image: url(images/sir-trevor/icons/block_editor_tweet.png);
 }
 
+.sir-trevor .sir-trevor-marker .buttons a.new-video {
+  background-image: url(images/sir-trevor/icons/block_editor_video.png);
+}
+
 .sir-trevor .sir-trevor-marker .buttons a:last-child {
   border-right: 1px dotted #DAC962;
 }
@@ -158,12 +160,12 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor .sir-trevor-block .block-editor {
   padding: 15px 20px 15px 40px;
   border: 1px solid transparent;
-  border-left: 0; border-right: 0;
+  border-left: 0; 
 }
 
 .sir-trevor .sir-trevor-block.active .block-editor {
   border: 1px solid #E9E9E9;
-  border-left: 0; border-right: 0;
+  border-left: 0; 
 }
 
 /* Dropzone */
@@ -269,6 +271,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor-block .text-block,
 .sir-trevor-block textarea {
   min-height: 75px;
+  margin-bottom: 0;
 }
 
 /* Generic label / form elements */
@@ -389,6 +392,11 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 /* Gallery items */
 
+.sir-trevor .sir-trevor-block.active .gallery-block.block-editor {
+  border: 1px solid transparent;
+  border-left: 0; 
+}
+
 .sir-trevor .gallery-items {
   overflow: hidden;
 }
@@ -398,7 +406,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 }
 
 .sir-trevor .gallery-items ul li {
-  margin: 0 10px 0 0; 
+  margin: 0 10px 10px 0; 
   list-style: none;
   width: 50px; height: 50px;
   display: block;
@@ -407,6 +415,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   float: left;
   padding: 5px;
   cursor: move;
+  position: relative;
 }
 
 .sir-trevor .gallery-items ul li img {
@@ -423,6 +432,10 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 }
 
 
+.sir-trevor .gallery-items ul li .delete {
+  top: 0;
+  right: 0;
+}
 
 
 /* Handle and delete */

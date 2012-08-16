@@ -3,7 +3,7 @@
 var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   
   this.blockID = _.uniqueId(parentBlockType.blockTypeID + '_block-');
-  
+  this.uploadsCount = 0;
   this.instance = instance; // SirTrevor.Editor instance
   this.blockType = parentBlockType; // SirTrevor.BlockType
   
@@ -61,7 +61,7 @@ _.extend(Block.prototype, FunctionBind, {
     
     // Add UI elements
     block.append($('<span>',{ 'class': 'handle', draggable: true }));
-    block.append($('<span>',{ 'class': 'delete' }));
+    block.append($('<span>',{ 'class': 'delete block-delete' }));
     
     // Stop events propagating through to the container
     block
@@ -89,7 +89,7 @@ _.extend(Block.prototype, FunctionBind, {
       .bind('submit', this.onContentPasted); 
     
     // Delete
-    block.find('.delete').bind('click', this.onDeleteClick);
+    block.find('.delete.block-delete').bind('click', this.onDeleteClick);
     
     // Handle text blocks
     if (block.find('.text-block').length > 0) {
