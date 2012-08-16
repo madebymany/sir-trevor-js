@@ -58,7 +58,8 @@ You can limit the types of Blocks in the editor by passing a `blockTypes` array 
 Your SirTrevor editor instance will be bound to the submission of it's parent form element. On submission of the form the editor will validate and then serialise all of the Blocks on the page, storing the resulting JSON into the `<textarea>` you provided. You can them do as you wish with this on your server-side processing. 
   
 A `SirTrevor.Editor` accepts the following options:
-  
+
+``` javascript  
     {
       baseCSSClass: "sir-trevor",
       defaultType: "TextBlock",
@@ -87,6 +88,7 @@ A `SirTrevor.Editor` accepts the following options:
       uploadUrl: '/attachments',
       baseImageUrl: '/sir-trevor-uploads/'
     }
+```
 
 Changing the `baseCSSClass` will break **all** the default CSS. Be careful.
 
@@ -144,6 +146,7 @@ A Block in it's simplest form is made up of some HTML markup, a function that te
 
 A BlockType is defined as follows:
 
+``` javascript
     var NewBlockType = SirTrevor.BlockType.extend({ 
       
       // Variables to be modfified
@@ -172,10 +175,13 @@ A BlockType is defined as follows:
       toHTML: function(html){ return html; },
       
     });
+```
 
 Once you have extended the `BlockType` object you have to make it available to SirTrevor by adding it to the BlockTypes object
 
+``` javascript
     SirTrevor.BlockTypes.NewBlock = new NewBlockType();     
+``` 
     
 #### `loadData`
 
@@ -185,9 +191,11 @@ By default we don't provide a `loadData` method for each Block Type, this is bec
 
 An example `loadData` function is as follows:
 
+``` javascript
       loadData: function(data) {
         this.$('input').val(data.cite); // See 'Elements' below for more on this.$()
       }
+```
 
 Remember, loadData is *only* ever fired if data exists on the block when re-rendering. 
 
@@ -199,12 +207,15 @@ Remember, loadData is *only* ever fired if data exists on the block when re-rend
 
 When we render a block, we set quite a few element shorthands.  
 
+``` javascript
     $el       // Refers to the inner portion of the block (usually the 'editorHTML' you provided)
     el        // $el[0]
     $block    // The entire block, including the outer
     $dropzone // The dropzone HTML
+``` 
     
 Also, we set a shorthand for a find method on the `$el`
 
+``` javascript
     $('selector')       // equivilant to $el.find('selector')
-    
+```    
