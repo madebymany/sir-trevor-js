@@ -66,8 +66,6 @@ _.extend(FormatBar.prototype, FunctionBind, {
     if(!(item.hasClass(this.className) || parent.hasClass(this.className) || item.hasClass('text-block') || parent.hasClass('text-block'))) {
       this.hide();
     }
-    
-    return false;
   },
 
   hide: function(){ 

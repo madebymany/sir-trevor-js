@@ -98,6 +98,9 @@ _.extend(Block.prototype, FunctionBind, {
       
       // Bind our text block to show the format bar
       block.find('.text-block').focus(this.onBlockFocus);
+      
+      // Strip out all the HTML on paste
+      block.find('.text-block').bind('paste', this.onContentPasted);
     }
     
     if (this.blockType.dropEnabled) {

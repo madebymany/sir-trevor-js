@@ -26,6 +26,7 @@ var ImageBlock = SirTrevor.BlockType.extend({
   
   onBlockRender: function(){
     /* Setup the upload button */
+    this.$dropzone.find('button').bind('click', halt);
     this.$dropzone.find('input').on('change', _.bind(function(ev){
       this._super("onDrop", ev.currentTarget);
     }, this));

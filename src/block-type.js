@@ -51,7 +51,6 @@ _.extend(BlockType.prototype, {
   beforeBlockRender: function(){},
   onBlockActivated: function(){},
   onDrop: function(transferData){},
-  onContentPasted: function(ev){},
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
     
@@ -123,6 +122,16 @@ _.extend(BlockType.prototype, {
     }, this));
     
     return (errors === 0);
+  },
+  
+  /*
+    Generic onContentPasted that strips ALL HTML other than stuff we like from the block
+  */
+  onContentPasted: function(ev){
+    var textBlock = this.$('.text-block');
+    if (textBlock.length > 0) {
+      textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type)));
+    }
   },
   
   /* Helper / convienience methods */
