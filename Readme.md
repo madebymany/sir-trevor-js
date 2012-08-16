@@ -17,10 +17,13 @@ Grab the `sir-trevor.js` or `sir-trevor.min.js` file from the `lib` directory. T
 
 Include a reference to `sir-trevor.css` in your head, located in the `lib` folder. 
 
+``` html
     <link rel="stylesheet" href="sir-trevor.css" type="text/css" media="screen" charset="utf-8">
+```
 
 Create an instance of SirTrevor.Editor as follows (always wrap it in a document ready block)
 
+``` html
     <script>
       $(function(){
         new SirTrevor.Editor({
@@ -28,16 +31,20 @@ Create an instance of SirTrevor.Editor as follows (always wrap it in a document 
         });
       });
     </script>
+```
 
 Your HTML should look something like this:
 
+``` html
     <form>
       <textarea class="sir-trevor"></textarea>
       <input type="submit">
     </form>
+```
 
 You can limit the types of Blocks in the editor by passing a `blockTypes` array through to the editor instance as follows:
 
+``` html
     <script>
       $(function(){
         new SirTrevor.Editor({
@@ -46,6 +53,7 @@ You can limit the types of Blocks in the editor by passing a `blockTypes` array 
         });
       });
     </script>
+```
 
 Your SirTrevor editor instance will be bound to the submission of it's parent form element. On submission of the form the editor will validate and then serialise all of the Blocks on the page, storing the resulting JSON into the `<textarea>` you provided. You can them do as you wish with this on your server-side processing. 
   
