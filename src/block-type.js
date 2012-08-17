@@ -28,7 +28,6 @@ var blockTypeOptions = [
   "onContentPasted",
   "onBlockRender",
   "beforeBlockRender",
-  "onBlockActivated",
   "toMarkdown",
   "toHTML"
 ];

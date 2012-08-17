@@ -146,12 +146,6 @@ _.extend(Block.prototype, FunctionBind, {
     return this._super("validate");
   },
   
-  showErrors: function() {
-    _.each(this.errors, _.bind(function(error){
-      
-    }, this));
-  },
-  
   /* Save the state of this block onto the blocks data attr */
   save: function() {
     var data = this.$el.data('block');
@@ -281,11 +275,7 @@ _.extend(Block.prototype, FunctionBind, {
     });
     
   },
-  
-  parseUrlInput: function(text){
-    var url = text.match(this.regexs.url);
-  },
-  
+    
   /*
     Our template is always either a string or a function
   */
