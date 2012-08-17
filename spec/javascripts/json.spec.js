@@ -35,4 +35,6 @@ describe("JSON parsing in a SirTrevor.Editor instance", function(){
     expect(editor.blockCounts[editor.options.defaultType]).toBe(1);
   });
   
+  
+  
 });
