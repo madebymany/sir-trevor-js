@@ -7,10 +7,11 @@ describe("a SirTrevor.Editor instance", function(){
     editor = new SirTrevor.Editor();
     
     editor_with_options = new SirTrevor.Editor(
-      { el: element, 
+      { 
+        el: element, 
         defaultCSSClass: "test-class", 
         blockTypeLimits: { 
-          "TextBlock": 1 
+          "Text": 1 
         } 
       }
     );
@@ -41,7 +42,7 @@ describe("a SirTrevor.Editor instance", function(){
   });
   
   it("should have all default block types available if none are explicity passed", function() {
-    var blockTypes = ["TextBlock", "BlockQuote", "OrderedList", "UnorderedList"],
+    var blockTypes = ["Text", "Quote", "Ul"],
         avail;
 
     for (var i = blockTypes.length - 1; i >= 0; i--){
@@ -74,14 +75,14 @@ describe("a SirTrevor.Editor instance", function(){
   });
   
   it("should be able to create a block of an available type", function(){
-    var type = "TextBlock";
+    var type = "Text";
     editor_with_options.createBlock(type, {});
     expect(editor_with_options.blockCounts[type]).toBe(2); // Default block and this block
   });
   
   it("should not be possible to create a block if the editor specific block limits have been exceeded", function(){
     
-    var type = "TextBlock";
+    var type = "Text";
     editor_with_options.createBlock(type, {});
     expect(editor_with_options.blockCounts[type]).toBe(2); // Default block and this block
     

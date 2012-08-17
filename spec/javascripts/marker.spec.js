@@ -5,7 +5,7 @@ describe("a SirTrevor.Marker", function(){
   beforeEach(function (){
     element = $("<textarea>"),
     editor = new SirTrevor.Editor({ el: element }),
-    editorOpts = new SirTrevor.Editor({ el: element, blockTypes: ["TextBlock"] }),
+    editorOpts = new SirTrevor.Editor({ el: element, blockTypes: ["Text"] }),
     marker = editor.marker,
     markerOpts = editorOpts.marker;
   });

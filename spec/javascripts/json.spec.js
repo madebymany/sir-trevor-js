@@ -4,7 +4,7 @@ describe("JSON parsing in a SirTrevor.Editor instance", function(){
   
   it("should be able to render valid available blocks from JSON given", function(){
     
-    var JSON_Str = {"data":[{"type":"TextBlock","data":{"text":"This is some test content"}}]};
+    var JSON_Str = {"data":[{"type":"text","data":{"text":"This is some test content"}}]};
     element.val(JSON.stringify(JSON_Str));
     
     var editor = new SirTrevor.Editor({ el: element });

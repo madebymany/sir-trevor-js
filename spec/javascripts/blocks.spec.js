@@ -2,7 +2,7 @@ describe("a Block", function(){
   
   var element = $("<textarea>"),
       editor = new SirTrevor.Editor({ el: element }),
-      parent = SirTrevor.BlockTypes.TextBlock,
+      parent = SirTrevor.BlockTypes.Text,
       block = new SirTrevor.Block(editor, parent, {}),
       block_two = new SirTrevor.Block(editor, parent, { });
       
@@ -16,7 +16,7 @@ describe("a Block", function(){
   });
   
   it("should have a type set", function(){
-    expect(block.type).toBe("TextBlock");
+    expect(block.type).toBe("Text");
   });
   
   it("should belong to a SirTrevor.Editor instance", function(){
@@ -43,6 +43,6 @@ describe("a Block", function(){
   });
   
   it("should have the block type serialized in the data of the element", function(){
-    expect(block.$el.data('block').type).toBe("TextBlock");
+    expect(block.$el.data('block').type).toBe("text");
   });
 });

@@ -15,6 +15,7 @@ var Block = SirTrevor.Block = function(instance, parentBlockType, data) {
   this._setElement();
   this._bindFunctions();
   this.render();
+  
 };
 
 _.extend(Block.prototype, FunctionBind, {
@@ -257,11 +258,9 @@ _.extend(Block.prototype, FunctionBind, {
     data.append('attachment[uid]', uid);
     
     var callbackSuccess = function(data){
-    
       if (!_.isUndefined(callback) && _.isFunction(callback)) {
         _.bind(callback, this)(data); // Invoke with a reference to 'this' (the block)
       }
-      
     };
     
     $.ajax({
@@ -273,7 +272,6 @@ _.extend(Block.prototype, FunctionBind, {
       type: 'POST',
       success: _.bind(callbackSuccess, this)
     });
-    
   },
     
   /*
