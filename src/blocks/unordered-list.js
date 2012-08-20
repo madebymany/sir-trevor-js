@@ -4,7 +4,7 @@
 
 var template = '<div class="text-block <%= className %>" contenteditable="true"></div>';
 
-UnorderedList = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Ul = SirTrevor.Block.extend({ 
   
   title: "List",
   className: "list",
@@ -41,5 +41,3 @@ UnorderedList = SirTrevor.BlockType.extend({
     return html.replace(/^ - (.+)$/mg,"<li>$1</li>");
   }
 });
-
-SirTrevor.BlockTypes.Ul = new UnorderedList();

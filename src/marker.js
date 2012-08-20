@@ -33,15 +33,15 @@ _.extend(Marker.prototype, FunctionBind, {
     var blockName, block; 
     
     for (blockName in this.instance.blockTypes) {
-      if (SirTrevor.BlockTypes.hasOwnProperty(blockName)) {
-        block = SirTrevor.BlockTypes[blockName];
-        if (block.toolbarEnabled) {
+      if (SirTrevor.Blocks.hasOwnProperty(blockName)) {
+        block = SirTrevor.Blocks[blockName];
+        if (block.prototype.toolbarEnabled) {
           this.$btns.append(
            $("<a>", {
             "href": "#",
-            "class": this.options.buttonClass + " new-" + block.className,
+            "class": this.options.buttonClass + " new-" + block.prototype.className,
             "data-type": blockName,
-            "text": block.title,
+            "text": block.prototype.title,
             click: this.onButtonClick
            }) 
           );

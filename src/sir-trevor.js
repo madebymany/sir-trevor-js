@@ -43,7 +43,7 @@
     baseImageUrl: '/sir-trevor-uploads/'
   }; 
   
-  SirTrevor.BlockTypes = {};
+  SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
   
@@ -63,7 +63,6 @@
   //= helpers
   //= vendor
   //= extensions
-  //= block-type.js
   //= block.js
   //= formatter.js
   

@@ -5,7 +5,7 @@
 var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input type=\"file\" /></div><button>...or choose a file</button>";
 
 
-var ImageBlock = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
   
   title: "Image",
   className: "image",
@@ -28,7 +28,7 @@ var ImageBlock = SirTrevor.BlockType.extend({
     /* Setup the upload button */
     this.$dropzone.find('button').bind('click', halt);
     this.$dropzone.find('input').on('change', _.bind(function(ev){
-      this._super("onDrop", ev.currentTarget);
+      this.onDrop(ev.currentTarget);
     }, this));
   },
   
@@ -57,5 +57,3 @@ var ImageBlock = SirTrevor.BlockType.extend({
     }
   }
 });
-
-SirTrevor.BlockTypes.Image = new ImageBlock();

@@ -2,7 +2,7 @@
   Block Quote
 */
 
-var BlockQuote = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
   
   title: "Quote",
   className: "block-quote",
@@ -22,5 +22,3 @@ var BlockQuote = SirTrevor.BlockType.extend({
   }
   
 });
-
-SirTrevor.BlockTypes.Quote = new BlockQuote();

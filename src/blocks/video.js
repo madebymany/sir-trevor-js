@@ -1,7 +1,7 @@
 var video_drop_template = '<p>Drop video link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
 var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
 
-var Video = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Video = SirTrevor.Block.extend({ 
   
   title: "Video",
   className: "video",
@@ -26,7 +26,7 @@ var Video = SirTrevor.BlockType.extend({
         val = input.val();
     
     // Pass this to the same handler as onDrop
-    this._super("handleDropPaste", val);
+    this.handleDropPaste(val);
   },
   
   handleDropPaste: function(url){
@@ -56,7 +56,7 @@ var Video = SirTrevor.BlockType.extend({
         dataStruct.data = data;
         
         // Render  
-        this._super("loadData", data);  
+        this.loadData(data);  
       }
     }
     
@@ -64,8 +64,6 @@ var Video = SirTrevor.BlockType.extend({
 
   onDrop: function(transferData){
     var url = transferData.getData('text/plain');
-    this._super("handleDropPaste", url);
+    this.handleDropPaste(url);
   }
 });
-
-SirTrevor.BlockTypes.Video = new Video();

@@ -4,7 +4,7 @@
 
 var dropzone_templ = "<p>Drop images here</p><div class=\"input submit\"><input type=\"file\" multiple=\"multiple\" /></div><button>...or choose file(s)</button>";
 
-var Gallery = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({ 
   
   title: "Gallery",
   className: "gallery",
@@ -18,7 +18,7 @@ var Gallery = SirTrevor.BlockType.extend({
     if (_.isArray(data)) {
       _.each(data, _.bind(function(item){
         // Create an image block from this
-        this._super("renderGalleryThumb", item);
+        this.renderGalleryThumb(item);
       }, this));
       
       this.$el.show();
@@ -128,7 +128,7 @@ var Gallery = SirTrevor.BlockType.extend({
      /* Setup the upload button */
       this.$dropzone.find('button').bind('click', halt);
       this.$dropzone.find('input').on('change', _.bind(function(ev){
-        this._super("onDrop", ev.currentTarget);
+        this.onDrop(ev.currentTarget);
       }, this));
   },
   
@@ -163,7 +163,7 @@ var Gallery = SirTrevor.BlockType.extend({
             dataStruct.data.push(data);
             
             // Pass this off to our render gallery thumb method
-            this._super('renderGalleryThumb', data);
+            this.renderGalleryThumb(data);
             
             if(this.uploadsCount === 0) {
               this.ready();
@@ -172,12 +172,6 @@ var Gallery = SirTrevor.BlockType.extend({
         }
       }
     }
-  },
-  
-  onGalleryItemDrop: function(ev) {
-    
-  } 
+  }
   
 });
-
-SirTrevor.BlockTypes.Gallery = new Gallery();
