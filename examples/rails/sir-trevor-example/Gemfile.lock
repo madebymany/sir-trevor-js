@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:madebymany/sir-trevor-rails.git
-  revision: eb3c1e3a1b80feb0e3340610b514a09d7e6507ac
+  revision: c2717de242817da2def78ee9514670a130f46728
   specs:
-    sir-trevor-rails (0.0.1)
+    sir-trevor-rails (0.1.0)
       activesupport (>= 3.0.7)
       jquery-rails
       rails (>= 3.0.7)
@@ -54,10 +54,10 @@ GEM
     hike (1.2.1)
     i18n (0.6.0)
     journey (1.0.4)
-    jquery-rails (2.1.0)
+    jquery-rails (2.1.1)
       railties (>= 3.1.0, < 5.0)
       thor (~> 0.14)
-    json (1.7.4)
+    json (1.7.5)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
