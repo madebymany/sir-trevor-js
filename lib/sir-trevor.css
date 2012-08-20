@@ -390,6 +390,15 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   height: auto;
 }
 
+/* Video */
+
+.sir-trevor .dropzone.video-block p,
+.sir-trevor .dropzone.video-block p  {
+  padding-left: 230px;
+  line-height: 50px;
+  background: url(images/sir-trevor/icons/new_video.png) no-repeat 0 0;
+}
+
 /* Gallery items */
 
 .sir-trevor .sir-trevor-block.active .gallery-block.block-editor {

@@ -128,6 +128,8 @@ _.extend(Block.prototype, FunctionBind, {
     // Reorderable
     this._initReordering();
     
+    this._initTextLimits();
+    
     // Set ready state
     this.$el.addClass('sir-trevor-item-ready');
     
@@ -193,14 +195,17 @@ _.extend(Block.prototype, FunctionBind, {
   /* Generic implementations */
   
   validate: function() {
-    var fields = this.$$('.required'),
+    var fields = this.$$('.required, [data-maxlength]'),
         errors = 0;
+    
+    console.log(fields);
         
     _.each(fields, _.bind(function(field) {
       field = $(field);
-      var content = (field.attr('contenteditable')) ? field.text() : field.val();
-        
-      if (content.length === 0) {
+      var content = (field.attr('contenteditable')) ? field.text() : field.val(),
+          too_long = (field.attr('data-maxlength') && field.too_long());
+
+      if (content.length === 0 || too_long) {
         // Error!
         field.addClass('error').before($("<div>", {
           'class': 'error-marker',
@@ -209,6 +214,7 @@ _.extend(Block.prototype, FunctionBind, {
         errors++;
       } 
     }, this));
+    
     
     return (errors === 0);
   },
@@ -421,7 +427,6 @@ _.extend(Block.prototype, FunctionBind, {
   */
   
   _initDragDrop: function() {
-    
     this.$dropzone = $("<div>", {
       html: this.dropzoneHTML,
       class: "dropzone " + this.className + '-block'
@@ -461,6 +466,10 @@ _.extend(Block.prototype, FunctionBind, {
       .bind('click', function(){ $(this).select(); })
       .bind('paste', this._handleContentPaste)
       .bind('submit', this._handleContentPaste);
+  },
+  
+  _initTextLimits: function() {
+    this.$$('input[maxlength!=-1][maxlength!=524288][maxlength!=2147483647]').limit_chars();
   }
     
 });

@@ -20,6 +20,10 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
     this.marker = new SirTrevor.Marker(this.options.marker, this);
     this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
     
+    if(this.options.onEditorRender) {
+      this.onEditorRender = this.options.onEditorRender;
+    }
+    
     this._setBlocksAndFormatters();
     this._bindFunctions();
     this.from_json();
@@ -59,6 +63,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     }
         
     this.$wrapper.addClass('sir-trevor-ready');
+    this.onEditorRender();
   },
   
   /*
@@ -191,6 +196,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       }
     } 
   },
+  
+  onEditorRender: function(){},
   
   /*
     Get Block Type Limit
