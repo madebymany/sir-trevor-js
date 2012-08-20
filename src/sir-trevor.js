@@ -4,6 +4,7 @@
       SirTrevor;
    
   SirTrevor = root.SirTrevor = {}; 
+  SirTrevor.DEBUG = true;
    
   /* 
    Define default attributes that can be extended through an object passed to the
@@ -44,7 +45,7 @@
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/'
   }; 
-  
+
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];

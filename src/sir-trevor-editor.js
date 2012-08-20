@@ -8,6 +8,8 @@
 
 var SirTrevorEditor = SirTrevor.Editor = function(options) {
   
+  SirTrevor.log("Init SirTrevor.Editor");
+  
   this.blockTypes = {};
   this.formatters = {};
   this.blockCounts = {}; // Cached block type counts
@@ -85,6 +87,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
          
      // Can we have another one of these blocks?
      if ((blockTypeLimit !== 0 && currentBlockCount > blockTypeLimit) || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
+       SirTrevor.log("Block Limit reached for type " + type);
        return false;
      }
      
@@ -104,10 +107,15 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
      }
       
      if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
+       SirTrevor.log("Block Limit reached for type " + type + " setting state as inactive");
        this.marker.$el.find('[data-type="' + type + '"]')
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
      } 
+      
+     SirTrevor.log("Block created of type " + type);
+    } else {
+      SirTrevor.log("Block type not available " + type);
     }
   },
   
@@ -124,6 +132,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     // Remove our inactive class if it's no longer relevant
     if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
+      SirTrevor.log("Removing block limit for " + block.type);
       this.marker.$el.find('[data-type="' + block.type + '"]')
         .removeClass('inactive')
         .attr('title','Add a ' + block.type + ' block');
@@ -135,6 +144,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     Validate all of our blocks, and serialise all data onto the JSON objects
   */
   onFormSubmit: function() {
+    SirTrevor.log("Handling form submission for Editor " + this.ID);
     
     var blockLength, block, result, errors = 0;
 
@@ -152,9 +162,13 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         {
           var data = _block.save();
           if(!_.isEmpty(data.data)) {
+            SirTrevor.log("Adding data for block " + _block.blockID + " to block store");
             this.options.blockStore.data.push(data);
           }
-        } else errors++;
+        } else { 
+          SirTrevor.log("Block " + _block.blockID + " failed validation");
+          errors++;
+        }
       }
       
     };
@@ -227,6 +241,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   _ensureAndSetElements: function() {
     
     if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
+      SirTrevor.log("You must provide an el");
       return false;
     }
      

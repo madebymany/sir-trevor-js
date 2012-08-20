@@ -159,6 +159,8 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   setData: function(data) {
+    SirTrevor.log("Setting data for block " + this.blockID);
+    
     var dataObj = this.getData();
     dataObj.data = data;
     // Update our static reference too
@@ -197,8 +199,6 @@ _.extend(Block.prototype, FunctionBind, {
   validate: function() {
     var fields = this.$$('.required, [data-maxlength]'),
         errors = 0;
-    
-    console.log(fields);
         
     _.each(fields, _.bind(function(field) {
       field = $(field);
@@ -224,6 +224,9 @@ _.extend(Block.prototype, FunctionBind, {
     Can be overwritten, although hopefully this will cover most situations
   */
   toData: function() {
+    
+    SirTrevor.log("toData for " + this.blockID);
+    
     var bl = this.$el,
         dataObj = {};
     
@@ -338,6 +341,9 @@ _.extend(Block.prototype, FunctionBind, {
   /* Private methods */
   
   _loadData: function() {
+    
+    SirTrevor.log("loadData for " + this.blockID);
+    
     this.loading();
     
     if(this.dropEnabled) {
@@ -427,6 +433,8 @@ _.extend(Block.prototype, FunctionBind, {
   */
   
   _initDragDrop: function() {
+    SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
+    
     this.$dropzone = $("<div>", {
       html: this.dropzoneHTML,
       class: "dropzone " + this.className + '-block'
