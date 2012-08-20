@@ -11,14 +11,6 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 /* Generics */
 .sir-trevor .hidden { display: none !important; visibility: hidden; }
 
-/* Generic loader */
-.sir-trevor .spinner {
-  position: absolute;
-  top: 50%; left: 50%;
-  margin-top: 65px;
-  margin-left: -25px;
-}
-
 .sir-trevor * {
   -webkit-box-sizing: border-box;
         -moz-box-sizing: border-box;
@@ -218,6 +210,14 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 .sir-trevor.sir-trevor-ready .sir-trevor-block.loading {
   opacity: 0.6;
+}
+
+.sir-trevor-block.loading .spinner {
+  width: 32px;
+  height: 32px;
+  top: 50%; left: 50%;
+  margin: -16px 0 0 -16px;
+  position: absolute!important;
 }
 
 .sir-trevor-block [contenteditable=true] { 

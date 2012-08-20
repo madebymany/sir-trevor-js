@@ -9,14 +9,11 @@ SirTrevor.Blocks.Video = SirTrevor.Block.extend({
   
   dropzoneHTML: video_drop_template,
   
-  loadData: function(data){
-    this.$block.find(".dropzone").hide();
-    this.$el.show();
-    
+  loadData: function(data){    
     if(data.source == "youtube" || data.source == "youtu") {
-      this.$el.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
+      this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
     } else if(data.source == "vimeo") {
-      this.$el.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
+      this.$editor.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
     }
   },
   
@@ -52,16 +49,15 @@ SirTrevor.Blocks.Video = SirTrevor.Block.extend({
         }
         
         // Save the data
-        var dataStruct = this.$el.data('block');
-        dataStruct.data = data;
+        this.setData(data);
         
         // Render  
-        this.loadData(data);  
+        this._loadData();  
       }
     }
     
   },
-
+  
   onDrop: function(transferData){
     var url = transferData.getData('text/plain');
     this.handleDropPaste(url);

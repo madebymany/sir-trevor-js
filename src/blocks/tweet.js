@@ -10,9 +10,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
   dropzoneHTML: t_template,
   
   loadData: function(data){
-    this.$block.find(".dropzone").hide();
-    this.$el.show();
-    this.$el.html(_.template(tweet_template, data));
+    this.$editor.html(_.template(tweet_template, data));
   },
   
   onContentPasted: function(event){
@@ -52,11 +50,8 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
             };
             
             // Save this data on the block
-            var dataStruct = this.$el.data('block');
-            dataStruct.data = obj;
-            this.$el.html(_.template(tweet_template, obj)); // Render
-            this.$dropzone.hide();
-            this.$el.show();
+            this.setData(obj);
+            this._loadData();
             
             this.ready();
           };

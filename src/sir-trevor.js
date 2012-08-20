@@ -20,13 +20,15 @@
     spinner: {
       className: 'spinner',
       lines: 9, 
-      length: 6, 
-      width: 2, 
-      radius: 5, 
+      length: 8, 
+      width: 3, 
+      radius: 6, 
       color: '#000', 
       speed: 1.4, 
       trail: 57, 
-      shadow: false
+      shadow: false,
+      left: '50%',
+      top: '50%'
     },
     marker: {
       baseCSSClass: "marker",

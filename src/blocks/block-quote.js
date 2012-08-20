@@ -13,8 +13,8 @@ SirTrevor.Blocks.Quote = SirTrevor.Block.extend({
   },
   
   loadData: function(data){
-    this.$('.text-block').html(this.instance._toHTML(data.text, this.type));
-    this.$('input').val(data.cite);
+    this.$$('.text-block').html(this.instance._toHTML(data.text, this.type));
+    this.$$('input').val(data.cite);
   },
   
   toMarkdown: function(markdown) {

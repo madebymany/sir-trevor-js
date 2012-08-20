@@ -15,13 +15,9 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   
   loadData: function(data){
     // Create our image tag
-    this.loading();
-    this.$dropzone.hide();
-    this.$el.html($('<img>', {
+    this.$editor.html($('<img>', {
       src: data.file.url
     }));
-    this.$el.show();
-    this.ready();
   },
   
   onBlockRender: function(){
@@ -41,16 +37,15 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.loading();
       // Show this image on here
       this.$dropzone.hide();
-      this.$el.html($('<img>', {
+      this.$editor.html($('<img>', {
         src: urlAPI.createObjectURL(file)
       }));
-      this.$el.show();
+      this.$editor.show();
       
       // Upload!
       this.uploadAttachment(file, function(data){
         // Store the data on this block
-        var dataStruct = this.$el.data('block');
-        dataStruct.data = data;
+        this.setData(data);
         // Done
         this.ready();
       });

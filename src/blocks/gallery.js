@@ -13,7 +13,6 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
   dropzoneHTML: dropzone_templ,
   
   loadData: function(data){
-    this.loading();
     // Find all our gallery blocks and draw nice list items from it
     if (_.isArray(data)) {
       _.each(data, _.bind(function(item){
@@ -21,9 +20,8 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
         this.renderGalleryThumb(item);
       }, this));
       
-      this.$el.show();
+      // Show the dropzone too
       this.$dropzone.show();
-      this.ready();
     }
   },
   
@@ -63,7 +61,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
     
     list.data('block', item);
     
-    this.$el.find('ul').append(list);
+    this.$$('ul').append(list);
     
     // Make it sortable
     list
@@ -100,7 +98,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
             
         item = (item.hasClass('gallery-item') ? item : parent);    
         
-        this.$el.find('ul li.dragover').removeClass('dragover');
+        this.$$('ul li.dragover').removeClass('dragover');
         
         // Get the item
         var target = $('#' + ev.originalEvent.dataTransfer.getData("text/plain"));
@@ -115,7 +113,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
         var dataStruct = this.$el.data('block');
         dataStruct.data = [];
         
-        _.each(this.$('li.gallery-item'), function(li){
+        _.each(this.$$('li.gallery-item'), function(li){
           li = $(li);
           dataStruct.data.push(li.data('block'));
         });
@@ -141,19 +139,18 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
           
       this.loading();
       
-      
       while (l--) {
         file = transferData.files[l];
         if (/image/.test(file.type)) {
           // Inc the upload count
           this.uploadsCount += 1;
-          this.$el.show();
+          this.$editor.show();
           
           /* Upload */
           this.uploadAttachment(file, function(data){
             
             this.uploadsCount -= 1;
-            var dataStruct = this.$el.data('block');
+            var dataStruct = this.getData();
             data = { type: "image", data: data };
             
             // Add to our struct

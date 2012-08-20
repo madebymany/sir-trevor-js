@@ -14,7 +14,7 @@ SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
   },
   
   onBlockRender: function() {
-    this.$('.text-block').bind('click', function(){
+    this.$$('.text-block').bind('click', function(){
       if($(this).html().length === 0){
         document.execCommand("insertUnorderedList",false,false);
       }
@@ -22,13 +22,13 @@ SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
     
     // Put in a list
     if (_.isEmpty(this.data)) {
-      this.$('.text-block').focus().click();
+      this.$$('.text-block').focus().click();
     }
     
   },
     
   loadData: function(data){
-    this.$('.text-block').html("<ul>" + this.instance._toHTML(data.text, this.type) + "</ul>");
+    this.$$('.text-block').html("<ul>" + this.instance._toHTML(data.text, this.type) + "</ul>");
   },
   
   toMarkdown: function(markdown) {
