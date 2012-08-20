@@ -4,7 +4,7 @@
 
 var dropzone_templ = "<p>Drop images here</p><div class=\"input submit\"><input type=\"file\" multiple=\"multiple\" /></div><button>...or choose file(s)</button>";
 
-var Gallery = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({ 
   
   title: "Gallery",
   className: "gallery",
@@ -13,17 +13,15 @@ var Gallery = SirTrevor.BlockType.extend({
   dropzoneHTML: dropzone_templ,
   
   loadData: function(data){
-    this.loading();
     // Find all our gallery blocks and draw nice list items from it
     if (_.isArray(data)) {
       _.each(data, _.bind(function(item){
         // Create an image block from this
-        this._super("renderGalleryThumb", item);
+        this.renderGalleryThumb(item);
       }, this));
       
-      this.$el.show();
+      // Show the dropzone too
       this.$dropzone.show();
-      this.ready();
     }
   },
   
@@ -63,7 +61,7 @@ var Gallery = SirTrevor.BlockType.extend({
     
     list.data('block', item);
     
-    this.$el.find('ul').append(list);
+    this.$$('ul').append(list);
     
     // Make it sortable
     list
@@ -100,7 +98,7 @@ var Gallery = SirTrevor.BlockType.extend({
             
         item = (item.hasClass('gallery-item') ? item : parent);    
         
-        this.$el.find('ul li.dragover').removeClass('dragover');
+        this.$$('ul li.dragover').removeClass('dragover');
         
         // Get the item
         var target = $('#' + ev.originalEvent.dataTransfer.getData("text/plain"));
@@ -115,7 +113,7 @@ var Gallery = SirTrevor.BlockType.extend({
         var dataStruct = this.$el.data('block');
         dataStruct.data = [];
         
-        _.each(this.$('li.gallery-item'), function(li){
+        _.each(this.$$('li.gallery-item'), function(li){
           li = $(li);
           dataStruct.data.push(li.data('block'));
         });
@@ -128,7 +126,7 @@ var Gallery = SirTrevor.BlockType.extend({
      /* Setup the upload button */
       this.$dropzone.find('button').bind('click', halt);
       this.$dropzone.find('input').on('change', _.bind(function(ev){
-        this._super("onDrop", ev.currentTarget);
+        this.onDrop(ev.currentTarget);
       }, this));
   },
   
@@ -141,19 +139,18 @@ var Gallery = SirTrevor.BlockType.extend({
           
       this.loading();
       
-      
       while (l--) {
         file = transferData.files[l];
         if (/image/.test(file.type)) {
           // Inc the upload count
           this.uploadsCount += 1;
-          this.$el.show();
+          this.$editor.show();
           
           /* Upload */
           this.uploadAttachment(file, function(data){
             
             this.uploadsCount -= 1;
-            var dataStruct = this.$el.data('block');
+            var dataStruct = this.getData();
             data = { type: "image", data: data };
             
             // Add to our struct
@@ -163,7 +160,7 @@ var Gallery = SirTrevor.BlockType.extend({
             dataStruct.data.push(data);
             
             // Pass this off to our render gallery thumb method
-            this._super('renderGalleryThumb', data);
+            this.renderGalleryThumb(data);
             
             if(this.uploadsCount === 0) {
               this.ready();
@@ -172,12 +169,6 @@ var Gallery = SirTrevor.BlockType.extend({
         }
       }
     }
-  },
-  
-  onGalleryItemDrop: function(ev) {
-    
-  } 
+  }
   
 });
-
-SirTrevor.BlockTypes.Gallery = new Gallery();

@@ -2,17 +2,12 @@ describe("a Block", function(){
   
   var element = $("<textarea>"),
       editor = new SirTrevor.Editor({ el: element }),
-      parent = SirTrevor.BlockTypes.Text,
-      block = new SirTrevor.Block(editor, parent, {}),
-      block_two = new SirTrevor.Block(editor, parent, { });
+      block = new SirTrevor.Blocks.Text(editor,{}),
+      block_drop = new SirTrevor.Blocks.Tweet(editor,{}),
+      block_two = new SirTrevor.Blocks.Text(editor,{});
       
   it("should be able to be created", function(){
     expect(block).not.toBe(undefined);
-  });
-  
-  it("should have a parent blockType", function(){
-    expect(block.blockType).toBe(parent);
-    expect(typeof block.blockType).toBe(typeof parent);
   });
   
   it("should have a type set", function(){
@@ -37,7 +32,7 @@ describe("a Block", function(){
   });
   
   it("given some data in the block and the save method has been called, the data state should reflect this", function(){
-    block.$el.find('.text-block').html('Test');
+    block.$editor.find('.text-block').html('Test');
     block.save();
     expect(block.$el.data('block').data.text).toBe("Test");
   });
@@ -45,4 +40,10 @@ describe("a Block", function(){
   it("should have the block type serialized in the data of the element", function(){
     expect(block.$el.data('block').type).toBe("text");
   });
+  
+  it("should have a $dropzone element set if the dropzone is enabled", function(){
+    expect(block_drop.$dropzone).not.toBe(undefined);
+  });
+  
+  
 });

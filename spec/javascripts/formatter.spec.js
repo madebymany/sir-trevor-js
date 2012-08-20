@@ -1,4 +1,4 @@
-describe("when creating a BlockType", function(){
+describe("when creating a Formatter", function(){
   
   var Formatter;
   

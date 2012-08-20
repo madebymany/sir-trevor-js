@@ -5,7 +5,7 @@
 var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input type=\"file\" /></div><button>...or choose a file</button>";
 
 
-var ImageBlock = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
   
   title: "Image",
   className: "image",
@@ -15,20 +15,16 @@ var ImageBlock = SirTrevor.BlockType.extend({
   
   loadData: function(data){
     // Create our image tag
-    this.loading();
-    this.$dropzone.hide();
-    this.$el.html($('<img>', {
+    this.$editor.html($('<img>', {
       src: data.file.url
     }));
-    this.$el.show();
-    this.ready();
   },
   
   onBlockRender: function(){
     /* Setup the upload button */
     this.$dropzone.find('button').bind('click', halt);
     this.$dropzone.find('input').on('change', _.bind(function(ev){
-      this._super("onDrop", ev.currentTarget);
+      this.onDrop(ev.currentTarget);
     }, this));
   },
   
@@ -41,21 +37,18 @@ var ImageBlock = SirTrevor.BlockType.extend({
       this.loading();
       // Show this image on here
       this.$dropzone.hide();
-      this.$el.html($('<img>', {
+      this.$editor.html($('<img>', {
         src: urlAPI.createObjectURL(file)
       }));
-      this.$el.show();
+      this.$editor.show();
       
       // Upload!
       this.uploadAttachment(file, function(data){
         // Store the data on this block
-        var dataStruct = this.$el.data('block');
-        dataStruct.data = data;
+        this.setData(data);
         // Done
         this.ready();
       });
     }
   }
 });
-
-SirTrevor.BlockTypes.Image = new ImageBlock();

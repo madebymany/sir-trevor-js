@@ -2,7 +2,7 @@
   Block Quote
 */
 
-var BlockQuote = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
   
   title: "Quote",
   className: "block-quote",
@@ -13,8 +13,8 @@ var BlockQuote = SirTrevor.BlockType.extend({
   },
   
   loadData: function(data){
-    this.$('.text-block').html(this.instance._toHTML(data.text, this.type));
-    this.$('input').val(data.cite);
+    this.$$('.text-block').html(this.instance._toHTML(data.text, this.type));
+    this.$$('input').val(data.cite);
   },
   
   toMarkdown: function(markdown) {
@@ -22,5 +22,3 @@ var BlockQuote = SirTrevor.BlockType.extend({
   }
   
 });
-
-SirTrevor.BlockTypes.Quote = new BlockQuote();

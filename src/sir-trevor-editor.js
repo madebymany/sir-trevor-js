@@ -73,17 +73,17 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     if (this._blockTypeAvailable(type)) {
       
-     var blockType = SirTrevor.BlockTypes[type],
+     var blockType = SirTrevor.Blocks[type],
          currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
          totalBlockCounts = this.blocks.length,
          blockTypeLimit = this._getBlockTypeLimit(type);
-    
+         
      // Can we have another one of these blocks?
-     if (currentBlockCount > blockTypeLimit || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
+     if ((blockTypeLimit !== 0 && currentBlockCount > blockTypeLimit) || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
        return false;
      }
      
-     var block = new SirTrevor.Block(this, blockType, data || {});  
+     var block = new blockType(this, data || {});  
      
      if (_.isUndefined(this.blockCounts[type])) {
        this.blockCounts[type] = 0;
@@ -98,16 +98,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
        this.marker.$el.addClass('hidden');
      }
       
-     if (currentBlockCount >= blockTypeLimit) {
+     if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
        this.marker.$el.find('[data-type="' + type + '"]')
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
      } 
-     
-     // Check to see if we can re-order
-     if(currentBlockCount > 1) {
-       this.$wrapper.addClass('reorderable');
-     }
     }
   },
   
@@ -122,8 +117,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     if(_.isUndefined(this.blocks)) this.blocks = [];
     this.formatBar.hide();
     
-    if(this.blocks.length <= 1) {
-      this.$wrapper.removeClass('reorderable');
+    // Remove our inactive class if it's no longer relevant
+    if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
+      this.marker.$el.find('[data-type="' + block.type + '"]')
+        .removeClass('inactive')
+        .attr('title','Add a ' + block.type + ' block');
     }
   },
   
@@ -201,7 +199,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   */
   _getBlockTypeLimit: function(t) {
     if (this._blockTypeAvailable(t)) {
-      return (_.isUndefined(this.options.blockTypeLimits[t])) ? this.blockTypes[t].limit : this.options.blockTypeLimits[t];
+      return (_.isUndefined(this.options.blockTypeLimits[t])) ? SirTrevor.Blocks[t].prototype.limit : this.options.blockTypeLimits[t];
     }
     return 0;
   },
@@ -247,7 +245,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     These will either be set on a per Editor instance, or set on a global scope.
   */
   _setBlocksAndFormatters: function() {
-    this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.BlockTypes : this.options.blockTypes);
+    this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
     this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);    
   },
   
@@ -280,11 +278,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     // Use custom block toMarkdown functions (if any exist)
     var block;
-    if (SirTrevor.BlockTypes.hasOwnProperty(type)) {
-      block = SirTrevor.BlockTypes[type];
+    if (SirTrevor.Blocks.hasOwnProperty(type)) {
+      block = SirTrevor.Blocks[type];
       // Do we have a toMarkdown function?
-      if (!_.isUndefined(block.toMarkdown) && _.isFunction(block.toMarkdown)) {
-        markdown = block.toMarkdown(markdown);
+      if (!_.isUndefined(block.prototype.toMarkdown) && _.isFunction(block.prototype.toMarkdown)) {
+        markdown = block.prototype.toMarkdown(markdown);
       }
     }
      
@@ -322,11 +320,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     // Use custom block toHTML functions (if any exist)
     var block;
-    if (SirTrevor.BlockTypes.hasOwnProperty(type)) {
-      block = SirTrevor.BlockTypes[type];
+    if (SirTrevor.Blocks.hasOwnProperty(type)) {
+      block = SirTrevor.Blocks[type];
       // Do we have a toMarkdown function?
-      if (!_.isUndefined(block.toHTML) && _.isFunction(block.toHTML)) {
-        html = block.toHTML(html);
+      if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
+        html = block.prototype.toHTML(html);
       }
     }
     

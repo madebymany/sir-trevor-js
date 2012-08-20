@@ -1,7 +1,7 @@
 var video_drop_template = '<p>Drop video link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
 var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
 
-var Video = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Video = SirTrevor.Block.extend({ 
   
   title: "Video",
   className: "video",
@@ -9,14 +9,11 @@ var Video = SirTrevor.BlockType.extend({
   
   dropzoneHTML: video_drop_template,
   
-  loadData: function(data){
-    this.$block.find(".dropzone").hide();
-    this.$el.show();
-    
+  loadData: function(data){    
     if(data.source == "youtube" || data.source == "youtu") {
-      this.$el.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
+      this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
     } else if(data.source == "vimeo") {
-      this.$el.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
+      this.$editor.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
     }
   },
   
@@ -26,7 +23,7 @@ var Video = SirTrevor.BlockType.extend({
         val = input.val();
     
     // Pass this to the same handler as onDrop
-    this._super("handleDropPaste", val);
+    this.handleDropPaste(val);
   },
   
   handleDropPaste: function(url){
@@ -52,20 +49,17 @@ var Video = SirTrevor.BlockType.extend({
         }
         
         // Save the data
-        var dataStruct = this.$el.data('block');
-        dataStruct.data = data;
+        this.setData(data);
         
         // Render  
-        this._super("loadData", data);  
+        this._loadData();  
       }
     }
     
   },
-
+  
   onDrop: function(transferData){
     var url = transferData.getData('text/plain');
-    this._super("handleDropPaste", url);
+    this.handleDropPaste(url);
   }
 });
-
-SirTrevor.BlockTypes.Video = new Video();
