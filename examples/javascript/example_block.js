@@ -1,10 +1,10 @@
 /*
-  An example of a SirTrevor.BlockType
+  An example of a SirTrevor.Block
   --
   Author: C J Bell @ madebymany
 */
 
-var Example = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Example = SirTrevor.Block.extend({ 
   
   // String; the title displayed in the toolbar
   title: "Example",            
@@ -33,36 +33,26 @@ var Example = SirTrevor.BlockType.extend({
   // Not required unless dropEnabled is true
   dropzoneHTML: "<div class='dropzone'><p>Drop content here yo!</p></div>",
   
-  // Element shorthands (on a Block)
+  // Element shorthands
   // --
   // this.$el 
   // this.el
-  // this.$block
+  // this.$editor
   // this.$dropzone
   // this.$()       (same as this.$el.find(''))
+  // this.$$()      (same as this.$editor.find(''))
 
-  // Bound variables (on a Block)
+  // Bound variables
   // --
   // this.instance  (A SirTrevor.Editor instance)
-  // this.blockType (A SirTrevor.BlockType)
   
-  // Helper methods (on a Block)
+  // Helper methods 
   // --
-  // this._super(function, args)
   // this.save()
   // this.loading() 
   // this.ready()
   // this.uploadAttachment(file, callback) 
   // this.remove()
-  
-  // Extendable functions
-  // --
-  // These all have 'this' bound to the currently executing block
-  // This means that any other methods you define on this class *won't* be accessible through 'this'
-  // For example:  
-  extraFunction: function(option) {},
-  // Will only be able to be called from one of these functions via a 'super' call.
-  // this._super("extraFunction", option); 
   
   // Function; provide a custom validator.
   // By default, we use a validator that checks for a class of 'required' on each input. 
@@ -138,7 +128,3 @@ var Example = SirTrevor.BlockType.extend({
     return html;
   }
 });
-
-// Add this block type to the available BlockTypes
-// This is imperative in order to be able to use this block.
-SirTrevor.BlockTypes.Example = new Example();
