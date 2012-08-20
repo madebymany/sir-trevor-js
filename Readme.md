@@ -1,7 +1,5 @@
 # Sir Trevor JS
 
-_Intro Needed_
-
 A rebuild of the ITV news editor, with the Javascript pulled out of Ruby gem and separated into it's own project for easy use with any server-side language. 
 
 ## Features
@@ -49,7 +47,7 @@ You can limit the types of Blocks in the editor by passing a `blockTypes` array 
   $(function(){
     new SirTrevor.Editor({
       el: $('.sir-trevor'),
-      blockTypes: ['TextBlock', 'BlockQuote'] // This instance will now only have these types available to it
+      blockTypes: ['Text', 'Quote'] // This instance will now only have these types available to it
     });
   });
 </script>
@@ -62,7 +60,7 @@ A `SirTrevor.Editor` accepts the following options:
 ``` javascript  
 {
   baseCSSClass: "sir-trevor",
-  defaultType: "TextBlock",
+  defaultType: "Text",
   spinner: {
     className: 'spinner',
     lines: 9, 
@@ -113,9 +111,9 @@ Once all blocks have run through this sequence the complete JSON state is serial
 
 ## Structure 
 
-### BlockTypes
+### Blocks
 
-The editor itself is made up of Blocks. Sir Trevor comes bundled with the following BlockTypes out of the box:
+The editor itself is made up of Blocks. Sir Trevor comes bundled with the following Blocks out of the box:
 
 - Text
 - Quote
@@ -124,10 +122,6 @@ The editor itself is made up of Blocks. Sir Trevor comes bundled with the follow
 - Gallery
 
 There are more blocks available in the dedicated Blocks repository, [available here](https://github.com/madebymany/sir-trevor-blocks) 
-
-### Blocks
-
-A Block will always belong to a BlockType and inherits some of the methods and properties of the BlockType. A Block will be rendered when the user selects a new BlockType from the marker bar, or when we're rendering the content from JSON. 
 
 ### Formatters
 
@@ -140,16 +134,16 @@ Rich text block types (Text, Quote, Lists etc) use an *ultra* simple formatting 
 
 ## Extending Sir Trevor
 
-For an exceptionally well commented version of a BlockType, check out our [example BlockType](https://github.com/madebymany/sir-trevor-js/blob/master/examples/javascript/example_blocktype.js) that you can use a base.
+For a well commented version of a Block, check out our [example Block](https://github.com/madebymany/sir-trevor-js/blob/master/examples/javascript/example_block.js) that you can use a base.
 
-### Creating your own BlockTypes
+### Creating your own Blocks
 
 A Block in it's simplest form is made up of some HTML markup, a function that tells it how to render from the JSON data (`loadData`) and a function that tells it how to get serialised into JSON (`toData`).  
 
 A BlockType is defined as follows:
 
 ``` javascript
-var NewBlockType = SirTrevor.BlockType.extend({ 
+SirTrevor.Blocks.Example = SirTrevor.Block.extend({ 
   // Variables to be modfified
   
   className: 'new-block', // String; CSS class given to block
@@ -160,9 +154,6 @@ var NewBlockType = SirTrevor.BlockType.extend({
   toolbarEnabled: true, // Boolean; show this block in the new Blocks toolbar
   dropEnabled: false, // Boolean; Enable drop capabilities for this block
 
-  // Functions to be extended
-  // Note, these functions all have 'this' bound to the Block and not the BlockType
-
   loadData: function(data) {},
   toData: function(){},
   onDrop: function(transferData){},
@@ -170,21 +161,14 @@ var NewBlockType = SirTrevor.BlockType.extend({
   
   onBlockRender: function(){},
   beforeBlockRender: function(){},
-  onBlockActivated: function(){},
   
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
   
 });
 ```
-
-Once you have extended the `BlockType` object you have to make it available to SirTrevor by adding it to the BlockTypes object
-
-``` javascript
-SirTrevor.BlockTypes.NewBlock = new NewBlockType();     
-``` 
     
-#### `loadData`
+#### The loadData function
 
 By default we don't provide a `loadData` method for each Block Type, this is because each block will have different requirements for how to transform the JSON data into the block to be edited. 
 
@@ -194,29 +178,44 @@ An example `loadData` function is as follows:
 
 ``` javascript
 loadData: function(data) {
-  this.$('input').val(data.cite); // See 'Elements' below for more on this.$()
+  this.$$('input').val(data.cite); // See 'Elements' below for more on this.$$()
 }
 ```
 
-Remember, loadData is *only* ever fired if data exists on the block when re-rendering. 
+Remember, loadData is fired if data exists on the block when re-rendering. 
 
-#### `toData`
+#### The toData function
 
 `toData` is designed to take the block and all of it's inputs and save the blocks state as JSON on a data attribute on the block. By default the `toData` function will work with a variety of inputs, content editable blocks and selects. However, the `toData` function as it stands may not meet your block requirements, so it may be necessary to override this function.  
+
+#### Saving / Retrieving data on the Block
+
+We provide some helper methods for saving and retrieving data on the Block. 
+
+`setData(data)` will save the data provided onto the block and update the data reference on the block
+`getData()` will return you an object containing the current state of data on the block
+`to_json()` will give you the blocks data and type, formatted for saving to JSON
 
 #### Elements
 
 When we render a block, we set quite a few element shorthands.  
 
 ``` javascript
-$el       // Refers to the inner portion of the block (usually the 'editorHTML' you provided)
+$el       // Refers to whole block
 el        // $el[0]
-$block    // The entire block, including the outer
+$editor    // The inner editor portion of the block, where your editorHTML is wrapped up
 $dropzone // The dropzone HTML
 ``` 
     
-Also, we set a shorthand for a find method on the `$el`
+Also, we set shorthands for a selecting elements
 
 ``` javascript
-$('selector')       // equivilant to $el.find('selector')
+$('selector')       // equivalent to $el.find('selector')
+$$('selector')      // equivalent to $editor.find('selector')
 ```    
+
+#### Uploading
+
+Out of the box there is a very generic uploading function that should allow you to take some form data and send it up to your server. 
+
+
