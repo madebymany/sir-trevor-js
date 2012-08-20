@@ -8,6 +8,7 @@ SirTrevor.Blocks.Text = SirTrevor.Block.extend({
   
   title: "Text",
   className: "text",
+  limit: 0,
   
   editorHTML: function() {
     return _.template(tb_template, this);

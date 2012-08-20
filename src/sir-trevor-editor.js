@@ -79,7 +79,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
          blockTypeLimit = this._getBlockTypeLimit(type);
          
      // Can we have another one of these blocks?
-     if (currentBlockCount > blockTypeLimit || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
+     if ((blockTypeLimit !== 0 && currentBlockCount > blockTypeLimit) || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
        return false;
      }
      
@@ -98,7 +98,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
        this.marker.$el.addClass('hidden');
      }
       
-     if (currentBlockCount >= blockTypeLimit) {
+     if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
        this.marker.$el.find('[data-type="' + type + '"]')
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
