@@ -3,7 +3,7 @@ var Block = SirTrevor.Block = function(instance, data) {
   this.instance = instance;
   this.type = this._getBlockType();
   this.data = data;
-  
+  this.uploadsCount = 0;
   this.blockID = _.uniqueId(this.className + '-');
   
   this._setBaseElements();
@@ -135,7 +135,7 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   remove: function() {
-    this.$block.remove();
+    this.$el.remove();
   },
 
   /* Save the state of this block onto the blocks data attr */
@@ -254,7 +254,9 @@ _.extend(Block.prototype, FunctionBind, {
     });
     
     // Set
-    this.setData(dataObj);
+    if(!_.isEmpty(dataObj)) {
+      this.setData(dataObj);
+    }
   },
   
   /*

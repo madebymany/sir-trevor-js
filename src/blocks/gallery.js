@@ -150,7 +150,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
           this.uploadAttachment(file, function(data){
             
             this.uploadsCount -= 1;
-            var dataStruct = this.getData();
+            var dataStruct = this.$el.data('block');
             data = { type: "image", data: data };
             
             // Add to our struct
@@ -158,6 +158,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
               dataStruct.data = [];
             }
             dataStruct.data.push(data);
+            this.$el.data('block',dataStruct);
             
             // Pass this off to our render gallery thumb method
             this.renderGalleryThumb(data);
