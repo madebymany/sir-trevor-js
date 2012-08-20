@@ -2,17 +2,11 @@ describe("a Block", function(){
   
   var element = $("<textarea>"),
       editor = new SirTrevor.Editor({ el: element }),
-      parent = SirTrevor.BlockTypes.Text,
-      block = new SirTrevor.Block(editor, parent, {}),
-      block_two = new SirTrevor.Block(editor, parent, { });
+      block = new SirTrevor.Blocks.Text(editor,{}),
+      block_two = new SirTrevor.Blocks.Text(editor,{});
       
   it("should be able to be created", function(){
     expect(block).not.toBe(undefined);
-  });
-  
-  it("should have a parent blockType", function(){
-    expect(block.blockType).toBe(parent);
-    expect(typeof block.blockType).toBe(typeof parent);
   });
   
   it("should have a type set", function(){
