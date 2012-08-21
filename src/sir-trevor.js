@@ -42,6 +42,7 @@
     },
     blockLimit: 0,
     blockTypeLimits: {},
+    required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/'
   }; 
@@ -94,6 +95,8 @@
     _.each(SirTrevor.instances, function(inst, i) {
       errors += inst.onFormSubmit();
     });
+    
+    SirTrevor.log("Total errors: " + errors);
     
     if(errors > 0) {
       ev.preventDefault();

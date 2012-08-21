@@ -61,9 +61,10 @@ _.extend(FormatBar.prototype, FunctionBind, {
   
   onWrapperClick: function(ev){
     var item = $(ev.target),
-        parent = item.parent();
+        parent = item.parent(),
+        parents = item.parents('text-block');
         
-    if(!(item.hasClass(this.className) || parent.hasClass(this.className) || item.hasClass('text-block') || parent.hasClass('text-block'))) {
+    if (!(item.hasClass(this.className) || parent.hasClass(this.className) || item.hasClass('text-block') || parent.length > 0)) {
       this.hide();
     }
   },

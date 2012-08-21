@@ -14,6 +14,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.formatters = {};
   this.blockCounts = {}; // Cached block type counts
   this.blocks = []; // Block references
+  this.errors = [];
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId(this.options.baseCSSClass + "-");
   
@@ -26,6 +27,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
       this.onEditorRender = this.options.onEditorRender;
     }
     
+    this._setRequired();
     this._setBlocksAndFormatters();
     this._bindFunctions();
     this.from_json();
@@ -148,6 +150,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     var blockLength, block, result, errors = 0;
 
+    this.formatBar.hide();
+    this.removeErrors();
     this.options.blockStore.data = [];
     
     // Loop through blocks to validate
@@ -158,7 +162,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       
       if (!_.isUndefined(_block) || !_.isEmpty(_block) || typeof _block == SirTrevor.Block) {
         // Validate our block
-        if(_block.validate())
+        if(_block._validate())
         {
           var data = _block.save();
           if(!_.isEmpty(data.data)) {
@@ -174,9 +178,73 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     };
     _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
 
+    // Validate against our required fields (if there are any)
+    if (this.required) {
+      _.each(this.required, _.bind(function(type) {
+        if (this._blockTypeAvailable(type)) {
+          // Valid block type to validate against
+          if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {
+            
+            this.errors.push({ text: "You must have a block of type " + type });
+            
+            SirTrevor.log("Failed validation on required block type " + type);
+            errors++;
+            
+          } else {
+            // We need to also validate that we have some data of this type too. 
+            // This is ugly, but necessary for proper validation on blocks that don't have required fields.
+            var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.data)); });
+            
+            if (blocks.length === 0) {
+              this.errors.push({ text: "A required block type " + type + " is empty" });
+              errors++;
+              SirTrevor.log("A required block type " + type + " is empty");
+            }
+            
+          }
+        }
+      }, this));
+    }
+
     // Empty or JSON-ify
     this.$el.val((this.options.blockStore.data.length === 0) ? '' : this.to_json());
+    
+    if (errors > 0) this.renderErrors();
+    
     return errors;
+  },
+  
+  renderErrors: function() {
+    if (this.errors.length > 0) {
+      
+      if (_.isUndefined(this.$errors)) {
+        this.$errors = $("<div>", {
+          class: this.options.baseCSSClass + "-errors",
+          html: "<p>You have the following errors: </p><ul></ul>"
+        });
+        this.$outer.prepend(this.$errors);
+      }
+      
+      var list = this.$errors.find('ul');
+      
+      _.each(this.errors, _.bind(function(error) {
+        list.append($("<li>", {
+          class: "error-msg",
+          html: error.text
+        }));
+      }, this));
+      
+      this.$errors.show();
+    }
+  },
+  
+  removeErrors: function() {
+    if (this.errors.length > 0) {
+      // We have old errors to remove
+      this.$errors.find('ul').html(''); 
+      this.$errors.hide();
+      this.errors = [];
+    }
   },
   
   /*
@@ -255,9 +323,13 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
                     'class': this.options.baseCSSClass + " " + this.options.baseCSSClass + "_dragleave",
                     dropzone: 'copy link move'
                   })
-                );
+                )
+              .wrap($("<div>", {
+                class: this.options.baseCSSClass + "-blocks"
+              }));
       
-    this.$wrapper = this.$form.find('#' + this.ID); 
+    this.$outer = this.$form.find('#' + this.ID); 
+    this.$wrapper = this.$outer.find("." + this.options.baseCSSClass + "-blocks");
     return true;
   },
   
@@ -269,6 +341,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   _setBlocksAndFormatters: function() {
     this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
     this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);    
+  },
+  
+  /* Get our required blocks (if any) */
+  _setRequired: function() {
+    this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
   },
   
   /*

@@ -84,8 +84,8 @@ _.extend(Marker.prototype, FunctionBind, {
       
       var blockIterator = function(block, index) {
         block = $(block);
-        var block_top = block.position().top - 35,
-            block_bottom = block.position().top + block.outerHeight(true) - 35;
+        var block_top = block.position().top - 40,
+            block_bottom = block.position().top + block.outerHeight(true) - 40;
     
         if(block_top <= mouse_enter && mouse_enter < block_bottom) {
           closest_block = block;

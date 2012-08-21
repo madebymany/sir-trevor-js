@@ -1,10 +1,16 @@
 /* Basic Sir Trevor styles */
 body { margin: 0; font-size: 1em; line-height: 1.4; }
+
 .sir-trevor {
-  position: relative;
-  padding: 45px 0;
+  padding: 0;
   z-index: 1;
 }
+
+.sir-trevor-blocks {
+  padding: 40px 0;
+  position: relative;
+}
+
 /* Typography reset */
 .sir-trevor { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 .sir-trevor , .sir-trevor button, .sir-trevor input, .sir-trevor select, .sir-trevor textarea, .sir-trevor blockquote { font-family: "Helvetica Neue", 'Arial', sans-serif; color: #222; }
@@ -23,14 +29,14 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor .sir-trevor-formatting-control {
   background: #e9e9e9;
   border: 1px solid #dadada;
-  padding: 10px 0;
+  padding: 11px 0;
   text-align: center;
   position: absolute;
   width: 100%;
   z-index: 102;
   display: box;
   box-sizing: border-box;
-  margin: -41px 0 0 0;
+  margin: -44px 0 0 0;
   top: 0;
 }
 
@@ -64,7 +70,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   color: #9B8816;
   position: absolute;
   width: 100%;
-  margin-top: -41px;
+  margin-top: -44px;
   z-index: 101;
 }
 
@@ -135,7 +141,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 .sir-trevor .sir-trevor-block {
   position: relative;
-  margin: 0 0 22px 0;
+  margin: 0 0 40px 0;
   font-size: 14px;
   overflow: hidden;
 }
@@ -493,6 +499,30 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   margin-top: 7px;
 }
 
+/* errors */
+
+.sir-trevor-errors {
+  font-size: 14px;
+  padding: 15px 40px;
+  color: #B94A48;
+  background-color: #F2DEDE;
+  border-color: #EED3D7;
+}
+
+.sir-trevor-errors p {
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.sir-trevor-errors ul {
+  margin-bottom: 0;
+}
+
+.sir-trevor-errors li {
+  margin: 0; padding: 0;
+}
+
 /* Generic fade-in ready function */
 .sir-trevor .sir-trevor-block,
 .sir-trevor .sir-trevor-marker,
@@ -504,7 +534,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
     -o-transition: opacity 0.3s ease;
     transition: opacity 0.3s ease;
 }
-.sir-trevor.sir-trevor-ready .sir-trevor-item-ready {
+.sir-trevor .sir-trevor-ready .sir-trevor-item-ready {
   opacity: 1;
 }
 
@@ -513,3 +543,12 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 .media .img {float:left; margin-right: 20px;}
 .media .img img{display:block;}
 .media .imgExt{float:right; margin-left: 20px;}
+
+.sir-trevor .extended_input {
+  position: relative;
+}
+
+.sir-trevor .extended_input .count {
+  font-size: 11px;
+  margin: 0 0 0 5px;
+}
