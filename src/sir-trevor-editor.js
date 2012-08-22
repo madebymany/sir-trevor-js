@@ -162,7 +162,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       
       if (!_.isUndefined(_block) || !_.isEmpty(_block) || typeof _block == SirTrevor.Block) {
         // Validate our block
-        if(_block._validate())
+        if(_block._validate() || SirTrevor.SKIP_VALIDATION)
         {
           var data = _block.save();
           if(!_.isEmpty(data.data)) {
@@ -179,7 +179,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
 
     // Validate against our required fields (if there are any)
-    if (this.required) {
+    if (this.required && !SirTrevor.SKIP_VALIDATION) {
       _.each(this.required, _.bind(function(type) {
         if (this._blockTypeAvailable(type)) {
           // Valid block type to validate against

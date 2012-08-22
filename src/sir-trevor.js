@@ -5,7 +5,8 @@
    
   SirTrevor = root.SirTrevor = {}; 
   SirTrevor.DEBUG = true;
-   
+  SirTrevor.SKIP_VALIDATION = false;
+  
   /* 
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
@@ -50,6 +51,7 @@
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
+  
   
   var formBound = false; // Flag to tell us once we've bound our submit event
   
@@ -101,6 +103,14 @@
     if(errors > 0) {
       ev.preventDefault();
     } 
+  };
+  
+  SirTrevor.runOnAllInstances = function(method) {
+    if (_.has(SirTrevor.Editor.prototype, method)) {
+      _.invoke(SirTrevor.instances, method);
+    } else {
+      SirTrevor.log("method doesn't exist");
+    }
   };
 
 }(jQuery, _));
