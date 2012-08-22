@@ -28,21 +28,16 @@ function isElementNear($element, distance, event) {
 
 (function($){
   function dragEnter(e) {
-    $(e.target).addClass("dragOver");
     halt(e);
-    return false;
   }
 
   function dragOver(e) {
     e.originalEvent.dataTransfer.dropEffect = "copy";
     halt(e);
-    return false;
   }
 
   function dragLeave(e) {
-    $(e.target).removeClass("dragOver");
     halt(e);
-    return false;
   }
 
   $.fn.dropArea = function(){
@@ -51,4 +46,12 @@ function isElementNear($element, distance, event) {
          bind("dragleave", dragLeave);
     return this;
   };
+  
+  $.fn.noDropArea = function(){
+    this.unbind("dragenter").
+         unbind("dragover").
+         unbind("dragleave");
+    return this;
+  };
+  
 })(jQuery);

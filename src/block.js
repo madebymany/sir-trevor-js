@@ -93,8 +93,10 @@ _.extend(Block.prototype, FunctionBind, {
       .bind('drop', halt)
       .bind('mouseover', halt)
       .bind('mouseout', halt)
+      .bind('dragleave', halt)
       .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
-      .bind('mouseout', function(ev){ $(this).removeClass('active'); });
+      .bind('mouseout', function(ev){ $(this).removeClass('active'); })
+      .bind('dragover', function(ev){ ev.preventDefault(); });
 
     // Handle pastes
     this._initPaste();
@@ -276,8 +278,8 @@ _.extend(Block.prototype, FunctionBind, {
 
   onDragStart: function(ev){
     var item = $(ev.target);
-    ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
     ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
+    ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
     item.parent().addClass('dragging');
     this.instance.formatBar.hide();
   },
@@ -380,6 +382,7 @@ _.extend(Block.prototype, FunctionBind, {
         types = e.dataTransfer.types,
         type, data = [];
     
+    this.instance.marker.hide();
     this.$dropzone.removeClass('dragOver');
         
     /*
@@ -409,6 +412,7 @@ _.extend(Block.prototype, FunctionBind, {
       'class': this.instance.options.baseCSSClass + "-block", 
       id: this.blockID,
       "data-type": this.type,
+      "data-instance": this.instance.ID,
       html: editor
     });
     
@@ -449,11 +453,9 @@ _.extend(Block.prototype, FunctionBind, {
   
   _initReordering: function() {
     this.$('.handle')
-      .dropArea()
       .bind('dragstart', this.onDragStart)
-      .bind('drag', this.instance.marker.show)
       .bind('dragend', this.onDragEnd)
-      .bind('dragleave', function(){});
+      .bind('drag', this.instance.marker.show);
   },
   
   _initFormatting: function() {

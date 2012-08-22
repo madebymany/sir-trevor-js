@@ -52,19 +52,20 @@ _.extend(Marker.prototype, FunctionBind, {
     // Do we have any buttons?
     if(this.$btns.children().length === 0) this.$el.addClass('hidden');
     
-    // Bind the drop function onto here
-    this.$el.dropArea();
-    this.$el.bind('drop', this.onDrop);
-    
     // Bind our marker to the wrapper
     this.instance.$wrapper.bind('mouseover', this.show);
     this.instance.$wrapper.bind('mouseout', this.hide);
+    this.instance.$wrapper.bind('dragover', this.show);    
+    this.$el.bind('dragover',halt);
+    
+    this.bindDrop();
     
     this.$el.addClass('sir-trevor-item-ready');    
   },
     
   show: function(ev){ 
-    if(ev.type == 'drag') {
+    
+    if(ev.type == 'drag' || ev.type == 'dragover') {
       this.$p.text(this.options.dropText);
       this.$btns.hide();
     } else {
@@ -92,14 +93,14 @@ _.extend(Marker.prototype, FunctionBind, {
         }
       };
       _.each(wrapper.find(blockClass), _.bind(blockIterator, this));
-      
+            
       // Position it
       if (closest_block) {
-        closest_block.before(this.$el);
+        this.$el.insertBefore(closest_block);
       } else if(mouse_enter > 0) {
-        wrapper.find(blockClass).last().after(this.$el);
+        this.$el.insertAfter(wrapper.find(blockClass).last());
       } else {
-        wrapper.find(blockClass).first().before(this.$el);
+        this.$el.insertBefore(wrapper.find(blockClass).first());
       }
     }
     this.$el.addClass('sir-trevor-item-ready');
@@ -109,14 +110,20 @@ _.extend(Marker.prototype, FunctionBind, {
     this.$el.removeClass('sir-trevor-item-ready'); 
   },
   
+  bindDrop: function() {
+    // Bind the drop function onto here
+    this.instance.$outer.dropArea();
+    this.instance.$outer.bind('drop', this.onDrop);
+  },
+  
   onDrop: function(ev){
-    halt(ev);
-    
-    var marker = $(ev.target),
+    ev.preventDefault();
+       
+    var marker = this.$el,
         item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
         block = $('#' + item_id);
         
-    if (!_.isUndefined(item_id) && !_.isEmpty(block)) {
+    if (!_.isUndefined(item_id) && !_.isEmpty(block) && block.attr('data-instance') == this.instance.ID) {
       marker.after(block);
     }
   },
@@ -133,6 +140,14 @@ _.extend(Marker.prototype, FunctionBind, {
     }
     
     this.instance.createBlock(button.attr('data-type'), {});
+  },
+  
+  move: function(top) {
+    this.$el.css({
+      top: top
+    });
+    this.$el.show();
+    this.$el.addClass('sir-trevor-item-ready');
   }
 });
 
