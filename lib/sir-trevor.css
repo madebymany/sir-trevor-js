@@ -214,7 +214,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 /* Generic block styles */
 
-.sir-trevor.sir-trevor-ready .sir-trevor-block.loading {
+.sir-trevor .sir-trevor-ready .sir-trevor-block.loading {
   opacity: 0.6;
 }
 
@@ -506,7 +506,6 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   padding: 15px 40px;
   color: #B94A48;
   background-color: #F2DEDE;
-  border-color: #EED3D7;
 }
 
 .sir-trevor-errors p {
