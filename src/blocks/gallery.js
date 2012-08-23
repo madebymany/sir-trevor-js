@@ -147,7 +147,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
           this.$editor.show();
           
           /* Upload */
-          this.uploadAttachment(file, function(data){
+          this.uploader(file, function(data){
             
             this.uploadsCount -= 1;
             var dataStruct = this.$el.data('block');

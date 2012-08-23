@@ -23,14 +23,15 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
     this.marker = new SirTrevor.Marker(this.options.marker, this);
     this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
     
-    if(this.options.onEditorRender) {
+    if(this.options.onEditorRender && _.isFunction(this.options.onEditorRender)) {
       this.onEditorRender = this.options.onEditorRender;
     }
     
     this._setRequired();
     this._setBlocksAndFormatters();
     this._bindFunctions();
-    this.from_json();
+    
+    this.store("create", this); // Make our storage
     this.build();
     
     SirTrevor.instances.push(this); // Store a reference to this instance
@@ -56,18 +57,24 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     this.marker.render();
     this.formatBar.render();
     
-    if (this.options.blockStore.data.length === 0) {
+    var store = this.store("read", this);
+    
+    if (store.data.length === 0) {
       // Create a default instance
       this.createBlock(this.options.defaultType);
     } else {
       // We have data. Build our blocks from here.
-      _.each(this.options.blockStore.data, _.bind(function(block){
+      _.each(store.data, _.bind(function(block){
         this.createBlock(block.type, block.data);
       }, this));
     }
         
     this.$wrapper.addClass('sir-trevor-ready');
     this.onEditorRender();
+  },
+  
+  store: function(){
+    return SirTrevor.editorStore.apply(this, arguments);
   },
   
   /*
@@ -152,7 +159,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
 
     this.formatBar.hide();
     this.removeErrors();
-    this.options.blockStore.data = [];
+    // Reset our store
+    this.store("reset", this);
     
     // Loop through blocks to validate
     var blockIterator = function(block,index) {
@@ -164,10 +172,10 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         // Validate our block
         if(_block._validate() || SirTrevor.SKIP_VALIDATION)
         {
-          var data = _block.save();
-          if(!_.isEmpty(data.data)) {
+          var store = _block.save();
+          if(!_.isEmpty(store.data)) {
             SirTrevor.log("Adding data for block " + _block.blockID + " to block store");
-            this.options.blockStore.data.push(data);
+            this.store("add", this, { data: store });
           }
         } else { 
           SirTrevor.log("Block " + _block.blockID + " failed validation");
@@ -193,7 +201,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
           } else {
             // We need to also validate that we have some data of this type too. 
             // This is ugly, but necessary for proper validation on blocks that don't have required fields.
-            var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.data)); });
+            var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
             
             if (blocks.length === 0) {
               this.errors.push({ text: "A required block type " + type + " is empty" });
@@ -206,8 +214,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       }, this));
     }
 
-    // Empty or JSON-ify
-    this.$el.val((this.options.blockStore.data.length === 0) ? '' : this.to_json());
+    // Save it
+    this.store("save", this);
     
     if (errors > 0) this.renderErrors();
     
@@ -245,38 +253,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       this.$errors.hide();
       this.errors = [];
     }
-  },
-  
-  /*
-    Turn our JSON blockStore into a string
-  */  
-  to_json: function() {
-    return JSON.stringify(this.options.blockStore);
-  },
-  
-  /* 
-    Try and load our data from the defined element.
-    Store it on our blockStore property for later re-use.
-  */
-  from_json: function() {
-    var content = this.$el.val();
-    this.options.blockStore = { data: [] };
-    
-    if (content.length > 0) {
-      try{
-        
-        // Ensure the JSON string has a data element that's an array
-        var str = JSON.parse(content);
-        
-        if (!_.isUndefined(str.data) && (_.isArray(str.data) && !_.isEmpty(str.data))) {
-          // Set it
-          this.options.blockStore = str;
-        } 
-      } catch(e) {
-        console.log('Sorry there has been a problem with parsing the JSON');
-        console.log(e);
-      }
-    } 
   },
   
   onEditorRender: function(){},

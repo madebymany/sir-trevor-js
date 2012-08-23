@@ -53,12 +53,15 @@ _.extend(Marker.prototype, FunctionBind, {
     if(this.$btns.children().length === 0) this.$el.addClass('hidden');
     
     // Bind our marker to the wrapper
-    this.instance.$wrapper.bind('mouseover', this.show);
-    this.instance.$wrapper.bind('mouseout', this.hide);
-    this.instance.$wrapper.bind('dragover', this.show);    
+    this.instance.$outer.bind('mouseover', this.show);
+    this.instance.$outer.bind('mouseout', this.hide);
+    this.instance.$outer.bind('dragover', this.show);    
     this.$el.bind('dragover',halt);
     
-    this.bindDrop();
+    // Bind the drop function onto here
+    this.instance.$outer.dropArea();
+    this.instance.$outer.bind('dragleave', this.hide);    
+    this.instance.$outer.bind('drop', this.onDrop);
     
     this.$el.addClass('sir-trevor-item-ready');    
   },
@@ -108,12 +111,6 @@ _.extend(Marker.prototype, FunctionBind, {
 
   hide: function(ev){ 
     this.$el.removeClass('sir-trevor-item-ready'); 
-  },
-  
-  bindDrop: function() {
-    // Bind the drop function onto here
-    this.instance.$outer.dropArea();
-    this.instance.$outer.bind('drop', this.onDrop);
   },
   
   onDrop: function(ev){

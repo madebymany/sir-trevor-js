@@ -13,11 +13,7 @@
   */
   
   SirTrevor.DEFAULTS = {
-    
     baseCSSClass: "sir-trevor",
-    blockStore: {
-      data: []
-    },
     defaultType: "Text",
     spinner: {
       className: 'spinner',

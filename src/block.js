@@ -2,10 +2,13 @@ var Block = SirTrevor.Block = function(instance, data) {
 
   this.instance = instance;
   this.type = this._getBlockType();
-  this.data = data;
+  
+  this.store("create", this, { data: data }); 
+  
+  //this.data = data;
   this.uploadsCount = 0;
   this.blockID = _.uniqueId(this.className + '-');
-  
+    
   this._setBaseElements();
   this._bindFunctions();
   
@@ -62,6 +65,10 @@ _.extend(Block.prototype, FunctionBind, {
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
   
+  store: function(){
+    return SirTrevor.blockStore.apply(this, arguments);
+  },
+  
   render: function() {
     
     this.beforeBlockRender();
@@ -77,7 +84,9 @@ _.extend(Block.prototype, FunctionBind, {
     }
     
     // Has data already?
-    if (!_.isUndefined(this.data) && !_.isEmpty(this.data)) {
+    var currentData = this.getData();
+    
+    if (!_.isUndefined(currentData.data) && !_.isEmpty(currentData.data)) {
       this._loadData();
     }
     
@@ -120,7 +129,7 @@ _.extend(Block.prototype, FunctionBind, {
     }
     
     // Focus if we're adding an empty block
-    if (_.isEmpty(this.data)) {
+    if (_.isEmpty(currentData.data)) {
       var inputs = this.$$('[contenteditable="true"], input');
       if (inputs.length > 0 && !this.dropEnabled) {
         inputs[0].focus();
@@ -144,36 +153,17 @@ _.extend(Block.prototype, FunctionBind, {
 
   /* Save the state of this block onto the blocks data attr */
   save: function() {
-    var data = this.getData();
-    
-    if (_.isUndefined(data)) {
-      // Create our data object on the element
-      this.$el.data('block', this.to_json());
-    } else {
-      // We need to grab the state and save it here.
-      this.toData();
-    }
-    return this.getData();
+    this.toData();
+    return this.store("read", this);
   },
   
   getData: function() {
-    return this.$el.data('block');
+    return this.store("read", this).data;
   },
   
   setData: function(data) {
     SirTrevor.log("Setting data for block " + this.blockID);
-    
-    var dataObj = this.getData();
-    dataObj.data = data;
-    // Update our static reference too
-    this.data = data;
-  },
-  
-  to_json: function(data) {
-    return {
-      type: this.type.toLowerCase(),
-      data: this.data
-    };
+    this.store("save", this, { data: data });
   },
   
   loading: function() {
@@ -313,31 +303,8 @@ _.extend(Block.prototype, FunctionBind, {
     Designed to handle any attachments
   */
   
-  uploadAttachment: function(file, callback){
-    
-    var uid  = [this.instance.ID, (new Date()).getTime(), 'raw'].join('-');
-    
-    var data = new FormData();
-    
-    data.append('attachment[name]', file.name);
-    data.append('attachment[file]', file);
-    data.append('attachment[uid]', uid);
-    
-    var callbackSuccess = function(data){
-      if (!_.isUndefined(callback) && _.isFunction(callback)) {
-        _.bind(callback, this)(data); // Invoke with a reference to 'this' (the block)
-      }
-    };
-    
-    $.ajax({
-      url: this.instance.options.uploadUrl,
-      data: data,
-      cache: false,
-      contentType: false,
-      processData: false,
-      type: 'POST',
-      success: _.bind(callbackSuccess, this)
-    });
+  uploader: function(file, callback){
+    SirTrevor.fileUploader(this, file, callback);
   },
   
   /* Private methods */
@@ -353,7 +320,7 @@ _.extend(Block.prototype, FunctionBind, {
       this.$editor.show();
     }
     
-    this.loadData(this.data);
+    this.loadData(this.getData());
     this.ready();
   },
   
