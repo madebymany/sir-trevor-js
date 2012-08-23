@@ -86,7 +86,7 @@ _.extend(Block.prototype, FunctionBind, {
     // Has data already?
     var currentData = this.getData();
     
-    if (!_.isUndefined(currentData.data) && !_.isEmpty(currentData.data)) {
+    if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
       this._loadData();
     }
     
@@ -349,6 +349,7 @@ _.extend(Block.prototype, FunctionBind, {
         types = e.dataTransfer.types,
         type, data = [];
     
+    this.instance.formatBar.hide();
     this.instance.marker.hide();
     this.$dropzone.removeClass('dragOver');
         

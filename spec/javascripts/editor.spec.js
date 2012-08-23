@@ -12,9 +12,12 @@ describe("a SirTrevor.Editor instance", function(){
         defaultCSSClass: "test-class", 
         blockTypeLimits: { 
           "Text": 1 
-        } 
+        },
+        onEditorRender: function(){ return "Test"; } 
       }
     );
+    
+    
     
   });
   
@@ -90,5 +93,27 @@ describe("a SirTrevor.Editor instance", function(){
     expect(editor_with_options.blockCounts[type]).toBe(2); // And another block
     
   });
+  
+  it("should have an onEditorRender if the function was provided", function(){
+    expect(editor.onEditorRender).toBe(undefined);
+    expect(editor_with_options.onEditorRender).not.toBe(undefined);
+    expect(editor_with_options.onEditorRender()).toBe("Test");
+  });
+  
+  it("should add a block to the blocks array when createBlocks is called", function(){
+    var currentBlockCount = editor_with_options.blocks.length;
+    editor_with_options.createBlock("Image", {});
+    expect(editor_with_options.blocks.length).toBe(currentBlockCount + 1);
+  });
+  
+  it("should remove a block from the blocks array when removeBlock is called", function(){
+    editor_with_options.createBlock("Text", {});
+    var block = editor_with_options.blocks[1];
+    expect(block).not.toBe(undefined);
+    editor_with_options.removeBlock(block);
+    expect(editor_with_options.blocks[1]).toBe(undefined);
+  });
+  
+  
   
 });

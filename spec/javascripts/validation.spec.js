@@ -5,7 +5,7 @@ describe("Validating a Block", function(){
   }), editor;
   
   beforeEach(function(){
-    editor = new SirTrevor.Editor({ el: form.find('textarea') });
+    editor = new SirTrevor.Editor({ el: form.find('textarea'), required: ["Text", "Image"] });
     editor.createBlock("text", {});
   });
   
@@ -25,5 +25,37 @@ describe("Validating a Block", function(){
     editor.blocks[0].$$('.text-block').html('This is some content within the block. Magic.');
     expect(editor.blocks[0].validate()).toBe(true);
   });
+  
+  it("should validate for the required blockTypes if required are given", function(){
+    expect(editor.required).not.toBe(undefined);
+    var validate = editor.onFormSubmit();
+    expect(validate.length).not.toBe(0);
+  });
+  
+  it("should display a message when the required blockTypes are not given", function(){
+    // Delete the text block and default block
+    editor.removeBlock(editor.blocks[0]);
+    editor.removeBlock(editor.blocks[0]);
+        
+    expect(editor.blocks.length).toBe(0);
+    
+    editor.onFormSubmit();
+    var errorsCont = editor.$outer.find('.' + editor.options.baseCSSClass + "-errors"),
+        errors = errorsCont.find('li');
+        
+    expect(errors.length).not.toBe(0);
+  });
+  
+  it("should display a message when the required blockTypes are empty", function(){
+    editor.createBlock("image");
+    
+    editor.onFormSubmit();
+    var errorsCont = editor.$outer.find('.' + editor.options.baseCSSClass + "-errors"),
+        errors = errorsCont.find('li');
+        
+    expect(errors.length).not.toBe(0);
+  });
+  
+  
   
 });

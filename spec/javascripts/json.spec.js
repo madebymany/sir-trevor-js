@@ -10,7 +10,7 @@ describe("JSON parsing in a SirTrevor.Editor instance", function(){
     var editor = new SirTrevor.Editor({ el: element });
     
     expect(editor.blocks.length).toBe(1);
-    expect(editor.blocks[0].data.text).toBe("This is some test content");
+    expect(editor.blocks[0].getData().text).toBe("This is some test content");
   
   });
   
