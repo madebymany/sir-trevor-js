@@ -4,7 +4,7 @@
       SirTrevor;
    
   SirTrevor = root.SirTrevor = {}; 
-  SirTrevor.DEBUG = true;
+  SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
   
   /* 
