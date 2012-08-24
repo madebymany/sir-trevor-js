@@ -283,18 +283,18 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   onBlockFocus: function(ev) {
-    _.defer(_.bind(function(){
+    _.delay(_.bind(function(){
       this.instance.formatBar.clicked = false;
       this.instance.formatBar.show(this.$el);
-    }, this));
+    }, this), 250);
   },
   
   onBlockBlur: function(ev) {
-    _.defer(_.bind(function(){
+    _.delay(_.bind(function(){
         if(!this.instance.formatBar.clicked) {
           this.instance.formatBar.hide();
         }
-    }, this));
+    }, this), 250);
   },
   
   onDeleteClick: function(ev) {

@@ -54,12 +54,14 @@ _.extend(FormatBar.prototype, FunctionBind, {
     this.$el.css({
       top: relativeEl.position().top
     });
-    this.$el.addClass('sir-trevor-item-ready'); 
+    this.$el.addClass('sir-trevor-item-ready');
+    this.$el.show(); 
   },
 
   hide: function(){ 
     this.clicked = false;
     this.$el.removeClass('sir-trevor-item-ready'); 
+    this.$el.hide();
   },
   
   remove: function(){ this.$el.remove(); },

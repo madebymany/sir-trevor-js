@@ -158,12 +158,10 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 .sir-trevor .sir-trevor-block .block-editor {
   padding: 15px 20px 15px 40px;
   border: 1px solid transparent;
-  border-left: 0; 
 }
 
 .sir-trevor .sir-trevor-block.active .block-editor {
   border: 1px solid #E9E9E9;
-  border-left: 0; 
 }
 
 /* Dropzone */
