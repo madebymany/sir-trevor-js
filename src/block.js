@@ -38,7 +38,7 @@ var blockOptions = [
 
 _.extend(Block.prototype, FunctionBind, {
   
-  bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onDrop", "onDragStart", "onDragEnd"],
+  bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onBlockBlur", "onDrop", "onDragStart", "onDragEnd"],
   
   $: function(selector) {
     return this.$el.find(selector);
@@ -119,7 +119,9 @@ _.extend(Block.prototype, FunctionBind, {
       document.execCommand("insertBrOnReturn", false, true);
       
       // Bind our text block to show the format bar
-      this.$$('.text-block').focus(this.onBlockFocus);
+      this.$$('.text-block')
+        .focus(this.onBlockFocus)
+        .blur(this.onBlockBlur);
       
       // Strip out all the HTML on paste
       this.$$('.text-block').bind('paste', this._handleContentPaste);
@@ -281,7 +283,18 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   onBlockFocus: function(ev) {
-    this.instance.formatBar.show(this.$el);
+    _.defer(_.bind(function(){
+      this.instance.formatBar.clicked = false;
+      this.instance.formatBar.show(this.$el);
+    }, this));
+  },
+  
+  onBlockBlur: function(ev) {
+    _.defer(_.bind(function(){
+        if(!this.instance.formatBar.clicked) {
+          this.instance.formatBar.hide();
+        }
+    }, this));
   },
   
   onDeleteClick: function(ev) {

@@ -9,6 +9,7 @@ var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
   this.instance = editorInstance;
   this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
   this.className = this.instance.options.baseCSSClass + "-" + this.options.baseCSSClass;
+  this.clicked = false;
   this._bindFunctions();
 };
 
@@ -43,11 +44,9 @@ _.extend(FormatBar.prototype, FunctionBind, {
     
     if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
     
-    this.$el.hide();
-    this.$el.bind('mouseout', halt);
+    this.hide();
+    this.$el.bind('mouseout', _.bind(function(ev){ halt(ev); this.clicked = false; }, this));
     this.$el.bind('mouseover', halt);
-    
-    this.instance.$wrapper.bind('click', this.onWrapperClick);
   },
   
   /* Convienience methods */
@@ -55,22 +54,11 @@ _.extend(FormatBar.prototype, FunctionBind, {
     this.$el.css({
       top: relativeEl.position().top
     });
-    this.$el.show();
     this.$el.addClass('sir-trevor-item-ready'); 
-  },
-  
-  onWrapperClick: function(ev){
-    var item = $(ev.target),
-        parent = item.parent(),
-        parents = item.parents('text-block');
-        
-    if (!(item.hasClass(this.className) || parent.hasClass(this.className) || item.hasClass('text-block') || parent.length > 0)) {
-      this.hide();
-    }
   },
 
   hide: function(){ 
-    this.$el.hide();
+    this.clicked = false;
     this.$el.removeClass('sir-trevor-item-ready'); 
   },
   
@@ -78,6 +66,7 @@ _.extend(FormatBar.prototype, FunctionBind, {
   
   onFormatButtonClick: function(ev){
     halt(ev);
+    this.clicked = true;
     var btn = $(ev.target),
         format = SirTrevor.Formatters[btn.attr('data-type')];
      
