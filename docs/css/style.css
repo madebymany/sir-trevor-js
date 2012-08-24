@@ -77,6 +77,14 @@ tt {
   zoom: 1;
 }
 
+pre {
+font-size: 12px;
+padding: 10px 15px;
+border: 1px solid #dadada;
+margin: 0px 0 25px;
+background: white;
+}
+
 .chromeframe { margin: 0.2em 0; background: #ccc; color: black; padding: 0.2em 0; }
 
 body {
@@ -142,12 +150,16 @@ section.main h2 {
 }
 
 section.main h3 {
-  margin: 0 10px 0 0;
+  margin: 0 15px 0 0;
   display: inline-block;
 }
 
 section.main div {
-  margin: 20px 0;
+  margin: 20px 0 30px 0;
+}
+
+section.main div p {
+  margin: 5px 0 10px 0;
 }
 
 @media only screen and (min-width: 35em) {
