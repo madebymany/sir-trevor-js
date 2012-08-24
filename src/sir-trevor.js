@@ -48,7 +48,6 @@
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
   
-  
   var formBound = false; // Flag to tell us once we've bound our submit event
   
   /* Generic function binding utility, used by lots of our classes */
@@ -82,6 +81,7 @@
   
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
+      SirTrevor.submittable();
       form.bind('submit', this.onFormSubmit);
       formBound = true;
     }

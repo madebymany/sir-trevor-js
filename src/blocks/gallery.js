@@ -136,7 +136,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
       // Multi files 'ere
       var l = transferData.files.length,
           file, urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
-          
+
       this.loading();
       
       while (l--) {
@@ -150,15 +150,15 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
           this.uploader(file, function(data){
             
             this.uploadsCount -= 1;
-            var dataStruct = this.$el.data('block');
+            var dataStruct = this.getData();
             data = { type: "image", data: data };
             
             // Add to our struct
-            if (!_.isArray(dataStruct.data)) {
-              dataStruct.data = [];
+            if (!_.isArray(dataStruct)) {
+              dataStruct = [];
             }
-            dataStruct.data.push(data);
-            this.$el.data('block',dataStruct);
+            dataStruct.push(data);
+            this.setData(dataStruct);
             
             // Pass this off to our render gallery thumb method
             this.renderGalleryThumb(data);
