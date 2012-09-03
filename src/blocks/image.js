@@ -44,12 +44,18 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       
       // Upload!
       $.publish('editor/setSubmitButton', ['Please wait...']); 
-      this.uploader(file, function(data){
-        // Store the data on this block
-        this.setData(data);
-        // Done
-        this.ready();
-      });
+      this.uploader(
+        file, 
+        function(data){
+          // Store the data on this block
+          this.setData(data);
+          // Done
+          this.ready();
+        },
+        function(error){
+          alert('Error!');
+        }
+      );
     }
   }
 });

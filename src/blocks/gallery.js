@@ -9,7 +9,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
   title: "Gallery",
   className: "gallery",
   dropEnabled: true,
-  editorHTML: "<div class=\"gallery-items\"><p>Gallery contents: </p><ul></ul></div>",
+  editorHTML: "<div class=\"gallery-items\"><p>Gallery Contents:</p><ul></ul></div>",
   dropzoneHTML: dropzone_templ,
   
   loadData: function(data){
@@ -47,14 +47,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
         
         if (confirm('Are you sure you wish to delete this image?')) {
           $(e.target).parent().remove();
-        
-          var dataStruct = this.$el.data('block');
-          dataStruct.data = [];
-        
-          _.each(this.$('li.gallery-item'), function(li){
-            li = $(li);
-            dataStruct.data.push(li.data('block'));
-          });
+          this.reindexData();
         }
       }, this)
     }));
@@ -110,13 +103,7 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
         }
         
         // Reindex the data
-        var dataStruct = this.$el.data('block');
-        dataStruct.data = [];
-        
-        _.each(this.$$('li.gallery-item'), function(li){
-          li = $(li);
-          dataStruct.data.push(li.data('block'));
-        });
+        this.reindexData();
                 
       }, this));
   },
@@ -128,6 +115,18 @@ SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({
       this.$dropzone.find('input').on('change', _.bind(function(ev){
         this.onDrop(ev.currentTarget);
       }, this));
+  },
+  
+  reindexData: function() {
+    var dataStruct = this.getData();
+    dataStruct = [];
+
+    _.each(this.$$('li.gallery-item'), function(li){
+      li = $(li);
+      dataStruct.push(li.data('block'));
+    });
+    
+    this.setData(dataStruct);
   },
   
   onDrop: function(transferData){

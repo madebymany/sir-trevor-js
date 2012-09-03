@@ -298,7 +298,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     // Wrap our element in lots of containers *eww*
     this.$el.wrap($('<div>', { 
                     id: this.ID,
-                    'class': this.options.baseCSSClass + " " + this.options.baseCSSClass + "_dragleave",
+                    'class': this.options.baseCSSClass,
                     dropzone: 'copy link move'
                   })
                 )

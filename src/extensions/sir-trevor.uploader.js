@@ -3,7 +3,7 @@
 *   Generic Upload implementation that can be extended for blocks
 */
 
-SirTrevor.fileUploader = function(block, file, callback) {
+SirTrevor.fileUploader = function(block, file, success, error) {
   
   $.publish("editor/onUploadStart");
   
@@ -16,10 +16,18 @@ SirTrevor.fileUploader = function(block, file, callback) {
   data.append('attachment[uid]', uid);
   
   var callbackSuccess = function(data){
-    if (!_.isUndefined(callback) && _.isFunction(callback)) {
+    if (!_.isUndefined(success) && _.isFunction(success)) {
       SirTrevor.log('Upload callback called');
       $.publish("editor/onUploadStop");
-      _.bind(callback, block)(data); // Invoke with a reference to 'this' (the block)
+      _.bind(success, block)(data);
+    }
+  };
+  
+  var callbackError = function(jqXHR, status, errorThrown){
+    if (!_.isUndefined(error) && _.isFunction(error)) {
+      SirTrevor.log('Upload callback error called');
+      $.publish("editor/onUploadError");
+      _.bind(error, block)(status); 
     }
   };
   
@@ -30,7 +38,8 @@ SirTrevor.fileUploader = function(block, file, callback) {
     contentType: false,
     processData: false,
     type: 'POST',
-    success: callbackSuccess
+    success: callbackSuccess,
+    error: callbackError
   });
   
 };

@@ -40,7 +40,7 @@
   };
   
   $.fn.too_long = function() {
-    return this.chars()>this.attr('data-maxlength');
+    return this.chars() > this.attr('data-maxlength');
   };
   
 })(jQuery);
