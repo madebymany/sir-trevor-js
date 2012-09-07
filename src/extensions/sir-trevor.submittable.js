@@ -43,7 +43,6 @@ _.extend(Submittable.prototype, {
     SirTrevor.log('onUploadStart called ' + this.globalUploadCount);
     
     if(this.globalUploadCount === 1) {
-      this.setSubmitButton(null, "Please wait...");
       this._disableSubmitButton();
     }
   },
@@ -55,7 +54,6 @@ _.extend(Submittable.prototype, {
     
     if(this.globalUploadCount === 0) {
       this._enableSubmitButton();
-      this.resetSubmitButton();
     }
   },
   
@@ -64,19 +62,23 @@ _.extend(Submittable.prototype, {
     this.canSubmit = false;
   },
   
-  _disableSubmitButton: function(){
+  _disableSubmitButton: function(message){
+    this.setSubmitButton(null, message || "Please wait...");
     this.submitBtn
       .attr('disabled', 'disabled')
       .addClass('disabled');
   },
   
   _enableSubmitButton: function(){
+    this.resetSubmitButton();
     this.submitBtn
       .removeAttr('disabled')
       .removeClass('disabled');
   },
   
   _bindEvents: function(){
+    $.subscribe("editor/disableSubmitButton", _.bind(this._disableSubmitButton, this));
+    $.subscribe("editor/enableSubmitButton", _.bind(this._enableSubmitButton, this));
     $.subscribe("editor/setSubmitButton", _.bind(this.setSubmitButton, this));
     $.subscribe("editor/resetSubmitButton", _.bind(this.resetSubmitButton, this));
     $.subscribe("editor/onError", _.bind(this.onError, this));

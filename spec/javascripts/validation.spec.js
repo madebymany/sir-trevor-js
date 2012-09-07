@@ -56,6 +56,14 @@ describe("Validating a Block", function(){
     expect(errors.length).not.toBe(0);
   });
   
-  
+  it("should skip validation when passing false to onBeforeSubmit", function(){
+    editor.createBlock("image");
+    editor.onFormSubmit(false);
+    
+    var errorsCont = editor.$outer.find('.' + editor.options.baseCSSClass + "-errors"),
+        errors = errorsCont.find('li');
+        
+    expect(errors.length).toBe(0);
+  });
   
 });

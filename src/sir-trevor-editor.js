@@ -152,11 +152,39 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     }
   },
   
+  performValidations : function(_block, should_validate) {
+    
+    var errors = 0;
+    
+    if (!SirTrevor.SKIP_VALIDATION && should_validate) {
+      if(!_block.validate()){
+        // fail validations
+        SirTrevor.log("Block " + _block.blockID + " failed validation");
+        ++errors;
+      }
+    } else {
+      // not validating so clear validation warnings
+      _block._beforeValidate();
+    }
+    
+    // success
+    var store = _block.save();
+    if(!_.isEmpty(store.data)) {
+      SirTrevor.log("Adding data for block " + _block.blockID + " to block store");
+      this.store("add", this, { data: store });
+    }
+    return errors;
+  },
+  
   /*
     Handle a form submission of this Editor instance.
     Validate all of our blocks, and serialise all data onto the JSON objects
   */
-  onFormSubmit: function() {
+  onFormSubmit: function(should_validate) {
+    
+    // if undefined or null or anything other than false - treat as true
+    should_validate = (should_validate === false) ? false : true;
+    
     SirTrevor.log("Handling form submission for Editor " + this.ID);
     
     var blockLength, block, result, errors = 0;
@@ -174,25 +202,16 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       
       if (!_.isUndefined(_block) || !_.isEmpty(_block) || typeof _block == SirTrevor.Block) {
         // Validate our block
-        if(_block._validate() || SirTrevor.SKIP_VALIDATION)
-        {
-          var store = _block.save();
-          if(!_.isEmpty(store.data)) {
-            SirTrevor.log("Adding data for block " + _block.blockID + " to block store");
-            this.store("add", this, { data: store });
-          }
-        } else { 
-          SirTrevor.log("Block " + _block.blockID + " failed validation");
-          errors++;
-        }
+        errors += this.performValidations(_block, should_validate);
       }
       
     };
     _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
 
     // Validate against our required fields (if there are any)
-    if (this.required && !SirTrevor.SKIP_VALIDATION) {
+    if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
       _.each(this.required, _.bind(function(type) {
+      
         if (this._blockTypeAvailable(type)) {
           // Valid block type to validate against
           if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {

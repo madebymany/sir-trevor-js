@@ -191,6 +191,9 @@ _.extend(Block.prototype, FunctionBind, {
   /* Generic implementations */
   
   validate: function() {
+    
+    this._beforeValidate();
+    
     var fields = this.$$('.required, [data-maxlength]'),
         errors = 0;
         
@@ -208,7 +211,6 @@ _.extend(Block.prototype, FunctionBind, {
         errors++;
       } 
     }, this));
-    
     
     return (errors === 0);
   },
@@ -337,11 +339,10 @@ _.extend(Block.prototype, FunctionBind, {
     this.ready();
   },
   
-  _validate: function() {
+  _beforeValidate: function() {
     this.errors = []; 
     this.$('.error').removeClass('error');
     this.$('.error-marker').remove();
-    return this.validate();
   },
   
   _handleContentPaste: function(ev) {

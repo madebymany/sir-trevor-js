@@ -87,14 +87,19 @@
     }
   };
   
-  SirTrevor.onFormSubmit = function(ev) {
+  SirTrevor.onBeforeSubmit = function(should_validate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
     _.each(SirTrevor.instances, function(inst, i) {
-      errors += inst.onFormSubmit();
+      errors += inst.onFormSubmit(should_validate);
     });
-    
     SirTrevor.log("Total errors: " + errors);
+    
+    return errors;
+  };
+  
+  SirTrevor.onFormSubmit = function(ev) {
+    var errors = SirTrevor.onBeforeSubmit();
     
     if(errors > 0) {
       ev.preventDefault();
@@ -103,7 +108,7 @@
   
   SirTrevor.runOnAllInstances = function(method) {
     if (_.has(SirTrevor.Editor.prototype, method)) {
-      _.invoke(SirTrevor.instances, method);
+      _.invoke.apply(_, [].unshift.call(arguments, SirTrevor.instances));
     } else {
       SirTrevor.log("method doesn't exist");
     }
