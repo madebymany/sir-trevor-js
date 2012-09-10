@@ -9,6 +9,11 @@ describe("Validating a Block", function(){
     editor.createBlock("text", {});
   });
   
+  afterEach(function (){
+    delete editor;
+    editor_with_options = null;
+  });
+  
   it("should run the default validator for each required block", function(){
     var required = editor.$form.find('.required').length,
         totalValidations = 0;
@@ -65,5 +70,5 @@ describe("Validating a Block", function(){
         
     expect(errors.length).toBe(0);
   });
-  
+
 });

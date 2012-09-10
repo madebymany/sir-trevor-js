@@ -102,17 +102,19 @@
     var errors = SirTrevor.onBeforeSubmit();
     
     if(errors > 0) {
+      $.publish("editor/onError");
       ev.preventDefault();
     } 
   };
   
   SirTrevor.runOnAllInstances = function(method) {
     if (_.has(SirTrevor.Editor.prototype, method)) {
-      _.invoke.apply(_, [].unshift.call(arguments, SirTrevor.instances));
+      [].unshift.call(arguments, SirTrevor.instances);
+      _.invoke.apply(_, arguments);
     } else {
       SirTrevor.log("method doesn't exist");
     }
   };
-
+  
 }(jQuery, _));
 

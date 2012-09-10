@@ -17,12 +17,10 @@ describe("a SirTrevor.Editor instance", function(){
       }
     );
     
-    
-    
   });
   
   afterEach(function (){
-    editor = null;
+    delete editor;
     editor_with_options = null;
   });
   
@@ -114,6 +112,11 @@ describe("a SirTrevor.Editor instance", function(){
     expect(editor_with_options.blocks[1]).toBe(undefined);
   });
   
-  
+  it("should run on all instances with arguments passed as extra parameters", function() {
+    SirTrevor.runOnAllInstances("createBlock", "image");
+    SirTrevor.instances.forEach(function(instance){
+      expect(instance.blockTypes.Image).toBe(true);
+    })
+  });
   
 });
