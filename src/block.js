@@ -335,6 +335,8 @@ _.extend(Block.prototype, FunctionBind, {
       this.$editor.show();
     }
     
+    SirTrevor.publish("editor/block/loadData");
+    
     this.loadData(this.getData());
     this.ready();
   },
@@ -358,6 +360,8 @@ _.extend(Block.prototype, FunctionBind, {
     
     e.preventDefault();
     e = e.originalEvent;
+    
+    SirTrevor.publish("editor/block/handleDrop");
   
     var el = $(e.target),
         types = e.dataTransfer.types,

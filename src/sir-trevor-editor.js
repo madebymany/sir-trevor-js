@@ -125,6 +125,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
      } 
+     
+     SirTrevor.publish("editor/block/createBlock");
       
      SirTrevor.log("Block created of type " + type);
     } else {
@@ -142,6 +144,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
     if(_.isUndefined(this.blocks)) this.blocks = [];
     this.formatBar.hide();
+    
+    SirTrevor.publish("editor/block/removeBlock");
     
     // Remove our inactive class if it's no longer relevant
     if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {

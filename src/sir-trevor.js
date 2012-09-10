@@ -102,13 +102,15 @@
     var errors = SirTrevor.onBeforeSubmit();
     
     if(errors > 0) {
-      $.publish("editor/onError");
+      SirTrevor.publish("onError");
       ev.preventDefault();
     } 
   };
   
   SirTrevor.runOnAllInstances = function(method) {
     if (_.has(SirTrevor.Editor.prototype, method)) {
+      // augment the arguments pseudo array and pass on to invoke()
+      // this allows us to pass arguments on to the target methods
       [].unshift.call(arguments, SirTrevor.instances);
       _.invoke.apply(_, arguments);
     } else {

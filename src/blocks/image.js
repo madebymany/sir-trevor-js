@@ -43,7 +43,7 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.$editor.show();
       
       // Upload!
-      $.publish('editor/setSubmitButton', ['Please wait...']); 
+      SirTrevor.publish('setSubmitButton', ['Please wait...']); 
       this.uploader(
         file, 
         function(data){

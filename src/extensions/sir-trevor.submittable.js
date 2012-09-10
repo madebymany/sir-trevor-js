@@ -77,13 +77,13 @@ _.extend(Submittable.prototype, {
   },
   
   _bindEvents: function(){
-    $.subscribe("editor/disableSubmitButton", _.bind(this._disableSubmitButton, this));
-    $.subscribe("editor/enableSubmitButton", _.bind(this._enableSubmitButton, this));
-    $.subscribe("editor/setSubmitButton", _.bind(this.setSubmitButton, this));
-    $.subscribe("editor/resetSubmitButton", _.bind(this.resetSubmitButton, this));
-    $.subscribe("editor/onError", _.bind(this.onError, this));
-    $.subscribe("editor/onUploadStart", _.bind(this.onUploadStart, this));
-    $.subscribe("editor/onUploadStop", _.bind(this.onUploadStop, this));
+    SirTrevor.subscribe("disableSubmitButton", _.bind(this._disableSubmitButton, this));
+    SirTrevor.subscribe("enableSubmitButton", _.bind(this._enableSubmitButton, this));
+    SirTrevor.subscribe("setSubmitButton", _.bind(this.setSubmitButton, this));
+    SirTrevor.subscribe("resetSubmitButton", _.bind(this.resetSubmitButton, this));
+    SirTrevor.subscribe("onError", _.bind(this.onError, this));
+    SirTrevor.subscribe("onUploadStart", _.bind(this.onUploadStart, this));
+    SirTrevor.subscribe("onUploadStop", _.bind(this.onUploadStop, this));
   }
   
 });
