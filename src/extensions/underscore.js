@@ -8,9 +8,14 @@ _.mixin({
   isURI : function(string) {
     return (url_regex.test(string));
   },
-  
+
   capitalize : function(string) {
     return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
+  },
+
+  trim : function(string) {
+    return string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
   }
+
 });
 
