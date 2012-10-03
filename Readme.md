@@ -218,4 +218,8 @@ $$('selector')      // equivalent to $editor.find('selector')
 
 Out of the box there is a very generic uploading function that should allow you to take some form data and send it up to your server. 
 
+#### Licence
 
+Sir Trevor is released under the MIT license:
+
+www.opensource.org/licenses/MIT
