@@ -1,3 +1,3 @@
 ImageUploader::Application.routes.draw do
-  post 'images' => 'images#create' # Uploads!
+  post 'attachments' => 'images#create' # Uploads!
 end
