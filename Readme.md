@@ -220,8 +220,23 @@ Out of the box there is a very generic uploading function that should allow you 
 
 ## Contributing
 
-We use the amazing [Grunt](https://github.com/gruntjs/grunt) for building out distributed javascript and Jasmine for testing..
+We use the amazing [Grunt](https://github.com/gruntjs/grunt) for building out distributed javascript and [Jasmine](http://pivotal.github.com/jasmine/) for testing..
 
+You will need Ruby and Node to build and run the tests
+
+You can run the test suite just by running rake
+
+``` bash
+bundle install # To install Ruby gems
+rake
+```
+
+And you can then build for distribution by running grunt
+
+```
+npm install # To install required javascript modules
+./node_modules/grunt/bin/grunt
+```
 
 ## Licence
 

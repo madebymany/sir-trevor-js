@@ -17,14 +17,14 @@ module.exports = function(grunt) {
     rig: {
       build: {
         src: ['<banner:meta.banner>', 'src/sir-trevor.js'],
-        dest: 'lib/sir-trevor.js'
+        dest: 'dist/sir-trevor.js'
       }
     },
 
     min: {
       standard: {
         src: ['<banner:meta.banner>', '<config:rig.build.dest>'],
-        dest: 'lib/sir-trevor.min.js'
+        dest: 'dist/sir-trevor.min.js'
       }
     },
     

@@ -329,7 +329,7 @@
           try {
             // Ensure the JSON string has a data element that's an array
             var str = JSON.parse(content);
-            if (!_.isUndefined(str.data) && (_.isArray(str.data) && !_.isEmpty(str.data))) {
+            if (!_.isUndefined(str.data)) {
               // Set it
               editor.dataStore = str;
             } 
@@ -728,9 +728,10 @@
       _.each(fields, _.bind(function(field) {
         field = $(field);
         var content = (field.attr('contenteditable')) ? field.text() : field.val(),
-            too_long = (field.attr('data-maxlength') && field.too_long());
+            too_long = (field.attr('data-maxlength') && field.too_long()),
+            required = field.hasClass('required');
   
-        if (content.length === 0 || too_long) {
+        if ((required && content.length === 0) || too_long) {
           // Error!
           field.addClass('error').before($("<div>", {
             'class': 'error-marker',
@@ -2288,7 +2289,7 @@
       
       html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
                   .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-                  .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")                 // Links
+                  .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")                // Links
                   .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>")                   // Italic
                   .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>");                // Bold
          
