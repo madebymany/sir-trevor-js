@@ -14,6 +14,19 @@ module.exports = function(grunt) {
       files: ['src/sir-trevor.js']
     },
 
+    'jasmine' : {
+      src : ['public/javascripts/*.js', 'dist/sir-trevor.js'],
+      specs : 'spec/**/*.spec.js',
+      helpers : 'spec/helpers/*.js',
+      timeout : 10000,
+      phantomjs : {
+        'ignore-ssl-errors' : true
+      }
+    },
+    'jasmine-server' : {
+      browser : false
+    },
+
     rig: {
       build: {
         src: ['<banner:meta.banner>', 'src/sir-trevor.js'],
@@ -57,6 +70,7 @@ module.exports = function(grunt) {
   });
 
   // Default task.
+  grunt.loadNpmTasks('grunt-jasmine-runner');
   grunt.registerTask('default', 'lint rig min');
 
 };

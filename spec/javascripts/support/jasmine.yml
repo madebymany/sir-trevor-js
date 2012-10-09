@@ -12,7 +12,7 @@
 #
 src_files: 
     - public/javascripts/*.js
-    - lib/sir-trevor.js
+    - dist/sir-trevor.js
 
 # stylesheets
 #
