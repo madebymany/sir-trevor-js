@@ -200,9 +200,10 @@ _.extend(Block.prototype, FunctionBind, {
     _.each(fields, _.bind(function(field) {
       field = $(field);
       var content = (field.attr('contenteditable')) ? field.text() : field.val(),
-          too_long = (field.attr('data-maxlength') && field.too_long());
+          too_long = (field.attr('data-maxlength') && field.too_long()),
+          required = field.hasClass('required');
 
-      if (content.length === 0 || too_long) {
+      if ((required && content.length === 0) || too_long) {
         // Error!
         field.addClass('error').before($("<div>", {
           'class': 'error-marker',
