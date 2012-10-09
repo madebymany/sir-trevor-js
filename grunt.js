@@ -71,6 +71,9 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.loadNpmTasks('grunt-jasmine-runner');
+
+  grunt.registerTask('travis', 'lint rig jasmine');
+
   grunt.registerTask('default', 'lint rig min');
 
 };

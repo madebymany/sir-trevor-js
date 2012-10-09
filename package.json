@@ -5,5 +5,8 @@
     "grunt": "*",
     "grunt-rigger": "*",
     "grunt-jasmine-runner": "*"
+  },
+  "scripts": {
+  	"test": "grunt travis --verbose"
   }
 }
