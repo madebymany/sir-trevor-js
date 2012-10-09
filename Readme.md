@@ -1,14 +1,13 @@
 # Sir Trevor JS
 
-A rebuild of the ITV news editor, with the Javascript pulled out of Ruby gem and separated into it's own project for easy use with any server-side language. 
-An example, without image uploading, is [here](http://madebymany.github.com/sir-trevor-js/)
+A content agnostic editor from the CMS used by [ITV news](http://www.itv.com/news/)
 
 ## Features
 
 - Don't store any HTML in database
-- Flexible and intuitive interface
+- Flexible and intuitive interface. Anyone can use it..
 - Easy to extend / customise
-- Drag and drop block re-ordering
+- Drag and drop with block re-ordering
 
 
 ## Quick Start
