@@ -1,6 +1,7 @@
 # Sir Trevor JS
 
-A content agnostic editor from the CMS used by [ITV news](http://www.itv.com/news/)
+A content agnostic editor from the CMS used by [ITV news](http://www.itv.com/news/)  
+See an [example](http://madebymany.github.com/sir-trevor-js/)
 
 ## Features
 
@@ -85,6 +86,9 @@ Also see our wiki pages on [creating your own Block types](https://github.com/ma
 Out of the box there is a very generic uploading function that should allow you to take some form data and send it up to your server. 
 TODO: explain more complex image uploading
 
+## More examples
+
+See our [Wiki](https://github.com/madebymany/sir-trevor-js/wiki) for more code and examples
 
 ## Contributing
 
