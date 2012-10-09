@@ -218,6 +218,11 @@ $$('selector')      // equivalent to $editor.find('selector')
 
 Out of the box there is a very generic uploading function that should allow you to take some form data and send it up to your server. 
 
+## Contributing
+
+We use the amazing [Grunt](https://github.com/gruntjs/grunt) for building out distributed javascript and Jasmine for testing..
+
+
 ## Licence
 
 Sir Trevor is released under the MIT license:
