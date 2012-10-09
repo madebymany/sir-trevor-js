@@ -1,6 +1,6 @@
 # Sir Trevor JS
 
-"!https://travis-ci.org/madebymany/sir-trevor-js.png!":https://travis-ci.org/madebymany/sir-trevor-js]
+[![Build Status](https://travis-ci.org/madebymany/sir-trevor-js.png)](https://travis-ci.org/madebymany/sir-trevor-js/)
 
 A content agnostic editor from the CMS used by [ITV news](http://www.itv.com/news/)  
 See an [example](http://madebymany.github.com/sir-trevor-js/)
