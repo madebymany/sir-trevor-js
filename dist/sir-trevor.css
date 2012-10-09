@@ -1,0 +1,551 @@
+/* Basic Sir Trevor styles */
+body { margin: 0; font-size: 1em; line-height: 1.4; }
+
+.sir-trevor {
+  padding: 0;
+  z-index: 1;
+}
+
+.sir-trevor-blocks {
+  padding: 40px 0;
+  position: relative;
+}
+
+/* Typography reset */
+.sir-trevor { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+.sir-trevor , .sir-trevor button, .sir-trevor input, .sir-trevor select, .sir-trevor textarea, .sir-trevor blockquote { font-family: "Helvetica Neue", 'Arial', sans-serif; color: #222; }
+/* Generics */
+.sir-trevor .hidden { display: none !important; visibility: hidden; }
+
+.sir-trevor * {
+  -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+         -ms-box-sizing: border-box;
+             box-sizing: border-box;
+}
+
+/* Formatting Control Bar */
+
+.sir-trevor .sir-trevor-formatting-control {
+  background: #e9e9e9;
+  border: 1px solid #dadada;
+  padding: 11px 0;
+  text-align: center;
+  position: absolute;
+  width: 100%;
+  z-index: 102;
+  display: box;
+  box-sizing: border-box;
+  margin: -44px 0 0 0;
+  top: 0;
+}
+
+.sir-trevor-formatting-control .format-button {
+  min-width: 25px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: white;
+  border: 1px solid #9A9A9A;
+  background: #B2B2B2;
+  text-align: center;
+  margin: 0 10px 0 0;
+  cursor: pointer;
+}
+
+.sir-trevor-formatting-control .format-button:hover {
+  background: #606060;
+  border: 1px solid #606060;
+}
+
+/* Marker */
+
+.sir-trevor .sir-trevor-marker {
+  display: block;
+  cursor: pointer;
+  background: #F5F297;
+  border: 1px dotted #DAC962;
+  height: 46px;
+  text-align: center;
+  vertical-align: top;
+  color: #9B8816;
+  position: absolute;
+  width: 100%;
+  margin-top: -44px;
+  z-index: 101;
+}
+
+.sir-trevor .sir-trevor-marker p {
+  display: inline-block;
+  line-height: 36px;
+  font-size: 10px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0 16px 0 0;
+  color: #9B8816;
+}
+
+.sir-trevor .sir-trevor-marker .buttons {
+  height: 46px;
+  display: inline-block;
+}
+
+.sir-trevor .sir-trevor-marker .buttons a {
+  padding: 27px 13px 8px;
+  margin: 0;
+  border-left: 1px dotted #DAC962;
+  color: #AF9B24;
+  height: 45px;
+  font-size: 8px;
+  display: inline-block;
+  text-decoration: none;
+  background-repeat: no-repeat;
+  background-position: center 9px;
+}
+
+/* Button graphics */
+
+.sir-trevor .sir-trevor-marker .buttons a.new-block-quote {
+  background-image: url(images/sir-trevor/icons/block_editor_blockquote.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-image,
+.sir-trevor .sir-trevor-marker .buttons a.new-gallery {
+  background-image: url(images/sir-trevor/icons/block_editor_image.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-text {
+  background-image: url(images/sir-trevor/icons/block_editor_text.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-list {
+  background-image: url(images/sir-trevor/icons/block_editor_list.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-tweet {
+  background-image: url(images/sir-trevor/icons/block_editor_tweet.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a.new-video {
+  background-image: url(images/sir-trevor/icons/block_editor_video.png);
+}
+
+.sir-trevor .sir-trevor-marker .buttons a:last-child {
+  border-right: 1px dotted #DAC962;
+}
+
+.sir-trevor .sir-trevor-marker .buttons a:hover {
+
+}
+
+/* Blocks */
+
+.sir-trevor .sir-trevor-block {
+  position: relative;
+  margin: 0 0 40px 0;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* Dragging */
+
+.sir-trevor .sir-trevor-block.dragging {
+  opacity: 0.5;
+  background: #fff;
+}
+
+/* Block editor */
+
+.sir-trevor .sir-trevor-block .block-editor {
+  padding: 15px 20px 15px 40px;
+  border: 1px solid transparent;
+}
+
+.sir-trevor .sir-trevor-block.active .block-editor {
+  border: 1px solid #E9E9E9;
+}
+
+/* Dropzone */
+
+.sir-trevor-block .dropzone {
+  background-color: #E9E9E9;
+  border: 1px dotted #B3B3B3;
+  padding: 20px;
+  text-align: center;
+  margin: 0 40px;
+}
+
+.sir-trevor-block .dropzone.dragOver {
+  background: #F5F297;
+}
+
+.sir-trevor .sir-trevor-block .dropzone p {
+  font-size: 20px;
+  line-height: 50px;
+  display: inline-block;
+  color: #666;
+}
+
+
+.sir-trevor-block .dropzone input[type="file"] {
+  position: absolute;
+  z-index: 50;
+  opacity: 0;
+  cursor: pointer;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.sir-trevor-block .dropzone button {
+  background: #5F5F5F;
+  border-radius: 4px;
+  border: none;
+  padding: 4px 16px;
+  color: white;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.sir-trevor .sir-trevor-block .dropzone label { width: 50%; display: inline; font-weight: normal; color: #666; }
+.sir-trevor .sir-trevor-block .dropzone input[type=text] { width: 50%; display: inline-block; margin-right: 0 }
+
+/* Generic block styles */
+
+.sir-trevor .sir-trevor-ready .sir-trevor-block.loading {
+  opacity: 0.6;
+}
+
+.sir-trevor-block.loading .spinner {
+  width: 32px;
+  height: 32px;
+  top: 50%; left: 50%;
+  margin: -16px 0 0 -16px;
+  position: absolute!important;
+}
+
+.sir-trevor-block [contenteditable=true] { 
+  border: 1px solid transparent; 
+  padding: 5px;
+} 
+.sir-trevor-block [contenteditable=true]:focus,
+.sir-trevor-block input:focus,
+.sir-trevor-block textarea:focus {
+  outline: 0px solid transparent;
+}
+
+.sir-trevor-block [contenteditable=true].error {
+  border: 1px solid #990000;
+} 
+
+.sir-trevor-block h1, 
+.sir-trevor-block h2,
+.sir-trevor-block h3,
+.sir-trevor-block h4,
+.sir-trevor-block h5,
+.sir-trevor-block h6 {
+  margin: 0 0 10px 0; padding: 0;
+}      
+
+.sir-trevor ul,
+.sir-trevor ol {
+  margin: 0 0 10px 20px;
+  padding: 0;
+}
+
+.sir-trevor li {
+  margin: 0 0 2px 0;
+}
+
+.sir-trevor-block p {
+  margin: 0 0 10px 0;
+}
+
+.sir-trevor-block time {
+  font-size: 10px;
+  display: block;
+}
+
+.sir-trevor-block a {
+  color: #222;
+}
+
+/* Text Block */
+
+.sir-trevor-block .text-block,
+.sir-trevor-block textarea {
+  min-height: 75px;
+  margin-bottom: 0;
+}
+
+/* Generic label / form elements */
+
+.sir-trevor .sir-trevor-block label {
+  display: block;
+  margin: 10px 0 5px 0;
+  display: block;
+  padding-right: 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.sir-trevor .sir-trevor-block input[type=text],
+.sir-trevor .sir-trevor-block select,
+.sir-trevor .sir-trevor-block textarea,
+.sir-trevor .sir-trevor-block pre {
+  border: 1px solid #E9E9E9;
+  padding: 8px;
+  width: 100%;
+  display: box;
+  -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+            box-sizing: border-box;
+  margin-right: 10px;
+  font-size: 12px;
+}
+
+.sir-trevor .sir-trevor-block textarea,
+.sir-trevor .sir-trevor-block pre {
+  border: 1px solid transparent;
+  font-size: 14px;
+  white-space: pre-wrap;
+    word-wrap: break-word;
+} 
+
+.sir-trevor .sir-trevor-block input[type=text].error,
+.sir-trevor .sir-trevor-block select.error,
+.sir-trevor .sir-trevor-block textarea.error {
+  border: 1px solid #990000;
+}
+
+/* Block quote */
+
+.sir-trevor .sir-trevor-block .block-editor.block-quote-block {
+  padding-left: 60px;
+}
+
+.sir-trevor .sir-trevor-block blockquote {
+  padding: 5px; margin: 0;
+  font-size: 14px;
+  font-style: none;
+}
+
+/* Tweet block */
+
+.sir-trevor .sir-trevor-block .tweet-block {}
+
+.sir-trevor .sir-trevor-block .tweet-block .tweet {
+  padding: 20px;
+}
+
+.tweet-block .tweet p {
+  margin: 0 0 10px 0;
+}
+
+.sir-trevor .dropzone.tweet-block p {
+  padding-left: 70px;
+  line-height: 50px;
+  background: url(images/sir-trevor/icons/new_tweet.png) no-repeat 0 0;
+}
+
+/* Markdown Block */
+
+.sir-trevor .expanding-textarea {
+  position: relative;
+  min-height: 75px;
+}
+
+.sir-trevor .expanding-textarea pre {
+  margin: 0; padding: 0;
+}
+
+.sir-trevor .expanding-textarea.active > textarea {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  resize: none;
+}
+
+.sir-trevor .expanding-textarea > pre {
+  display: none;
+}
+
+.sir-trevor .expanding-textarea.active > pre {
+  display: block;
+  visibility: hidden;
+}
+
+/*
+  Image block
+*/
+
+.sir-trevor .dropzone.image-block p,
+.sir-trevor .dropzone.gallery-block p  {
+  padding-left: 70px;
+  line-height: 50px;
+  background: url(images/sir-trevor/icons/new_image.png) no-repeat 0 0;
+}
+
+.sir-trevor .image-block img {
+  width: 100%;
+  height: auto;
+}
+
+/* Video */
+
+.sir-trevor .dropzone.video-block p,
+.sir-trevor .dropzone.video-block p  {
+  padding-left: 230px;
+  line-height: 50px;
+  background: url(images/sir-trevor/icons/new_video.png) no-repeat 0 0;
+}
+
+/* Gallery items */
+
+.sir-trevor .sir-trevor-block.active .gallery-block.block-editor {
+  border: 1px solid transparent;
+  border-left: 0; 
+}
+
+.sir-trevor .gallery-items {
+  overflow: hidden;
+}
+
+.sir-trevor .gallery-items ul {
+  margin: 0; padding: 0;
+}
+
+.sir-trevor .gallery-items ul li {
+  margin: 0 10px 10px 0; 
+  list-style: none;
+  width: 50px; height: 50px;
+  display: block;
+  overflow: hidden;
+  border: 1px solid #E9E9E9;
+  float: left;
+  padding: 5px;
+  cursor: move;
+  position: relative;
+}
+
+.sir-trevor .gallery-items ul li img {
+  width: auto; height: 100%;
+}
+
+.sir-trevor .gallery-items ul li.dragover {
+  border: 1px solid #222;
+  background: #F5F297;
+}
+
+.sir-trevor .gallery-items ul li.dragging {
+  opacity: 0.2;
+}
+
+
+.sir-trevor .gallery-items ul li .delete {
+  top: 0;
+  right: 0;
+}
+
+
+/* Handle and delete */
+
+.sir-trevor .sir-trevor-block .handle {
+  width: 10px;
+  height: 100%;
+  cursor: move;
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  background: #606060 url(images/sir-trevor/icons/handle.gif) repeat-y;
+}
+
+.sir-trevor .sir-trevor-block .delete {
+  width: 15px; height: 15px;
+  border: 1px solid #B3B3B3;
+  position: absolute; 
+  top: 5px; right : 5px;
+  cursor: pointer;
+  display: none;
+  background: #fff url(images/sir-trevor/icons/close.gif) no-repeat;
+}
+
+.sir-trevor .sir-trevor-block.active .handle,
+.sir-trevor .sir-trevor-block.active .delete {
+  display: block;
+}
+
+
+/* Validation tooltip */
+
+.sir-trevor .error-marker {
+  position: absolute;
+  content: "!";
+  background: #B94A48;
+  color: #fff;
+  padding: 1px 4px 2px;
+  border-radius: 3px;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  font-size: 11px;
+  z-index: 1001;
+  font-weight: bold;
+  margin-left: -10px;
+  margin-top: 7px;
+}
+
+/* errors */
+
+.sir-trevor-errors {
+  font-size: 14px;
+  padding: 15px 40px;
+  color: #B94A48;
+  background-color: #F2DEDE;
+}
+
+.sir-trevor-errors p {
+  font-weight: bold;
+  margin: 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.sir-trevor-errors ul {
+  margin-bottom: 0;
+}
+
+.sir-trevor-errors li {
+  margin: 0; padding: 0;
+}
+
+/* Generic fade-in ready function */
+.sir-trevor .sir-trevor-block,
+.sir-trevor .sir-trevor-marker,
+.sir-trevor .sir-trevor-formatting-control {
+  opacity: 0;
+  -webkit-transition: opacity 0.3s ease;
+    -moz-transition: opacity 0.3s ease;
+    -ms-transition: opacity 0.3s ease;
+    -o-transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease;
+}
+.sir-trevor .sir-trevor-ready .sir-trevor-item-ready {
+  opacity: 1;
+}
+
+.media {margin:10px;}
+.media, .bd {overflow:hidden; _overflow:visible; zoom:1;}
+.media .img {float:left; margin-right: 20px;}
+.media .img img{display:block;}
+.media .imgExt{float:right; margin-left: 20px;}
+
+.sir-trevor .extended_input {
+  position: relative;
+}
+
+.sir-trevor .extended_input .count {
+  font-size: 11px;
+  margin: 0 0 0 5px;
+}
