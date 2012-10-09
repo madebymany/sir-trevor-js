@@ -18,12 +18,15 @@ Download the latest distribution via the [downloads page](https://github.com/mad
 You then need to drag the following into your project..
 
 The images folder
+
 The single `sir-trevor.css` file
+
 Either `sir-trevor.js` or `sir-trevor.min.js`
 
 And Sir Trevor needs some dependencies, these are included in the folder under ext, but you can also get them below..
 
 [jQuery v1.7.2](https://raw.github.com/madebymany/sir-trevor-js/master/public/javascripts/jquery.js)
+
 [Underscore.js 1.3.3](https://github.com/madebymany/sir-trevor-js/blob/master/public/javascripts/underscore.js)
 
 ### Setup
