@@ -20,10 +20,10 @@ You then need to drag the following into your project..
 ```
 ./images
 sir-trevor.css
-sir-trevor.js` or `sir-trevor.min.js`
+sir-trevor.js or sir-trevor.min.js
 ```
 
-And Sir Trevor needs some dependencies, these are included in the folder under ext, but you can also get them below..
+And Sir Trevor needs some dependencies, these are included in the folder under `ext`, but you can also get them below..
 
 [jQuery v1.7.2](https://raw.github.com/madebymany/sir-trevor-js/master/public/javascripts/jquery.js)  
 [Underscore.js 1.3.3](https://github.com/madebymany/sir-trevor-js/blob/master/public/javascripts/underscore.js)  
@@ -64,7 +64,7 @@ The SirTrevor editor instance will listen for 'submit' events to its parent elem
 
 ## Block types
 
-The editor itself is made up of Blocks. Sir Trevor comes bundled with the following Blocks out of the box:
+The editor itself is made up of Blocks. The default ones are..
 
 - Text
 - Quote
@@ -106,6 +106,7 @@ npm install # To install required javascript modules
 ./node_modules/grunt/bin/grunt
 ```
 
+Once built, you can then submit a pull request and the gods of code will scream your awesomeness, which will be heard for miles around.
 
 ## Licence
 
