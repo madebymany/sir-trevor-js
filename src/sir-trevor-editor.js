@@ -430,7 +430,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
                 .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-                .replace(/\[(.+)\]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links
+                .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")                // Links
                 .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>")                   // Italic
                 .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>");                // Bold
        

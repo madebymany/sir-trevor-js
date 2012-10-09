@@ -21,7 +21,7 @@ SirTrevor.editorStore = function(method, editor, options) {
         try {
           // Ensure the JSON string has a data element that's an array
           var str = JSON.parse(content);
-          if (!_.isUndefined(str.data) && (_.isArray(str.data) && !_.isEmpty(str.data))) {
+          if (!_.isUndefined(str.data)) {
             // Set it
             editor.dataStore = str;
           } 
