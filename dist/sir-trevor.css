@@ -133,6 +133,10 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   border-right: 1px dotted #DAC962;
 }
 
+.sir-trevor .sir-trevor-marker .buttons a:hover {
+
+}
+
 /* Blocks */
 
 .sir-trevor .sir-trevor-block {
@@ -167,7 +171,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   border: 1px dotted #B3B3B3;
   padding: 20px;
   text-align: center;
-  margin: 0 20px 0 40px;
+  margin: 0 40px;
 }
 
 .sir-trevor-block .dropzone.dragOver {
@@ -216,6 +220,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   width: 32px;
   height: 32px;
   top: 50%; left: 50%;
+  margin: -16px 0 0 -16px;
   position: absolute!important;
 }
 
@@ -318,7 +323,6 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 
 .sir-trevor .sir-trevor-block .block-editor.block-quote-block {
   padding-left: 60px;
-  background: url(images/sir-trevor/icons/quote.png) no-repeat 30px 20px;
 }
 
 .sir-trevor .sir-trevor-block blockquote {
@@ -415,9 +419,9 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
 }
 
 .sir-trevor .gallery-items ul li {
-  margin: 0 5px 5px 0; 
+  margin: 0 10px 10px 0; 
   list-style: none;
-  width: 45px; height: 45px;
+  width: 50px; height: 50px;
   display: block;
   overflow: hidden;
   border: 1px solid #E9E9E9;
@@ -425,10 +429,6 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   padding: 5px;
   cursor: move;
   position: relative;
-}
-
-.sir-trevor .gallery-items ul li:last-child {
-  margin-right: 0;
 }
 
 .sir-trevor .gallery-items ul li img {
