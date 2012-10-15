@@ -19,7 +19,8 @@ var Block = SirTrevor.Block = function(instance, data) {
 
 var blockOptions = [
   "className", 
-  "toolbarEnabled", 
+  "toolbarEnabled",
+	"formattingEnabled"
   "dropEnabled", 
   "title", 
   "limit", 
@@ -56,6 +57,7 @@ _.extend(Block.prototype, FunctionBind, {
   dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
   toolbarEnabled: true,
   dropEnabled: false,
+	formattingEnabled: true,
   
   initialize: function() {},
   
@@ -130,8 +132,9 @@ _.extend(Block.prototype, FunctionBind, {
       this._initFormatting();
     }
     
-    // Focus if we're adding an empty block
-    if (_.isEmpty(currentData.data)) {
+    // Focus if we're adding an empty block, but only if not
+		// the only block (i.e. page has just loaded a new editor)
+    if (_.isEmpty(currentData.data) && this.$el.siblings('.sir-trevor-block').length > 0) {
       var inputs = this.$$('[contenteditable="true"], input');
       if (inputs.length > 0 && !this.dropEnabled) {
         inputs[0].focus();
@@ -287,13 +290,15 @@ _.extend(Block.prototype, FunctionBind, {
   onBlockFocus: function(ev) {
     _.delay(_.bind(function(){
       this.instance.formatBar.clicked = false;
-      this.instance.formatBar.show(this.$el);
+      if(this.formattingEnabled) {
+				this.instance.formatBar.show(this.$el);
+			}
     }, this), 250);
   },
   
   onBlockBlur: function(ev) {
     _.delay(_.bind(function(){
-        if(!this.instance.formatBar.clicked) {
+        if(!this.instance.formatBar.clicked && this.formattingEnabled) {
           this.instance.formatBar.hide();
         }
     }, this), 250);
