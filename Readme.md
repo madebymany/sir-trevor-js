@@ -1,8 +1,8 @@
 # Sir Trevor JS
 
-[![Build Status](https://travis-ci.org/madebymany/sir-trevor-js.png)](https://travis-ci.org/madebymany/sir-trevor-js/)
+[![Build Status](https://travis-ci.org/madebymany/sir-trevor-js.png?branch=master)](https://travis-ci.org/madebymany/sir-trevor-js/)
 
-A content agnostic editor from the CMS used by [ITV news](http://www.itv.com/news/)  
+A content agnostic editor from the CMS used by [ITV news](http://www.itv.com/news/)
 See an [example](http://madebymany.github.com/sir-trevor-js/)
 
 ## Features
@@ -28,8 +28,8 @@ sir-trevor.js or sir-trevor.min.js
 
 And Sir Trevor needs some dependencies, these are included in the folder under `ext`, but you can also get them below..
 
-[jQuery v1.7.2](https://raw.github.com/madebymany/sir-trevor-js/master/public/javascripts/jquery.js)  
-[Underscore.js 1.3.3](https://github.com/madebymany/sir-trevor-js/blob/master/public/javascripts/underscore.js)  
+[jQuery v1.7.2](https://raw.github.com/madebymany/sir-trevor-js/master/public/javascripts/jquery.js)
+[Underscore.js 1.3.3](https://github.com/madebymany/sir-trevor-js/blob/master/public/javascripts/underscore.js)
 
 ### Setup
 
@@ -85,7 +85,7 @@ Also see our wiki pages on [creating your own Block types](https://github.com/ma
 
 ## Image Uploading
 
-Out of the box there is a very generic uploading function that should allow you to take some form data and send it up to your server. 
+Out of the box there is a very generic uploading function that should allow you to take some form data and send it up to your server.
 TODO: explain more complex image uploading
 
 ## More examples
