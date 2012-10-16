@@ -20,7 +20,7 @@ var Block = SirTrevor.Block = function(instance, data) {
 var blockOptions = [
   "className", 
   "toolbarEnabled",
-	"formattingEnabled"
+	"formattingEnabled",
   "dropEnabled", 
   "title", 
   "limit", 
@@ -134,7 +134,7 @@ _.extend(Block.prototype, FunctionBind, {
     
     // Focus if we're adding an empty block, but only if not
 		// the only block (i.e. page has just loaded a new editor)
-    if (_.isEmpty(currentData.data) && this.$el.siblings('.sir-trevor-block').length > 0) {
+    if (_.isEmpty(currentData.data) && this.instance.blocks.length > 0) {
       var inputs = this.$$('[contenteditable="true"], input');
       if (inputs.length > 0 && !this.dropEnabled) {
         inputs[0].focus();
