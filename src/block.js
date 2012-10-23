@@ -315,7 +315,7 @@ _.extend(Block.prototype, FunctionBind, {
   onContentPasted: function(ev){
     var textBlock = this.$$('.text-block');
     if (textBlock.length > 0) {
-      textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type)));
+      textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
     }
   },
   
