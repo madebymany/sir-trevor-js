@@ -65,7 +65,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     } else {
       // We have data. Build our blocks from here.
       _.each(store.data, _.bind(function(block){
-        console.log('Creating: ', block);
+        SirTrevor.log('Creating: ', block);
         this.createBlock(block.type, block.data);
       }, this));
     }
@@ -411,7 +411,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     for(formatName in this.formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
-        // Do we have a toMarkdown function?
+        // Do we have a toHTML function?
         if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
           html = format.toHTML(html);
         }
@@ -421,8 +421,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     // Use custom block toHTML functions (if any exist)
     var block;
     if (SirTrevor.Blocks.hasOwnProperty(type)) {
+			
       block = SirTrevor.Blocks[type];
-      // Do we have a toMarkdown function?
+      // Do we have a toHTML function?
       if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
         html = block.prototype.toHTML(html);
       }
@@ -430,9 +431,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
                 .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-                .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")                // Links
-                .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>")                   // Italic
-                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>");                // Bold
+                .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")        // Links
+                .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
+                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
        
     return html;  
   }

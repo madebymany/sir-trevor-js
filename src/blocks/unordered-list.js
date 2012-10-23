@@ -34,10 +34,16 @@ SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
   toMarkdown: function(markdown) {
     return markdown.replace(/<\/li>/mg,"\n")
                    .replace(/<\/?[^>]+(>|$)/g, "")
-                   .replace(/^(.+)$/mg," - $1"); 
+                   .replace(/^(.+)$/mg," - $1\n"); 
   },
   
   toHTML: function(html) {
-    return html.replace(/^ - (.+)$/mg,"<li>$1</li>");
+		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+							 .replace(/\n/mg,"");
+							
+		html = "<ul>" + html + "</ul>"
+		
+		return html
   }
+
 });
