@@ -367,6 +367,7 @@
     }
   
   };
+  
   /* 
     SirTrevor.Submittable
     --
@@ -549,7 +550,8 @@
   
   var blockOptions = [
     "className", 
-    "toolbarEnabled", 
+    "toolbarEnabled",
+  	"formattingEnabled",
     "dropEnabled", 
     "title", 
     "limit", 
@@ -586,6 +588,7 @@
     dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
     toolbarEnabled: true,
     dropEnabled: false,
+  	formattingEnabled: true,
     
     initialize: function() {},
     
@@ -660,8 +663,9 @@
         this._initFormatting();
       }
       
-      // Focus if we're adding an empty block
-      if (_.isEmpty(currentData.data)) {
+      // Focus if we're adding an empty block, but only if not
+  		// the only block (i.e. page has just loaded a new editor)
+      if (_.isEmpty(currentData.data) && this.instance.blocks.length > 0) {
         var inputs = this.$$('[contenteditable="true"], input');
         if (inputs.length > 0 && !this.dropEnabled) {
           inputs[0].focus();
@@ -818,13 +822,15 @@
     onBlockFocus: function(ev) {
       _.delay(_.bind(function(){
         this.instance.formatBar.clicked = false;
-        this.instance.formatBar.show(this.$el);
+        if(this.formattingEnabled) {
+  				this.instance.formatBar.show(this.$el);
+  			}
       }, this), 250);
     },
     
     onBlockBlur: function(ev) {
       _.delay(_.bind(function(){
-          if(!this.instance.formatBar.clicked) {
+          if(!this.instance.formatBar.clicked && this.formattingEnabled) {
             this.instance.formatBar.hide();
           }
       }, this), 250);
@@ -840,7 +846,7 @@
     onContentPasted: function(ev){
       var textBlock = this.$$('.text-block');
       if (textBlock.length > 0) {
-        textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type)));
+        textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
       }
     },
     
@@ -1453,12 +1459,18 @@
     toMarkdown: function(markdown) {
       return markdown.replace(/<\/li>/mg,"\n")
                      .replace(/<\/?[^>]+(>|$)/g, "")
-                     .replace(/^(.+)$/mg," - $1"); 
+                     .replace(/^(.+)$/mg," - $1\n"); 
     },
     
     toHTML: function(html) {
-      return html.replace(/^ - (.+)$/mg,"<li>$1</li>");
+  		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+  							 .replace(/\n/mg,"");
+  							
+  		html = "<ul>" + html + "</ul>"
+  		
+  		return html
     }
+  
   });
   
   var video_drop_template = '<p>Drop video link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
@@ -1926,7 +1938,7 @@
       } else {
         // We have data. Build our blocks from here.
         _.each(store.data, _.bind(function(block){
-          console.log('Creating: ', block);
+          SirTrevor.log('Creating: ', block);
           this.createBlock(block.type, block.data);
         }, this));
       }
@@ -2272,7 +2284,7 @@
       for(formatName in this.formatters) {
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
-          // Do we have a toMarkdown function?
+          // Do we have a toHTML function?
           if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
             html = format.toHTML(html);
           }
@@ -2282,8 +2294,9 @@
       // Use custom block toHTML functions (if any exist)
       var block;
       if (SirTrevor.Blocks.hasOwnProperty(type)) {
+  			
         block = SirTrevor.Blocks[type];
-        // Do we have a toMarkdown function?
+        // Do we have a toHTML function?
         if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
           html = block.prototype.toHTML(html);
         }
@@ -2291,9 +2304,9 @@
       
       html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
                   .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-                  .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")                // Links
-                  .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>")                   // Italic
-                  .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>");                // Bold
+                  .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")        // Links
+                  .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
+                  .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
          
       return html;  
     }
