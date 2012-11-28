@@ -375,6 +375,16 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         }
       }
     }
+
+    // Do our generic stripping out
+    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
+                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
+                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
+                   .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
+                   .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
+                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities 
+                   .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
+
     
     // Use custom block toMarkdown functions (if any exist)
     var block;
@@ -385,17 +395,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         markdown = block.prototype.toMarkdown(markdown);
       }
     }
-     
-    // Do our generic stripping out
-    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
-                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
-                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
-                   .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
-                   .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
-                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities 
-                   .replace(/&lt;/g,"<").replace(/&gt;/g,">")                                  // Encoding
-                   .replace(/<\/?[^>]+(>|$)/g, "");                                            // Strip remaining HTML
-                   
+    
+		// Strip remaining HTML
+		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");                                            
+    
+        
     return markdown;
   },
   
