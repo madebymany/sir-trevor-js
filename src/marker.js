@@ -15,22 +15,28 @@ _.extend(Marker.prototype, FunctionBind, {
   bound: ["onButtonClick", "show", "hide", "onDrop"],
   
   render: function() {
-    
+
     var marker = $('<span>', {
-      'class': this.instance.options.baseCSSClass + "-" + this.options.baseCSSClass,
-      html: '<p>' + this.options.addText + '</p><div class="buttons"></div>'
+      'class': this.instance.baseCSS(this.options.baseCSSClass),
+      html: '<p>' + this.options.addText + '</p>'
     });
+
+    var btns_cont = $("<div>", {
+      'class': this.instance.baseCSS("buttons")
+    });
+
+    marker.append(btns_cont);
     
     // Bind to the wrapper
     this.instance.$wrapper.append(marker);
     
     // Cache our elements for later use
     this.$el = marker;
-    this.$btns = this.$el.find('.buttons');
+    this.$btns = btns_cont;
     this.$p = this.$el.find('p');
     
     // Add all of our buttons
-    var blockName, block; 
+    var blockName, block;
     
     for (blockName in this.instance.blockTypes) {
       if (SirTrevor.Blocks.hasOwnProperty(blockName)) {
@@ -39,11 +45,11 @@ _.extend(Marker.prototype, FunctionBind, {
           this.$btns.append(
            $("<a>", {
             "href": "#",
-            "class": this.options.buttonClass + " new-" + block.prototype.className,
+            "class": this.instance.baseCSS(this.options.buttonClass) + " new-" + block.prototype.className,
             "data-type": blockName,
             "text": block.prototype.title,
             click: this.onButtonClick
-           }) 
+           })
           );
         }
       }
@@ -53,20 +59,21 @@ _.extend(Marker.prototype, FunctionBind, {
     if(this.$btns.children().length === 0) this.$el.addClass('hidden');
     
     // Bind our marker to the wrapper
-    this.instance.$outer.bind('mouseover', this.show);
-    this.instance.$outer.bind('mouseout', this.hide);
-    this.instance.$outer.bind('dragover', this.show);    
+    this.instance.$outer.bind('mouseover', this.show)
+                        .bind('mouseout', this.hide)
+                        .bind('dragover', this.show);
+
     this.$el.bind('dragover',halt);
     
     // Bind the drop function onto here
-    this.instance.$outer.dropArea();
-    this.instance.$outer.bind('dragleave', this.hide);    
-    this.instance.$outer.bind('drop', this.onDrop);
+    this.instance.$outer.dropArea()
+                        .bind('dragleave', this.hide)
+                        .bind('drop', this.onDrop);
     
-    this.$el.addClass('sir-trevor-item-ready');    
+    this.$el.addClass(this.instance.baseCSS("item-ready"));
   },
     
-  show: function(ev){ 
+  show: function(ev) {
     
     if(ev.type == 'drag' || ev.type == 'dragover') {
       this.$p.text(this.options.dropText);
@@ -84,7 +91,7 @@ _.extend(Marker.prototype, FunctionBind, {
       // Find the closest block to this position
       var closest_block = false,
           wrapper = this.instance.$wrapper,
-          blockClass = "." + this.instance.options.baseCSSClass + "-block";
+          blockClass = "." + this.instance.baseCSS("block");
       
       var blockIterator = function(block, index) {
         block = $(block);
@@ -106,11 +113,11 @@ _.extend(Marker.prototype, FunctionBind, {
         this.$el.insertBefore(wrapper.find(blockClass).first());
       }
     }
-    this.$el.addClass('sir-trevor-item-ready');
+    this.$el.addClass(this.instance.baseCSS("item-ready"));
   },
 
-  hide: function(ev){ 
-    this.$el.removeClass('sir-trevor-item-ready'); 
+  hide: function(ev){
+    this.$el.removeClass(this.instance.baseCSS("item-ready"));
   },
   
   onDrop: function(ev){
@@ -140,11 +147,9 @@ _.extend(Marker.prototype, FunctionBind, {
   },
   
   move: function(top) {
-    this.$el.css({
-      top: top
-    });
-    this.$el.show();
-    this.$el.addClass('sir-trevor-item-ready');
+    this.$el.css({ top: top })
+            .show()
+            .addClass(this.instance.baseCSS("item-ready"));
   }
 });
 

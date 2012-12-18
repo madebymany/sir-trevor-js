@@ -74,7 +74,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
-    } 
+    }
   },
   
   store: function(){
@@ -104,7 +104,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
        return false;
      }
      
-     var block = new blockType(this, data || {});  
+     var block = new blockType(this, data || {});
      
      if (_.isUndefined(this.blockCounts[type])) {
        this.blockCounts[type] = 0;
@@ -124,7 +124,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
        this.marker.$el.find('[data-type="' + type + '"]')
         .addClass('inactive')
         .attr('title','You have reached the limit for this type of block');
-     } 
+     }
      
      SirTrevor.publish("editor/block/createBlock");
       
@@ -135,7 +135,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   },
   
   removeBlock: function(block) {
-    // Blocks exist purely on the dom. 
+    // Blocks exist purely on the dom.
     // Remove the block and decrement the blockCount
     block.remove();
     this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
@@ -226,7 +226,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
             errors++;
             
           } else {
-            // We need to also validate that we have some data of this type too. 
+            // We need to also validate that we have some data of this type too.
             // This is ugly, but necessary for proper validation on blocks that don't have required fields.
             var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
             
@@ -254,7 +254,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       
       if (_.isUndefined(this.$errors)) {
         this.$errors = $("<div>", {
-          class: this.options.baseCSSClass + "-errors",
+          'class': this.baseCSS("errors"),
           html: "<p>You have the following errors: </p><ul></ul>"
         });
         this.$outer.prepend(this.$errors);
@@ -264,7 +264,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
       
       _.each(this.errors, _.bind(function(error) {
         list.append($("<li>", {
-          class: "error-msg",
+          'class': this.baseCSS("error-msg"),
           html: error.text
         }));
       }, this));
@@ -308,7 +308,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   },
   
   _ensureAndSetElements: function() {
-    
     if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
       SirTrevor.log("You must provide an el");
       return false;
@@ -318,19 +317,15 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     this.el = this.options.el[0];
     this.$form = this.$el.parents('form');
     
+    var blockCSSClass = this.baseCSS("blocks");
+
     // Wrap our element in lots of containers *eww*
-    this.$el.wrap($('<div>', { 
-                    id: this.ID,
-                    'class': this.options.baseCSSClass,
-                    dropzone: 'copy link move'
-                  })
-                )
-              .wrap($("<div>", {
-                class: this.options.baseCSSClass + "-blocks"
-              }));
+    this.$el.wrap($('<div>', { id: this.ID, 'class': this.options.baseCSSClass, dropzone: 'copy link move' }))
+            .wrap($("<div>", { 'class': blockCSSClass }));
       
-    this.$outer = this.$form.find('#' + this.ID); 
-    this.$wrapper = this.$outer.find("." + this.options.baseCSSClass + "-blocks");
+    this.$outer = this.$form.find('#' + this.ID);
+    this.$wrapper = this.$outer.find("." + blockCSSClass);
+
     return true;
   },
   
@@ -341,7 +336,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   */
   _setBlocksAndFormatters: function() {
     this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
-    this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);    
+    this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
   },
   
   /* Get our required blocks (if any) */
@@ -382,7 +377,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
                    .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
                    .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
                    .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
-                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities 
+                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
                    .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
 
     
@@ -397,9 +392,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     }
     
 		// Strip remaining HTML
-		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");                                            
+		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
     
-        
     return markdown;
   },
   
@@ -439,7 +433,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
                 .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
                 .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
        
-    return html;  
+    return html;
+  },
+
+  baseCSS: function(additional) {
+    return this.options.baseCSSClass + "-" + additional;
   }
 });
 

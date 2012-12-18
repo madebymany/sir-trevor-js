@@ -16,11 +16,11 @@ describe("a SirTrevor.Marker", function(){
   
   it("should contain all available blockTypes if no options are passed", function(){
     var totalTypes = _.toArray(editor.blockTypes).length;
-    expect(marker.$el.find('.buttons a').length).toBe(totalTypes);
+    expect(marker.$btns.find('a').length).toBe(totalTypes);
   });
   
   it("should contain only the available blockTypes when options are passed", function(){
     var totalTypes = _.toArray(editorOpts.blockTypes).length;
-    expect(markerOpts.$el.find('.buttons a').length).toBe(totalTypes);
+    expect(markerOpts.$btns.find('a').length).toBe(totalTypes);
   });
 });

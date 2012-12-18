@@ -29,7 +29,7 @@ describe("a Block", function(){
   
   it("should have an $editor element associated with it, that contains the editorHTML", function(){
     expect(block.$editor).not.toBe(undefined);
-    expect(block.$editor.hasClass('block-editor')).toBe(true);
+    expect(block.$editor.hasClass('sir-trevor-editor-block')).toBe(true);
   });
   
   it("should have an empty data state given no data was passed to it", function(){

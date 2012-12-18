@@ -8,7 +8,7 @@
 var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
   this.instance = editorInstance;
   this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
-  this.className = this.instance.options.baseCSSClass + "-" + this.options.baseCSSClass;
+  this.className = this.instance.baseCSS(this.options.baseCSSClass);
   this.clicked = false;
   this._bindFunctions();
 };
@@ -33,7 +33,7 @@ _.extend(FormatBar.prototype, FunctionBind, {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         $("<button>", {
-          'class': 'format-button ' + format.className,
+          'class': this.instance.baseCSS("format-button"),
           'text': format.title,
           'data-type': formatName,
           'data-cmd': format.cmd,
@@ -51,17 +51,14 @@ _.extend(FormatBar.prototype, FunctionBind, {
   
   /* Convienience methods */
   show: function(relativeEl){
-    this.$el.css({
-      top: relativeEl.position().top
-    });
-    this.$el.addClass('sir-trevor-item-ready');
-    this.$el.show(); 
+    this.$el.css({ top: relativeEl.position().top })
+        .addClass(this.instance.baseCSS('item-ready'))
+        .show();
   },
 
   hide: function(){ 
     this.clicked = false;
-    this.$el.removeClass('sir-trevor-item-ready'); 
-    this.$el.hide();
+    this.$el.removeClass(this.instance.baseCSS('item-ready')).hide();
   },
   
   remove: function(){ this.$el.remove(); },
@@ -80,7 +77,7 @@ _.extend(FormatBar.prototype, FunctionBind, {
       document.execCommand(btn.attr('data-cmd'), false, format.param);
     }   
     // Make sure we still show the bar
-    this.$el.addClass('sir-trevor-item-ready'); 
+    this.$el.addClass(this.instance.baseCSS('item-ready')); 
   }
   
 });

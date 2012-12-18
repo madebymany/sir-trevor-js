@@ -3,28 +3,28 @@
   var root = this,
       SirTrevor;
    
-  SirTrevor = root.SirTrevor = {}; 
+  SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = true;
   SirTrevor.SKIP_VALIDATION = false;
   
-  /* 
+  /*
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
   */
   
   SirTrevor.DEFAULTS = {
     baseCSSClass: "sir-trevor",
-    errorClass: "sir-trevor-error",
+    errorClass: "error",
     defaultType: "Text",
     spinner: {
       className: 'spinner',
-      lines: 9, 
-      length: 8, 
-      width: 3, 
-      radius: 6, 
-      color: '#000', 
-      speed: 1.4, 
-      trail: 57, 
+      lines: 9,
+      length: 8,
+      width: 3,
+      radius: 6,
+      color: '#000',
+      speed: 1.4,
+      trail: 57,
       shadow: false,
       left: '50%',
       top: '50%'
@@ -43,7 +43,7 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/'
-  }; 
+  };
 
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
@@ -105,7 +105,7 @@
     if(errors > 0) {
       SirTrevor.publish("onError");
       ev.preventDefault();
-    } 
+    }
   };
   
   SirTrevor.runOnAllInstances = function(method) {

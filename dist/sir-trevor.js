@@ -5,28 +5,28 @@
   var root = this,
       SirTrevor;
    
-  SirTrevor = root.SirTrevor = {}; 
+  SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = true;
   SirTrevor.SKIP_VALIDATION = false;
   
-  /* 
+  /*
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
   */
   
   SirTrevor.DEFAULTS = {
     baseCSSClass: "sir-trevor",
-    errorClass: "sir-trevor-error",
+    errorClass: "error",
     defaultType: "Text",
     spinner: {
       className: 'spinner',
-      lines: 9, 
-      length: 8, 
-      width: 3, 
-      radius: 6, 
-      color: '#000', 
-      speed: 1.4, 
-      trail: 57, 
+      lines: 9,
+      length: 8,
+      width: 3,
+      radius: 6,
+      color: '#000',
+      speed: 1.4,
+      trail: 57,
       shadow: false,
       left: '50%',
       top: '50%'
@@ -45,7 +45,7 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/'
-  }; 
+  };
 
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
@@ -531,13 +531,11 @@
   
   
   var Block = SirTrevor.Block = function(instance, data) {
-  
     this.instance = instance;
     this.type = this._getBlockType();
     
-    this.store("create", this, { data: data }); 
+    this.store("create", this, { data: data });
     
-    //this.data = data;
     this.uploadsCount = 0;
     this.blockID = _.uniqueId(this.className + '-');
       
@@ -550,16 +548,16 @@
   };
   
   var blockOptions = [
-    "className", 
+    "className",
     "toolbarEnabled",
   	"formattingEnabled",
-    "dropEnabled", 
-    "title", 
-    "limit", 
-    "editorHTML", 
-    "dropzoneHTML", 
-    "validate", 
-    "loadData", 
+    "dropEnabled",
+    "title",
+    "limit",
+    "editorHTML",
+    "dropzoneHTML",
+    "validate",
+    "loadData",
     "toData",
     "onDrop",
     "onContentPasted",
@@ -612,7 +610,7 @@
       this.instance.marker.hide();
       this.instance.marker.$el.before(this.$el);
       
-      // Do we have a dropzone? 
+      // Do we have a dropzone?
       if (this.dropEnabled) {
         this._initDragDrop();
       }
@@ -628,8 +626,8 @@
       this.save();
       
       // Add UI elements
-      this.$el.append($('<span>',{ 'class': 'handle', draggable: true }));
-      this.$el.append($('<span>',{ 'class': 'delete block-delete' }));
+      this.$el.append($('<span>',{ 'class': this.instance.baseCSS("drag-handle"), draggable: true }));
+      this.$el.append($('<span>',{ 'class': this.instance.baseCSS("remove-block") }));
       
       // Stop events propagating through to the container
       this.$el
@@ -645,7 +643,7 @@
       this._initPaste();
       
       // Delete
-      this.$('.delete.block-delete').bind('click', this.onDeleteClick);
+      this.$('.' + this.instance.baseCSS("remove-block")).bind('click', this.onDeleteClick);
       
       // Handle text blocks
       if (this.$$('.text-block').length > 0) {
@@ -679,7 +677,7 @@
       this._initTextLimits();
       
       // Set ready state
-      this.$el.addClass('sir-trevor-item-ready');
+      this.$el.addClass(this.instance.baseCSS('item-ready'));
       
       this.onBlockRender();
     },
@@ -740,12 +738,9 @@
   
         if ((required && content.length === 0) || too_long) {
           // Error!
-          field.addClass(this.instance.options.errorClass).before($("<div>", {
-            'class': 'error-marker',
-            'html': '!'
-          }));
+          field.addClass(this.instance.baseCSS(this.instance.options.errorClass)).before($("<div>", { 'class': 'error-marker', 'html': '!' }));
           errors++;
-        } 
+        }
       }, this));
       
       return (errors === 0);
@@ -880,14 +875,15 @@
     },
     
     _beforeValidate: function() {
-      this.errors = []; 
-      this.$('.error').removeClass('error');
+      this.errors = [];
+      var errorClass = this.instance.baseCSS("error");
+      this.$('.' + errorClass).removeClass(errorClass);
       this.$('.error-marker').remove();
     },
     
     _handleContentPaste: function(ev) {
       // We need a little timeout here
-      var timed = function(ev){ 
+      var timed = function(ev){
         // Delegate this off to the super method that can be overwritten
         this.onContentPasted(ev);
       };
@@ -912,14 +908,12 @@
       /*
         Check the type we just received,
         delegate it away to our blockTypes to process
-      */    
+      */
       
-      if (!_.isUndefined(types))
-      {
-        if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) 
-        {
+      if (!_.isUndefined(types)) {
+        if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) {
           this.onDrop(e.dataTransfer);
-        } 
+        }
       }
     },
   
@@ -928,12 +922,12 @@
       
       // Set
       var editor = $('<div>', {
-        'class': 'block-editor ' + this.className + '-block',
+        'class': this.instance.baseCSS("editor-block") + ' ' + this._getBlockClass(),
         html: el
       });
       
-      this.$el = $('<div>', { 
-        'class': this.instance.options.baseCSSClass + "-block", 
+      this.$el = $('<div>', {
+        'class': this.instance.baseCSS("block"),
         id: this.blockID,
         "data-type": this.type,
         "data-instance": this.instance.ID,
@@ -951,8 +945,12 @@
         if (SirTrevor.Blocks[block].prototype == Object.getPrototypeOf(this)) {
           objName = block;
         }
-      } 
+      }
       return objName;
+    },
+  
+    _getBlockClass: function() {
+      return this.className + '-block';
     },
     
     /*
@@ -965,14 +963,14 @@
       
       this.$dropzone = $("<div>", {
         html: this.dropzoneHTML,
-        class: "dropzone " + this.className + '-block'
+        'class': "dropzone " + this._getBlockClass()
       });
       this.$el.append(this.$dropzone);
       this.$editor.hide();
       
       // Bind our drop event
-      this.$dropzone.dropArea();
-      this.$dropzone.bind('drop', this._handleDrop);
+      this.$dropzone.dropArea()
+                    .bind('drop', this._handleDrop);
     },
     
     _initReordering: function() {
@@ -1013,7 +1011,6 @@
   var Format = SirTrevor.Formatter = function(options){
     this.formatId = _.uniqueId('format-');
     this._configure(options || {});
-    this.className = SirTrevor.DEFAULTS.baseCSSClass + "-format-" + this.options.className;
     this.initialize.apply(this, arguments);
   };
   
@@ -1576,8 +1573,8 @@
       
       if(link && link.length > 0) {
         
-       if (!link_regex.test(link)) { 
-         link = "http://" + link; 
+       if (!link_regex.test(link)) {
+         link = "http://" + link;
        }
        
        document.execCommand(this.cmd, false, link);
@@ -1591,37 +1588,6 @@
     cmd: "unlink"
   });
   
-  var Heading1 = SirTrevor.Formatter.extend({
-    
-    title: "H1",
-    className: "heading h1",
-    cmd: "formatBlock",
-    param: "H1",
-    
-    toMarkdown: function(markdown) {
-      return markdown.replace(/<h1>([^*|_]+)<\/h1>/mg,"#$1#\n"); 
-    },
-    
-    toHTML: function(html) {
-      return html.replace(/(?:#)([^*|_]+)(?:#)/mg,"<h1>$1</h1>"); 
-    }
-  });
-  
-  var Heading2 = SirTrevor.Formatter.extend({
-    title: "H2",
-    className: "heading h2",
-    cmd: "formatBlock",
-    param: "H2",
-    
-    toMarkdown: function(markdown) {
-      return markdown.replace(/<h2>([^*|_]+)<\/h2>/mg,"##$1##\n"); 
-    },
-    
-    toHTML: function(html) {
-      return html.replace(/(?:##)([^*|_]+)(?:##)/mg,"<h2>$1</h2>"); 
-    }
-  });
-  
   /*
     Create our formatters and add a static reference to them
   */
@@ -1629,8 +1595,6 @@
   SirTrevor.Formatters.Italic = new Italic();
   SirTrevor.Formatters.Link = new Link();
   SirTrevor.Formatters.Unlink = new UnLink();
-  //SirTrevor.Formatters.Heading1 = new Heading1();
-  //SirTrevor.Formatters.Heading2 = new Heading2();
   /* Marker */
   /*
     SirTrevor Marker
@@ -1649,22 +1613,28 @@
     bound: ["onButtonClick", "show", "hide", "onDrop"],
     
     render: function() {
-      
+  
       var marker = $('<span>', {
-        'class': this.instance.options.baseCSSClass + "-" + this.options.baseCSSClass,
-        html: '<p>' + this.options.addText + '</p><div class="buttons"></div>'
+        'class': this.instance.baseCSS(this.options.baseCSSClass),
+        html: '<p>' + this.options.addText + '</p>'
       });
+  
+      var btns_cont = $("<div>", {
+        'class': this.instance.baseCSS("buttons")
+      });
+  
+      marker.append(btns_cont);
       
       // Bind to the wrapper
       this.instance.$wrapper.append(marker);
       
       // Cache our elements for later use
       this.$el = marker;
-      this.$btns = this.$el.find('.buttons');
+      this.$btns = btns_cont;
       this.$p = this.$el.find('p');
       
       // Add all of our buttons
-      var blockName, block; 
+      var blockName, block;
       
       for (blockName in this.instance.blockTypes) {
         if (SirTrevor.Blocks.hasOwnProperty(blockName)) {
@@ -1673,11 +1643,11 @@
             this.$btns.append(
              $("<a>", {
               "href": "#",
-              "class": this.options.buttonClass + " new-" + block.prototype.className,
+              "class": this.instance.baseCSS(this.options.buttonClass) + " new-" + block.prototype.className,
               "data-type": blockName,
               "text": block.prototype.title,
               click: this.onButtonClick
-             }) 
+             })
             );
           }
         }
@@ -1687,20 +1657,21 @@
       if(this.$btns.children().length === 0) this.$el.addClass('hidden');
       
       // Bind our marker to the wrapper
-      this.instance.$outer.bind('mouseover', this.show);
-      this.instance.$outer.bind('mouseout', this.hide);
-      this.instance.$outer.bind('dragover', this.show);    
+      this.instance.$outer.bind('mouseover', this.show)
+                          .bind('mouseout', this.hide)
+                          .bind('dragover', this.show);
+  
       this.$el.bind('dragover',halt);
       
       // Bind the drop function onto here
-      this.instance.$outer.dropArea();
-      this.instance.$outer.bind('dragleave', this.hide);    
-      this.instance.$outer.bind('drop', this.onDrop);
+      this.instance.$outer.dropArea()
+                          .bind('dragleave', this.hide)
+                          .bind('drop', this.onDrop);
       
-      this.$el.addClass('sir-trevor-item-ready');    
+      this.$el.addClass(this.instance.baseCSS("item-ready"));
     },
       
-    show: function(ev){ 
+    show: function(ev) {
       
       if(ev.type == 'drag' || ev.type == 'dragover') {
         this.$p.text(this.options.dropText);
@@ -1718,7 +1689,7 @@
         // Find the closest block to this position
         var closest_block = false,
             wrapper = this.instance.$wrapper,
-            blockClass = "." + this.instance.options.baseCSSClass + "-block";
+            blockClass = "." + this.instance.baseCSS("block");
         
         var blockIterator = function(block, index) {
           block = $(block);
@@ -1740,11 +1711,11 @@
           this.$el.insertBefore(wrapper.find(blockClass).first());
         }
       }
-      this.$el.addClass('sir-trevor-item-ready');
+      this.$el.addClass(this.instance.baseCSS("item-ready"));
     },
   
-    hide: function(ev){ 
-      this.$el.removeClass('sir-trevor-item-ready'); 
+    hide: function(ev){
+      this.$el.removeClass(this.instance.baseCSS("item-ready"));
     },
     
     onDrop: function(ev){
@@ -1774,11 +1745,9 @@
     },
     
     move: function(top) {
-      this.$el.css({
-        top: top
-      });
-      this.$el.show();
-      this.$el.addClass('sir-trevor-item-ready');
+      this.$el.css({ top: top })
+              .show()
+              .addClass(this.instance.baseCSS("item-ready"));
     }
   });
   
@@ -1796,7 +1765,7 @@
   var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
     this.instance = editorInstance;
     this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
-    this.className = this.instance.options.baseCSSClass + "-" + this.options.baseCSSClass;
+    this.className = this.instance.baseCSS(this.options.baseCSSClass);
     this.clicked = false;
     this._bindFunctions();
   };
@@ -1821,7 +1790,7 @@
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
           $("<button>", {
-            'class': 'format-button ' + format.className,
+            'class': this.instance.baseCSS("format-button"),
             'text': format.title,
             'data-type': formatName,
             'data-cmd': format.cmd,
@@ -1839,17 +1808,14 @@
     
     /* Convienience methods */
     show: function(relativeEl){
-      this.$el.css({
-        top: relativeEl.position().top
-      });
-      this.$el.addClass('sir-trevor-item-ready');
-      this.$el.show(); 
+      this.$el.css({ top: relativeEl.position().top })
+          .addClass(this.instance.baseCSS('item-ready'))
+          .show();
     },
   
     hide: function(){ 
       this.clicked = false;
-      this.$el.removeClass('sir-trevor-item-ready'); 
-      this.$el.hide();
+      this.$el.removeClass(this.instance.baseCSS('item-ready')).hide();
     },
     
     remove: function(){ this.$el.remove(); },
@@ -1868,7 +1834,7 @@
         document.execCommand(btn.attr('data-cmd'), false, format.param);
       }   
       // Make sure we still show the bar
-      this.$el.addClass('sir-trevor-item-ready'); 
+      this.$el.addClass(this.instance.baseCSS('item-ready')); 
     }
     
   });
@@ -1948,7 +1914,7 @@
       
       if(!_.isUndefined(this.onEditorRender)) {
         this.onEditorRender();
-      } 
+      }
     },
     
     store: function(){
@@ -1978,7 +1944,7 @@
          return false;
        }
        
-       var block = new blockType(this, data || {});  
+       var block = new blockType(this, data || {});
        
        if (_.isUndefined(this.blockCounts[type])) {
          this.blockCounts[type] = 0;
@@ -1998,7 +1964,7 @@
          this.marker.$el.find('[data-type="' + type + '"]')
           .addClass('inactive')
           .attr('title','You have reached the limit for this type of block');
-       } 
+       }
        
        SirTrevor.publish("editor/block/createBlock");
         
@@ -2009,7 +1975,7 @@
     },
     
     removeBlock: function(block) {
-      // Blocks exist purely on the dom. 
+      // Blocks exist purely on the dom.
       // Remove the block and decrement the blockCount
       block.remove();
       this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
@@ -2100,7 +2066,7 @@
               errors++;
               
             } else {
-              // We need to also validate that we have some data of this type too. 
+              // We need to also validate that we have some data of this type too.
               // This is ugly, but necessary for proper validation on blocks that don't have required fields.
               var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
               
@@ -2128,7 +2094,7 @@
         
         if (_.isUndefined(this.$errors)) {
           this.$errors = $("<div>", {
-            class: this.options.baseCSSClass + "-errors",
+            'class': this.baseCSS("errors"),
             html: "<p>You have the following errors: </p><ul></ul>"
           });
           this.$outer.prepend(this.$errors);
@@ -2138,7 +2104,7 @@
         
         _.each(this.errors, _.bind(function(error) {
           list.append($("<li>", {
-            class: "error-msg",
+            'class': this.baseCSS("error-msg"),
             html: error.text
           }));
         }, this));
@@ -2182,7 +2148,6 @@
     },
     
     _ensureAndSetElements: function() {
-      
       if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
         SirTrevor.log("You must provide an el");
         return false;
@@ -2192,19 +2157,15 @@
       this.el = this.options.el[0];
       this.$form = this.$el.parents('form');
       
+      var blockCSSClass = this.baseCSS("blocks");
+  
       // Wrap our element in lots of containers *eww*
-      this.$el.wrap($('<div>', { 
-                      id: this.ID,
-                      'class': this.options.baseCSSClass,
-                      dropzone: 'copy link move'
-                    })
-                  )
-                .wrap($("<div>", {
-                  class: this.options.baseCSSClass + "-blocks"
-                }));
+      this.$el.wrap($('<div>', { id: this.ID, 'class': this.options.baseCSSClass, dropzone: 'copy link move' }))
+              .wrap($("<div>", { 'class': blockCSSClass }));
         
-      this.$outer = this.$form.find('#' + this.ID); 
-      this.$wrapper = this.$outer.find("." + this.options.baseCSSClass + "-blocks");
+      this.$outer = this.$form.find('#' + this.ID);
+      this.$wrapper = this.$outer.find("." + blockCSSClass);
+  
       return true;
     },
     
@@ -2215,7 +2176,7 @@
     */
     _setBlocksAndFormatters: function() {
       this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
-      this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);    
+      this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
     },
     
     /* Get our required blocks (if any) */
@@ -2256,7 +2217,7 @@
                      .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
                      .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
                      .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
-                     .replace(/&nbsp;/g," ")                                                     // Strip white-space entities 
+                     .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
                      .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
   
       
@@ -2271,9 +2232,8 @@
       }
       
   		// Strip remaining HTML
-  		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");                                            
+  		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
       
-          
       return markdown;
     },
     
@@ -2313,7 +2273,11 @@
                   .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
                   .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
          
-      return html;  
+      return html;
+    },
+  
+    baseCSS: function(additional) {
+      return this.options.baseCSSClass + "-" + additional;
     }
   });
   
@@ -2346,7 +2310,7 @@
     if(errors > 0) {
       SirTrevor.publish("onError");
       ev.preventDefault();
-    } 
+    }
   };
   
   SirTrevor.runOnAllInstances = function(method) {

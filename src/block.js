@@ -1,11 +1,9 @@
 var Block = SirTrevor.Block = function(instance, data) {
-
   this.instance = instance;
   this.type = this._getBlockType();
   
-  this.store("create", this, { data: data }); 
+  this.store("create", this, { data: data });
   
-  //this.data = data;
   this.uploadsCount = 0;
   this.blockID = _.uniqueId(this.className + '-');
     
@@ -18,16 +16,16 @@ var Block = SirTrevor.Block = function(instance, data) {
 };
 
 var blockOptions = [
-  "className", 
+  "className",
   "toolbarEnabled",
 	"formattingEnabled",
-  "dropEnabled", 
-  "title", 
-  "limit", 
-  "editorHTML", 
-  "dropzoneHTML", 
-  "validate", 
-  "loadData", 
+  "dropEnabled",
+  "title",
+  "limit",
+  "editorHTML",
+  "dropzoneHTML",
+  "validate",
+  "loadData",
   "toData",
   "onDrop",
   "onContentPasted",
@@ -80,7 +78,7 @@ _.extend(Block.prototype, FunctionBind, {
     this.instance.marker.hide();
     this.instance.marker.$el.before(this.$el);
     
-    // Do we have a dropzone? 
+    // Do we have a dropzone?
     if (this.dropEnabled) {
       this._initDragDrop();
     }
@@ -96,8 +94,8 @@ _.extend(Block.prototype, FunctionBind, {
     this.save();
     
     // Add UI elements
-    this.$el.append($('<span>',{ 'class': 'handle', draggable: true }));
-    this.$el.append($('<span>',{ 'class': 'delete block-delete' }));
+    this.$el.append($('<span>',{ 'class': this.instance.baseCSS("drag-handle"), draggable: true }));
+    this.$el.append($('<span>',{ 'class': this.instance.baseCSS("remove-block") }));
     
     // Stop events propagating through to the container
     this.$el
@@ -113,7 +111,7 @@ _.extend(Block.prototype, FunctionBind, {
     this._initPaste();
     
     // Delete
-    this.$('.delete.block-delete').bind('click', this.onDeleteClick);
+    this.$('.' + this.instance.baseCSS("remove-block")).bind('click', this.onDeleteClick);
     
     // Handle text blocks
     if (this.$$('.text-block').length > 0) {
@@ -147,7 +145,7 @@ _.extend(Block.prototype, FunctionBind, {
     this._initTextLimits();
     
     // Set ready state
-    this.$el.addClass('sir-trevor-item-ready');
+    this.$el.addClass(this.instance.baseCSS('item-ready'));
     
     this.onBlockRender();
   },
@@ -208,12 +206,9 @@ _.extend(Block.prototype, FunctionBind, {
 
       if ((required && content.length === 0) || too_long) {
         // Error!
-        field.addClass(this.instance.options.errorClass).before($("<div>", {
-          'class': 'error-marker',
-          'html': '!'
-        }));
+        field.addClass(this.instance.baseCSS(this.instance.options.errorClass)).before($("<div>", { 'class': 'error-marker', 'html': '!' }));
         errors++;
-      } 
+      }
     }, this));
     
     return (errors === 0);
@@ -348,14 +343,15 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   _beforeValidate: function() {
-    this.errors = []; 
-    this.$('.error').removeClass('error');
+    this.errors = [];
+    var errorClass = this.instance.baseCSS("error");
+    this.$('.' + errorClass).removeClass(errorClass);
     this.$('.error-marker').remove();
   },
   
   _handleContentPaste: function(ev) {
     // We need a little timeout here
-    var timed = function(ev){ 
+    var timed = function(ev){
       // Delegate this off to the super method that can be overwritten
       this.onContentPasted(ev);
     };
@@ -380,14 +376,12 @@ _.extend(Block.prototype, FunctionBind, {
     /*
       Check the type we just received,
       delegate it away to our blockTypes to process
-    */    
+    */
     
-    if (!_.isUndefined(types))
-    {
-      if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) 
-      {
+    if (!_.isUndefined(types)) {
+      if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) {
         this.onDrop(e.dataTransfer);
-      } 
+      }
     }
   },
 
@@ -396,12 +390,12 @@ _.extend(Block.prototype, FunctionBind, {
     
     // Set
     var editor = $('<div>', {
-      'class': 'block-editor ' + this.className + '-block',
+      'class': this.instance.baseCSS("editor-block") + ' ' + this._getBlockClass(),
       html: el
     });
     
-    this.$el = $('<div>', { 
-      'class': this.instance.options.baseCSSClass + "-block", 
+    this.$el = $('<div>', {
+      'class': this.instance.baseCSS("block"),
       id: this.blockID,
       "data-type": this.type,
       "data-instance": this.instance.ID,
@@ -419,8 +413,12 @@ _.extend(Block.prototype, FunctionBind, {
       if (SirTrevor.Blocks[block].prototype == Object.getPrototypeOf(this)) {
         objName = block;
       }
-    } 
+    }
     return objName;
+  },
+
+  _getBlockClass: function() {
+    return this.className + '-block';
   },
   
   /*
@@ -433,14 +431,14 @@ _.extend(Block.prototype, FunctionBind, {
     
     this.$dropzone = $("<div>", {
       html: this.dropzoneHTML,
-      class: "dropzone " + this.className + '-block'
+      'class': "dropzone " + this._getBlockClass()
     });
     this.$el.append(this.$dropzone);
     this.$editor.hide();
     
     // Bind our drop event
-    this.$dropzone.dropArea();
-    this.$dropzone.bind('drop', this._handleDrop);
+    this.$dropzone.dropArea()
+                  .bind('drop', this._handleDrop);
   },
   
   _initReordering: function() {
