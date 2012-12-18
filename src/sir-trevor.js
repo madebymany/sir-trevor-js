@@ -14,6 +14,7 @@
   
   SirTrevor.DEFAULTS = {
     baseCSSClass: "sir-trevor",
+    errorClass: "sir-trevor-error",
     defaultType: "Text",
     spinner: {
       className: 'spinner',

@@ -62,7 +62,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
           
           // Make our AJAX call
           $.ajax({
-            url: "http://api.twitter.com/1/statuses/show/" + tweetID + ".json",
+            url: "//api.twitter.com/1/statuses/show/" + tweetID + ".json",
             dataType: "JSONP",
             success: _.bind(tweetCallbackSuccess, this),
             error: _.bind(tweetCallbackFail, this)

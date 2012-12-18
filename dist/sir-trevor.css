@@ -234,7 +234,7 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   outline: 0px solid transparent;
 }
 
-.sir-trevor-block [contenteditable=true].error {
+.sir-trevor-block [contenteditable=true].si-trevor-error {
   border: 1px solid #990000;
 } 
 
@@ -313,9 +313,9 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
     word-wrap: break-word;
 } 
 
-.sir-trevor .sir-trevor-block input[type=text].error,
-.sir-trevor .sir-trevor-block select.error,
-.sir-trevor .sir-trevor-block textarea.error {
+.sir-trevor .sir-trevor-block input[type=text].sir-trevor-error,
+.sir-trevor .sir-trevor-block select.sir-trevor-error,
+.sir-trevor .sir-trevor-block textarea.sir-trevor-error {
   border: 1px solid #990000;
 }
 

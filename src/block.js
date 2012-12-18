@@ -208,7 +208,7 @@ _.extend(Block.prototype, FunctionBind, {
 
       if ((required && content.length === 0) || too_long) {
         // Error!
-        field.addClass('error').before($("<div>", {
+        field.addClass(this.instance.options.errorClass).before($("<div>", {
           'class': 'error-marker',
           'html': '!'
         }));
