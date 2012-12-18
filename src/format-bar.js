@@ -18,7 +18,6 @@ _.extend(FormatBar.prototype, FunctionBind, {
   bound: ["onFormatButtonClick"],
   
   render: function(){
-    
     var bar = $("<div>", {
       "class": this.className
     });
@@ -42,42 +41,46 @@ _.extend(FormatBar.prototype, FunctionBind, {
       }
     }
     
+    $(document).bind('scroll', _.bind(this.handleDocumentScroll, this));
+
     if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
-    
-    this.hide();
-    this.$el.bind('mouseout', _.bind(function(ev){ halt(ev); this.clicked = false; }, this));
-    this.$el.bind('mouseover', halt);
-  },
-  
-  /* Convienience methods */
-  show: function(relativeEl){
-    this.$el.css({ top: relativeEl.position().top })
-        .addClass(this.instance.baseCSS('item-ready'))
-        .show();
   },
 
-  hide: function(){ 
-    this.clicked = false;
-    this.$el.removeClass(this.instance.baseCSS('item-ready')).hide();
+  handleDocumentScroll: function() {
+    var instance_height = this.instance.$outer.height(),
+        instance_offset = this.instance.$outer.offset().top,
+        viewport_top = $(document).scrollTop();
+
+    if (this.$el.hasClass('fixed')) {
+      instance_offset = this.$el.offset().top;
+    }
+
+    if ((viewport_top >= instance_offset) && (viewport_top <= instance_height)) {
+      this.$el.addClass('fixed');
+      this.instance.$wrapper.css({ 'padding-top': '62px' });
+    } else {
+      this.$el.removeClass('fixed');
+      this.instance.$wrapper.css({ 'padding-top': '16px' });
+    }
   },
-  
+
   remove: function(){ this.$el.remove(); },
   
   onFormatButtonClick: function(ev){
     halt(ev);
-    this.clicked = true;
+
     var btn = $(ev.target),
         format = SirTrevor.Formatters[btn.attr('data-type')];
      
-    // Do we have a click function defined on this formatter?     
+    // Do we have a click function defined on this formatter?
     if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
       format.onClick(); // Delegate
     } else {
       // Call default
       document.execCommand(btn.attr('data-cmd'), false, format.param);
-    }   
+    }
     // Make sure we still show the bar
-    this.$el.addClass(this.instance.baseCSS('item-ready')); 
+    this.$el.addClass(this.instance.baseCSS('item-ready'));
   }
   
 });

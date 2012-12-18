@@ -16,7 +16,7 @@ _.extend(Marker.prototype, FunctionBind, {
   
   render: function() {
 
-    var marker = $('<span>', {
+    var marker = $('<div>', {
       'class': this.instance.baseCSS(this.options.baseCSSClass),
       html: '<p>' + this.options.addText + '</p>'
     });

@@ -606,7 +606,6 @@
       this.beforeBlockRender();
           
       // Insert before the marker
-      this.instance.formatBar.hide();
       this.instance.marker.hide();
       this.instance.marker.$el.before(this.$el);
       
@@ -649,11 +648,6 @@
       if (this.$$('.text-block').length > 0) {
         document.execCommand("styleWithCSS", false, false);
         document.execCommand("insertBrOnReturn", false, true);
-        
-        // Bind our text block to show the format bar
-        this.$$('.text-block')
-          .focus(this.onBlockFocus)
-          .blur(this.onBlockBlur);
         
         // Strip out all the HTML on paste
         this.$$('.text-block').bind('paste', this._handleContentPaste);
@@ -738,10 +732,14 @@
   
         if ((required && content.length === 0) || too_long) {
           // Error!
-          field.addClass(this.instance.baseCSS(this.instance.options.errorClass)).before($("<div>", { 'class': 'error-marker', 'html': '!' }));
+          field.addClass(this.instance.baseCSS(this.instance.options.errorClass));
           errors++;
         }
       }, this));
+  
+      if (errors > 0) {
+        this.$el.addClass(this.instance.baseCSS('block-with-errors'));
+      }
       
       return (errors === 0);
     },
@@ -806,30 +804,12 @@
       ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
       ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
       item.parent().addClass('dragging');
-      this.instance.formatBar.hide();
     },
     
     onDragEnd: function(ev){
       var item = $(ev.target);
       item.parent().removeClass('dragging');
       this.instance.marker.hide();
-    },
-    
-    onBlockFocus: function(ev) {
-      _.delay(_.bind(function(){
-        this.instance.formatBar.clicked = false;
-        if(this.formattingEnabled) {
-  				this.instance.formatBar.show(this.$el);
-  			}
-      }, this), 250);
-    },
-    
-    onBlockBlur: function(ev) {
-      _.delay(_.bind(function(){
-          if(!this.instance.formatBar.clicked && this.formattingEnabled) {
-            this.instance.formatBar.hide();
-          }
-      }, this), 250);
     },
     
     onDeleteClick: function(ev) {
@@ -877,6 +857,7 @@
     _beforeValidate: function() {
       this.errors = [];
       var errorClass = this.instance.baseCSS("error");
+      this.$el.removeClass(this.instance.baseCSS('block-with-errors'));
       this.$('.' + errorClass).removeClass(errorClass);
       this.$('.error-marker').remove();
     },
@@ -901,7 +882,6 @@
           types = e.dataTransfer.types,
           type, data = [];
       
-      this.instance.formatBar.hide();
       this.instance.marker.hide();
       this.$dropzone.removeClass('dragOver');
           
@@ -1614,7 +1594,7 @@
     
     render: function() {
   
-      var marker = $('<span>', {
+      var marker = $('<div>', {
         'class': this.instance.baseCSS(this.options.baseCSSClass),
         html: '<p>' + this.options.addText + '</p>'
       });
@@ -1775,7 +1755,6 @@
     bound: ["onFormatButtonClick"],
     
     render: function(){
-      
       var bar = $("<div>", {
         "class": this.className
       });
@@ -1799,42 +1778,58 @@
         }
       }
       
+      $(document).bind('scroll', _.bind(this.handleDocumentScroll, this));
+  
       if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
-      
-      this.hide();
-      this.$el.bind('mouseout', _.bind(function(ev){ halt(ev); this.clicked = false; }, this));
-      this.$el.bind('mouseover', halt);
+    },
+  
+    handleDocumentScroll: function() {
+      var instance_height = this.instance.$outer.height(),
+          instance_offset = this.instance.$outer.offset().top,
+          viewport_top = $(document).scrollTop();
+  
+      if (this.$el.hasClass('fixed')) {
+        instance_offset = this.$el.offset().top;
+      }
+  
+      if ((viewport_top >= instance_offset) && (viewport_top <= instance_height)) {
+        this.$el.addClass('fixed');
+        this.instance.$wrapper.css({ 'padding-top': '62px' });
+      } else {
+        this.$el.removeClass('fixed');
+        this.instance.$wrapper.css({ 'padding-top': '16px' });
+      }
     },
     
     /* Convienience methods */
     show: function(relativeEl){
-      this.$el.css({ top: relativeEl.position().top })
-          .addClass(this.instance.baseCSS('item-ready'))
-          .show();
+      //this.$el.css({ top: relativeEl.position().top })
+      //    .addClass(this.instance.baseCSS('item-ready'))
+      //    .show();
     },
   
-    hide: function(){ 
-      this.clicked = false;
-      this.$el.removeClass(this.instance.baseCSS('item-ready')).hide();
+    hide: function(){
+      //this.clicked = false;
+      //this.$el.removeClass(this.instance.baseCSS('item-ready')).hide();
     },
     
     remove: function(){ this.$el.remove(); },
     
     onFormatButtonClick: function(ev){
       halt(ev);
-      this.clicked = true;
+  
       var btn = $(ev.target),
           format = SirTrevor.Formatters[btn.attr('data-type')];
        
-      // Do we have a click function defined on this formatter?     
+      // Do we have a click function defined on this formatter?
       if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
         format.onClick(); // Delegate
       } else {
         // Call default
         document.execCommand(btn.attr('data-cmd'), false, format.param);
-      }   
+      }
       // Make sure we still show the bar
-      this.$el.addClass(this.instance.baseCSS('item-ready')); 
+      this.$el.addClass(this.instance.baseCSS('item-ready'));
     }
     
   });
