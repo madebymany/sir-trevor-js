@@ -1,4 +1,4 @@
-// Sir Trevor, v0.1.2
+// Sir Trevor, v0.1.3
 
 (function ($, _){
   
