@@ -1652,8 +1652,8 @@
       if(this.$btns.children().length === 0) this.$el.addClass('hidden');
       
       // Bind our marker to the wrapper
-      var throttled_show = _.throttle(this.show, 50),
-          throttled_hide = _.throttle(this.hide, 50);
+      var throttled_show = _.throttle(this.show, 0),
+          throttled_hide = _.throttle(this.hide, 0);
   
       this.instance.$outer.bind('mouseover', throttled_show)
                           .bind('mouseout', throttled_hide)
@@ -1706,8 +1706,8 @@
         var blockIterator = function(block, index) {
           block = $(block);
   
-          var block_top = block.offset().top - 46,
-              block_bottom = block.offset().top + block.height() - 46;
+          var block_top = block.offset().top - 40,
+              block_bottom = block.offset().top + block.outerHeight(true) - 40;
   
           if(block_top <= mouse_enter && mouse_enter < block_bottom) {
             closest_block = block;
@@ -1718,7 +1718,7 @@
         // Position it
         if (closest_block) {
           this.$el.insertBefore(closest_block);
-        } else if(mouse_enter >= 0) {
+        } else if(mouse_enter > 0) {
           this.$el.insertAfter(wrapper.find(blockClass).last());
         } else {
           this.$el.insertBefore(wrapper.find(blockClass).first());
