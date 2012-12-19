@@ -41,9 +41,11 @@ _.extend(FormatBar.prototype, FunctionBind, {
       }
     }
     
-    $(document).bind('scroll', _.bind(this.handleDocumentScroll, this));
+    var throttled_scroll = _.throttle(_.bind(this.handleDocumentScroll, this), 150);
+    $(document).bind('scroll', throttled_scroll);
 
     if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
+    this.show();
   },
 
   handleDocumentScroll: function() {
@@ -55,13 +57,21 @@ _.extend(FormatBar.prototype, FunctionBind, {
       instance_offset = this.$el.offset().top;
     }
 
-    if ((viewport_top >= instance_offset) && (viewport_top <= instance_height)) {
+    if ((viewport_top > 5) && viewport_top >= instance_offset) {
       this.$el.addClass('fixed');
-      this.instance.$wrapper.css({ 'padding-top': '62px' });
+      this.instance.$wrapper.css({ 'padding-top': '104px' });
     } else {
       this.$el.removeClass('fixed');
       this.instance.$wrapper.css({ 'padding-top': '16px' });
     }
+  },
+
+  hide: function() {
+    this.$el.removeClass(this.instance.baseCSS('item-ready'));
+  },
+
+  show: function() {
+    this.$el.addClass(this.instance.baseCSS('item-ready'));
   },
 
   remove: function(){ this.$el.remove(); },
@@ -80,7 +90,7 @@ _.extend(FormatBar.prototype, FunctionBind, {
       document.execCommand(btn.attr('data-cmd'), false, format.param);
     }
     // Make sure we still show the bar
-    this.$el.addClass(this.instance.baseCSS('item-ready'));
+    this.show();
   }
   
 });

@@ -35,7 +35,7 @@
   };
 
   $.fn.chars = function() {
-    count = (this.attr('contenteditable')!==undefined) ? this.text().length : count = this.val().length;
+    count = (this.attr('contenteditable')!==undefined) ? this.text().length : this.val().length;
     return count;
   };
   

@@ -261,7 +261,7 @@
     };
   
     $.fn.chars = function() {
-      count = (this.attr('contenteditable')!==undefined) ? this.text().length : count = this.val().length;
+      count = (this.attr('contenteditable')!==undefined) ? this.text().length : this.val().length;
       return count;
     };
     
@@ -563,6 +563,7 @@
     "onContentPasted",
     "onBlockRender",
     "beforeBlockRender",
+    "setTextLimit",
     "toMarkdown",
     "toHTML"
   ];
@@ -594,6 +595,7 @@
     loadData: function(data) {},
     onBlockRender: function(){},
     beforeBlockRender: function(){},
+    setTextLimit: function() {},
     toMarkdown: function(markdown){ return markdown; },
     toHTML: function(html){ return html; },
     
@@ -650,7 +652,10 @@
         document.execCommand("insertBrOnReturn", false, true);
         
         // Strip out all the HTML on paste
-        this.$$('.text-block').bind('paste', this._handleContentPaste);
+        this.$$('.text-block')
+          .bind('paste', this._handleContentPaste)
+          .bind('focus', this.onBlockFocus)
+          .bind('blur', this.onBlockBlur);
         
         // Formatting
         this._initFormatting();
@@ -668,11 +673,10 @@
       // Reorderable
       this._initReordering();
       
-      this._initTextLimits();
-      
       // Set ready state
       this.$el.addClass(this.instance.baseCSS('item-ready'));
       
+      this.setTextLimit();
       this.onBlockRender();
     },
     
@@ -804,12 +808,14 @@
       ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
       ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
       item.parent().addClass('dragging');
+      this.instance.formatBar.hide();
     },
     
     onDragEnd: function(ev){
       var item = $(ev.target);
       item.parent().removeClass('dragging');
       this.instance.marker.hide();
+      this.instance.formatBar.show();
     },
     
     onDeleteClick: function(ev) {
@@ -824,6 +830,14 @@
       if (textBlock.length > 0) {
         textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
       }
+    },
+  
+    onBlockFocus: function(e) {
+      this.$el.addClass('focussed');
+    },
+  
+    onBlockBlur: function(e) {
+      this.$el.removeClass('focussed');
     },
     
     /*
@@ -935,7 +949,6 @@
     
     /*
     * Init functions for adding functionality
-    *
     */
     
     _initDragDrop: function() {
@@ -954,7 +967,7 @@
     },
     
     _initReordering: function() {
-      this.$('.handle')
+      this.$('.' + this.instance.baseCSS("drag-handle"))
         .bind('dragstart', this.onDragStart)
         .bind('dragend', this.onDragEnd)
         .bind('drag', this.instance.marker.show);
@@ -1050,7 +1063,7 @@
   SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
     
     title: "Quote",
-    className: "block-quote",
+    className: "quote",
     limit: 0,
     
     editorHTML: function() {
@@ -1305,9 +1318,6 @@
   /*
     Text Block
   */
-  
-  var tb_template = 
-  
   SirTrevor.Blocks.Text = SirTrevor.Block.extend({ 
     
     title: "Text",
@@ -1637,32 +1647,49 @@
       if(this.$btns.children().length === 0) this.$el.addClass('hidden');
       
       // Bind our marker to the wrapper
-      this.instance.$outer.bind('mouseover', this.show)
-                          .bind('mouseout', this.hide)
-                          .bind('dragover', this.show);
+      var throttled_show = _.throttle(this.show, 50),
+          throttled_hide = _.throttle(this.hide, 50);
   
-      this.$el.bind('dragover',halt);
+      this.instance.$outer.bind('mouseover', throttled_show)
+                          .bind('mouseout', throttled_hide)
+                          .bind('dragover', throttled_show);
+  
+      this.$el.bind('dragover', halt);
       
       // Bind the drop function onto here
       this.instance.$outer.dropArea()
-                          .bind('dragleave', this.hide)
+                          .bind('dragleave', throttled_hide)
                           .bind('drop', this.onDrop);
       
       this.$el.addClass(this.instance.baseCSS("item-ready"));
     },
       
     show: function(ev) {
-      
+      var target = $(ev.target),
+          target_parent = target.parent();
+  
+      if (target.is(this.$el) || target.is(this.$btns) || target_parent.is(this.$el) || target_parent.is(this.$btns)) {
+        this.$el.addClass(this.instance.baseCSS("item-ready"));
+        return;
+      }
+  
       if(ev.type == 'drag' || ev.type == 'dragover') {
+        this.$el.addClass('drop-zone');
         this.$p.text(this.options.dropText);
         this.$btns.hide();
       } else {
+        this.$el.removeClass('drop-zone');
         this.$p.text(this.options.addText);
         this.$btns.show();
       }
+  
+      // Check to see we're not over the formatting bar
+      if (target.is(this.instance.formatBar.$el) || target_parent.is(this.instance.formatBar.$el)) {
+        return this.hide();
+      }
       
       var mouse_enter = (ev) ? ev.originalEvent.pageY - this.instance.$wrapper.offset().top : 0;
-      
+    
       // Do we have any sedit blocks?
       if (this.instance.blocks.length > 0) {
       
@@ -1673,9 +1700,10 @@
         
         var blockIterator = function(block, index) {
           block = $(block);
-          var block_top = block.position().top - 40,
-              block_bottom = block.position().top + block.outerHeight(true) - 40;
-      
+  
+          var block_top = block.offset().top - 46,
+              block_bottom = block.offset().top + block.height() - 46;
+  
           if(block_top <= mouse_enter && mouse_enter < block_bottom) {
             closest_block = block;
           }
@@ -1685,7 +1713,7 @@
         // Position it
         if (closest_block) {
           this.$el.insertBefore(closest_block);
-        } else if(mouse_enter > 0) {
+        } else if(mouse_enter >= 0) {
           this.$el.insertAfter(wrapper.find(blockClass).last());
         } else {
           this.$el.insertBefore(wrapper.find(blockClass).first());
@@ -1711,7 +1739,7 @@
     },
     
     remove: function(){ this.$el.remove(); },
-    
+  
     onButtonClick: function(ev){
       halt(ev);
       var button = $(ev.target);
@@ -1778,9 +1806,11 @@
         }
       }
       
-      $(document).bind('scroll', _.bind(this.handleDocumentScroll, this));
+      var throttled_scroll = _.throttle(_.bind(this.handleDocumentScroll, this), 150);
+      $(document).bind('scroll', throttled_scroll);
   
       if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
+      this.show();
     },
   
     handleDocumentScroll: function() {
@@ -1792,27 +1822,23 @@
         instance_offset = this.$el.offset().top;
       }
   
-      if ((viewport_top >= instance_offset) && (viewport_top <= instance_height)) {
+      if ((viewport_top > 5) && viewport_top >= instance_offset) {
         this.$el.addClass('fixed');
-        this.instance.$wrapper.css({ 'padding-top': '62px' });
+        this.instance.$wrapper.css({ 'padding-top': '104px' });
       } else {
         this.$el.removeClass('fixed');
         this.instance.$wrapper.css({ 'padding-top': '16px' });
       }
     },
-    
-    /* Convienience methods */
-    show: function(relativeEl){
-      //this.$el.css({ top: relativeEl.position().top })
-      //    .addClass(this.instance.baseCSS('item-ready'))
-      //    .show();
+  
+    hide: function() {
+      this.$el.removeClass(this.instance.baseCSS('item-ready'));
     },
   
-    hide: function(){
-      //this.clicked = false;
-      //this.$el.removeClass(this.instance.baseCSS('item-ready')).hide();
+    show: function() {
+      this.$el.addClass(this.instance.baseCSS('item-ready'));
     },
-    
+  
     remove: function(){ this.$el.remove(); },
     
     onFormatButtonClick: function(ev){
@@ -1829,7 +1855,7 @@
         document.execCommand(btn.attr('data-cmd'), false, format.param);
       }
       // Make sure we still show the bar
-      this.$el.addClass(this.instance.baseCSS('item-ready'));
+      this.show();
     }
     
   });
@@ -1978,7 +2004,6 @@
       // Remove the block from our store
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       if(_.isUndefined(this.blocks)) this.blocks = [];
-      this.formatBar.hide();
       
       SirTrevor.publish("editor/block/removeBlock");
       
@@ -2027,8 +2052,7 @@
       SirTrevor.log("Handling form submission for Editor " + this.ID);
       
       var blockLength, block, result, errors = 0;
-  
-      this.formatBar.hide();
+      
       this.removeErrors();
       // Reset our store
       this.store("reset", this);

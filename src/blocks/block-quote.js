@@ -5,7 +5,7 @@
 SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
   
   title: "Quote",
-  className: "block-quote",
+  className: "quote",
   limit: 0,
   
   editorHTML: function() {

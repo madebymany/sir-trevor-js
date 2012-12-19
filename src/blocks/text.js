@@ -1,9 +1,6 @@
 /*
   Text Block
 */
-
-var tb_template = 
-
 SirTrevor.Blocks.Text = SirTrevor.Block.extend({ 
   
   title: "Text",

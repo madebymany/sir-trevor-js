@@ -31,6 +31,7 @@ var blockOptions = [
   "onContentPasted",
   "onBlockRender",
   "beforeBlockRender",
+  "setTextLimit",
   "toMarkdown",
   "toHTML"
 ];
@@ -62,6 +63,7 @@ _.extend(Block.prototype, FunctionBind, {
   loadData: function(data) {},
   onBlockRender: function(){},
   beforeBlockRender: function(){},
+  setTextLimit: function() {},
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
   
@@ -118,7 +120,10 @@ _.extend(Block.prototype, FunctionBind, {
       document.execCommand("insertBrOnReturn", false, true);
       
       // Strip out all the HTML on paste
-      this.$$('.text-block').bind('paste', this._handleContentPaste);
+      this.$$('.text-block')
+        .bind('paste', this._handleContentPaste)
+        .bind('focus', this.onBlockFocus)
+        .bind('blur', this.onBlockBlur);
       
       // Formatting
       this._initFormatting();
@@ -136,11 +141,10 @@ _.extend(Block.prototype, FunctionBind, {
     // Reorderable
     this._initReordering();
     
-    this._initTextLimits();
-    
     // Set ready state
     this.$el.addClass(this.instance.baseCSS('item-ready'));
     
+    this.setTextLimit();
     this.onBlockRender();
   },
   
@@ -272,12 +276,14 @@ _.extend(Block.prototype, FunctionBind, {
     ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
     ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
     item.parent().addClass('dragging');
+    this.instance.formatBar.hide();
   },
   
   onDragEnd: function(ev){
     var item = $(ev.target);
     item.parent().removeClass('dragging');
     this.instance.marker.hide();
+    this.instance.formatBar.show();
   },
   
   onDeleteClick: function(ev) {
@@ -292,6 +298,14 @@ _.extend(Block.prototype, FunctionBind, {
     if (textBlock.length > 0) {
       textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
     }
+  },
+
+  onBlockFocus: function(e) {
+    this.$el.addClass('focussed');
+  },
+
+  onBlockBlur: function(e) {
+    this.$el.removeClass('focussed');
   },
   
   /*
@@ -403,7 +417,6 @@ _.extend(Block.prototype, FunctionBind, {
   
   /*
   * Init functions for adding functionality
-  *
   */
   
   _initDragDrop: function() {
@@ -422,7 +435,7 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   _initReordering: function() {
-    this.$('.handle')
+    this.$('.' + this.instance.baseCSS("drag-handle"))
       .bind('dragstart', this.onDragStart)
       .bind('dragend', this.onDragEnd)
       .bind('drag', this.instance.marker.show);

@@ -143,7 +143,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     // Remove the block from our store
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
     if(_.isUndefined(this.blocks)) this.blocks = [];
-    this.formatBar.hide();
     
     SirTrevor.publish("editor/block/removeBlock");
     
@@ -192,8 +191,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     SirTrevor.log("Handling form submission for Editor " + this.ID);
     
     var blockLength, block, result, errors = 0;
-
-    this.formatBar.hide();
+    
     this.removeErrors();
     // Reset our store
     this.store("reset", this);

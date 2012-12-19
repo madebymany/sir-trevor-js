@@ -59,32 +59,49 @@ _.extend(Marker.prototype, FunctionBind, {
     if(this.$btns.children().length === 0) this.$el.addClass('hidden');
     
     // Bind our marker to the wrapper
-    this.instance.$outer.bind('mouseover', this.show)
-                        .bind('mouseout', this.hide)
-                        .bind('dragover', this.show);
+    var throttled_show = _.throttle(this.show, 50),
+        throttled_hide = _.throttle(this.hide, 50);
 
-    this.$el.bind('dragover',halt);
+    this.instance.$outer.bind('mouseover', throttled_show)
+                        .bind('mouseout', throttled_hide)
+                        .bind('dragover', throttled_show);
+
+    this.$el.bind('dragover', halt);
     
     // Bind the drop function onto here
     this.instance.$outer.dropArea()
-                        .bind('dragleave', this.hide)
+                        .bind('dragleave', throttled_hide)
                         .bind('drop', this.onDrop);
     
     this.$el.addClass(this.instance.baseCSS("item-ready"));
   },
     
   show: function(ev) {
-    
+    var target = $(ev.target),
+        target_parent = target.parent();
+
+    if (target.is(this.$el) || target.is(this.$btns) || target_parent.is(this.$el) || target_parent.is(this.$btns)) {
+      this.$el.addClass(this.instance.baseCSS("item-ready"));
+      return;
+    }
+
     if(ev.type == 'drag' || ev.type == 'dragover') {
+      this.$el.addClass('drop-zone');
       this.$p.text(this.options.dropText);
       this.$btns.hide();
     } else {
+      this.$el.removeClass('drop-zone');
       this.$p.text(this.options.addText);
       this.$btns.show();
     }
+
+    // Check to see we're not over the formatting bar
+    if (target.is(this.instance.formatBar.$el) || target_parent.is(this.instance.formatBar.$el)) {
+      return this.hide();
+    }
     
     var mouse_enter = (ev) ? ev.originalEvent.pageY - this.instance.$wrapper.offset().top : 0;
-    
+  
     // Do we have any sedit blocks?
     if (this.instance.blocks.length > 0) {
     
@@ -95,9 +112,10 @@ _.extend(Marker.prototype, FunctionBind, {
       
       var blockIterator = function(block, index) {
         block = $(block);
-        var block_top = block.position().top - 40,
-            block_bottom = block.position().top + block.outerHeight(true) - 40;
-    
+
+        var block_top = block.offset().top - 46,
+            block_bottom = block.offset().top + block.height() - 46;
+
         if(block_top <= mouse_enter && mouse_enter < block_bottom) {
           closest_block = block;
         }
@@ -107,7 +125,7 @@ _.extend(Marker.prototype, FunctionBind, {
       // Position it
       if (closest_block) {
         this.$el.insertBefore(closest_block);
-      } else if(mouse_enter > 0) {
+      } else if(mouse_enter >= 0) {
         this.$el.insertAfter(wrapper.find(blockClass).last());
       } else {
         this.$el.insertBefore(wrapper.find(blockClass).first());
@@ -133,7 +151,7 @@ _.extend(Marker.prototype, FunctionBind, {
   },
   
   remove: function(){ this.$el.remove(); },
-  
+
   onButtonClick: function(ev){
     halt(ev);
     var button = $(ev.target);
