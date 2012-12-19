@@ -29,12 +29,6 @@ describe("a Quote block", function(){
     expect(block.$$('input').attr('data-maxlength')).not.toBe(false);
   });
   
-  it("should have a count of the characters in the field for the cite field", function(){
-    editor.createBlock("Quote");
-    var block = editor.blocks[0];
-    expect(block.$$('.extended_input .count').text()).toBe('0 of 140');
-  });
-  
   it("should have the quote field correctly parsed to markdown", function(){
     editor.createBlock("Quote");
     var block = editor.blocks[0];
