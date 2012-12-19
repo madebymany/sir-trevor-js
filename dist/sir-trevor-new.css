@@ -218,6 +218,13 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
     opacity: 0.6;
   }
 
+  .sir-trevor-block.loading .spinner {
+    width: 32px;
+    height: 32px;
+    top: 50%; left: 50%;
+    position: absolute!important;
+  }
+
 /* Dropzone Blocks */
 
 .sir-trevor-block .dropzone {
@@ -235,6 +242,11 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   border: 1px dotted #B3B3B3;
   color: #282828;
   padding: 10px 60px 10px 100px;
+}
+
+.sir-trevor-block .dropzone.drag-enter {
+  background: #F5F297;
+  border-color: #DAC962;
 }
 
 /* Block Specific Styles */

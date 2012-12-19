@@ -852,7 +852,6 @@
     /* Private methods */
     
     _loadData: function() {
-      
       SirTrevor.log("loadData for " + this.blockID);
       
       this.loading();
@@ -897,7 +896,7 @@
           type, data = [];
       
       this.instance.marker.hide();
-      this.$dropzone.removeClass('dragOver');
+      this.$dropzone.removeClass('drag-enter');
           
       /*
         Check the type we just received,
@@ -960,10 +959,16 @@
       });
       this.$el.append(this.$dropzone);
       this.$editor.hide();
-      
+  
       // Bind our drop event
-      this.$dropzone.dropArea()
-                    .bind('drop', this._handleDrop);
+      this.$dropzone.bind('drop', this._handleDrop)
+                    .bind('dragenter', function(e) { halt(e); $(this).addClass('drag-enter'); })
+                    .bind('dragover', function(e) {
+                      e.originalEvent.dataTransfer.dropEffect = "copy";
+                      halt(e);
+                      $(this).addClass('drag-enter');
+                    })
+                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('drag-enter'); });
     },
     
     _initReordering: function() {
