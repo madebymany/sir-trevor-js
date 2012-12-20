@@ -6,7 +6,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     
     meta: {
-      version: '0.2.0',
+      version: '0.2.1',
       banner: '// Sir Trevor, v<%= meta.version %>\n'
     },
 

@@ -1,6 +1,6 @@
 {
-  "name": "Sir-Trevor",
-  "version": "0.2.0",
+  "name": "sir-trevor",
+  "version": "0.2.1",
   "dependencies": {
     "grunt": "*",
     "grunt-rigger": "*",
