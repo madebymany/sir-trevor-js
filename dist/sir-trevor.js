@@ -1699,29 +1699,15 @@
       if (this.instance.blocks.length > 0) {
       
         // Find the closest block to this position
-        var closest_block = false,
-            wrapper = this.instance.$wrapper,
-            blockClass = "." + this.instance.baseCSS("block");
-        
-        var blockIterator = function(block, index) {
-          block = $(block);
-  
-          var block_top = block.offset().top - 40,
-              block_bottom = block.offset().top + block.outerHeight(true) - 40;
-  
-          if(block_top <= mouse_enter && mouse_enter < block_bottom) {
-            closest_block = block;
-          }
-        };
-        _.each(wrapper.find(blockClass), _.bind(blockIterator, this));
+        var closest_block = this.findClosestBlock(mouse_enter);
               
         // Position it
         if (closest_block) {
           this.$el.insertBefore(closest_block);
         } else if(mouse_enter > 0) {
-          this.$el.insertAfter(wrapper.find(blockClass).last());
+          this.$el.insertAfter(this.instance.cachedDomBlocks.last());
         } else {
-          this.$el.insertBefore(wrapper.find(blockClass).first());
+          this.$el.insertBefore(this.instance.cachedDomBlocks.first());
         }
       }
       this.$el.addClass(this.instance.baseCSS("item-ready"));
@@ -1741,6 +1727,24 @@
       if (!_.isUndefined(item_id) && !_.isEmpty(block) && block.attr('data-instance') == this.instance.ID) {
         marker.after(block);
       }
+    },
+  
+    findClosestBlock: function(mouse_enter) {
+      var closest_block = false;
+  
+      var blockIterator = function(block, index) {
+        block = $(block);
+  
+        var block_top = block.offset().top - 40,
+            block_bottom = block.offset().top + block.outerHeight(true) - 40;
+  
+        if(block_top <= mouse_enter && mouse_enter < block_bottom) {
+          closest_block = block;
+        }
+      };
+      _.each(this.instance.cachedDomBlocks, _.bind(blockIterator, this));
+  
+      return closest_block;
     },
     
     remove: function(){ this.$el.remove(); },
@@ -1881,6 +1885,7 @@
     this.blockCounts = {}; // Cached block type counts
     this.blocks = []; // Block references
     this.errors = [];
+    this.cachedDomBlocks = [];
     this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
     this.ID = _.uniqueId(this.options.baseCSSClass + "-");
     
@@ -1995,6 +2000,7 @@
        SirTrevor.publish("editor/block/createBlock");
         
        SirTrevor.log("Block created of type " + type);
+       this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
       } else {
         SirTrevor.log("Block type not available " + type);
       }
@@ -2011,6 +2017,7 @@
       if(_.isUndefined(this.blocks)) this.blocks = [];
       
       SirTrevor.publish("editor/block/removeBlock");
+      this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
       
       // Remove our inactive class if it's no longer relevant
       if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {

@@ -15,6 +15,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.blockCounts = {}; // Cached block type counts
   this.blocks = []; // Block references
   this.errors = [];
+  this.cachedDomBlocks = [];
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId(this.options.baseCSSClass + "-");
   
@@ -129,6 +130,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
      SirTrevor.publish("editor/block/createBlock");
       
      SirTrevor.log("Block created of type " + type);
+     this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
     } else {
       SirTrevor.log("Block type not available " + type);
     }
@@ -145,6 +147,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     if(_.isUndefined(this.blocks)) this.blocks = [];
     
     SirTrevor.publish("editor/block/removeBlock");
+    this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
     
     // Remove our inactive class if it's no longer relevant
     if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {

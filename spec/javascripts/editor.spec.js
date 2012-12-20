@@ -118,5 +118,4 @@ describe("a SirTrevor.Editor instance", function(){
       expect(instance.blockTypes.Image).toBe(true);
     })
   });
-  
 });
