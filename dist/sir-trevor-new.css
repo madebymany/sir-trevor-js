@@ -25,6 +25,14 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   box-sizing: border-box;
 }
 
+.sir-trevor p,
+.sir-trevor h1, 
+.sir-trevor h2,
+.sir-trevor h3,
+.sir-trevor h4 {
+  margin: 0 0 10px 0;
+}
+
 /* Formatting control bar */
 
 .sir-trevor-formatting-control {
@@ -98,10 +106,11 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   display: inline-block;
   border-left: 1px dotted #DAC962;
   height: 45px;
-  padding: 26px 13px 4px;
+  padding: 25px 13px 5px;
   color: #AF9B24;
   background-repeat: no-repeat;
-  background-position: center 6px;
+  background-position: center 7px;
+  text-decoration: none;
 }
 
 .sir-trevor-button:last-child { border-right: 1px dotted #DAC962; }
@@ -323,6 +332,37 @@ body { margin: 0; font-size: 1em; line-height: 1.4; }
   .tweet-block.dropzone p {
     padding-left: 94px;
     background: url(images/sir-trevor/icons/new_tweet.png) no-repeat 15px 8px;
+  }
+
+  .tweet-block .tweet {
+    padding: 24px;
+    overflow: hidden;
+  }
+  
+  .tweet-block .tweet-avatar {
+    float: left;
+    margin: 3px 15px 20px 0;
+  }
+  
+  .tweet-block .tweet .tweet-body {
+    float: left;
+    width: 450px;
+  }
+  
+  .tweet-block .tweet .tweet-user {
+    font-weight: bold;
+    font-size: 1.125em;
+    margin-bottom: 6px;
+    line-height: 1.125em;
+  }
+  
+  .tweet-block .tweet .tweet-text {
+    margin-bottom: 4px;
+  }
+
+  .tweet-block .tweet time {
+    color: #7f7f7f;
+    font-size: 0.75em;
   }
 
   .drag-enter.tweet-block.dropzone p,

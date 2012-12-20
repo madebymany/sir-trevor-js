@@ -1,5 +1,5 @@
 var t_template = '<p>Drop tweet link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
-var tweet_template = '<div class="tweet media"><div class="img"><img src="<%= user.profile_image_url %>" class="tweet-avatar"></div><div class="bd tweet-body"><p><a href="http://twitter.com/#!/<%= user.screen_name %>">@<%= user.screen_name %></a>: <%= text %></p><time><%= created_at %></time></div></div>';
+var tweet_template = '<div class="tweet"><img src="<%= user.profile_image_url %>" class="tweet-avatar"><div class="tweet-body"><p class="tweet-user"><a href="http://twitter.com/#!/<%= user.screen_name %>" class="tweet-user">@<%= user.screen_name %></a> on Twitter</p><p class="tweet-text"><%= text %></p><time><%= created_at %></time></div></div>';
 
 SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({ 
   
@@ -62,7 +62,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
           
           // Make our AJAX call
           $.ajax({
-            url: "//api.twitter.com/1/statuses/show/" + tweetID + ".json",
+            url: "http://api.twitter.com/1/statuses/show/" + tweetID + ".json",
             dataType: "JSONP",
             success: _.bind(tweetCallbackSuccess, this),
             error: _.bind(tweetCallbackFail, this)
