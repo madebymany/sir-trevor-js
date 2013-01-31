@@ -1,5 +1,5 @@
-// Sir Trevor, v0.2.1
-
+// Sir Trevor, v0.2.2
+// made with love by Made by Many
 (function ($, _){
   
   var root = this,
