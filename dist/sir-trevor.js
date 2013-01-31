@@ -1693,7 +1693,7 @@
         return this.hide();
       }
       
-      var mouse_enter = (ev) ? ev.originalEvent.pageY - this.instance.$wrapper.offset().top : 0;
+      var mouse_enter = (ev) ? ev.originalEvent.pageY : 0;
     
       // Do we have any sedit blocks?
       if (this.instance.blocks.length > 0) {
@@ -1832,10 +1832,12 @@
       }
   
       if ((viewport_top > 5) && viewport_top >= instance_offset) {
-        this.$el.addClass('fixed');
+        this.$el.addClass('fixed')
+                .css({ 'width': this.instance.$wrapper.width() });
+  
         this.instance.$wrapper.css({ 'padding-top': '104px' });
       } else {
-        this.$el.removeClass('fixed');
+        this.$el.removeClass('fixed').css({ 'width': '100%' });
         this.instance.$wrapper.css({ 'padding-top': '16px' });
       }
     },

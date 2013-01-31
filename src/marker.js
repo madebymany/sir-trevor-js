@@ -100,7 +100,7 @@ _.extend(Marker.prototype, FunctionBind, {
       return this.hide();
     }
     
-    var mouse_enter = (ev) ? ev.originalEvent.pageY - this.instance.$wrapper.offset().top : 0;
+    var mouse_enter = (ev) ? ev.originalEvent.pageY : 0;
   
     // Do we have any sedit blocks?
     if (this.instance.blocks.length > 0) {

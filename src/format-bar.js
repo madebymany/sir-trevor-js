@@ -58,10 +58,12 @@ _.extend(FormatBar.prototype, FunctionBind, {
     }
 
     if ((viewport_top > 5) && viewport_top >= instance_offset) {
-      this.$el.addClass('fixed');
+      this.$el.addClass('fixed')
+              .css({ 'width': this.instance.$wrapper.width() });
+
       this.instance.$wrapper.css({ 'padding-top': '104px' });
     } else {
-      this.$el.removeClass('fixed');
+      this.$el.removeClass('fixed').css({ 'width': '100%' });
       this.instance.$wrapper.css({ 'padding-top': '16px' });
     }
   },
