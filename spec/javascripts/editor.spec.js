@@ -1,8 +1,10 @@
 describe("a SirTrevor.Editor instance", function(){
   
-  var editor, editor_with_options, element = $("<textarea>");
+  var editor, editor_with_options,
+      element = $("<textarea>");
   
   beforeEach(function (){
+    SirTrevor.instances = [];
     
     editor = new SirTrevor.Editor();
     
@@ -17,11 +19,6 @@ describe("a SirTrevor.Editor instance", function(){
       }
     );
     
-  });
-  
-  afterEach(function (){
-    delete editor;
-    editor_with_options = null;
   });
   
   it("should fail if no element is passed", function() {
