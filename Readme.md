@@ -96,19 +96,31 @@ See our [Wiki](https://github.com/madebymany/sir-trevor-js/wiki) for more code a
 
 We use the amazing [Grunt](https://github.com/gruntjs/grunt) for building out distributed javascript and [Jasmine](http://pivotal.github.com/jasmine/) for testing..
 
-You will need Ruby and Node to build and run the tests
+You will need Node to build and run the tests.
 
-You can run the test suite just by running rake
+First make sure you have all dependencies installed:
+
+```
+npm install # To install required javascript modules
+```
+
+You can run the test suite with a headless phantom js instance with
 
 ``` bash
-bundle install # To install Ruby gems
-rake
+./node_modules/grunt/bin/grunt jasmine
 ```
+
+Alternatively, you can run it in the browser with
+
+```bash
+./node_modules/grunt/bin/grunt jasmine-browser
+```
+
+and visit [http://localhost:8000/BrowserRunner.html](http://localhost:8000/BrowserRunner.html).
 
 And you can then build for distribution by running grunt
 
 ```
-npm install # To install required javascript modules
 ./node_modules/grunt/bin/grunt
 ```
 
