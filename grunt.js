@@ -27,6 +27,10 @@ module.exports = function(grunt) {
       browser : false
     },
 
+    server: {
+      port: 8000
+    },
+
     rig: {
       build: {
         src: ['<banner:meta.banner>', 'src/sir-trevor.js'],
@@ -40,7 +44,7 @@ module.exports = function(grunt) {
         dest: 'dist/sir-trevor.min.js'
       }
     },
-    
+
     watch: {
       files: ['src/*.js', 'src/**/*.js'],
       tasks: 'default'
@@ -75,5 +79,7 @@ module.exports = function(grunt) {
   grunt.registerTask('travis', 'lint rig jasmine');
 
   grunt.registerTask('default', 'lint rig min');
+
+  grunt.registerTask('jasmine-browser', 'server watch');
 
 };
