@@ -2,6 +2,11 @@
   
   var root = this,
       SirTrevor;
+
+  var array = [];
+  var push = array.push;
+  var slice = array.slice;
+  var splice = array.splice;
    
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
@@ -61,19 +66,52 @@
       _.bindAll.apply(this, args);
     }
   };
+
+  var Renderable = {
+    tagName: 'div',
+    className: 'sir-trevor__view',
+    attributes: {},
+
+    $: function(selector) {
+      return this.$el.find(selector);
+    },
+
+    render: function() {
+      return this;
+    },
+
+    _ensureElement: function() {
+      if (!this.el) {
+        var attrs = _.extend({}, _.result(this, 'attributes'));
+        if (this.id) { attrs.id = this.id; }
+        if (this.className) { attrs['class'] = this.className; }
+        var $el = $('<' + this.tagName + '>').attr(attrs);
+        this._setElement($el);
+      } else {
+        this._setElement(this.el);
+      }
+    },
+
+    _setElement: function(element) {
+      this.$el = element instanceof jQuery ? element : $(element);
+      this.el = this.$el[0];
+      return this;
+    }
+  };
   
   //= helpers
   //= vendor
   //= extensions
   //= block.js
   //= formatter.js
-  
+
   /* Default Blocks */
   //= blocks
   /* Default Formatters */
   //= formatters
   /* Marker */
-  //= marker.js
+  //= block-control.js
+  //= block-controls.js
   /* FormatBar */
   //= format-bar.js
   //= sir-trevor-editor.js

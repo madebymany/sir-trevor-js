@@ -4,6 +4,11 @@
   
   var root = this,
       SirTrevor;
+
+  var array = [];
+  var push = array.push;
+  var slice = array.slice;
+  var splice = array.splice;
    
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
@@ -61,6 +66,38 @@
       args.push(this);
       args.join(this.bound);
       _.bindAll.apply(this, args);
+    }
+  };
+
+  var Renderable = {
+    tagName: 'div',
+    className: 'sir-trevor__view',
+    attributes: {},
+
+    $: function(selector) {
+      return this.$el.find(selector);
+    },
+
+    render: function() {
+      return this;
+    },
+
+    _ensureElement: function() {
+      if (!this.el) {
+        var attrs = _.extend({}, _.result(this, 'attributes'));
+        if (this.id) { attrs.id = this.id; }
+        if (this.className) { attrs['class'] = this.className; }
+        var $el = $('<' + this.tagName + '>').attr(attrs);
+        this._setElement($el);
+      } else {
+        this._setElement(this.el);
+      }
+    },
+
+    _setElement: function(element) {
+      this.$el = element instanceof jQuery ? element : $(element);
+      this.el = this.$el[0];
+      return this;
     }
   };
   
@@ -140,48 +177,34 @@
     (c) 2010-2012 Jeremy Ashkenas, DocumentCloud Inc.
   */
   
-  // The self-propagating extend function that Backbone classes use.
-  var extend = function(protoProps, classProps) {
-    return inherits(this, protoProps, classProps);
-  };
-  
-  // Shared empty constructor function to aid in prototype-chain creation.
-  var ctor = function(){};
-  
-  // Helper function to correctly set up the prototype chain, for subclasses.
-  // Similar to `goog.inherits`, but uses a hash of prototype properties and
-  // class properties to be extended.
-  var inherits = function(parent, protoProps, staticProps) {
+  var extend = function(protoProps, staticProps) {
+    var parent = this;
     var child;
   
     // The constructor function for the new subclass is either defined by you
     // (the "constructor" property in your `extend` definition), or defaulted
     // by us to simply call the parent's constructor.
-    if (protoProps && protoProps.hasOwnProperty('constructor')) {
+    if (protoProps && _.has(protoProps, 'constructor')) {
       child = protoProps.constructor;
     } else {
-      child = function(){ parent.apply(this, arguments); };
+      child = function(){ return parent.apply(this, arguments); };
     }
   
-    // Inherit class (static) properties from parent.
-    _.extend(child, parent);
+    // Add static properties to the constructor function, if supplied.
+    _.extend(child, parent, staticProps);
   
     // Set the prototype chain to inherit from `parent`, without calling
     // `parent`'s constructor function.
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor();
+    var Surrogate = function(){ this.constructor = child; };
+    Surrogate.prototype = parent.prototype;
+    child.prototype = new Surrogate;
   
     // Add prototype properties (instance properties) to the subclass,
     // if supplied.
     if (protoProps) _.extend(child.prototype, protoProps);
   
-    // Add static properties to the constructor function, if supplied.
-    if (staticProps) _.extend(child, staticProps);
-  
-    // Correctly set child's `prototype.constructor`.
-    child.prototype.constructor = child;
-  
-    // Set a convenience property in case the parent's prototype is needed later.
+    // Set a convenience property in case the parent's prototype is needed
+    // later.
     child.__super__ = parent.prototype;
   
     return child;
@@ -204,6 +227,177 @@
           .replace(/[^\w ]+/g,'')
           .replace(/ +/g,'-');
   }
+  // Backbone.Events
+  // ---------------
+  
+  // Regular expression used to split event strings.
+  var eventSplitter = /\s+/;
+  
+  // Implement fancy features of the Events API such as multiple event
+  // names `"change blur"` and jQuery-style event maps `{change: action}`
+  // in terms of the existing API.
+  var eventsApi = function(obj, action, name, rest) {
+  if (!name) return true;
+  
+  // Handle event maps.
+  if (typeof name === 'object') {
+    for (var key in name) {
+      obj[action].apply(obj, [key, name[key]].concat(rest));
+    }
+    return false;
+  }
+  
+  // Handle space separated event names.
+  if (eventSplitter.test(name)) {
+    var names = name.split(eventSplitter);
+    for (var i = 0, l = names.length; i < l; i++) {
+      obj[action].apply(obj, [names[i]].concat(rest));
+    }
+    return false;
+  }
+  
+  return true;
+  };
+  
+  // Optimized internal dispatch function for triggering events. Tries to
+  // keep the usual cases speedy (most Backbone events have 3 arguments).
+  var triggerEvents = function(events, args) {
+  var ev, i = -1, l = events.length, a1 = args[0], a2 = args[1], a3 = args[2];
+  switch (args.length) {
+  case 0: while (++i < l) (ev = events[i]).callback.call(ev.ctx);
+  return;
+  case 1: while (++i < l) (ev = events[i]).callback.call(ev.ctx, a1);
+  return;
+  case 2: while (++i < l) (ev = events[i]).callback.call(ev.ctx, a1, a2);
+  return;
+  case 3: while (++i < l) (ev = events[i]).callback.call(ev.ctx, a1, a2, a3);
+  return;
+  default: while (++i < l) (ev = events[i]).callback.apply(ev.ctx, args);
+  }
+  };
+  
+  // A module that can be mixed in to *any object* in order to provide it with
+  // custom events. You may bind with `on` or remove with `off` callback
+  // functions to an event; `trigger`-ing an event fires all callbacks in
+  // succession.
+  //
+  //     var object = {};
+  //     _.extend(object, Backbone.Events);
+  //     object.on('expand', function(){ alert('expanded'); });
+  //     object.trigger('expand');
+  //
+  var Events = SirTrevor.Events = {
+  
+      // Bind one or more space separated events, or an events map,
+      // to a `callback` function. Passing `"all"` will bind the callback to
+      // all events fired.
+      on: function(name, callback, context) {
+        if (!eventsApi(this, 'on', name, [callback, context]) || !callback) return this;
+        this._events || (this._events = {});
+        var events = this._events[name] || (this._events[name] = []);
+        events.push({callback: callback, context: context, ctx: context || this});
+        return this;
+      },
+  
+      // Bind events to only be triggered a single time. After the first time
+      // the callback is invoked, it will be removed.
+      once: function(name, callback, context) {
+        if (!eventsApi(this, 'once', name, [callback, context]) || !callback) return this;
+        var self = this;
+        var once = _.once(function() {
+          self.off(name, once);
+          callback.apply(this, arguments);
+        });
+        once._callback = callback;
+        return this.on(name, once, context);
+      },
+  
+      // Remove one or many callbacks. If `context` is null, removes all
+      // callbacks with that function. If `callback` is null, removes all
+      // callbacks for the event. If `name` is null, removes all bound
+      // callbacks for all events.
+      off: function(name, callback, context) {
+        var retain, ev, events, names, i, l, j, k;
+        if (!this._events || !eventsApi(this, 'off', name, [callback, context])) return this;
+        if (!name && !callback && !context) {
+          this._events = {};
+          return this;
+        }
+  
+        names = name ? [name] : _.keys(this._events);
+        for (i = 0, l = names.length; i < l; i++) {
+          name = names[i];
+          if (events = this._events[name]) {
+            this._events[name] = retain = [];
+            if (callback || context) {
+              for (j = 0, k = events.length; j < k; j++) {
+                ev = events[j];
+                if ((callback && callback !== ev.callback &&
+                                 callback !== ev.callback._callback) ||
+                    (context && context !== ev.context)) {
+                  retain.push(ev);
+                }
+              }
+            }
+            if (!retain.length) delete this._events[name];
+          }
+        }
+  
+        return this;
+      },
+  
+      // Trigger one or many events, firing all bound callbacks. Callbacks are
+      // passed the same arguments as `trigger` is, apart from the event name
+      // (unless you're listening on `"all"`, which will cause your callback to
+      // receive the true name of the event as the first argument).
+      trigger: function(name) {
+        if (!this._events) return this;
+        var args = slice.call(arguments, 1);
+        if (!eventsApi(this, 'trigger', name, args)) return this;
+        var events = this._events[name];
+        var allEvents = this._events.all;
+        if (events) triggerEvents(events, args);
+        if (allEvents) triggerEvents(allEvents, arguments);
+        return this;
+      },
+  
+      // Tell this object to stop listening to either specific events ... or
+      // to every object it's currently listening to.
+      stopListening: function(obj, name, callback) {
+        var listeners = this._listeners;
+        if (!listeners) return this;
+        var deleteListener = !name && !callback;
+        if (typeof name === 'object') callback = this;
+        if (obj) (listeners = {})[obj._listenerId] = obj;
+        for (var id in listeners) {
+          listeners[id].off(name, callback, this);
+          if (deleteListener) delete this._listeners[id];
+        }
+        return this;
+      }
+      };
+  
+      var listenMethods = {listenTo: 'on', listenToOnce: 'once'};
+  
+      // An inversion-of-control versions of `on` and `once`. Tell *this* object to listen to
+      // an event in another object ... keeping track of what it's listening to.
+      _.each(listenMethods, function(implementation, method) {
+      Events[method] = function(obj, name, callback) {
+        var listeners = this._listeners || (this._listeners = {});
+        var id = obj._listenerId || (obj._listenerId = _.uniqueId('l'));
+        listeners[id] = obj;
+        if (typeof name === 'object') callback = this;
+        obj[implementation](name, callback, this);
+        return this;
+      };
+  });
+  
+  // Aliases for backwards compatibility.
+  Events.bind   = Events.on;
+  Events.unbind = Events.off;
+  
+  // Allow the `Backbone` object to serve as a global event bus, for folks who
+  // want global "pubsub" in a convenient place.
   /* jQuery Tiny Pub/Sub - v0.7 - 10/27/2011
    * http://benalman.com/
    * Copyright (c) 2011 "Cowboy" Ben Alman; Licensed MIT, GPL */
@@ -542,7 +736,7 @@
     this._setBaseElements();
     this._bindFunctions();
     
-    this.render();
+    //this.render();
     
     this.initialize.apply(this, arguments);
   };
@@ -608,8 +802,8 @@
       this.beforeBlockRender();
           
       // Insert before the marker
-      this.instance.marker.hide();
-      this.instance.marker.$el.before(this.$el);
+      //this.instance.marker.hide();
+      //this.instance.$wrapper.append(this.$el);
       
       // Do we have a dropzone?
       if (this.dropEnabled) {
@@ -627,8 +821,8 @@
       this.save();
       
       // Add UI elements
-      this.$el.append($('<span>',{ 'class': this.instance.baseCSS("drag-handle"), draggable: true }));
-      this.$el.append($('<span>',{ 'class': this.instance.baseCSS("remove-block") }));
+      this.$el.append($('<span>',{ 'class': 'st-block__reorder', draggable: true }));
+      this.$el.append($('<span>',{ 'class': 'st-block__remove' }));
       
       // Stop events propagating through to the container
       this.$el
@@ -644,7 +838,7 @@
       this._initPaste();
       
       // Delete
-      this.$('.' + this.instance.baseCSS("remove-block")).bind('click', this.onDeleteClick);
+      this.$('.st-block__remove').bind('click', this.onDeleteClick);
       
       // Handle text blocks
       if (this.$$('.text-block').length > 0) {
@@ -659,6 +853,8 @@
         
         // Formatting
         this._initFormatting();
+  
+        return this;
       }
       
       // Focus if we're adding an empty block, but only if not
@@ -674,7 +870,7 @@
       this._initReordering();
       
       // Set ready state
-      this.$el.addClass(this.instance.baseCSS('item-ready'));
+      this.$el.addClass('st-item-ready');
       
       this.setTextLimit();
       this.onBlockRender();
@@ -705,8 +901,8 @@
         this.ready();
       }
       
-      this.spinner = new Spinner(this.instance.options.spinner);
-      this.spinner.spin(this.$el[0]);
+      //this.spinner = new Spinner(this.instance.options.spinner);
+      //this.spinner.spin(this.$el[0]);
       
       this.$el.addClass('loading');
     },
@@ -736,13 +932,13 @@
   
         if ((required && content.length === 0) || too_long) {
           // Error!
-          field.addClass(this.instance.baseCSS(this.instance.options.errorClass));
+          field.addClass('st-error');
           errors++;
         }
       }, this));
   
       if (errors > 0) {
-        this.$el.addClass(this.instance.baseCSS('block-with-errors'));
+        this.$el.addClass('st-block--with-errors');
       }
       
       return (errors === 0);
@@ -808,19 +1004,19 @@
       ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
       ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
       item.parent().addClass('dragging');
-      this.instance.formatBar.hide();
+      //this.instance.formatBar.hide();
     },
     
     onDragEnd: function(ev){
       var item = $(ev.target);
       item.parent().removeClass('dragging');
-      this.instance.marker.hide();
-      this.instance.formatBar.show();
+      //this.instance.marker.hide();
+      //this.instance.formatBar.show();
     },
     
     onDeleteClick: function(ev) {
       if (confirm('Are you sure you wish to delete this content?')) {
-        this.instance.removeBlock(this);
+        //this.instance.removeBlock(this);
         halt(ev);
       }
     },
@@ -828,7 +1024,7 @@
     onContentPasted: function(ev){
       var textBlock = this.$$('.text-block');
       if (textBlock.length > 0) {
-        textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
+        //textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
       }
     },
   
@@ -869,8 +1065,8 @@
     
     _beforeValidate: function() {
       this.errors = [];
-      var errorClass = this.instance.baseCSS("error");
-      this.$el.removeClass(this.instance.baseCSS('block-with-errors'));
+      var errorClass = 'st-error';
+      this.$el.removeClass('st-block--with-errors');
       this.$('.' + errorClass).removeClass(errorClass);
       this.$('.error-marker').remove();
     },
@@ -895,7 +1091,7 @@
           types = e.dataTransfer.types,
           type, data = [];
       
-      this.instance.marker.hide();
+      //this.instance.marker.hide();
       this.$dropzone.removeClass('drag-enter');
           
       /*
@@ -915,12 +1111,12 @@
       
       // Set
       var editor = $('<div>', {
-        'class': this.instance.baseCSS("editor-block") + ' ' + this._getBlockClass(),
+        'class': 'st-block__inner ' + this._getBlockClass(),
         html: el
       });
       
       this.$el = $('<div>', {
-        'class': this.instance.baseCSS("block"),
+        'class': 'st-block',
         id: this.blockID,
         "data-type": this.type,
         "data-instance": this.instance.ID,
@@ -943,7 +1139,7 @@
     },
   
     _getBlockClass: function() {
-      return this.className + '-block';
+      return 'st-block--' + this.className;
     },
     
     /*
@@ -972,23 +1168,23 @@
     },
     
     _initReordering: function() {
-      this.$('.' + this.instance.baseCSS("drag-handle"))
+      this.$('.st-block__reorder')
         .bind('dragstart', this.onDragStart)
         .bind('dragend', this.onDragEnd)
-        .bind('drag', this.instance.marker.show);
+        //.bind('drag', this.instance.marker.show);
     },
     
     _initFormatting: function() {
       // Enable formatting keyboard input
       var formatter;
-      for (var name in this.instance.formatters) {
-        if (this.instance.formatters.hasOwnProperty(name)) {
-          formatter = SirTrevor.Formatters[name];
-          if (!_.isUndefined(formatter.keyCode)) {
-            formatter._bindToBlock(this.$editor);
-          }
-        }
-      }
+      // for (var name in this.instance.formatters) {
+      //   if (this.instance.formatters.hasOwnProperty(name)) {
+      //     formatter = SirTrevor.Formatters[name];
+      //     if (!_.isUndefined(formatter.keyCode)) {
+      //       formatter._bindToBlock(this.$editor);
+      //     }
+      //   }
+      // }
     },
     
     _initPaste: function() {
@@ -1059,7 +1255,7 @@
   });
   
   Format.extend = extend; // Allow our Formatters to be extended.
-  
+
   /* Default Blocks */
   /*
     Block Quote
@@ -1591,181 +1787,70 @@
   SirTrevor.Formatters.Link = new Link();
   SirTrevor.Formatters.Unlink = new UnLink();
   /* Marker */
-  /*
-    SirTrevor Marker
-    --
-    This is our toolbar. It's attached to a SirTrveor.Editor instance. 
-  */
-  
-  var Marker = SirTrevor.Marker = function(options, editorInstance){
-    this.instance = editorInstance;
-    this.options = _.extend({}, SirTrevor.DEFAULTS.marker, options || {});
-    this._bindFunctions();
+  var BlockControl = SirTrevor.BlockControl = function(type, instance_scope) {
+    this.type = type;
+    this.instance_scope = instance_scope;
+    this._ensureElement();
+    this.initialize();
   };
   
-  _.extend(Marker.prototype, FunctionBind, {
-    
-    bound: ["onButtonClick", "show", "hide", "onDrop"],
-    
+  _.extend(BlockControl.prototype, FunctionBind, Renderable, Events, {
+  
+    tagName: 'a',
+    className: "st-block-control",
+  
+    attributes: function() {
+      return {
+        'data-type': this.type
+      };
+    },
+  
+    initialize: function() {
+      this.block_type = SirTrevor.Blocks[this.type].prototype;
+      this.can_be_rendered = this.block_type.toolbarEnabled;
+    },
+  
     render: function() {
+      this.$el.text(this.block_type.title);
+      return this;
+    }
+  });
+  /*
+    SirTrevor Block Controls
+    --
+    Gives an interface for adding new Sir Trevor blocks.
+  */
   
-      var marker = $('<div>', {
-        'class': this.instance.baseCSS(this.options.baseCSSClass),
-        html: '<p>' + this.options.addText + '</p>'
-      });
+  var BlockControls = SirTrevor.BlockControls = function(available_types, instance_scope) {
+    this.instance_scope = instance_scope;
+    this.available_types = available_types || [];
+    this._ensureElement();
+    this.initialize();
+  };
   
-      var btns_cont = $("<div>", {
-        'class': this.instance.baseCSS("buttons")
-      });
+  _.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
   
-      marker.append(btns_cont);
-      
-      // Bind to the wrapper
-      this.instance.$wrapper.append(marker);
-      
-      // Cache our elements for later use
-      this.$el = marker;
-      this.$btns = btns_cont;
-      this.$p = this.$el.find('p');
-      
-      // Add all of our buttons
-      var blockName, block;
-      
-      for (blockName in this.instance.blockTypes) {
-        if (SirTrevor.Blocks.hasOwnProperty(blockName)) {
-          block = SirTrevor.Blocks[blockName];
-          if (block.prototype.toolbarEnabled) {
-            this.$btns.append(
-             $("<a>", {
-              "href": "#",
-              "class": this.instance.baseCSS(this.options.buttonClass) + " new-" + block.prototype.className,
-              "data-type": blockName,
-              "text": block.prototype.title,
-              click: this.onButtonClick
-             })
-            );
+    className: "st-block-controls",
+  
+    initialize: function() {
+  
+      for(block_type in this.available_types) {
+        if (SirTrevor.Blocks.hasOwnProperty(block_type)) {
+          var block_control = new SirTrevor.BlockControl(block_type, this.instance_scope);
+          if (block_control.can_be_rendered) {
+            this.$el.append(block_control.render().$el);
           }
         }
       }
-      
-      // Do we have any buttons?
-      if(this.$btns.children().length === 0) this.$el.addClass('hidden');
-      
-      // Bind our marker to the wrapper
-      var throttled_show = _.throttle(this.show, 0),
-          throttled_hide = _.throttle(this.hide, 0);
   
-      this.instance.$outer.bind('mouseover', throttled_show)
-                          .bind('mouseout', throttled_hide)
-                          .bind('dragover', throttled_show);
-  
-      this.$el.bind('dragover', halt);
-      
-      // Bind the drop function onto here
-      this.instance.$outer.dropArea()
-                          .bind('dragleave', throttled_hide)
-                          .bind('drop', this.onDrop);
-      
-      this.$el.addClass(this.instance.baseCSS("item-ready"));
-    },
-      
-    show: function(ev) {
-      var target = $(ev.target),
-          target_parent = target.parent();
-  
-      if (target.is(this.$el) || target.is(this.$btns) || target_parent.is(this.$el) || target_parent.is(this.$btns)) {
-        this.$el.addClass(this.instance.baseCSS("item-ready"));
-        return;
-      }
-  
-      if(ev.type == 'drag' || ev.type == 'dragover') {
-        this.$el.addClass('drop-zone');
-        this.$p.text(this.options.dropText);
-        this.$btns.hide();
-      } else {
-        this.$el.removeClass('drop-zone');
-        this.$p.text(this.options.addText);
-        this.$btns.show();
-      }
-  
-      // Check to see we're not over the formatting bar
-      if (target.is(this.instance.formatBar.$el) || target_parent.is(this.instance.formatBar.$el)) {
-        return this.hide();
-      }
-      
-      var mouse_enter = (ev) ? ev.originalEvent.pageY : 0;
-    
-      // Do we have any sedit blocks?
-      if (this.instance.blocks.length > 0) {
-      
-        // Find the closest block to this position
-        var closest_block = this.findClosestBlock(mouse_enter);
-              
-        // Position it
-        if (closest_block) {
-          this.$el.insertBefore(closest_block);
-        } else if(mouse_enter > 0) {
-          this.$el.insertAfter(this.instance.cachedDomBlocks.last());
-        } else {
-          this.$el.insertBefore(this.instance.cachedDomBlocks.first());
-        }
-      }
-      this.$el.addClass(this.instance.baseCSS("item-ready"));
+      this.$el.delegate('a', 'click', _.bind(this.handleButtonClick, this));
     },
   
-    hide: function(ev){
-      this.$el.removeClass(this.instance.baseCSS("item-ready"));
-    },
-    
-    onDrop: function(ev){
-      ev.preventDefault();
-         
-      var marker = this.$el,
-          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
-          block = $('#' + item_id);
-          
-      if (!_.isUndefined(item_id) && !_.isEmpty(block) && block.attr('data-instance') == this.instance.ID) {
-        marker.after(block);
-      }
-    },
-  
-    findClosestBlock: function(mouse_enter) {
-      var closest_block = false;
-  
-      var blockIterator = function(block, index) {
-        block = $(block);
-  
-        var block_top = block.offset().top - 40,
-            block_bottom = block.offset().top + block.outerHeight(true) - 40;
-  
-        if(block_top <= mouse_enter && mouse_enter < block_bottom) {
-          closest_block = block;
-        }
-      };
-      _.each(this.instance.cachedDomBlocks, _.bind(blockIterator, this));
-  
-      return closest_block;
-    },
-    
-    remove: function(){ this.$el.remove(); },
-  
-    onButtonClick: function(ev){
-      halt(ev);
-      var button = $(ev.target);
-      
-      if (button.hasClass('inactive')) {
-        alert('You cannot create any more blocks of this type');
-        return false;
-      }
-      
-      this.instance.createBlock(button.attr('data-type'), {});
-    },
-    
-    move: function(top) {
-      this.$el.css({ top: top })
-              .show()
-              .addClass(this.instance.baseCSS("item-ready"));
+    handleButtonClick: function(e) {
+      e.preventDefault();
+      this.trigger('createBlock', e.target.dataset.type);
     }
+  
   });
   
   
@@ -1889,13 +1974,13 @@
     this.errors = [];
     this.cachedDomBlocks = [];
     this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
-    this.ID = _.uniqueId(this.options.baseCSSClass + "-");
+    this.ID = _.uniqueId('st-editor-');
     
     if (this._ensureAndSetElements()) {
+      //this.marker = new SirTrevor.Marker(this.options.marker, this);
       
-      this.marker = new SirTrevor.Marker(this.options.marker, this);
       this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
-      
+    
       if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
         this.onEditorRender = this.options.onEditorRender;
       }
@@ -1903,7 +1988,10 @@
       this._setRequired();
       this._setBlocksAndFormatters();
       this._bindFunctions();
-      
+  
+      this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+      this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+  
       this.store("create", this); // Make our storage
       this.build();
       
@@ -1912,12 +2000,11 @@
     }
   };
   
-  _.extend(SirTrevorEditor.prototype, FunctionBind, {
+  _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     
     bound: ['onFormSubmit'],
     
     initialize: function() {},
-    
     /*
       Build the Editor instance. 
       Check to see if we've been passed JSON already, and if not try and create a default block.
@@ -1927,8 +2014,10 @@
       this.$el.hide();
       
       // Render marker & format bar
-      this.marker.render();
+      //this.marker.render();
       this.formatBar.render();
+  
+      this.$outer.append(this.block_controls.render().$el);
       
       var store = this.store("read", this);
       
@@ -1961,11 +2050,9 @@
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
     createBlock: function(type, data) {
-      
       type = _.capitalize(type); // Proper case
       
       if (this._blockTypeAvailable(type)) {
-        
        var blockType = SirTrevor.Blocks[type],
            currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
            totalBlockCounts = this.blocks.length,
@@ -1978,7 +2065,8 @@
        }
        
        var block = new blockType(this, data || {});
-       
+       this.$wrapper.append(block.render().$el);
+  
        if (_.isUndefined(this.blockCounts[type])) {
          this.blockCounts[type] = 0;
        }
@@ -1989,14 +2077,14 @@
        
        // Check to see if we can add any more blocks
        if (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit) {
-         this.marker.$el.addClass('hidden');
+         //this.marker.$el.addClass('hidden');
        }
         
        if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
          SirTrevor.log("Block Limit reached for type " + type + " setting state as inactive");
-         this.marker.$el.find('[data-type="' + type + '"]')
-          .addClass('inactive')
-          .attr('title','You have reached the limit for this type of block');
+         //this.marker.$el.find('[data-type="' + type + '"]')
+         // .addClass('inactive')
+         // .attr('title','You have reached the limit for this type of block');
        }
        
        SirTrevor.publish("editor/block/createBlock");
@@ -2024,9 +2112,9 @@
       // Remove our inactive class if it's no longer relevant
       if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
         SirTrevor.log("Removing block limit for " + block.type);
-        this.marker.$el.find('[data-type="' + block.type + '"]')
-          .removeClass('inactive')
-          .attr('title','Add a ' + block.type + ' block');
+        //this.marker.$el.find('[data-type="' + block.type + '"]')
+          //.removeClass('inactive')
+          //.attr('title','Add a ' + block.type + ' block');
       }
     },
     
@@ -2081,34 +2169,27 @@
           // Validate our block
           errors += this.performValidations(_block, should_validate);
         }
-        
       };
       _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
   
       // Validate against our required fields (if there are any)
       if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
         _.each(this.required, _.bind(function(type) {
-        
           if (this._blockTypeAvailable(type)) {
             // Valid block type to validate against
             if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {
-              
               this.errors.push({ text: "You must have a block of type " + type });
-              
               SirTrevor.log("Failed validation on required block type " + type);
               errors++;
-              
             } else {
               // We need to also validate that we have some data of this type too.
               // This is ugly, but necessary for proper validation on blocks that don't have required fields.
               var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
-              
               if (blocks.length === 0) {
                 this.errors.push({ text: "A required block type " + type + " is empty" });
                 errors++;
                 SirTrevor.log("A required block type " + type + " is empty");
               }
-              
             }
           }
         }, this));
@@ -2116,9 +2197,7 @@
   
       // Save it
       this.store("save", this);
-      
       if (errors > 0) this.renderErrors();
-      
       return errors;
     },
     
@@ -2149,7 +2228,7 @@
     removeErrors: function() {
       if (this.errors.length > 0) {
         // We have old errors to remove
-        this.$errors.find('ul').html(''); 
+        this.$errors.find('ul').html('');
         this.$errors.hide();
         this.errors = [];
       }
@@ -2189,15 +2268,16 @@
       this.$el = this.options.el;
       this.el = this.options.el[0];
       this.$form = this.$el.parents('form');
-      
-      var blockCSSClass = this.baseCSS("blocks");
+  
+      var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer', 'dropzone': 'copy link move' });
+      var $wrapper = $("<div>").attr({ 'class': 'st-blocks' });
   
       // Wrap our element in lots of containers *eww*
-      this.$el.wrap($('<div>', { id: this.ID, 'class': this.options.baseCSSClass, dropzone: 'copy link move' }))
-              .wrap($("<div>", { 'class': blockCSSClass }));
-        
-      this.$outer = this.$form.find('#' + this.ID);
-      this.$wrapper = this.$outer.find("." + blockCSSClass);
+      this.$el.wrap($outer)
+              .wrap($wrapper);
+  
+      this.$outer = $outer;
+      this.$wrapper = $wrapper;
   
       return true;
     },

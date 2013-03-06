@@ -17,13 +17,13 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.errors = [];
   this.cachedDomBlocks = [];
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
-  this.ID = _.uniqueId(this.options.baseCSSClass + "-");
+  this.ID = _.uniqueId('st-editor-');
   
   if (this._ensureAndSetElements()) {
+    //this.marker = new SirTrevor.Marker(this.options.marker, this);
     
-    this.marker = new SirTrevor.Marker(this.options.marker, this);
     this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
-    
+  
     if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
       this.onEditorRender = this.options.onEditorRender;
     }
@@ -31,7 +31,10 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
     this._setRequired();
     this._setBlocksAndFormatters();
     this._bindFunctions();
-    
+
+    this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+    this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+
     this.store("create", this); // Make our storage
     this.build();
     
@@ -40,12 +43,11 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   }
 };
 
-_.extend(SirTrevorEditor.prototype, FunctionBind, {
+_.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   
   bound: ['onFormSubmit'],
   
   initialize: function() {},
-  
   /*
     Build the Editor instance. 
     Check to see if we've been passed JSON already, and if not try and create a default block.
@@ -55,8 +57,10 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     this.$el.hide();
     
     // Render marker & format bar
-    this.marker.render();
+    //this.marker.render();
     this.formatBar.render();
+
+    this.$outer.append(this.block_controls.render().$el);
     
     var store = this.store("read", this);
     
@@ -89,11 +93,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
   */
   createBlock: function(type, data) {
-    
     type = _.capitalize(type); // Proper case
     
     if (this._blockTypeAvailable(type)) {
-      
      var blockType = SirTrevor.Blocks[type],
          currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
          totalBlockCounts = this.blocks.length,
@@ -106,7 +108,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
      }
      
      var block = new blockType(this, data || {});
-     
+     this.$wrapper.append(block.render().$el);
+
      if (_.isUndefined(this.blockCounts[type])) {
        this.blockCounts[type] = 0;
      }
@@ -117,14 +120,14 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
      
      // Check to see if we can add any more blocks
      if (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit) {
-       this.marker.$el.addClass('hidden');
+       //this.marker.$el.addClass('hidden');
      }
       
      if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
        SirTrevor.log("Block Limit reached for type " + type + " setting state as inactive");
-       this.marker.$el.find('[data-type="' + type + '"]')
-        .addClass('inactive')
-        .attr('title','You have reached the limit for this type of block');
+       //this.marker.$el.find('[data-type="' + type + '"]')
+       // .addClass('inactive')
+       // .attr('title','You have reached the limit for this type of block');
      }
      
      SirTrevor.publish("editor/block/createBlock");
@@ -152,9 +155,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     // Remove our inactive class if it's no longer relevant
     if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
       SirTrevor.log("Removing block limit for " + block.type);
-      this.marker.$el.find('[data-type="' + block.type + '"]')
-        .removeClass('inactive')
-        .attr('title','Add a ' + block.type + ' block');
+      //this.marker.$el.find('[data-type="' + block.type + '"]')
+        //.removeClass('inactive')
+        //.attr('title','Add a ' + block.type + ' block');
     }
   },
   
@@ -209,34 +212,27 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
         // Validate our block
         errors += this.performValidations(_block, should_validate);
       }
-      
     };
     _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
 
     // Validate against our required fields (if there are any)
     if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
       _.each(this.required, _.bind(function(type) {
-      
         if (this._blockTypeAvailable(type)) {
           // Valid block type to validate against
           if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {
-            
             this.errors.push({ text: "You must have a block of type " + type });
-            
             SirTrevor.log("Failed validation on required block type " + type);
             errors++;
-            
           } else {
             // We need to also validate that we have some data of this type too.
             // This is ugly, but necessary for proper validation on blocks that don't have required fields.
             var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
-            
             if (blocks.length === 0) {
               this.errors.push({ text: "A required block type " + type + " is empty" });
               errors++;
               SirTrevor.log("A required block type " + type + " is empty");
             }
-            
           }
         }
       }, this));
@@ -244,9 +240,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
 
     // Save it
     this.store("save", this);
-    
     if (errors > 0) this.renderErrors();
-    
     return errors;
   },
   
@@ -277,7 +271,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
   removeErrors: function() {
     if (this.errors.length > 0) {
       // We have old errors to remove
-      this.$errors.find('ul').html(''); 
+      this.$errors.find('ul').html('');
       this.$errors.hide();
       this.errors = [];
     }
@@ -317,15 +311,16 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, {
     this.$el = this.options.el;
     this.el = this.options.el[0];
     this.$form = this.$el.parents('form');
-    
-    var blockCSSClass = this.baseCSS("blocks");
+
+    var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer', 'dropzone': 'copy link move' });
+    var $wrapper = $("<div>").attr({ 'class': 'st-blocks' });
 
     // Wrap our element in lots of containers *eww*
-    this.$el.wrap($('<div>', { id: this.ID, 'class': this.options.baseCSSClass, dropzone: 'copy link move' }))
-            .wrap($("<div>", { 'class': blockCSSClass }));
-      
-    this.$outer = this.$form.find('#' + this.ID);
-    this.$wrapper = this.$outer.find("." + blockCSSClass);
+    this.$el.wrap($outer)
+            .wrap($wrapper);
+
+    this.$outer = $outer;
+    this.$wrapper = $wrapper;
 
     return true;
   },

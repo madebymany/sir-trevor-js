@@ -10,7 +10,7 @@ var Block = SirTrevor.Block = function(instance, data) {
   this._setBaseElements();
   this._bindFunctions();
   
-  this.render();
+  //this.render();
   
   this.initialize.apply(this, arguments);
 };
@@ -76,8 +76,8 @@ _.extend(Block.prototype, FunctionBind, {
     this.beforeBlockRender();
         
     // Insert before the marker
-    this.instance.marker.hide();
-    this.instance.marker.$el.before(this.$el);
+    //this.instance.marker.hide();
+    //this.instance.$wrapper.append(this.$el);
     
     // Do we have a dropzone?
     if (this.dropEnabled) {
@@ -95,8 +95,8 @@ _.extend(Block.prototype, FunctionBind, {
     this.save();
     
     // Add UI elements
-    this.$el.append($('<span>',{ 'class': this.instance.baseCSS("drag-handle"), draggable: true }));
-    this.$el.append($('<span>',{ 'class': this.instance.baseCSS("remove-block") }));
+    this.$el.append($('<span>',{ 'class': 'st-block__reorder', draggable: true }));
+    this.$el.append($('<span>',{ 'class': 'st-block__remove' }));
     
     // Stop events propagating through to the container
     this.$el
@@ -112,7 +112,7 @@ _.extend(Block.prototype, FunctionBind, {
     this._initPaste();
     
     // Delete
-    this.$('.' + this.instance.baseCSS("remove-block")).bind('click', this.onDeleteClick);
+    this.$('.st-block__remove').bind('click', this.onDeleteClick);
     
     // Handle text blocks
     if (this.$$('.text-block').length > 0) {
@@ -127,6 +127,8 @@ _.extend(Block.prototype, FunctionBind, {
       
       // Formatting
       this._initFormatting();
+
+      return this;
     }
     
     // Focus if we're adding an empty block, but only if not
@@ -142,7 +144,7 @@ _.extend(Block.prototype, FunctionBind, {
     this._initReordering();
     
     // Set ready state
-    this.$el.addClass(this.instance.baseCSS('item-ready'));
+    this.$el.addClass('st-item-ready');
     
     this.setTextLimit();
     this.onBlockRender();
@@ -173,8 +175,8 @@ _.extend(Block.prototype, FunctionBind, {
       this.ready();
     }
     
-    this.spinner = new Spinner(this.instance.options.spinner);
-    this.spinner.spin(this.$el[0]);
+    //this.spinner = new Spinner(this.instance.options.spinner);
+    //this.spinner.spin(this.$el[0]);
     
     this.$el.addClass('loading');
   },
@@ -204,13 +206,13 @@ _.extend(Block.prototype, FunctionBind, {
 
       if ((required && content.length === 0) || too_long) {
         // Error!
-        field.addClass(this.instance.baseCSS(this.instance.options.errorClass));
+        field.addClass('st-error');
         errors++;
       }
     }, this));
 
     if (errors > 0) {
-      this.$el.addClass(this.instance.baseCSS('block-with-errors'));
+      this.$el.addClass('st-block--with-errors');
     }
     
     return (errors === 0);
@@ -276,19 +278,19 @@ _.extend(Block.prototype, FunctionBind, {
     ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
     ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
     item.parent().addClass('dragging');
-    this.instance.formatBar.hide();
+    //this.instance.formatBar.hide();
   },
   
   onDragEnd: function(ev){
     var item = $(ev.target);
     item.parent().removeClass('dragging');
-    this.instance.marker.hide();
-    this.instance.formatBar.show();
+    //this.instance.marker.hide();
+    //this.instance.formatBar.show();
   },
   
   onDeleteClick: function(ev) {
     if (confirm('Are you sure you wish to delete this content?')) {
-      this.instance.removeBlock(this);
+      //this.instance.removeBlock(this);
       halt(ev);
     }
   },
@@ -296,7 +298,7 @@ _.extend(Block.prototype, FunctionBind, {
   onContentPasted: function(ev){
     var textBlock = this.$$('.text-block');
     if (textBlock.length > 0) {
-      textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
+      //textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
     }
   },
 
@@ -337,8 +339,8 @@ _.extend(Block.prototype, FunctionBind, {
   
   _beforeValidate: function() {
     this.errors = [];
-    var errorClass = this.instance.baseCSS("error");
-    this.$el.removeClass(this.instance.baseCSS('block-with-errors'));
+    var errorClass = 'st-error';
+    this.$el.removeClass('st-block--with-errors');
     this.$('.' + errorClass).removeClass(errorClass);
     this.$('.error-marker').remove();
   },
@@ -363,7 +365,7 @@ _.extend(Block.prototype, FunctionBind, {
         types = e.dataTransfer.types,
         type, data = [];
     
-    this.instance.marker.hide();
+    //this.instance.marker.hide();
     this.$dropzone.removeClass('drag-enter');
         
     /*
@@ -383,12 +385,12 @@ _.extend(Block.prototype, FunctionBind, {
     
     // Set
     var editor = $('<div>', {
-      'class': this.instance.baseCSS("editor-block") + ' ' + this._getBlockClass(),
+      'class': 'st-block__inner ' + this._getBlockClass(),
       html: el
     });
     
     this.$el = $('<div>', {
-      'class': this.instance.baseCSS("block"),
+      'class': 'st-block',
       id: this.blockID,
       "data-type": this.type,
       "data-instance": this.instance.ID,
@@ -411,7 +413,7 @@ _.extend(Block.prototype, FunctionBind, {
   },
 
   _getBlockClass: function() {
-    return this.className + '-block';
+    return 'st-block--' + this.className;
   },
   
   /*
@@ -440,23 +442,23 @@ _.extend(Block.prototype, FunctionBind, {
   },
   
   _initReordering: function() {
-    this.$('.' + this.instance.baseCSS("drag-handle"))
+    this.$('.st-block__reorder')
       .bind('dragstart', this.onDragStart)
       .bind('dragend', this.onDragEnd)
-      .bind('drag', this.instance.marker.show);
+      //.bind('drag', this.instance.marker.show);
   },
   
   _initFormatting: function() {
     // Enable formatting keyboard input
     var formatter;
-    for (var name in this.instance.formatters) {
-      if (this.instance.formatters.hasOwnProperty(name)) {
-        formatter = SirTrevor.Formatters[name];
-        if (!_.isUndefined(formatter.keyCode)) {
-          formatter._bindToBlock(this.$editor);
-        }
-      }
-    }
+    // for (var name in this.instance.formatters) {
+    //   if (this.instance.formatters.hasOwnProperty(name)) {
+    //     formatter = SirTrevor.Formatters[name];
+    //     if (!_.isUndefined(formatter.keyCode)) {
+    //       formatter._bindToBlock(this.$editor);
+    //     }
+    //   }
+    // }
   },
   
   _initPaste: function() {
