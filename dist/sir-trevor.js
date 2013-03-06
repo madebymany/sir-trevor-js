@@ -2273,11 +2273,12 @@
       var $wrapper = $("<div>").attr({ 'class': 'st-blocks' });
   
       // Wrap our element in lots of containers *eww*
-      this.$el.wrap($outer)
-              .wrap($wrapper);
+      this.$el.wrap($outer).wrap($wrapper);
   
-      this.$outer = $outer;
-      this.$wrapper = $wrapper;
+      this.$outer = this.$form.find('#' + this.ID);
+      this.$wrapper = this.$form.find('.st-blocks');
+  
+      console.log(this.$outer);
   
       return true;
     },
