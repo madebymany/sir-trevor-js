@@ -2,33 +2,21 @@
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-rigger');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   
   grunt.initConfig({
     
-    meta: {
-      version: '0.2.2',
-      banner: '// Sir Trevor, v<%= meta.version %>\n// made with love by Made by Many'
-    },
-
-    lint: {
-      files: ['src/sir-trevor.js']
-    },
-
     'jasmine' : {
-      src : ['public/javascripts/*.js', 'dist/sir-trevor.js'],
-      specs : 'spec/**/*.spec.js',
-      helpers : 'spec/helpers/*.js',
-      timeout : 10000,
-      phantomjs : {
-        'ignore-ssl-errors' : true
+      'sir-trevor': {
+        src : 'dist/sir-trevor.js',
+        options: {
+          vendor: 'public/javascripts/*.js',
+          specs : 'spec/**/*.spec.js',
+          helpers : 'spec/helpers/*.js'
+        }
       }
-    },
-    'jasmine-server' : {
-      browser : false
-    },
-
-    server: {
-      port: 8000
     },
 
     rig: {
@@ -38,19 +26,27 @@ module.exports = function(grunt) {
       }
     },
 
-    min: {
+    uglify: {
+      options: {
+        mangle: false
+      },
       standard: {
-        src: ['<banner:meta.banner>', '<config:rig.build.dest>'],
-        dest: 'dist/sir-trevor.min.js'
+        files: {
+          'dist/sir-trevor.min.js': ['<banner:meta.banner>', 'dist/sir-trevor.js']
+        }
       }
     },
 
     watch: {
-      files: ['src/*.js', 'src/**/*.js'],
-      tasks: 'default'
+      scripts: {
+        files: ['src/*.js', 'src/**/*.js'],
+        tasks: 'default'
+      }
     },
 
     jshint: {
+      all: ['dist/sir-trevor.js'],
+
       options: {
         curly: true,
         eqeqeq: true,
@@ -69,17 +65,17 @@ module.exports = function(grunt) {
         _: true,
         console: true
       }
-    },
-    uglify: {}
+    }
+
   });
 
   // Default task.
-  grunt.loadNpmTasks('grunt-jasmine-runner');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-  grunt.registerTask('travis', 'lint rig jasmine');
+  grunt.registerTask('travis', ['rig', 'jasmine']);
 
-  grunt.registerTask('default', 'lint rig min');
+  grunt.registerTask('default', ['rig', 'uglify', 'jasmine']);
 
-  grunt.registerTask('jasmine-browser', 'server watch');
+  grunt.registerTask('jasmine-browser', ['server','watch']);
 
 };

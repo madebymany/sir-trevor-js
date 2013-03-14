@@ -1,5 +1,3 @@
-// Sir Trevor, v0.2.2
-// made with love by Made by Many
 (function ($, _){
   
   var root = this,
@@ -368,7 +366,6 @@
     }
   
   };
-  
   /* 
     SirTrevor.Submittable
     --
@@ -507,7 +504,6 @@
     });
     
   };
-  
   /*
     Underscore helpers
   */
@@ -528,7 +524,6 @@
     }
   
   });
-  
   
   var Block = SirTrevor.Block = function(instance, data) {
     this.instance = instance;
@@ -1005,7 +1000,6 @@
   });
   
   Block.extend = extend; // Allow our Block to be extended.
-  
   var Format = SirTrevor.Formatter = function(options){
     this.formatId = _.uniqueId('format-');
     this._configure(options || {});
@@ -1415,7 +1409,6 @@
       this.handleTwitterDropPaste(url);
     }
   });
-  
   /*
     Unordered List
   */
@@ -1465,7 +1458,6 @@
     }
   
   });
-  
   var video_drop_template = '<p>Drop video link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
   var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
   
@@ -1531,7 +1523,6 @@
       this.handleDropPaste(url);
     }
   });
-  
   /* Default Formatters */
   /* Our base formatters */
   
@@ -1767,7 +1758,6 @@
               .addClass(this.instance.baseCSS("item-ready"));
     }
   });
-  
   
   
   
@@ -2313,7 +2303,6 @@
       return this.options.baseCSSClass + "-" + additional;
     }
   });
-  
   
 
   /* We need a form handler here to handle all the form submits */
