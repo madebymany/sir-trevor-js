@@ -3,6 +3,7 @@
   "version": "0.2.1",
   "dependencies": {
     "grunt": "*",
+    "grunt-cli": "*",
     "grunt-rigger": "*",
     "grunt-jasmine-runner": "*"
   },
