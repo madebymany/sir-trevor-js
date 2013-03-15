@@ -112,9 +112,9 @@ _.extend(Marker.prototype, FunctionBind, {
       if (closest_block) {
         this.$el.insertBefore(closest_block);
       } else if(mouse_enter > 0) {
-        this.$el.insertAfter(this.instance.cachedDomBlocks.last());
+        //this.$el.insertAfter(this.instance.cachedDomBlocks.last());
       } else {
-        this.$el.insertBefore(this.instance.cachedDomBlocks.first());
+        //this.$el.insertBefore(this.instance.cachedDomBlocks.first());
       }
     }
     this.$el.addClass(this.instance.baseCSS("item-ready"));
@@ -149,7 +149,7 @@ _.extend(Marker.prototype, FunctionBind, {
         closest_block = block;
       }
     };
-    _.each(this.instance.cachedDomBlocks, _.bind(blockIterator, this));
+    //_.each(this.instance.cachedDomBlocks, _.bind(blockIterator, this));
 
     return closest_block;
   },

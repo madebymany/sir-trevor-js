@@ -1962,7 +1962,6 @@
     this.blockCounts = {}; // Cached block type counts
     this.blocks = []; // Block references
     this.errors = [];
-    this.cachedDomBlocks = [];
     this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
     this.ID = _.uniqueId('st-editor-');
     

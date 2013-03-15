@@ -1,8 +1,5 @@
-var Block = SirTrevor.Block = function(instance, data) {
-  this.instance = instance;
-  this.type = this._getBlockType();
-  
-  this.store("create", this, { data: data });
+var Block = SirTrevor.Block = function(data) {
+  this.store("create", this, { data: data || {} });
   
   this.uploadsCount = 0;
   this.blockID = _.uniqueId(this.className + '-');
@@ -10,18 +7,15 @@ var Block = SirTrevor.Block = function(instance, data) {
   this._setBaseElements();
   this._bindFunctions();
   
-  //this.render();
-  
   this.initialize.apply(this, arguments);
 };
 
 var blockOptions = [
-  "className",
+  "type",
   "toolbarEnabled",
 	"formattingEnabled",
   "dropEnabled",
   "title",
-  "limit",
   "editorHTML",
   "dropzoneHTML",
   "validate",
@@ -36,27 +30,25 @@ var blockOptions = [
   "toHTML"
 ];
 
-_.extend(Block.prototype, FunctionBind, {
+_.extend(Block.prototype, FunctionBind, Renderable, {
   
   bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onBlockBlur", "onDrop", "onDragStart", "onDragEnd"],
   
-  $: function(selector) {
-    return this.$el.find(selector);
-  },
-  
+  className: 'st-block',
+
   $$: function(selector) {
     return this.$editor.find(selector);
   },
   
   /* Defaults to be overriden if required */
-  className: '',
+  type: '',
   title: '',
-  limit: 0,
   editorHTML: '<div></div>',
   dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
   toolbarEnabled: true,
   dropEnabled: false,
 	formattingEnabled: true,
+  uploadsCount: 0,
   
   initialize: function() {},
   
@@ -381,7 +373,7 @@ _.extend(Block.prototype, FunctionBind, {
   },
 
   _setBaseElements: function(){
-    var el = (_.isFunction(this.editorHTML)) ? this.editorHTML() : this.editorHTML;
+    var el = _.result(this, 'editorHTML');
     
     // Set
     var editor = $('<div>', {
@@ -400,16 +392,6 @@ _.extend(Block.prototype, FunctionBind, {
     // Set our element references
     this.el = this.$el[0];
     this.$editor = editor;
-  },
-  
-  _getBlockType: function() {
-    var objName = "";
-    for (var block in SirTrevor.Blocks) {
-      if (SirTrevor.Blocks[block].prototype == Object.getPrototypeOf(this)) {
-        objName = block;
-      }
-    }
-    return objName;
   },
 
   _getBlockClass: function() {
@@ -444,7 +426,7 @@ _.extend(Block.prototype, FunctionBind, {
   _initReordering: function() {
     this.$('.st-block__reorder')
       .bind('dragstart', this.onDragStart)
-      .bind('dragend', this.onDragEnd)
+      .bind('dragend', this.onDragEnd);
       //.bind('drag', this.instance.marker.show);
   },
   

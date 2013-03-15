@@ -15,7 +15,6 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   this.blockCounts = {}; // Cached block type counts
   this.blocks = []; // Block references
   this.errors = [];
-  this.cachedDomBlocks = [];
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId('st-editor-');
   
@@ -33,6 +32,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
     this._bindFunctions();
 
     this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
 
     this.store("create", this); // Make our storage
@@ -95,48 +95,39 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   createBlock: function(type, data) {
     type = _.capitalize(type); // Proper case
     
-    if (this._blockTypeAvailable(type)) {
-     var blockType = SirTrevor.Blocks[type],
-         currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
-         totalBlockCounts = this.blocks.length,
-         blockTypeLimit = this._getBlockTypeLimit(type);
-         
-     // Can we have another one of these blocks?
-     if ((blockTypeLimit !== 0 && currentBlockCount > blockTypeLimit) || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
-       SirTrevor.log("Block Limit reached for type " + type);
-       return false;
-     }
-     
-     var block = new blockType(this, data || {});
-     this.$wrapper.append(block.render().$el);
-
-     if (_.isUndefined(this.blockCounts[type])) {
-       this.blockCounts[type] = 0;
-     }
-     
-     this.blocks.push(block);
-     currentBlockCount++;
-     this.blockCounts[type] = currentBlockCount;
-     
-     // Check to see if we can add any more blocks
-     if (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit) {
-       //this.marker.$el.addClass('hidden');
-     }
-      
-     if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
-       SirTrevor.log("Block Limit reached for type " + type + " setting state as inactive");
-       //this.marker.$el.find('[data-type="' + type + '"]')
-       // .addClass('inactive')
-       // .attr('title','You have reached the limit for this type of block');
-     }
-     
-     SirTrevor.publish("editor/block/createBlock");
-      
-     SirTrevor.log("Block created of type " + type);
-     this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
-    } else {
+    if (!this._isBlockTypeAvailable(type)) {
       SirTrevor.log("Block type not available " + type);
+      return false;
     }
+
+    // Can we have another one of these blocks?
+    if (!this._canAddBlockType(type)) {
+      SirTrevor.log("Block Limit reached for type " + type);
+      return false;
+    }
+
+    var block = new SirTrevor.Blocks[type](data);
+    this.$wrapper.append(block.render().$el);
+
+    this.blocks.push(block);
+    this._incrementBlockTypeCount(type);
+
+    SirTrevor.publish("editor/block/createBlock");
+    SirTrevor.log("Block created of type " + type);
+  },
+
+  _incrementBlockTypeCount: function(type) {
+    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type] + 1;
+  },
+
+  _getBlockTypeCount: function(type) {
+    return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
+  },
+
+  _canAddBlockType: function(type) {
+    var block_type_limit = this._getBlockTypeLimit(type);
+
+    return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
   },
   
   removeBlock: function(block) {
@@ -150,7 +141,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     if(_.isUndefined(this.blocks)) this.blocks = [];
     
     SirTrevor.publish("editor/block/removeBlock");
-    this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
     
     // Remove our inactive class if it's no longer relevant
     if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
@@ -218,7 +208,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     // Validate against our required fields (if there are any)
     if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
       _.each(this.required, _.bind(function(type) {
-        if (this._blockTypeAvailable(type)) {
+        if (this._isBlockTypeAvailable(type)) {
           // Valid block type to validate against
           if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {
             this.errors.push({ text: "You must have a block of type " + type });
@@ -283,10 +273,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     returns the limit for this block, which can be set on a per Editor instance, or on a global blockType scope.
   */
   _getBlockTypeLimit: function(t) {
-    if (this._blockTypeAvailable(t)) {
-      return (_.isUndefined(this.options.blockTypeLimits[t])) ? SirTrevor.Blocks[t].prototype.limit : this.options.blockTypeLimits[t];
-    }
-    return 0;
+    if (!this._isBlockTypeAvailable(t)) { return 0; }
+
+    return (_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t];
   },
   
   /* 
@@ -294,7 +283,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     --
     Checks if the object exists within the instance of the Editor.
   */
-  _blockTypeAvailable: function(t) {
+  _isBlockTypeAvailable: function(t) {
     return !_.isUndefined(this.blockTypes[t]);
   },
   

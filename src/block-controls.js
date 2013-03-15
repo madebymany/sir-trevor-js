@@ -16,8 +16,7 @@ _.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
   className: "st-block-controls",
 
   initialize: function() {
-
-    for(block_type in this.available_types) {
+    for(var block_type in this.available_types) {
       if (SirTrevor.Blocks.hasOwnProperty(block_type)) {
         var block_control = new SirTrevor.BlockControl(block_type, this.instance_scope);
         if (block_control.can_be_rendered) {

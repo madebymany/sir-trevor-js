@@ -4,6 +4,7 @@
 
 SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
   
+  type: 'Quote',
   title: "Quote",
   className: "quote",
   limit: 0,

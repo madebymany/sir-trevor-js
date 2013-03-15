@@ -33,7 +33,10 @@
       SirTrevor.Blocks.Quote.prototype.setTextLimit = set_quote_and_text_limits;
 
       window.editor = new SirTrevor.Editor({ 
-        el: $('.sir-trevor')
+        el: $('.sir-trevor'),
+        blockTypeLimits: {
+          Text: 1,
+        }
       });
 
     });
