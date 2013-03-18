@@ -1282,12 +1282,13 @@
   SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
     
     type: 'Quote',
-    title: "Quote",
-    className: "quote",
-    limit: 0,
     
     editorHTML: function() {
-      return _.template('<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input maxlength="140" name="cite" class="input-string required" type="text" /></div>', this);
+      return _.template('<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote>\
+        <div class="input text">\
+          <label>Credit</label>\
+          <input maxlength="140" name="cite" class="input-string required" type="text" />\
+        </div>', this);
     },
     
     loadData: function(data){
@@ -1542,7 +1543,7 @@
     
     type: 'Text',
   
-    editorHTML: '<div class="required st-text-block" contenteditable="true"></div>',
+    editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
     
     loadData: function(data){
       this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
@@ -2151,7 +2152,7 @@
           errors += this.performValidations(_block, should_validate);
         }
       };
-      _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
+      _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
   
       // Validate against our required fields (if there are any)
       if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {

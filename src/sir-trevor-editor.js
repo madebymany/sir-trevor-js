@@ -188,7 +188,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
         errors += this.performValidations(_block, should_validate);
       }
     };
-    _.each(this.$wrapper.find('.' + this.options.baseCSSClass + "-block"), _.bind(blockIterator, this));
+    _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
 
     // Validate against our required fields (if there are any)
     if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
