@@ -9,7 +9,7 @@
   var splice = array.splice;
    
   SirTrevor = root.SirTrevor = {};
-  SirTrevor.DEBUG = false;
+  SirTrevor.DEBUG = true;
   SirTrevor.SKIP_VALIDATION = false;
   
   /*
@@ -719,30 +719,104 @@
   
   });
   
-  var Block = SirTrevor.Block = function(instance, data) {
-    this.instance = instance;
-    this.type = this._getBlockType();
-    
-    this.store("create", this, { data: data });
-    
-    this.uploadsCount = 0;
-    this.blockID = _.uniqueId(this.className + '-');
+  SirTrevor.toHTML = function(markdown, type) {
+    var html = markdown;
       
-    this._setBaseElements();
-    this._bindFunctions();
+    // Use custom formatters toHTML functions (if any exist)
+    var formatName, format;
+    for(formatName in this.formatters) {
+      if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
+        format = SirTrevor.Formatters[formatName];
+        // Do we have a toHTML function?
+        if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
+          html = format.toHTML(html);
+        }
+      }
+    }
     
-    //this.render();
+    // Use custom block toHTML functions (if any exist)
+    var block;
+    if (SirTrevor.Blocks.hasOwnProperty(type)) {
+      
+      block = SirTrevor.Blocks[type];
+      // Do we have a toHTML function?
+      if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
+        html = block.prototype.toHTML(html);
+      }
+    }
+    
+    html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
+                .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
+                .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")        // Links
+                .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
+                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
+       
+    return html;
+  };
+  SirTrevor.toMarkdown = function(content, type) {
+    var markdown;
+      
+    markdown = content.replace(/\n/mg,"")
+                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
+                      .replace(/<\/?b>/g,"**")
+                      .replace(/<\/?STRONG>/g,"**")                   // Bold
+                      .replace(/<\/?i>/g,"_")
+                      .replace(/<\/?EM>/g,"_");                        // Italic
+  
+    // Use custom formatters toMarkdown functions (if any exist)
+    var formatName, format;
+    for(formatName in this.formatters) {
+      if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
+        format = SirTrevor.Formatters[formatName];
+        // Do we have a toMarkdown function?
+        if (!_.isUndefined(format.toMarkdown) && _.isFunction(format.toMarkdown)) {
+          markdown = format.toMarkdown(markdown);
+        }
+      }
+    }
+  
+    // Do our generic stripping out
+    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
+                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
+                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
+                   .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
+                   .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
+                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
+                   .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
+  
+  
+    // Use custom block toMarkdown functions (if any exist)
+    var block;
+    if (SirTrevor.Blocks.hasOwnProperty(type)) {
+      block = SirTrevor.Blocks[type];
+      // Do we have a toMarkdown function?
+      if (!_.isUndefined(block.prototype.toMarkdown) && _.isFunction(block.prototype.toMarkdown)) {
+        markdown = block.prototype.toMarkdown(markdown);
+      }
+    }
+  
+    // Strip remaining HTML
+    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+  
+    return markdown;  
+  };
+  var Block = SirTrevor.Block = function(data, instance_id) {
+    this.store("create", this, { data: data || {} });
+    this.blockID = _.uniqueId(this.className + '-');
+    this.instanceID = instance_id;
+  
+    this._ensureElement();
+    this._bindFunctions();
     
     this.initialize.apply(this, arguments);
   };
   
   var blockOptions = [
-    "className",
+    "type",
     "toolbarEnabled",
   	"formattingEnabled",
     "dropEnabled",
     "title",
-    "limit",
     "editorHTML",
     "dropzoneHTML",
     "validate",
@@ -757,27 +831,42 @@
     "toHTML"
   ];
   
-  _.extend(Block.prototype, FunctionBind, {
+  _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     
-    bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onBlockBlur", "onDrop", "onDragStart", "onDragEnd"],
+    bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onBlockBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
     
-    $: function(selector) {
+    className: 'st-block',
+  
+    attributes: function() {
+      return {
+        'id': this.blockID,
+        'data-type': this.type,
+        'data-instance': this.instanceID
+      };
+    },
+  
+    title: function() {
+      return _.capitalize(this.type);
+    },
+  
+    blockCSSClass: function() {
+      // Memoize the slug.
+      this.blockCSSClass = toSlug(this.type);
+      return this.blockCSSClass;
+    },
+  
+    $$: function(selector) {
       return this.$el.find(selector);
     },
     
-    $$: function(selector) {
-      return this.$editor.find(selector);
-    },
-    
     /* Defaults to be overriden if required */
-    className: '',
-    title: '',
-    limit: 0,
+    type: '',
     editorHTML: '<div></div>',
     dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
     toolbarEnabled: true,
     dropEnabled: false,
   	formattingEnabled: true,
+    uploadsCount: 0,
     
     initialize: function() {},
     
@@ -788,87 +877,37 @@
     toMarkdown: function(markdown){ return markdown; },
     toHTML: function(html){ return html; },
     
-    store: function(){
-      return SirTrevor.blockStore.apply(this, arguments);
-    },
-    
-    render: function() {
-      
-      this.beforeBlockRender();
-          
-      // Insert before the marker
-      //this.instance.marker.hide();
-      //this.instance.$wrapper.append(this.$el);
-      
-      // Do we have a dropzone?
-      if (this.dropEnabled) {
-        this._initDragDrop();
-      }
-      
-      // Has data already?
+    store: function(){ return SirTrevor.blockStore.apply(this, arguments); },
+  
+    _loadAndSetData: function() {
       var currentData = this.getData();
-      
       if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
         this._loadData();
-      }
-      
-      // And save the state
-      this.save();
-      
-      // Add UI elements
-      this.$el.append($('<span>',{ 'class': 'st-block__reorder', draggable: true }));
-      this.$el.append($('<span>',{ 'class': 'st-block__remove' }));
-      
-      // Stop events propagating through to the container
-      this.$el
-        .bind('drop', halt)
-        .bind('mouseover', halt)
-        .bind('mouseout', halt)
-        .bind('dragleave', halt)
-        .bind('mouseover', function(ev){ $(this).siblings().removeClass('active'); $(this).addClass('active'); })
-        .bind('mouseout', function(ev){ $(this).removeClass('active'); })
-        .bind('dragover', function(ev){ ev.preventDefault(); });
+      }  
+    },
   
-      // Handle pastes
-      this._initPaste();
+    render: function() {
+      this.beforeBlockRender();
       
-      // Delete
-      this.$('.st-block__remove').bind('click', this.onDeleteClick);
-      
-      // Handle text blocks
-      if (this.$$('.text-block').length > 0) {
-        document.execCommand("styleWithCSS", false, false);
-        document.execCommand("insertBrOnReturn", false, true);
-        
-        // Strip out all the HTML on paste
-        this.$$('.text-block')
-          .bind('paste', this._handleContentPaste)
-          .bind('focus', this.onBlockFocus)
-          .bind('blur', this.onBlockBlur);
-        
-        // Formatting
-        this._initFormatting();
+      this.$el.append(_.result(this, 'editorHTML'));
+      this.$el.addClass('st-block--' + _.result(this, 'blockCSSClass'));
   
-        return this;
-      }
+      this._loadAndSetData();
       
-      // Focus if we're adding an empty block, but only if not
-  		// the only block (i.e. page has just loaded a new editor)
-      if (_.isEmpty(currentData.data) && this.instance.blocks.length > 0) {
-        var inputs = this.$$('[contenteditable="true"], input');
-        if (inputs.length > 0 && !this.dropEnabled) {
-          inputs[0].focus();
-        }
-      }
-      
-      // Reorderable
+      if (this.hasTextBlock) { this._initTextBlocks(); }
+      if (this.dropEnabled) { this._initDragDrop(); }
+      if (this.formattingEnabled) { this._initFormatting(); }
+  
+      this._initDeletion();
       this._initReordering();
-      
-      // Set ready state
+      this._initPaste();
+  
       this.$el.addClass('st-item-ready');
-      
-      this.setTextLimit();
+      this.save();
+  
       this.onBlockRender();
+  
+      return this;
     },
     
     remove: function() {
@@ -891,19 +930,16 @@
     },
     
     loading: function() {
+      if(!_.isUndefined(this.spinner)) { this.ready(); }
       
-      if(!_.isUndefined(this.spinner)) {
-        this.ready();
-      }
+      this.spinner = new Spinner(SirTrevor.DEFAULTS.spinner);
+      this.spinner.spin(this.$el[0]);
       
-      //this.spinner = new Spinner(this.instance.options.spinner);
-      //this.spinner.spin(this.$el[0]);
-      
-      this.$el.addClass('loading');
+      this.$el.addClass('st-loading');
     },
     
     ready: function() {
-      this.$el.removeClass('loading');
+      this.$el.removeClass('st-loading');
       if (!_.isUndefined(this.spinner)) {
         this.spinner.stop();
         delete this.spinner;
@@ -913,17 +949,16 @@
     /* Generic implementations */
     
     validate: function() {
-      
       this._beforeValidate();
       
-      var fields = this.$$('.required, [data-maxlength]'),
+      var fields = this.$$('.st-required, [data-maxlength]'),
           errors = 0;
           
       _.each(fields, _.bind(function(field) {
         field = $(field);
         var content = (field.attr('contenteditable')) ? field.text() : field.val(),
             too_long = (field.attr('data-maxlength') && field.too_long()),
-            required = field.hasClass('required');
+            required = field.hasClass('st-required');
   
         if ((required && content.length === 0) || too_long) {
           // Error!
@@ -944,24 +979,23 @@
       Can be overwritten, although hopefully this will cover most situations
     */
     toData: function() {
-      
       SirTrevor.log("toData for " + this.blockID);
       
       var bl = this.$el,
           dataObj = {};
       
       /* Simple to start. Add conditions later */
-      if (this.$$('.text-block').length > 0) {
-        var content = this.$$('.text-block').html();
+      if (this.$$('.st-text-block').length > 0) {
+        var content = this.$$('.st-text-block').html();
         if (content.length > 0) {
-          dataObj.text = this.instance._toMarkdown(content, this.type);
+          dataObj.text = SirTrevor.toMarkdown(content, this.type);
         }
       }
       
-      var hasTextAndData = (!_.isUndefined(dataObj.text) || this.$$('.text-block').length === 0);
+      var hasTextAndData = (!_.isUndefined(dataObj.text) || this.$$('.st-text-block').length === 0);
       
       // Add any inputs to the data attr
-      if(this.$$('input[type="text"]').not('.paste-block').length > 0) {
+      if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
         this.$$('input[type="text"]').each(function(index,input){
           input = $(input);
           if (input.val().length > 0 && hasTextAndData) {
@@ -994,6 +1028,10 @@
     
     onDrop: function(dataTransferObj) {},
   
+    onDrag: function(ev){
+      console.log('dragging');
+    },
+  
     onDragStart: function(ev){
       var item = $(ev.target);
       ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
@@ -1011,7 +1049,8 @@
     
     onDeleteClick: function(ev) {
       if (confirm('Are you sure you wish to delete this content?')) {
-        //this.instance.removeBlock(this);
+        this.remove();
+        this.trigger('removeBlock', this.blockID, this.type);
         halt(ev);
       }
     },
@@ -1019,16 +1058,8 @@
     onContentPasted: function(ev){
       var textBlock = this.$$('.text-block');
       if (textBlock.length > 0) {
-        //textBlock.html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type),this.type));
+        textBlock.html(SirTrevor.toHTML(SirTrevor.toMarkdown(textBlock.html(), this.type), this.type));
       }
-    },
-  
-    onBlockFocus: function(e) {
-      this.$el.addClass('focussed');
-    },
-  
-    onBlockBlur: function(e) {
-      this.$el.removeClass('focussed');
     },
     
     /*
@@ -1049,7 +1080,7 @@
       
       if(this.dropEnabled) {
         this.$dropzone.hide();
-        this.$editor.show();
+        //this.$editor.show();
       }
       
       SirTrevor.publish("editor/block/loadData");
@@ -1063,7 +1094,6 @@
       var errorClass = 'st-error';
       this.$el.removeClass('st-block--with-errors');
       this.$('.' + errorClass).removeClass(errorClass);
-      this.$('.error-marker').remove();
     },
     
     _handleContentPaste: function(ev) {
@@ -1101,38 +1131,6 @@
       }
     },
   
-    _setBaseElements: function(){
-      var el = (_.isFunction(this.editorHTML)) ? this.editorHTML() : this.editorHTML;
-      
-      // Set
-      var editor = $('<div>', {
-        'class': 'st-block__inner ' + this._getBlockClass(),
-        html: el
-      });
-      
-      this.$el = $('<div>', {
-        'class': 'st-block',
-        id: this.blockID,
-        "data-type": this.type,
-        "data-instance": this.instance.ID,
-        html: editor
-      });
-      
-      // Set our element references
-      this.el = this.$el[0];
-      this.$editor = editor;
-    },
-    
-    _getBlockType: function() {
-      var objName = "";
-      for (var block in SirTrevor.Blocks) {
-        if (SirTrevor.Blocks[block].prototype == Object.getPrototypeOf(this)) {
-          objName = block;
-        }
-      }
-      return objName;
-    },
-  
     _getBlockClass: function() {
       return 'st-block--' + this.className;
     },
@@ -1148,8 +1146,9 @@
         html: this.dropzoneHTML,
         'class': "dropzone " + this._getBlockClass()
       });
+  
       this.$el.append(this.$dropzone);
-      this.$editor.hide();
+      //this.$editor.hide();
   
       // Bind our drop event
       this.$dropzone.bind('drop', this._handleDrop)
@@ -1163,34 +1162,59 @@
     },
     
     _initReordering: function() {
-      this.$('.st-block__reorder')
+      var reorder_element = $('<a>', { 'class': 'st-block__reorder' });
+  
+      this.$el.append(reorder_element);
+  
+      reorder_element
         .bind('dragstart', this.onDragStart)
         .bind('dragend', this.onDragEnd)
-        //.bind('drag', this.instance.marker.show);
+        .bind('drag', this.onDrag);
+  
+      this.$el
+        .bind('drop', halt)
+        .bind('mouseover', halt)
+        .bind('mouseout', halt)
+        .bind('dragleave', halt)
+        .bind('dragover', function(ev){ ev.preventDefault(); });
+    },
+  
+    _initDeletion: function() {
+      var delete_el = $('<a>',{ 'class': 'st-block__remove' });
+      this.$el.append(delete_el);
+      delete_el.bind('click', this.onDeleteClick);
     },
     
     _initFormatting: function() {
       // Enable formatting keyboard input
       var formatter;
-      // for (var name in this.instance.formatters) {
-      //   if (this.instance.formatters.hasOwnProperty(name)) {
-      //     formatter = SirTrevor.Formatters[name];
-      //     if (!_.isUndefined(formatter.keyCode)) {
-      //       formatter._bindToBlock(this.$editor);
-      //     }
-      //   }
-      // }
+      for (var name in SirTrevor.Formatters) {
+        if (SirTrevor.Formatters.hasOwnProperty(name)) {
+          formatter = SirTrevor.Formatters[name];
+          if (!_.isUndefined(formatter.keyCode)) {
+            formatter._bindToBlock(this.$el);
+          }
+        }
+      }
     },
     
+    _initTextBlocks: function() {
+      document.execCommand("styleWithCSS", false, false);
+      document.execCommand("insertBrOnReturn", false, true);
+        
+      this.$$('.st-text-block')
+        .bind('paste', this._handleContentPaste);
+    },
+  
+    hasTextBlock: function() {
+      return this.$('.st-text-block').length > 0;
+    },
+  
     _initPaste: function() {
-      this.$('.paste-block')
+      this.$('.st-paste-block')
         .bind('click', function(){ $(this).select(); })
         .bind('paste', this._handleContentPaste)
         .bind('submit', this._handleContentPaste);
-    },
-    
-    _initTextLimits: function() {
-      this.$$('input[maxlength!=-1][maxlength!=524288][maxlength!=2147483647]').limit_chars();
     }
       
   });
@@ -1257,6 +1281,7 @@
   
   SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
     
+    type: 'Quote',
     title: "Quote",
     className: "quote",
     limit: 0,
@@ -1266,7 +1291,7 @@
     },
     
     loadData: function(data){
-      this.$$('.text-block').html(this.instance._toHTML(data.text, this.type));
+      this.$$('.text-block').html(SirTrevor.toHTML(data.text, this.type));
       this.$$('input').val(data.cite);
     },
     
@@ -1515,14 +1540,12 @@
   */
   SirTrevor.Blocks.Text = SirTrevor.Block.extend({ 
     
-    title: "Text",
-    className: "text",
-    limit: 0,
-    
-    editorHTML: '<div class="required text-block" contenteditable="true"></div>',
+    type: 'Text',
+  
+    editorHTML: '<div class="required st-text-block" contenteditable="true"></div>',
     
     loadData: function(data){
-      this.$$('.text-block').html(this.instance._toHTML(data.text, this.type));
+      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
     }
   });
   var t_template = '<p>Drop tweet link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
@@ -1631,11 +1654,10 @@
       if (_.isEmpty(this.data)) {
         this.$$('.text-block').focus().click();
       }
-      
     },
       
     loadData: function(data){
-      this.$$('.text-block').html("<ul>" + this.instance._toHTML(data.text, this.type) + "</ul>");
+      this.$$('.text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
     },
     
     toMarkdown: function(markdown) {
@@ -1645,12 +1667,8 @@
     },
     
     toHTML: function(html) {
-  		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-  							 .replace(/\n/mg,"");
-  							
-  		html = "<ul>" + html + "</ul>"
-  		
-  		return html
+  		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
+  		return "<ul>" + html + "</ul>";
     }
   
   });
@@ -1802,7 +1820,7 @@
     },
   
     render: function() {
-      this.$el.text(this.block_type.title);
+      this.$el.text(_.result(this.block_type, 'title'));
       return this;
     }
   });
@@ -1824,8 +1842,7 @@
     className: "st-block-controls",
   
     initialize: function() {
-  
-      for(block_type in this.available_types) {
+      for(var block_type in this.available_types) {
         if (SirTrevor.Blocks.hasOwnProperty(block_type)) {
           var block_control = new SirTrevor.BlockControl(block_type, this.instance_scope);
           if (block_control.can_be_rendered) {
@@ -1871,13 +1888,12 @@
         "class": this.className
       });
       
-      this.instance.$wrapper.prepend(bar);
+      //this.instance.$wrapper.prepend(bar);
       this.$el = bar;
       
-      var formats = this.instance.formatters,
-          formatName, format;
+      var formatName, format;
           
-      for (formatName in formats) {
+      for (formatName in SirTrevor.Formatters) {
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
           $("<button>", {
@@ -1954,39 +1970,34 @@
   */
   
   var SirTrevorEditor = SirTrevor.Editor = function(options) {
-    
     SirTrevor.log("Init SirTrevor.Editor");
     
     this.blockTypes = {};
-    this.formatters = {};
     this.blockCounts = {}; // Cached block type counts
     this.blocks = []; // Block references
     this.errors = [];
     this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
     this.ID = _.uniqueId('st-editor-');
     
-    if (this._ensureAndSetElements()) {
-      //this.marker = new SirTrevor.Marker(this.options.marker, this);
-      
-      this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
+    if (!this._ensureAndSetElements()) { return false; }
+  
+    //this.marker = new SirTrevor.Marker(this.options.marker, this);
     
-      if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
-        this.onEditorRender = this.options.onEditorRender;
-      }
-      
-      this._setRequired();
-      this._setBlocksAndFormatters();
-      this._bindFunctions();
+    this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
   
-      this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
-      this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-  
-      this.store("create", this); // Make our storage
-      this.build();
-      
-      SirTrevor.instances.push(this); // Store a reference to this instance
-      SirTrevor.bindFormSubmit(this.$form);
+    if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+      this.onEditorRender = this.options.onEditorRender;
     }
+    
+    this._setRequired();
+    this._setBlocksTypes();
+    this._bindFunctions();
+  
+    this.store("create", this);
+    this.build();
+    
+    SirTrevor.instances.push(this);
+    SirTrevor.bindFormSubmit(this.$form);
   };
   
   _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
@@ -2002,6 +2013,9 @@
     build: function() {
       this.$el.hide();
       
+      this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+      this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+  
       // Render marker & format bar
       //this.marker.render();
       this.formatBar.render();
@@ -2041,70 +2055,48 @@
     createBlock: function(type, data) {
       type = _.capitalize(type); // Proper case
       
-      if (this._blockTypeAvailable(type)) {
-       var blockType = SirTrevor.Blocks[type],
-           currentBlockCount = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type],
-           totalBlockCounts = this.blocks.length,
-           blockTypeLimit = this._getBlockTypeLimit(type);
-           
-       // Can we have another one of these blocks?
-       if ((blockTypeLimit !== 0 && currentBlockCount > blockTypeLimit) || this.options.blockLimit !== 0 && totalBlockCounts >= this.options.blockLimit) {
-         SirTrevor.log("Block Limit reached for type " + type);
-         return false;
-       }
-       
-       var block = new blockType(this, data || {});
-       this.$wrapper.append(block.render().$el);
-  
-       if (_.isUndefined(this.blockCounts[type])) {
-         this.blockCounts[type] = 0;
-       }
-       
-       this.blocks.push(block);
-       currentBlockCount++;
-       this.blockCounts[type] = currentBlockCount;
-       
-       // Check to see if we can add any more blocks
-       if (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit) {
-         //this.marker.$el.addClass('hidden');
-       }
-        
-       if (blockTypeLimit !== 0 && currentBlockCount >= blockTypeLimit) {
-         SirTrevor.log("Block Limit reached for type " + type + " setting state as inactive");
-         //this.marker.$el.find('[data-type="' + type + '"]')
-         // .addClass('inactive')
-         // .attr('title','You have reached the limit for this type of block');
-       }
-       
-       SirTrevor.publish("editor/block/createBlock");
-        
-       SirTrevor.log("Block created of type " + type);
-       this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
-      } else {
+      if (!this._isBlockTypeAvailable(type)) {
         SirTrevor.log("Block type not available " + type);
+        return false;
       }
+  
+      // Can we have another one of these blocks?
+      if (!this._canAddBlockType(type)) {
+        SirTrevor.log("Block Limit reached for type " + type);
+        return false;
+      }
+  
+      var block = new SirTrevor.Blocks[type](data, this.ID);
+      this.$wrapper.append(block.render().$el);
+      this.listenTo(block, 'removeBlock', this.removeBlock);
+  
+      this.blocks.push(block);
+      this._incrementBlockTypeCount(type);
+  
+      SirTrevor.publish("editor/block/createBlock");
+      SirTrevor.log("Block created of type " + type);
+    },
+  
+    _incrementBlockTypeCount: function(type) {
+      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type] + 1;
+    },
+  
+    _getBlockTypeCount: function(type) {
+      return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
+    },
+  
+    _canAddBlockType: function(type) {
+      var block_type_limit = this._getBlockTypeLimit(type);
+  
+      return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
     },
     
-    removeBlock: function(block) {
-      // Blocks exist purely on the dom.
-      // Remove the block and decrement the blockCount
-      block.remove();
-      this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
-      
-      // Remove the block from our store
-      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
+    removeBlock: function(block_id, type) {
+      this.blockCounts[type] = this.blockCounts[type] - 1;
+      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
       if(_.isUndefined(this.blocks)) this.blocks = [];
       
       SirTrevor.publish("editor/block/removeBlock");
-      this.cachedDomBlocks = this.$wrapper.find('.' + this.baseCSS("block"));
-      
-      // Remove our inactive class if it's no longer relevant
-      if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
-        SirTrevor.log("Removing block limit for " + block.type);
-        //this.marker.$el.find('[data-type="' + block.type + '"]')
-          //.removeClass('inactive')
-          //.attr('title','Add a ' + block.type + ' block');
-      }
     },
     
     performValidations : function(_block, should_validate) {
@@ -2164,7 +2156,7 @@
       // Validate against our required fields (if there are any)
       if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
         _.each(this.required, _.bind(function(type) {
-          if (this._blockTypeAvailable(type)) {
+          if (this._isBlockTypeAvailable(type)) {
             // Valid block type to validate against
             if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {
               this.errors.push({ text: "You must have a block of type " + type });
@@ -2229,10 +2221,9 @@
       returns the limit for this block, which can be set on a per Editor instance, or on a global blockType scope.
     */
     _getBlockTypeLimit: function(t) {
-      if (this._blockTypeAvailable(t)) {
-        return (_.isUndefined(this.options.blockTypeLimits[t])) ? SirTrevor.Blocks[t].prototype.limit : this.options.blockTypeLimits[t];
-      }
-      return 0;
+      if (!this._isBlockTypeAvailable(t)) { return 0; }
+  
+      return (_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t];
     },
     
     /* 
@@ -2240,12 +2231,8 @@
       --
       Checks if the object exists within the instance of the Editor.
     */
-    _blockTypeAvailable: function(t) {
+    _isBlockTypeAvailable: function(t) {
       return !_.isUndefined(this.blockTypes[t]);
-    },
-    
-    _formatterAvailable: function(f) {
-      return !_.isUndefined(this.formatters[f]);
     },
     
     _ensureAndSetElements: function() {
@@ -2267,116 +2254,21 @@
       this.$outer = this.$form.find('#' + this.ID);
       this.$wrapper = this.$form.find('.st-blocks');
   
-      console.log(this.$outer);
-  
       return true;
     },
     
     
     /*
-      Set our blockTypes and formatters.
+      Set our blockTypes
       These will either be set on a per Editor instance, or set on a global scope.
     */
-    _setBlocksAndFormatters: function() {
+    _setBlocksTypes: function() {
       this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
-      this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
     },
     
     /* Get our required blocks (if any) */
     _setRequired: function() {
       this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
-    },
-    
-    /*
-      A very generic HTML -> Markdown parser
-      Looks for available formatters / blockTypes toMarkdown methods and calls these if they exist.
-    */
-    _toMarkdown: function(content, type) {
-  
-      var markdown;
-      
-      markdown = content.replace(/\n/mg,"")
-                        .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
-                        .replace(/<\/?b>/g,"**")
-                        .replace(/<\/?STRONG>/g,"**")                   // Bold
-                        .replace(/<\/?i>/g,"_")
-                        .replace(/<\/?EM>/g,"_");                        // Italic
-  
-      // Use custom formatters toMarkdown functions (if any exist)
-      var formatName, format;
-      for(formatName in this.formatters) {
-        if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
-          format = SirTrevor.Formatters[formatName];
-          // Do we have a toMarkdown function?
-          if (!_.isUndefined(format.toMarkdown) && _.isFunction(format.toMarkdown)) {
-            markdown = format.toMarkdown(markdown);
-          }
-        }
-      }
-  
-      // Do our generic stripping out
-      markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
-                     .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
-                     .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
-                     .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
-                     .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
-                     .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
-                     .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
-  
-      
-      // Use custom block toMarkdown functions (if any exist)
-      var block;
-      if (SirTrevor.Blocks.hasOwnProperty(type)) {
-        block = SirTrevor.Blocks[type];
-        // Do we have a toMarkdown function?
-        if (!_.isUndefined(block.prototype.toMarkdown) && _.isFunction(block.prototype.toMarkdown)) {
-          markdown = block.prototype.toMarkdown(markdown);
-        }
-      }
-      
-  		// Strip remaining HTML
-  		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
-      
-      return markdown;
-    },
-    
-    /*
-      A very generic Markdown -> HTML parser
-      Looks for available formatters / blockTypes toMarkdown methods and calls these if they exist.
-    */
-    _toHTML: function(markdown, type) {
-      var html = markdown;
-      
-      // Use custom formatters toHTML functions (if any exist)
-      var formatName, format;
-      for(formatName in this.formatters) {
-        if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
-          format = SirTrevor.Formatters[formatName];
-          // Do we have a toHTML function?
-          if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
-            html = format.toHTML(html);
-          }
-        }
-      }
-      
-      // Use custom block toHTML functions (if any exist)
-      var block;
-      if (SirTrevor.Blocks.hasOwnProperty(type)) {
-  			
-        block = SirTrevor.Blocks[type];
-        // Do we have a toHTML function?
-        if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
-          html = block.prototype.toHTML(html);
-        }
-      }
-      
-      html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
-                  .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-                  .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")        // Links
-                  .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
-                  .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
-         
-      return html;
     },
   
     baseCSS: function(additional) {

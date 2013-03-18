@@ -22,13 +22,12 @@ _.extend(FormatBar.prototype, FunctionBind, {
       "class": this.className
     });
     
-    this.instance.$wrapper.prepend(bar);
+    //this.instance.$wrapper.prepend(bar);
     this.$el = bar;
     
-    var formats = this.instance.formatters,
-        formatName, format;
+    var formatName, format;
         
-    for (formatName in formats) {
+    for (formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         $("<button>", {

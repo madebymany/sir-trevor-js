@@ -9,7 +9,7 @@
   var splice = array.splice;
    
   SirTrevor = root.SirTrevor = {};
-  SirTrevor.DEBUG = false;
+  SirTrevor.DEBUG = true;
   SirTrevor.SKIP_VALIDATION = false;
   
   /*
@@ -102,6 +102,8 @@
   //= helpers
   //= vendor
   //= extensions
+  //= to-html.js
+  //= to-markdown.js
   //= block.js
   //= formatter.js
 

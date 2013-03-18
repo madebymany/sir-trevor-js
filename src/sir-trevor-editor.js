@@ -7,40 +7,34 @@
 */
 
 var SirTrevorEditor = SirTrevor.Editor = function(options) {
-  
   SirTrevor.log("Init SirTrevor.Editor");
   
   this.blockTypes = {};
-  this.formatters = {};
   this.blockCounts = {}; // Cached block type counts
   this.blocks = []; // Block references
   this.errors = [];
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId('st-editor-');
   
-  if (this._ensureAndSetElements()) {
-    //this.marker = new SirTrevor.Marker(this.options.marker, this);
-    
-    this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
+  if (!this._ensureAndSetElements()) { return false; }
+
+  //this.marker = new SirTrevor.Marker(this.options.marker, this);
   
-    if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
-      this.onEditorRender = this.options.onEditorRender;
-    }
-    
-    this._setRequired();
-    this._setBlocksAndFormatters();
-    this._bindFunctions();
+  this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
 
-    this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
-
-    this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-
-    this.store("create", this); // Make our storage
-    this.build();
-    
-    SirTrevor.instances.push(this); // Store a reference to this instance
-    SirTrevor.bindFormSubmit(this.$form);
+  if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+    this.onEditorRender = this.options.onEditorRender;
   }
+  
+  this._setRequired();
+  this._setBlocksTypes();
+  this._bindFunctions();
+
+  this.store("create", this);
+  this.build();
+  
+  SirTrevor.instances.push(this);
+  SirTrevor.bindFormSubmit(this.$form);
 };
 
 _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
@@ -56,6 +50,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   build: function() {
     this.$el.hide();
     
+    this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+    this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+
     // Render marker & format bar
     //this.marker.render();
     this.formatBar.render();
@@ -106,8 +103,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
       return false;
     }
 
-    var block = new SirTrevor.Blocks[type](data);
+    var block = new SirTrevor.Blocks[type](data, this.ID);
     this.$wrapper.append(block.render().$el);
+    this.listenTo(block, 'removeBlock', this.removeBlock);
 
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);
@@ -130,25 +128,12 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
   },
   
-  removeBlock: function(block) {
-    // Blocks exist purely on the dom.
-    // Remove the block and decrement the blockCount
-    block.remove();
-    this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
-    
-    // Remove the block from our store
-    this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
+  removeBlock: function(block_id, type) {
+    this.blockCounts[type] = this.blockCounts[type] - 1;
+    this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
     if(_.isUndefined(this.blocks)) this.blocks = [];
     
     SirTrevor.publish("editor/block/removeBlock");
-    
-    // Remove our inactive class if it's no longer relevant
-    if(this._getBlockTypeLimit(block.type) > this.blockCounts[block.type]) {
-      SirTrevor.log("Removing block limit for " + block.type);
-      //this.marker.$el.find('[data-type="' + block.type + '"]')
-        //.removeClass('inactive')
-        //.attr('title','Add a ' + block.type + ' block');
-    }
   },
   
   performValidations : function(_block, should_validate) {
@@ -287,10 +272,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     return !_.isUndefined(this.blockTypes[t]);
   },
   
-  _formatterAvailable: function(f) {
-    return !_.isUndefined(this.formatters[f]);
-  },
-  
   _ensureAndSetElements: function() {
     if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
       SirTrevor.log("You must provide an el");
@@ -310,116 +291,21 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.$outer = this.$form.find('#' + this.ID);
     this.$wrapper = this.$form.find('.st-blocks');
 
-    console.log(this.$outer);
-
     return true;
   },
   
   
   /*
-    Set our blockTypes and formatters.
+    Set our blockTypes
     These will either be set on a per Editor instance, or set on a global scope.
   */
-  _setBlocksAndFormatters: function() {
+  _setBlocksTypes: function() {
     this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
-    this.formatters = flattern((_.isUndefined(this.options.formatters)) ? SirTrevor.Formatters : this.options.formatters);
   },
   
   /* Get our required blocks (if any) */
   _setRequired: function() {
     this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
-  },
-  
-  /*
-    A very generic HTML -> Markdown parser
-    Looks for available formatters / blockTypes toMarkdown methods and calls these if they exist.
-  */
-  _toMarkdown: function(content, type) {
-
-    var markdown;
-    
-    markdown = content.replace(/\n/mg,"")
-                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
-                      .replace(/<\/?b>/g,"**")
-                      .replace(/<\/?STRONG>/g,"**")                   // Bold
-                      .replace(/<\/?i>/g,"_")
-                      .replace(/<\/?EM>/g,"_");                        // Italic
-
-    // Use custom formatters toMarkdown functions (if any exist)
-    var formatName, format;
-    for(formatName in this.formatters) {
-      if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
-        format = SirTrevor.Formatters[formatName];
-        // Do we have a toMarkdown function?
-        if (!_.isUndefined(format.toMarkdown) && _.isFunction(format.toMarkdown)) {
-          markdown = format.toMarkdown(markdown);
-        }
-      }
-    }
-
-    // Do our generic stripping out
-    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
-                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
-                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
-                   .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
-                   .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
-                   .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
-                   .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
-
-    
-    // Use custom block toMarkdown functions (if any exist)
-    var block;
-    if (SirTrevor.Blocks.hasOwnProperty(type)) {
-      block = SirTrevor.Blocks[type];
-      // Do we have a toMarkdown function?
-      if (!_.isUndefined(block.prototype.toMarkdown) && _.isFunction(block.prototype.toMarkdown)) {
-        markdown = block.prototype.toMarkdown(markdown);
-      }
-    }
-    
-		// Strip remaining HTML
-		markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
-    
-    return markdown;
-  },
-  
-  /*
-    A very generic Markdown -> HTML parser
-    Looks for available formatters / blockTypes toMarkdown methods and calls these if they exist.
-  */
-  _toHTML: function(markdown, type) {
-    var html = markdown;
-    
-    // Use custom formatters toHTML functions (if any exist)
-    var formatName, format;
-    for(formatName in this.formatters) {
-      if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
-        format = SirTrevor.Formatters[formatName];
-        // Do we have a toHTML function?
-        if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
-          html = format.toHTML(html);
-        }
-      }
-    }
-    
-    // Use custom block toHTML functions (if any exist)
-    var block;
-    if (SirTrevor.Blocks.hasOwnProperty(type)) {
-			
-      block = SirTrevor.Blocks[type];
-      // Do we have a toHTML function?
-      if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
-        html = block.prototype.toHTML(html);
-      }
-    }
-    
-    html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
-                .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-                .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")        // Links
-                .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
-                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
-       
-    return html;
   },
 
   baseCSS: function(additional) {

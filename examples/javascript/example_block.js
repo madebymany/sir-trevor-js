@@ -66,7 +66,7 @@ SirTrevor.Blocks.Example = SirTrevor.Block.extend({
   // In this example we convert the text from markdown to HTML and show it inside the element
   // returns null
   loadData: function(data){
-    this.$('.text-block').html(this.instance._toHTML(data.text, this.type));
+    this.$('.text-block').html(SirTrevor.toHTML(data.text, this.type));
   },
   
   // Function; Executed on save of the block, once the block is validated
@@ -96,7 +96,7 @@ SirTrevor.Blocks.Example = SirTrevor.Block.extend({
   // The default onContentPasted function strips all the HTML from a text-block, as shown here.
   onContentPasted: function(ev) {
     // Convert to markdown and then to HTML to strip all unwanted markup
-    this.$('.text-block').html(this.instance._toHTML(this.instance._toMarkdown(textBlock.html(), this.type)));
+    this.$('.text-block').html(SirTrevor.toHTML(this.instance._toMarkdown(textBlock.html(), this.type)));
   },
   
   // Function; Hook executed at the end of the block rendering method. 

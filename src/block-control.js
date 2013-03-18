@@ -22,7 +22,7 @@ _.extend(BlockControl.prototype, FunctionBind, Renderable, Events, {
   },
 
   render: function() {
-    this.$el.text(this.block_type.title);
+    this.$el.text(_.result(this.block_type, 'title'));
     return this;
   }
 });

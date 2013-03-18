@@ -24,11 +24,10 @@ SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
     if (_.isEmpty(this.data)) {
       this.$$('.text-block').focus().click();
     }
-    
   },
     
   loadData: function(data){
-    this.$$('.text-block').html("<ul>" + this.instance._toHTML(data.text, this.type) + "</ul>");
+    this.$$('.text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
   },
   
   toMarkdown: function(markdown) {
@@ -38,12 +37,8 @@ SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
   },
   
   toHTML: function(html) {
-		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-							 .replace(/\n/mg,"");
-							
-		html = "<ul>" + html + "</ul>"
-		
-		return html
+		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
+		return "<ul>" + html + "</ul>";
   }
 
 });
