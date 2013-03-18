@@ -33,12 +33,12 @@ _.extend(Format.prototype, {
         ctrlDown = false;
         
     block
-      .on('keyup','.text-block', function(ev) {
+      .on('keyup','.st-text-block', function(ev) {
         if(ev.which == 17 || ev.which == 224) { 
           ctrlDown = false;
         }
       })
-      .on('keydown','.text-block', { formatter: formatter }, function(ev) {
+      .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
         if(ev.which == 17 || ev.which == 224) { 
           ctrlDown = true;
         }  

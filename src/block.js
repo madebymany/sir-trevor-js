@@ -254,7 +254,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   },
   
   onContentPasted: function(ev){
-    var textBlock = this.$$('.text-block');
+    var textBlock = this.$$('.st-text-block');
     if (textBlock.length > 0) {
       textBlock.html(SirTrevor.toHTML(SirTrevor.toMarkdown(textBlock.html(), this.type), this.type));
     }

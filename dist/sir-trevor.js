@@ -1056,7 +1056,7 @@
     },
     
     onContentPasted: function(ev){
-      var textBlock = this.$$('.text-block');
+      var textBlock = this.$$('.st-text-block');
       if (textBlock.length > 0) {
         textBlock.html(SirTrevor.toHTML(SirTrevor.toMarkdown(textBlock.html(), this.type), this.type));
       }
@@ -1255,12 +1255,12 @@
           ctrlDown = false;
           
       block
-        .on('keyup','.text-block', function(ev) {
+        .on('keyup','.st-text-block', function(ev) {
           if(ev.which == 17 || ev.which == 224) { 
             ctrlDown = false;
           }
         })
-        .on('keydown','.text-block', { formatter: formatter }, function(ev) {
+        .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
           if(ev.which == 17 || ev.which == 224) { 
             ctrlDown = true;
           }  
@@ -1287,11 +1287,11 @@
     limit: 0,
     
     editorHTML: function() {
-      return _.template('<blockquote class="required text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input maxlength="140" name="cite" class="input-string required" type="text" /></div>', this);
+      return _.template('<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote><div class="input text"><label>Credit</label><input maxlength="140" name="cite" class="input-string required" type="text" /></div>', this);
     },
     
     loadData: function(data){
-      this.$$('.text-block').html(SirTrevor.toHTML(data.text, this.type));
+      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
       this.$$('input').val(data.cite);
     },
     
