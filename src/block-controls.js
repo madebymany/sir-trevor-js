@@ -50,7 +50,7 @@ _.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
 
   handleControlButtonClick: function(e) {
     e.preventDefault();
-    this.trigger('createBlock', e.target.dataset.type);
+    this.trigger('createBlock', e.currentTarget.dataset.type);
     this.toggleState();
   }
 

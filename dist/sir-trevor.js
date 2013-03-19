@@ -815,7 +815,8 @@
     "type",
     "toolbarEnabled",
   	"formattingEnabled",
-    "dropEnabled",
+    "droppable",
+    "drop_options",
     "title",
     "editorHTML",
     "dropzoneHTML",
@@ -830,6 +831,14 @@
     "toMarkdown",
     "toHTML"
   ];
+  
+  var default_drop_options = {
+    uploadable: false,
+    pastable: false,
+    drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
+    upload_html: '<input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button>',
+    paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+  };
   
   _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     
@@ -849,6 +858,10 @@
       return _.capitalize(this.type);
     },
   
+    icon_name: function() {
+      return this.type.toLowerCase();
+    },
+  
     blockCSSClass: function() {
       // Memoize the slug.
       this.blockCSSClass = toSlug(this.type);
@@ -861,11 +874,15 @@
     
     /* Defaults to be overriden if required */
     type: '',
-    editorHTML: '<div></div>',
-    dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
+    editorHTML: '<div class="st-block__editor"></div>',
+  
     toolbarEnabled: true,
-    dropEnabled: false,
+  
+    droppable: false,
+    formattable: true,
+  
   	formattingEnabled: true,
+  
     uploadsCount: 0,
     
     initialize: function() {},
@@ -889,13 +906,15 @@
     render: function() {
       this.beforeBlockRender();
       
-      this.$el.append(_.result(this, 'editorHTML'));
-      this.$el.addClass('st-block--' + _.result(this, 'blockCSSClass'));
+      var editor_html = _.result(this, 'editorHTML');
+  
+      this.$el.append(editor_html).addClass('st-block--' + _.result(this, 'blockCSSClass'));
+      this.$editor = editor_html;
   
       this._loadAndSetData();
       
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.dropEnabled) { this._initDragDrop(); }
+      if (this.droppable) { this._initDroppable(); }
       if (this.formattingEnabled) { this._initFormatting(); }
   
       this._initUIComponents();
@@ -1155,26 +1174,34 @@
     * Init functions for adding functionality
     */
     
-    _initDragDrop: function() {
+    _initDroppable: function() {
       SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
       
-      this.$dropzone = $("<div>", {
-        html: this.dropzoneHTML,
-        'class': "dropzone " + this._getBlockClass()
-      });
+      var drop_options = _.extend(default_drop_options, this.drop_options);
   
-      this.$el.append(this.$dropzone);
-      //this.$editor.hide();
+      // Build the dropzone interface
+      var drop_html = $(_.template(drop_options.drop_html, this));
+  
+      if (this.drop_options.pastable) {
+        drop_html.append(drop_options.paste_html);
+      }
+  
+      if (this.drop_options.uploadable) {
+        drop_html.append(drop_options.upload_html);    
+      }
+  
+      this.$el.append(drop_html);
+      this.$dropzone = drop_html;
   
       // Bind our drop event
       this.$dropzone.bind('drop', this._handleDrop)
-                    .bind('dragenter', function(e) { halt(e); $(this).addClass('drag-enter'); })
+                    .bind('dragenter', function(e) { halt(e); $(this).addClass('st-drag-enter'); })
                     .bind('dragover', function(e) {
                       e.originalEvent.dataTransfer.dropEffect = "copy";
                       halt(e);
-                      $(this).addClass('drag-enter');
+                      $(this).addClass('st-drag-enter');
                     })
-                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('drag-enter'); });
+                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-drag-enter'); });
     },
   
     _initUIComponents: function() {
@@ -1193,7 +1220,7 @@
     },
     
     _initReordering: function() {
-      var reorder_element = $('<a>', { 'class': 'st-block__reorder', 'draggable': 'true' });
+      var reorder_element = $('<a>', { 'class': 'st-block__reorder st-icon', 'html': 'reorder', 'draggable': 'true' });
   
       this.$ui.append(reorder_element);
   
@@ -1211,7 +1238,7 @@
     },
   
     _initDeletion: function() {
-      var delete_el = $('<a>',{ 'class': 'st-block__remove' });
+      var delete_el = $('<a>',{ 'class': 'st-block__remove st-icon', 'html': 'delete' });
       this.$ui.append(delete_el);
       delete_el.bind('click', this.onDeleteClick);
     },
@@ -1578,19 +1605,22 @@
       this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
     }
   });
-  var t_template = '<p>Drop tweet link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
   var tweet_template = '<div class="tweet"><img src="<%= user.profile_image_url %>" class="tweet-avatar"><div class="tweet-body"><p class="tweet-user"><a href="http://twitter.com/#!/<%= user.screen_name %>" class="tweet-user">@<%= user.screen_name %></a> on Twitter</p><p class="tweet-text"><%= text %></p><time><%= created_at %></time></div></div>';
   
   SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({ 
     
-    title: "Tweet",
-    className: "tweet",
-    dropEnabled: true,
+    type: "Tweet",
+    droppable: true,
+    drop_options: {
+      pastable: true
+    },
     
-    dropzoneHTML: t_template,
-    
+    icon_name: function() {
+      return 'twitter';
+    },
+  
     loadData: function(data){
-      this.$editor.html(_.template(tweet_template, data));
+      this.$el.append(_.template(tweet_template, data));
     },
     
     onContentPasted: function(event){
@@ -1701,16 +1731,17 @@
     }
   
   });
-  var video_drop_template = '<p>Drop video link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
   var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
   
   SirTrevor.Blocks.Video = SirTrevor.Block.extend({ 
     
-    title: "Video",
-    className: "video",
-    dropEnabled: true,
+    type: 'Video',
+  
+    droppable: true,
     
-    dropzoneHTML: video_drop_template,
+    drop_options: {
+      pastable: true
+    },
     
     loadData: function(data){    
       if(data.source == "youtube" || data.source == "youtu") {
@@ -1849,7 +1880,7 @@
     },
   
     render: function() {
-      this.$el.text(_.result(this.block_type, 'title'));
+      this.$el.html('<span class="st-icon">'+ this.block_type.icon_name() +'</span>' + _.result(this.block_type, 'title'));
       return this;
     }
   });
@@ -1905,7 +1936,7 @@
   
     handleControlButtonClick: function(e) {
       e.preventDefault();
-      this.trigger('createBlock', e.target.dataset.type);
+      this.trigger('createBlock', e.currentTarget.dataset.type);
       this.toggleState();
     }
   

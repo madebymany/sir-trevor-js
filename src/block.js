@@ -13,7 +13,8 @@ var blockOptions = [
   "type",
   "toolbarEnabled",
 	"formattingEnabled",
-  "dropEnabled",
+  "droppable",
+  "drop_options",
   "title",
   "editorHTML",
   "dropzoneHTML",
@@ -28,6 +29,14 @@ var blockOptions = [
   "toMarkdown",
   "toHTML"
 ];
+
+var default_drop_options = {
+  uploadable: false,
+  pastable: false,
+  drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
+  upload_html: '<input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button>',
+  paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+};
 
 _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   
@@ -47,6 +56,10 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     return _.capitalize(this.type);
   },
 
+  icon_name: function() {
+    return this.type.toLowerCase();
+  },
+
   blockCSSClass: function() {
     // Memoize the slug.
     this.blockCSSClass = toSlug(this.type);
@@ -59,11 +72,15 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   
   /* Defaults to be overriden if required */
   type: '',
-  editorHTML: '<div></div>',
-  dropzoneHTML: '<div class="dropzone"><p>Drop content here</p></div>',
+  editorHTML: '<div class="st-block__editor"></div>',
+
   toolbarEnabled: true,
-  dropEnabled: false,
+
+  droppable: false,
+  formattable: true,
+
 	formattingEnabled: true,
+
   uploadsCount: 0,
   
   initialize: function() {},
@@ -87,13 +104,15 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   render: function() {
     this.beforeBlockRender();
     
-    this.$el.append(_.result(this, 'editorHTML'));
-    this.$el.addClass('st-block--' + _.result(this, 'blockCSSClass'));
+    var editor_html = _.result(this, 'editorHTML');
+
+    this.$el.append(editor_html).addClass('st-block--' + _.result(this, 'blockCSSClass'));
+    this.$editor = editor_html;
 
     this._loadAndSetData();
     
     if (this.hasTextBlock) { this._initTextBlocks(); }
-    if (this.dropEnabled) { this._initDragDrop(); }
+    if (this.droppable) { this._initDroppable(); }
     if (this.formattingEnabled) { this._initFormatting(); }
 
     this._initUIComponents();
@@ -353,26 +372,34 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   * Init functions for adding functionality
   */
   
-  _initDragDrop: function() {
+  _initDroppable: function() {
     SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
     
-    this.$dropzone = $("<div>", {
-      html: this.dropzoneHTML,
-      'class': "dropzone " + this._getBlockClass()
-    });
+    var drop_options = _.extend(default_drop_options, this.drop_options);
 
-    this.$el.append(this.$dropzone);
-    //this.$editor.hide();
+    // Build the dropzone interface
+    var drop_html = $(_.template(drop_options.drop_html, this));
+
+    if (this.drop_options.pastable) {
+      drop_html.append(drop_options.paste_html);
+    }
+
+    if (this.drop_options.uploadable) {
+      drop_html.append(drop_options.upload_html);    
+    }
+
+    this.$el.append(drop_html);
+    this.$dropzone = drop_html;
 
     // Bind our drop event
     this.$dropzone.bind('drop', this._handleDrop)
-                  .bind('dragenter', function(e) { halt(e); $(this).addClass('drag-enter'); })
+                  .bind('dragenter', function(e) { halt(e); $(this).addClass('st-drag-enter'); })
                   .bind('dragover', function(e) {
                     e.originalEvent.dataTransfer.dropEffect = "copy";
                     halt(e);
-                    $(this).addClass('drag-enter');
+                    $(this).addClass('st-drag-enter');
                   })
-                  .bind('dragleave', function(e) { halt(e); $(this).removeClass('drag-enter'); });
+                  .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-drag-enter'); });
   },
 
   _initUIComponents: function() {
@@ -391,7 +418,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   },
   
   _initReordering: function() {
-    var reorder_element = $('<a>', { 'class': 'st-block__reorder', 'draggable': 'true' });
+    var reorder_element = $('<a>', { 'class': 'st-block__reorder st-icon', 'html': 'reorder', 'draggable': 'true' });
 
     this.$ui.append(reorder_element);
 
@@ -409,7 +436,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   },
 
   _initDeletion: function() {
-    var delete_el = $('<a>',{ 'class': 'st-block__remove' });
+    var delete_el = $('<a>',{ 'class': 'st-block__remove st-icon', 'html': 'delete' });
     this.$ui.append(delete_el);
     delete_el.bind('click', this.onDeleteClick);
   },

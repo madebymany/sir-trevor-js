@@ -30,3 +30,19 @@
 .st-block-control--active .st-block-controls__inner {
   visibility: visible; opacity: 1;
 }
+
+.st-block-control {
+  margin: 25px 10px 0;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.st-block-control .st-icon {
+  font-size: 36px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.st-block-control:hover {
+  color: #000;
+}

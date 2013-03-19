@@ -31,18 +31,48 @@
   display: block;
   float: left;
   width: 63px; height: 48px;
+  line-height: 48px;
+  font-size: 20px;
+  color: $accent-color;
+  text-align: center;
   border: 2px solid $accent-color;
   border-right: 0;
   border-bottom: 0;
-  background-position: center center;
-  background-repeat: no-repeat;
   cursor: pointer;
 }
 
-.st-block__reorder {
-  background-image: url(images/sir-trevor/ui/reorder.png);
+.st-block__reorder:hover,
+.st-block__remove:hover {
+  color: #fff;
+  background: $accent-color;
 }
 
-.st-block__remove {
-  background-image: url(images/sir-trevor/ui/trash.png);
+.st-block__dropzone {
+
+}
+
+.st-block__dropzone .st-icon {
+  font-size: 72px;
+  color: $base-ui-color;
+  display: block;
+  width: 120px;
+  text-align: center;
+  margin: 0pt auto 20px auto;
+}
+
+.st-block__dropzone p {
+  text-align: center;
+  color: $base-ui-color;
+  font-size: 22px;
+  margin: 0 0 10px 0;
+}
+
+.st-block__dropzone p span {
+  text-transform: lowercase;
+  font-weight: bold;
+}
+
+.st-block__paste-input {
+  color: $light-ui-color;
+  text-align: center;
 }

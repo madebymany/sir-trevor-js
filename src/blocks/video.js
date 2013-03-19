@@ -1,13 +1,14 @@
-var video_drop_template = '<p>Drop video link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
 var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
 
 SirTrevor.Blocks.Video = SirTrevor.Block.extend({ 
   
-  title: "Video",
-  className: "video",
-  dropEnabled: true,
+  type: 'Video',
+
+  droppable: true,
   
-  dropzoneHTML: video_drop_template,
+  drop_options: {
+    pastable: true
+  },
   
   loadData: function(data){    
     if(data.source == "youtube" || data.source == "youtu") {

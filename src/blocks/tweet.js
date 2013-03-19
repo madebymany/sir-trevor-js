@@ -1,16 +1,19 @@
-var t_template = '<p>Drop tweet link here</p><div class="input text"><label>or paste URL:</label><input type="text" class="paste-block"></div>';
 var tweet_template = '<div class="tweet"><img src="<%= user.profile_image_url %>" class="tweet-avatar"><div class="tweet-body"><p class="tweet-user"><a href="http://twitter.com/#!/<%= user.screen_name %>" class="tweet-user">@<%= user.screen_name %></a> on Twitter</p><p class="tweet-text"><%= text %></p><time><%= created_at %></time></div></div>';
 
 SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({ 
   
-  title: "Tweet",
-  className: "tweet",
-  dropEnabled: true,
+  type: "Tweet",
+  droppable: true,
+  drop_options: {
+    pastable: true
+  },
   
-  dropzoneHTML: t_template,
-  
+  icon_name: function() {
+    return 'twitter';
+  },
+
   loadData: function(data){
-    this.$editor.html(_.template(tweet_template, data));
+    this.$el.append(_.template(tweet_template, data));
   },
   
   onContentPasted: function(event){

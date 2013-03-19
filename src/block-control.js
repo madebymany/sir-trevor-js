@@ -22,7 +22,7 @@ _.extend(BlockControl.prototype, FunctionBind, Renderable, Events, {
   },
 
   render: function() {
-    this.$el.text(_.result(this.block_type, 'title'));
+    this.$el.html('<span class="st-icon">'+ this.block_type.icon_name() +'</span>' + _.result(this.block_type, 'title'));
     return this;
   }
 });

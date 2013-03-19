@@ -1,11 +1,31 @@
 // Reset all our input styles
 
-// Focus / Active styles
+// Generic styles
+.st-text-block,
+.st-block input[type="text"],
+.st-block textarea {
+  font-family: $base-font-family;
+  font-size: inherit;
+  margin: 0; padding: 5px 0;
+}
 
+// Focus / Active styles
+.st-text-block,
 .st-text-block:active,
 .st-text-block:focus,
+.st-block [contenteditable="true"],
 .st-block [contenteditable="true"]:active,
-.st-block [contenteditable="true"]:focus {
+.st-block [contenteditable="true"]:focus,
+.st-block input[type="text"],
+.st-block input[type="text"]:active,
+.st-block input[type="text"]:focus,
+.st-block textarea,
+.st-block textarea:hover,
+.st-block textarea:active {
   outline: none;
   border: none;
+}
+
+.st-block input[type="text"] {
+  width: 100%;  
 }
