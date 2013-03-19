@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Helvetica Neue Light';
+  src: local("Helvetica Neue Light"),
+       local("HelveticaNeue-Light");
+}
+
+.st-outer {
+  font-family: $base-font-family;
+  font-size: $base-font-size;
+  line-height: 1.3;
+}

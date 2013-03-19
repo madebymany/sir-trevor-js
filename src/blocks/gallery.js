@@ -6,8 +6,7 @@ var dropzone_templ = "<p>Drop images here</p><div class=\"input submit\"><input 
 
 SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({ 
   
-  title: "Gallery",
-  className: "gallery",
+  type: "Gallery",
   dropEnabled: true,
   editorHTML: "<div class=\"gallery-items\"><p>Gallery Contents:</p><ul></ul></div>",
   dropzoneHTML: dropzone_templ,

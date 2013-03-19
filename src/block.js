@@ -31,7 +31,7 @@ var blockOptions = [
 
 _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   
-  bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onBlockBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
+  bound: ["_handleDrop", "_handleContentPaste", "onFocus", "onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
   
   className: 'st-block',
 
@@ -96,8 +96,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     if (this.dropEnabled) { this._initDragDrop(); }
     if (this.formattingEnabled) { this._initFormatting(); }
 
-    this._initDeletion();
-    this._initReordering();
+    this._initUIComponents();
     this._initPaste();
 
     this.$el.addClass('st-item-ready');
@@ -219,30 +218,47 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       this.setData(dataObj);
     }
   },
+
+  /* Generic implementation to tell us when the block is active */
+  focus: function() {
+    this.$('.st-text-block').bind('focus', this.onFocus);
+  },
+
+  blur: function() {
+    this.$('.st-text-block').bind('blur', this.onBlur);
+  },
   
   /*
   * Event handlers
   */
   
-  onDrop: function(dataTransferObj) {},
-
-  onDrag: function(ev){
-    console.log('dragging');
+  onFocus: function() {
+    this.$el.addClass('st-block--active');
   },
 
+  onBlur: function() {
+    //this.$el.removeClass('st-block--active');
+  },
+
+  onDrop: function(dataTransferObj) {},
+
+  onDrag: function(ev){},
+
   onDragStart: function(ev){
-    var item = $(ev.target);
-    ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
-    ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
-    item.parent().addClass('dragging');
-    //this.instance.formatBar.hide();
+    var item = $(ev.target),
+        block = item.parents('.st-block');
+
+    ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
+    ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
+
+    block.addClass('st-block--dragging');
   },
   
   onDragEnd: function(ev){
-    var item = $(ev.target);
-    item.parent().removeClass('dragging');
-    //this.instance.marker.hide();
-    //this.instance.formatBar.show();
+    var item = $(ev.target),
+        block = item.parents('.st-block');
+
+    block.removeClass('st-block--dragging');
   },
   
   onDeleteClick: function(ev) {
@@ -358,11 +374,26 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
                   })
                   .bind('dragleave', function(e) { halt(e); $(this).removeClass('drag-enter'); });
   },
+
+  _initUIComponents: function() {
+    var ui_element = $("<div>", { 'class': 'st-block__ui' });
+    this.$el.append(ui_element);
+    this.$ui = ui_element;
+
+    this.$el.bind('mouseover', _.bind(function(){ this.$el.toggleClass('st-block--over'); }, this))
+            .bind('mouseout', _.bind(function(){ this.$el.toggleClass('st-block--over'); }, this));
+
+    this.focus();
+    this.blur();
+
+    this._initReordering();
+    this._initDeletion();
+  },
   
   _initReordering: function() {
-    var reorder_element = $('<a>', { 'class': 'st-block__reorder' });
+    var reorder_element = $('<a>', { 'class': 'st-block__reorder', 'draggable': 'true' });
 
-    this.$el.append(reorder_element);
+    this.$ui.append(reorder_element);
 
     reorder_element
       .bind('dragstart', this.onDragStart)
@@ -379,7 +410,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
   _initDeletion: function() {
     var delete_el = $('<a>',{ 'class': 'st-block__remove' });
-    this.$el.append(delete_el);
+    this.$ui.append(delete_el);
     delete_el.bind('click', this.onDeleteClick);
   },
   

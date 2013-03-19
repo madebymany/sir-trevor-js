@@ -833,7 +833,7 @@
   
   _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     
-    bound: ["_handleDrop", "_handleContentPaste", "onBlockFocus", "onBlockBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
+    bound: ["_handleDrop", "_handleContentPaste", "onFocus", "onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
     
     className: 'st-block',
   
@@ -898,8 +898,7 @@
       if (this.dropEnabled) { this._initDragDrop(); }
       if (this.formattingEnabled) { this._initFormatting(); }
   
-      this._initDeletion();
-      this._initReordering();
+      this._initUIComponents();
       this._initPaste();
   
       this.$el.addClass('st-item-ready');
@@ -1021,30 +1020,47 @@
         this.setData(dataObj);
       }
     },
+  
+    /* Generic implementation to tell us when the block is active */
+    focus: function() {
+      this.$('.st-text-block').bind('focus', this.onFocus);
+    },
+  
+    blur: function() {
+      this.$('.st-text-block').bind('blur', this.onBlur);
+    },
     
     /*
     * Event handlers
     */
     
-    onDrop: function(dataTransferObj) {},
-  
-    onDrag: function(ev){
-      console.log('dragging');
+    onFocus: function() {
+      this.$el.addClass('st-block--active');
     },
   
+    onBlur: function() {
+      //this.$el.removeClass('st-block--active');
+    },
+  
+    onDrop: function(dataTransferObj) {},
+  
+    onDrag: function(ev){},
+  
     onDragStart: function(ev){
-      var item = $(ev.target);
-      ev.originalEvent.dataTransfer.setDragImage(item.parent()[0], 13, 25);
-      ev.originalEvent.dataTransfer.setData('Text', item.parent().attr('id'));
-      item.parent().addClass('dragging');
-      //this.instance.formatBar.hide();
+      var item = $(ev.target),
+          block = item.parents('.st-block');
+  
+      ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
+      ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
+  
+      block.addClass('st-block--dragging');
     },
     
     onDragEnd: function(ev){
-      var item = $(ev.target);
-      item.parent().removeClass('dragging');
-      //this.instance.marker.hide();
-      //this.instance.formatBar.show();
+      var item = $(ev.target),
+          block = item.parents('.st-block');
+  
+      block.removeClass('st-block--dragging');
     },
     
     onDeleteClick: function(ev) {
@@ -1160,11 +1176,26 @@
                     })
                     .bind('dragleave', function(e) { halt(e); $(this).removeClass('drag-enter'); });
     },
+  
+    _initUIComponents: function() {
+      var ui_element = $("<div>", { 'class': 'st-block__ui' });
+      this.$el.append(ui_element);
+      this.$ui = ui_element;
+  
+      this.$el.bind('mouseover', _.bind(function(){ this.$el.toggleClass('st-block--over'); }, this))
+              .bind('mouseout', _.bind(function(){ this.$el.toggleClass('st-block--over'); }, this));
+  
+      this.focus();
+      this.blur();
+  
+      this._initReordering();
+      this._initDeletion();
+    },
     
     _initReordering: function() {
-      var reorder_element = $('<a>', { 'class': 'st-block__reorder' });
+      var reorder_element = $('<a>', { 'class': 'st-block__reorder', 'draggable': 'true' });
   
-      this.$el.append(reorder_element);
+      this.$ui.append(reorder_element);
   
       reorder_element
         .bind('dragstart', this.onDragStart)
@@ -1181,7 +1212,7 @@
   
     _initDeletion: function() {
       var delete_el = $('<a>',{ 'class': 'st-block__remove' });
-      this.$el.append(delete_el);
+      this.$ui.append(delete_el);
       delete_el.bind('click', this.onDeleteClick);
     },
     
@@ -1309,8 +1340,7 @@
   
   SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({ 
     
-    title: "Gallery",
-    className: "gallery",
+    type: "Gallery",
     dropEnabled: true,
     editorHTML: "<div class=\"gallery-items\"><p>Gallery Contents:</p><ul></ul></div>",
     dropzoneHTML: dropzone_templ,
@@ -1484,8 +1514,7 @@
   
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
     
-    title: "Image",
-    className: "image",
+    type: "Image",
     dropEnabled: true,
     
     dropzoneHTML: dropzone_templ,
@@ -1633,19 +1662,18 @@
     Unordered List
   */
   
-  var template = '<div class="text-block <%= className %>" contenteditable="true"></div>';
+  var template = '<div class="st-text-block" contenteditable="true"></div>';
   
   SirTrevor.Blocks.Ul = SirTrevor.Block.extend({ 
     
-    title: "List",
-    className: "list",
+    type: "List",
     
     editorHTML: function() {
       return _.template(template, this);
     },
     
     onBlockRender: function() {
-      this.$$('.text-block').bind('click', function(){
+      this.$$('.st-text-block').bind('click', function(){
         if($(this).html().length === 0){
           document.execCommand("insertUnorderedList",false,false);
         }
@@ -1653,12 +1681,12 @@
       
       // Put in a list
       if (_.isEmpty(this.data)) {
-        this.$$('.text-block').focus().click();
+        this.$$('.st-text-block').focus().click();
       }
     },
       
     loadData: function(data){
-      this.$$('.text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+      this.$$('.st-text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
     },
     
     toMarkdown: function(markdown) {
@@ -1835,29 +1863,50 @@
     this.instance_scope = instance_scope;
     this.available_types = available_types || [];
     this._ensureElement();
+    this._bindFunctions();
     this.initialize();
   };
   
   _.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
   
+    bound: ['handleUIButtonClick', 'handleControlButtonClick'],
+  
     className: "st-block-controls",
   
     initialize: function() {
+      var block_controls_btn = $("<a>", { 'class': 'st-block-controls__activate-btn' });
+      this.$el.append(block_controls_btn);
+  
+      var block_control_inner = $("<div>", { 'class': 'st-block-controls__inner' });
+      this.$el.append(block_control_inner);
+      this.$inner = block_control_inner;
+  
       for(var block_type in this.available_types) {
         if (SirTrevor.Blocks.hasOwnProperty(block_type)) {
           var block_control = new SirTrevor.BlockControl(block_type, this.instance_scope);
           if (block_control.can_be_rendered) {
-            this.$el.append(block_control.render().$el);
+            this.$inner.append(block_control.render().$el);
           }
         }
       }
   
-      this.$el.delegate('a', 'click', _.bind(this.handleButtonClick, this));
+      block_controls_btn.bind('click', this.handleUIButtonClick);
+  
+      this.$el.delegate('.st-block-control', 'click', this.handleControlButtonClick);
     },
   
-    handleButtonClick: function(e) {
+    toggleState: function() {
+      this.$el.toggleClass('st-block-control--active');
+    },
+  
+    handleUIButtonClick: function() {
+      this.toggleState();
+    },
+  
+    handleControlButtonClick: function(e) {
       e.preventDefault();
       this.trigger('createBlock', e.target.dataset.type);
+      this.toggleState();
     }
   
   });
@@ -1907,9 +1956,6 @@
         }
       }
       
-      var throttled_scroll = _.throttle(_.bind(this.handleDocumentScroll, this), 150);
-      $(document).bind('scroll', throttled_scroll);
-  
       if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
       this.show();
     },
@@ -2095,8 +2141,6 @@
     removeBlock: function(block_id, type) {
       this.blockCounts[type] = this.blockCounts[type] - 1;
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
-      if(_.isUndefined(this.blocks)) this.blocks = [];
-      
       SirTrevor.publish("editor/block/removeBlock");
     },
     
@@ -2257,7 +2301,6 @@
   
       return true;
     },
-    
     
     /*
       Set our blockTypes

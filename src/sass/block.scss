@@ -1,0 +1,48 @@
+.st-block {
+  border: 2px solid #fff;
+  position: relative;
+  margin: $block-margin;
+
+  &.st-block--active {
+    border-color: $accent-color;
+  }
+}
+
+.st-text-block {
+  min-height: 50px;
+  font-size: $text-block-font-size;
+  line-height: 1.45;
+  padding: $inner-block-padding;
+}
+
+.st-block__ui {
+  position: absolute;
+  opacity: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.st-block--active .st-block__ui {
+  opacity: 1; 
+}
+
+.st-block__reorder,
+.st-block__remove {
+  display: block;
+  float: left;
+  width: 63px; height: 48px;
+  border: 2px solid $accent-color;
+  border-right: 0;
+  border-bottom: 0;
+  background-position: center center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.st-block__reorder {
+  background-image: url(images/sir-trevor/ui/reorder.png);
+}
+
+.st-block__remove {
+  background-image: url(images/sir-trevor/ui/trash.png);
+}

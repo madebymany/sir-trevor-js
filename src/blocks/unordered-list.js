@@ -2,19 +2,18 @@
   Unordered List
 */
 
-var template = '<div class="text-block <%= className %>" contenteditable="true"></div>';
+var template = '<div class="st-text-block" contenteditable="true"></div>';
 
 SirTrevor.Blocks.Ul = SirTrevor.Block.extend({ 
   
-  title: "List",
-  className: "list",
+  type: "List",
   
   editorHTML: function() {
     return _.template(template, this);
   },
   
   onBlockRender: function() {
-    this.$$('.text-block').bind('click', function(){
+    this.$$('.st-text-block').bind('click', function(){
       if($(this).html().length === 0){
         document.execCommand("insertUnorderedList",false,false);
       }
@@ -22,12 +21,12 @@ SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
     
     // Put in a list
     if (_.isEmpty(this.data)) {
-      this.$$('.text-block').focus().click();
+      this.$$('.st-text-block').focus().click();
     }
   },
     
   loadData: function(data){
-    this.$$('.text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+    this.$$('.st-text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
   },
   
   toMarkdown: function(markdown) {

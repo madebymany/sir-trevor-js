@@ -1,0 +1,32 @@
+// Block Control
+
+.st-block-controls {
+  height: 124px;
+  margin: $block-margin;
+  position: relative;
+}
+
+.st-block-controls__activate-btn {
+  display: block;
+  width: 26px; height: 25px;
+  background: url(images/sir-trevor/ui/add.png) no-repeat center center;
+  position: absolute; z-index: 1;
+  top: 50%; left: 50%;
+  margin: -12px 0 0 -13px;
+}
+
+.st-block-controls__inner {
+  font-family: $base-font-family-dark;
+  background-color: $blocks-control-bg-color;
+  visibility: hidden; opacity: 0;
+  border-radius: 3px;
+  color: $base-ui-color;
+  font-size: 18px;
+  height: 100%;
+  position: relative; z-index: 2;
+  text-align: center;
+}
+
+.st-block-control--active .st-block-controls__inner {
+  visibility: visible; opacity: 1;
+}

@@ -1,0 +1,11 @@
+// Reset all our input styles
+
+// Focus / Active styles
+
+.st-text-block:active,
+.st-text-block:focus,
+.st-block [contenteditable="true"]:active,
+.st-block [contenteditable="true"]:focus {
+  outline: none;
+  border: none;
+}

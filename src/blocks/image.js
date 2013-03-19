@@ -7,8 +7,7 @@ var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input t
 
 SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
   
-  title: "Image",
-  className: "image",
+  type: "Image",
   dropEnabled: true,
   
   dropzoneHTML: dropzone_templ,

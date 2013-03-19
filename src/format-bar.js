@@ -40,9 +40,6 @@ _.extend(FormatBar.prototype, FunctionBind, {
       }
     }
     
-    var throttled_scroll = _.throttle(_.bind(this.handleDocumentScroll, this), 150);
-    $(document).bind('scroll', throttled_scroll);
-
     if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
     this.show();
   },
