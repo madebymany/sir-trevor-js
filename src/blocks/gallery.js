@@ -2,14 +2,16 @@
   Gallery
 */
 
-var dropzone_templ = "<p>Drop images here</p><div class=\"input submit\"><input type=\"file\" multiple=\"multiple\" /></div><button>...or choose file(s)</button>";
-
 SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({ 
   
   type: "Gallery",
-  dropEnabled: true,
+  droppable: true,
+
+  drop_options: {
+    uploadable: true
+  },
+
   editorHTML: "<div class=\"gallery-items\"><p>Gallery Contents:</p><ul></ul></div>",
-  dropzoneHTML: dropzone_templ,
   
   loadData: function(data){
     // Find all our gallery blocks and draw nice list items from it

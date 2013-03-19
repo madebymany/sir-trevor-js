@@ -7,7 +7,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   
   SirTrevor.publish("onUploadStart");
   
-  var uid  = [block.instance.ID, (new Date()).getTime(), 'raw'].join('-');
+  var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
   
   var data = new FormData();
   
@@ -32,7 +32,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   };
   
   $.ajax({
-    url: block.instance.options.uploadUrl,
+    url: SirTrevor.DEFAULTS.uploadUrl,
     data: data,
     cache: false,
     contentType: false,

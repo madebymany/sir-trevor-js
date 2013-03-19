@@ -2,16 +2,15 @@
   Simple Image Block
 */
 
-var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input type=\"file\" /></div><button>...or choose a file</button>";
-
-
 SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
   
   type: "Image",
-  dropEnabled: true,
-  
-  dropzoneHTML: dropzone_templ,
-  
+  droppable: true,
+
+  drop_options: {
+    uploadable: true
+  },
+    
   loadData: function(data){
     // Create our image tag
     this.$editor.html($('<img>', {

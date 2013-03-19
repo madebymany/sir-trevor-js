@@ -34,7 +34,7 @@ var default_drop_options = {
   uploadable: false,
   pastable: false,
   drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
-  upload_html: '<input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button>',
+  upload_html: '<div class="st-block__upload-container"><input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button></div>',
   paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
 };
 
@@ -107,7 +107,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     var editor_html = _.result(this, 'editorHTML');
 
     this.$el.append(editor_html).addClass('st-block--' + _.result(this, 'blockCSSClass'));
-    this.$editor = editor_html;
+    this.$editor = $(editor_html);
 
     this._loadAndSetData();
     
@@ -350,7 +350,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
         type, data = [];
     
     //this.instance.marker.hide();
-    this.$dropzone.removeClass('drag-enter');
+    this.$dropzone.removeClass('st-dropzone--dragover');
         
     /*
       Check the type we just received,
@@ -393,13 +393,12 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
     // Bind our drop event
     this.$dropzone.bind('drop', this._handleDrop)
-                  .bind('dragenter', function(e) { halt(e); $(this).addClass('st-drag-enter'); })
+                  .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
                   .bind('dragover', function(e) {
-                    e.originalEvent.dataTransfer.dropEffect = "copy";
-                    halt(e);
-                    $(this).addClass('st-drag-enter');
+                    e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
+                    $(this).addClass('st-dropzone--dragover');
                   })
-                  .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-drag-enter'); });
+                  .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
   },
 
   _initUIComponents: function() {

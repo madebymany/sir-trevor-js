@@ -8,10 +8,7 @@ SirTrevor.Blocks.Quote = SirTrevor.Block.extend({
   
   editorHTML: function() {
     return _.template('<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote>\
-      <div class="input text">\
-        <label>Credit</label>\
-        <input maxlength="140" name="cite" class="input-string required" type="text" />\
-      </div>', this);
+        <input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />', this);
   },
   
   loadData: function(data){

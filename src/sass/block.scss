@@ -48,7 +48,7 @@
 }
 
 .st-block__dropzone {
-
+  padding: 15px 0;
 }
 
 .st-block__dropzone .st-icon {
@@ -72,7 +72,18 @@
   font-weight: bold;
 }
 
+.st-dropzone--dragover p,
+.st-dropzone--dragover .st-icon {
+  color: $accent-color;
+}
+
 .st-block__paste-input {
   color: $light-ui-color;
   text-align: center;
+}
+
+.st-upload-btn {
+  border: 0;
+  background: $base-ui-color;
+  color: #fff;
 }

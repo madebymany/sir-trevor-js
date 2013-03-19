@@ -662,7 +662,7 @@
     
     SirTrevor.publish("onUploadStart");
     
-    var uid  = [block.instance.ID, (new Date()).getTime(), 'raw'].join('-');
+    var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
     
     var data = new FormData();
     
@@ -687,7 +687,7 @@
     };
     
     $.ajax({
-      url: block.instance.options.uploadUrl,
+      url: SirTrevor.DEFAULTS.uploadUrl,
       data: data,
       cache: false,
       contentType: false,
@@ -836,7 +836,7 @@
     uploadable: false,
     pastable: false,
     drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
-    upload_html: '<input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button>',
+    upload_html: '<div class="st-block__upload-container"><input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button></div>',
     paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
   };
   
@@ -909,7 +909,7 @@
       var editor_html = _.result(this, 'editorHTML');
   
       this.$el.append(editor_html).addClass('st-block--' + _.result(this, 'blockCSSClass'));
-      this.$editor = editor_html;
+      this.$editor = $(editor_html);
   
       this._loadAndSetData();
       
@@ -1152,7 +1152,7 @@
           type, data = [];
       
       //this.instance.marker.hide();
-      this.$dropzone.removeClass('drag-enter');
+      this.$dropzone.removeClass('st-dropzone--dragover');
           
       /*
         Check the type we just received,
@@ -1195,13 +1195,12 @@
   
       // Bind our drop event
       this.$dropzone.bind('drop', this._handleDrop)
-                    .bind('dragenter', function(e) { halt(e); $(this).addClass('st-drag-enter'); })
+                    .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
                     .bind('dragover', function(e) {
-                      e.originalEvent.dataTransfer.dropEffect = "copy";
-                      halt(e);
-                      $(this).addClass('st-drag-enter');
+                      e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
+                      $(this).addClass('st-dropzone--dragover');
                     })
-                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-drag-enter'); });
+                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
     },
   
     _initUIComponents: function() {
@@ -1343,10 +1342,7 @@
     
     editorHTML: function() {
       return _.template('<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote>\
-        <div class="input text">\
-          <label>Credit</label>\
-          <input maxlength="140" name="cite" class="input-string required" type="text" />\
-        </div>', this);
+          <input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />', this);
     },
     
     loadData: function(data){
@@ -1363,14 +1359,16 @@
     Gallery
   */
   
-  var dropzone_templ = "<p>Drop images here</p><div class=\"input submit\"><input type=\"file\" multiple=\"multiple\" /></div><button>...or choose file(s)</button>";
-  
   SirTrevor.Blocks.Gallery = SirTrevor.Block.extend({ 
     
     type: "Gallery",
-    dropEnabled: true,
+    droppable: true,
+  
+    drop_options: {
+      uploadable: true
+    },
+  
     editorHTML: "<div class=\"gallery-items\"><p>Gallery Contents:</p><ul></ul></div>",
-    dropzoneHTML: dropzone_templ,
     
     loadData: function(data){
       // Find all our gallery blocks and draw nice list items from it
@@ -1536,16 +1534,15 @@
     Simple Image Block
   */
   
-  var dropzone_templ = "<p>Drop image here</p><div class=\"input submit\"><input type=\"file\" /></div><button>...or choose a file</button>";
-  
-  
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
     
     type: "Image",
-    dropEnabled: true,
-    
-    dropzoneHTML: dropzone_templ,
-    
+    droppable: true,
+  
+    drop_options: {
+      uploadable: true
+    },
+      
     loadData: function(data){
       // Create our image tag
       this.$editor.html($('<img>', {
