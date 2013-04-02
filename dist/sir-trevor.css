@@ -115,6 +115,9 @@
 .st-block input[type="text"] {
   width: 100%; }
 
+.st-blocks {
+  padding-top: 24px; }
+
 .st-block {
   border: 2px solid white;
   position: relative;

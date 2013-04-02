@@ -48,13 +48,16 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   build: function() {
     this.$el.hide();
     
-    this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+    this.block_controls = new SirTrevor.BlockControls(this.$wrapper);
+    this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
+
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
 
     // Render marker & format bar
     //this.marker.render();
     this.formatBar.render();
 
+    this.$outer.prepend(this.fl_block_controls.render().$el);
     this.$outer.append(this.block_controls.render().$el);
     
     var store = this.store("read", this);
@@ -87,9 +90,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     A block will have a reference to an Editor instance & the parent BlockType.
     We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
   */
-  createBlock: function(type, data) {
+  createBlock: function(type, data, place_before) {
     type = _.capitalize(type); // Proper case
-    
+
     if (!this._isBlockTypeAvailable(type)) {
       SirTrevor.log("Block type not available " + type);
       return false;
@@ -102,7 +105,13 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     }
 
     var block = new SirTrevor.Blocks[type](data, this.ID);
-    this.$wrapper.append(block.render().$el);
+
+    if (!_.isUndefined(place_before)) {
+      place_before.before(block.render().$el);
+    } else {
+      this.$wrapper.append(block.render().$el);
+    }
+
     this.listenTo(block, 'removeBlock', this.removeBlock);
 
     this.blocks.push(block);

@@ -114,6 +114,7 @@
   /* Marker */
   //= block-control.js
   //= block-controls.js
+  //= floating-block-controls.js
   /* FormatBar */
   //= format-bar.js
   //= sir-trevor-editor.js
