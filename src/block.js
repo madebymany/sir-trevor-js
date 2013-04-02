@@ -15,6 +15,7 @@ var blockOptions = [
 	"formattingEnabled",
   "droppable",
   "drop_options",
+  "validationFailMsg",
   "title",
   "editorHTML",
   "dropzoneHTML",
@@ -64,6 +65,10 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     // Memoize the slug.
     this.blockCSSClass = toSlug(this.type);
     return this.blockCSSClass;
+  },
+
+  validationFailMsg: function() {
+    return this.type + ' block is invalid';
   },
 
   $$: function(selector) {
@@ -339,7 +344,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   },
   
   _handleDrop: function(e) {
-    
     e.preventDefault();
     e = e.originalEvent;
     
@@ -349,7 +353,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
         types = e.dataTransfer.types,
         type, data = [];
     
-    //this.instance.marker.hide();
     this.$dropzone.removeClass('st-dropzone--dragover');
         
     /*
@@ -471,7 +474,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       .bind('paste', this._handleContentPaste)
       .bind('submit', this._handleContentPaste);
   }
-    
 });
 
 Block.extend = extend; // Allow our Block to be extended.

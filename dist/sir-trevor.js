@@ -817,6 +817,7 @@
   	"formattingEnabled",
     "droppable",
     "drop_options",
+    "validationFailMsg",
     "title",
     "editorHTML",
     "dropzoneHTML",
@@ -866,6 +867,10 @@
       // Memoize the slug.
       this.blockCSSClass = toSlug(this.type);
       return this.blockCSSClass;
+    },
+  
+    validationFailMsg: function() {
+      return this.type + ' block is invalid';
     },
   
     $$: function(selector) {
@@ -1141,7 +1146,6 @@
     },
     
     _handleDrop: function(e) {
-      
       e.preventDefault();
       e = e.originalEvent;
       
@@ -1151,7 +1155,6 @@
           types = e.dataTransfer.types,
           type, data = [];
       
-      //this.instance.marker.hide();
       this.$dropzone.removeClass('st-dropzone--dragover');
           
       /*
@@ -1273,7 +1276,6 @@
         .bind('paste', this._handleContentPaste)
         .bind('submit', this._handleContentPaste);
     }
-      
   });
   
   Block.extend = extend; // Allow our Block to be extended.
@@ -2056,8 +2058,6 @@
     
     if (!this._ensureAndSetElements()) { return false; }
   
-    //this.marker = new SirTrevor.Marker(this.options.marker, this);
-    
     this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
   
     if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
@@ -2110,7 +2110,7 @@
         }, this));
       }
           
-      this.$wrapper.addClass('sir-trevor-ready');
+      this.$wrapper.addClass('st-ready');
       
       if(!_.isUndefined(this.onEditorRender)) {
         this.onEditorRender();
@@ -2172,28 +2172,28 @@
       SirTrevor.publish("editor/block/removeBlock");
     },
     
-    performValidations : function(_block, should_validate) {
-      
+    performValidations : function(block, should_validate) {
       var errors = 0;
       
+      block._beforeValidate();
+  
       if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-        if(!_block.validate()){
-          // fail validations
-          SirTrevor.log("Block " + _block.blockID + " failed validation");
+        if(!block.validate()){
+          this.errors.push({ text: _.result(block, 'validationFailMsg') });
+          SirTrevor.log("Block " + block.blockID + " failed validation");
           ++errors;
         }
-      } else {
-        // not validating so clear validation warnings
-        _block._beforeValidate();
       }
-      
-      // success
-      var store = _block.save();
+  
+      return errors;
+    },
+  
+    saveBlockStateToStore: function(block) {
+      var store = block.save();
       if(!_.isEmpty(store.data)) {
-        SirTrevor.log("Adding data for block " + _block.blockID + " to block store");
+        SirTrevor.log("Adding data for block " + block.blockID + " to block store");
         this.store("add", this, { data: store });
       }
-      return errors;
     },
     
     /*
@@ -2201,91 +2201,88 @@
       Validate all of our blocks, and serialise all data onto the JSON objects
     */
     onFormSubmit: function(should_validate) {
-      
       // if undefined or null or anything other than false - treat as true
       should_validate = (should_validate === false) ? false : true;
       
       SirTrevor.log("Handling form submission for Editor " + this.ID);
       
-      var blockLength, block, result, errors = 0;
-      
       this.removeErrors();
-      // Reset our store
       this.store("reset", this);
+  
+      this.validateBlocks(should_validate);
+      this.validateBlockTypesExist(should_validate);
+  
+      this.renderErrors();
+      this.store("save", this);
       
-      // Loop through blocks to validate
+      return this.errors.length;
+    },
+  
+    validateBlocks: function(should_validate) {
+      if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
+        return false;
+      }
+  
       var blockIterator = function(block,index) {
         // Find our block
-        block = $(block);
-        var _block = _.find(this.blocks, function(b){ return (b.blockID == block.attr('id')); });
-        
-        if (!_.isUndefined(_block) || !_.isEmpty(_block) || typeof _block == SirTrevor.Block) {
-          // Validate our block
-          errors += this.performValidations(_block, should_validate);
-        }
+        this.performValidations(block, should_validate);
+        this.saveBlockStateToStore(block);
       };
-      _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
   
-      // Validate against our required fields (if there are any)
-      if (this.required && (!SirTrevor.SKIP_VALIDATION && should_validate)) {
-        _.each(this.required, _.bind(function(type) {
-          if (this._isBlockTypeAvailable(type)) {
-            // Valid block type to validate against
-            if (_.isUndefined(this.blockCounts[type]) || this.blockCounts[type] === 0) {
-              this.errors.push({ text: "You must have a block of type " + type });
-              SirTrevor.log("Failed validation on required block type " + type);
-              errors++;
-            } else {
-              // We need to also validate that we have some data of this type too.
-              // This is ugly, but necessary for proper validation on blocks that don't have required fields.
-              var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
-              if (blocks.length === 0) {
-                this.errors.push({ text: "A required block type " + type + " is empty" });
-                errors++;
-                SirTrevor.log("A required block type " + type + " is empty");
-              }
-            }
-          }
-        }, this));
-      }
-  
-      // Save it
-      this.store("save", this);
-      if (errors > 0) this.renderErrors();
-      return errors;
+      _.each(this.blocks, _.bind(blockIterator, this));
     },
-    
-    renderErrors: function() {
-      if (this.errors.length > 0) {
-        
-        if (_.isUndefined(this.$errors)) {
-          this.$errors = $("<div>", {
-            'class': this.baseCSS("errors"),
-            html: "<p>You have the following errors: </p><ul></ul>"
-          });
-          this.$outer.prepend(this.$errors);
-        }
-        
-        var list = this.$errors.find('ul');
-        
-        _.each(this.errors, _.bind(function(error) {
-          list.append($("<li>", {
-            'class': this.baseCSS("error-msg"),
-            html: error.text
-          }));
-        }, this));
-        
-        this.$errors.show();
+  
+    validateBlockTypesExist: function(should_validate) {
+      if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
+        return false;
       }
+  
+      var blockTypeIterator = function(type, index) {
+        if (this._isBlockTypeAvailable(type)) {
+          if (this._getBlockTypeCount(type) === 0) {
+            SirTrevor.log("Failed validation on required block type " + type);
+            this.errors.push({ text: "You must have a block of type " + type });
+          } else {
+            var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
+            if (blocks.length > 0) { return false; }
+  
+            this.errors.push({ text: "A required block type " + type + " is empty" });
+            SirTrevor.log("A required block type " + type + " is empty");
+          }
+        }
+      }; 
+  
+      _.each(this.required, _.bind(blockTypeIterator, this));
+    },
+  
+    renderErrors: function() {
+      if (this.errors.length === 0) { return false; }
+  
+      if (_.isUndefined(this.$errors)) {
+        this.$errors = $("<div>", {
+          'class': 'st-errors',
+          html: "<p>You have the following errors: </p><ul></ul>"
+        });
+        this.$outer.prepend(this.$errors);
+      }
+        
+      var str = "";
+      
+      _.each(this.errors, function(error) {
+        str += '<li class="st-errors__msg">'+ error.text +'</li>';
+      });
+  
+      this.$errors.find('ul').append(str);
+      this.$errors.show();
     },
     
     removeErrors: function() {
-      if (this.errors.length > 0) {
-        // We have old errors to remove
-        this.$errors.find('ul').html('');
-        this.$errors.hide();
-        this.errors = [];
-      }
+      if (this.errors.length === 0) { return false; }
+  
+      this.$errors.hide();
+      this.$errors.find('ul').html('');
+      
+      this.errors = [];
     },
     
     /*
