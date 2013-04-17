@@ -14,19 +14,19 @@ var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
 };
 
 _.extend(FormatBar.prototype, FunctionBind, {
-  
+
   bound: ["onFormatButtonClick"],
-  
+
   render: function(){
     var bar = $("<div>", {
       "class": this.className
     });
-    
+
     //this.instance.$wrapper.prepend(bar);
     this.$el = bar;
-    
+
     var formatName, format;
-        
+
     for (formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
@@ -39,7 +39,7 @@ _.extend(FormatBar.prototype, FunctionBind, {
         }).appendTo(this.$el);
       }
     }
-    
+
     if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
     this.show();
   },
@@ -73,13 +73,13 @@ _.extend(FormatBar.prototype, FunctionBind, {
   },
 
   remove: function(){ this.$el.remove(); },
-  
+
   onFormatButtonClick: function(ev){
     halt(ev);
 
     var btn = $(ev.target),
         format = SirTrevor.Formatters[btn.attr('data-type')];
-     
+
     // Do we have a click function defined on this formatter?
     if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
       format.onClick(); // Delegate
@@ -90,5 +90,5 @@ _.extend(FormatBar.prototype, FunctionBind, {
     // Make sure we still show the bar
     this.show();
   }
-  
+
 });

@@ -13,22 +13,44 @@ var FloatingBlockControls = SirTrevor.FloatingBlockControls = function(wrapper) 
 
 _.extend(FloatingBlockControls.prototype, FunctionBind, Renderable, Events, {
 
-  bound: ['handleWrapperMouseOver', 'handleWrapperMouseOut'],
+  bound: ['handleWrapperMouseOver', 'handleBlockMouseOut', 'handleBlockClick'],
 
-  className: 'st-block-controls--floating',
-  tagName: 'a',
+  className: 'st-fl-block-controls',
 
   initialize: function() {
-    this.$wrapper.bind('mouseover', this.handleWrapperMouseOver)
-                 .bind('mouseout', this.handleWrapperMouseOut);
+    this.$btn = $("<a>", { 'class': "st-fl-block-controls__plus" });
+    this.$el.html(this.$btn)
+            .addClass('st-fl-block-controls--hidden');
+
+    this.$wrapper.on('mouseover', '.st-block', this.handleBlockMouseOver);
+    this.$wrapper.on('click', '.st-block--with-plus', this.handleBlockClick);
+    this.$wrapper.on('mouseout', '.st-block', this.handleBlockMouseOut);
   },
 
-  handleWrapperMouseOver: function() {
-    console.log('Mouseover');
+  handleBlockMouseOver: function(e) {
+    var block = $(e.currentTarget);
+
+    if (!block.hasClass('st-block--with-plus')) {
+      block.addClass('st-block--with-plus');
+    }
   },
 
-  handleWrapperMouseOut: function() {
-    console.log('Mouseout');
+  handleBlockMouseOut: function(e) {
+    var block = $(e.currentTarget);
+
+    if (block.hasClass('st-block--with-plus')) {
+      block.removeClass('st-block--with-plus');
+    }
+  },
+
+  handleBlockClick: function(e) {
+    var block = $(e.currentTarget);
+
+    this.trigger('showBlockControls', block);
+  },
+
+  showAt: function(top) {
+    this.$el.css({ top: top + 'px' }).removeClass('st-fl-block-controls--hidden');
   }
 
 });

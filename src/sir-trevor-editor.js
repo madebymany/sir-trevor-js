@@ -1,21 +1,21 @@
 /*
   Sir Trevor Editor
-  -- 
+  --
   Represents one Sir Trevor editor instance (with multiple blocks)
-  Each block references this instance. 
+  Each block references this instance.
   BlockTypes are global however.
 */
 
 var SirTrevorEditor = SirTrevor.Editor = function(options) {
   SirTrevor.log("Init SirTrevor.Editor");
-  
+
   this.blockTypes = {};
   this.blockCounts = {}; // Cached block type counts
   this.blocks = []; // Block references
   this.errors = [];
   this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
   this.ID = _.uniqueId('st-editor-');
-  
+
   if (!this._ensureAndSetElements()) { return false; }
 
   this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
@@ -23,35 +23,37 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
     this.onEditorRender = this.options.onEditorRender;
   }
-  
+
   this._setRequired();
   this._setBlocksTypes();
   this._bindFunctions();
 
   this.store("create", this);
   this.build();
-  
+
   SirTrevor.instances.push(this);
   SirTrevor.bindFormSubmit(this.$form);
 };
 
 _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
-  
-  bound: ['onFormSubmit'],
-  
+
+  bound: ['onFormSubmit', 'showBlockControls'],
+
   initialize: function() {},
   /*
-    Build the Editor instance. 
+    Build the Editor instance.
     Check to see if we've been passed JSON already, and if not try and create a default block.
     If we have JSON then we need to build all of our blocks from this.
   */
   build: function() {
     this.$el.hide();
-    
-    this.block_controls = new SirTrevor.BlockControls(this.$wrapper);
+
+    this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
     this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
 
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+    this.listenTo(this.block_controls, 'showBlockControls', this.showBlockControls);
+    this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
 
     // Render marker & format bar
     //this.marker.render();
@@ -59,9 +61,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.$outer.prepend(this.fl_block_controls.render().$el);
     this.$outer.append(this.block_controls.render().$el);
-    
+
     var store = this.store("read", this);
-    
+
     if (store.data.length === 0) {
       // Create a default instance
       this.createBlock(this.options.defaultType);
@@ -72,20 +74,25 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
         this.createBlock(block.type, block.data);
       }, this));
     }
-        
+
     this.$wrapper.addClass('st-ready');
-    
+
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
     }
   },
-  
+
+  showBlockControls: function(container) {
+    this.block_controls.toggleState();
+    container.append(this.block_controls.$inner.detach());
+  },
+
   store: function(){
     return SirTrevor.editorStore.apply(this, arguments);
   },
-  
+
   /*
-    Create an instance of a block from an available type. 
+    Create an instance of a block from an available type.
     We have to check the number of blocks we're allowed to create before adding one and handle fails accordingly.
     A block will have a reference to an Editor instance & the parent BlockType.
     We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
@@ -134,16 +141,16 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
   },
-  
+
   removeBlock: function(block_id, type) {
     this.blockCounts[type] = this.blockCounts[type] - 1;
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
     SirTrevor.publish("editor/block/removeBlock");
   },
-  
+
   performValidations : function(block, should_validate) {
     var errors = 0;
-    
+
     block._beforeValidate();
 
     if (!SirTrevor.SKIP_VALIDATION && should_validate) {
@@ -164,7 +171,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
       this.store("add", this, { data: store });
     }
   },
-  
+
   /*
     Handle a form submission of this Editor instance.
     Validate all of our blocks, and serialise all data onto the JSON objects
@@ -172,9 +179,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   onFormSubmit: function(should_validate) {
     // if undefined or null or anything other than false - treat as true
     should_validate = (should_validate === false) ? false : true;
-    
+
     SirTrevor.log("Handling form submission for Editor " + this.ID);
-    
+
     this.removeErrors();
     this.store("reset", this);
 
@@ -183,7 +190,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.renderErrors();
     this.store("save", this);
-    
+
     return this.errors.length;
   },
 
@@ -219,7 +226,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
           SirTrevor.log("A required block type " + type + " is empty");
         }
       }
-    }; 
+    };
 
     _.each(this.required, _.bind(blockTypeIterator, this));
   },
@@ -234,9 +241,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
       });
       this.$outer.prepend(this.$errors);
     }
-      
+
     var str = "";
-    
+
     _.each(this.errors, function(error) {
       str += '<li class="st-errors__msg">'+ error.text +'</li>';
     });
@@ -244,16 +251,16 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.$errors.find('ul').append(str);
     this.$errors.show();
   },
-  
+
   removeErrors: function() {
     if (this.errors.length === 0) { return false; }
 
     this.$errors.hide();
     this.$errors.find('ul').html('');
-    
+
     this.errors = [];
   },
-  
+
   /*
     Get Block Type Limit
     --
@@ -264,8 +271,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     return (_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t];
   },
-  
-  /* 
+
+  /*
     Availability helper methods
     --
     Checks if the object exists within the instance of the Editor.
@@ -273,13 +280,13 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   _isBlockTypeAvailable: function(t) {
     return !_.isUndefined(this.blockTypes[t]);
   },
-  
+
   _ensureAndSetElements: function() {
     if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
       SirTrevor.log("You must provide an el");
       return false;
     }
-     
+
     this.$el = this.options.el;
     this.el = this.options.el[0];
     this.$form = this.$el.parents('form');
@@ -295,7 +302,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     return true;
   },
-  
+
   /*
     Set our blockTypes
     These will either be set on a per Editor instance, or set on a global scope.
@@ -303,7 +310,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   _setBlocksTypes: function() {
     this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
   },
-  
+
   /* Get our required blocks (if any) */
   _setRequired: function() {
     this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;

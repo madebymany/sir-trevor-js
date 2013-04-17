@@ -7,7 +7,7 @@ var Format = SirTrevor.Formatter = function(options){
 var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick", "toMarkdown", "toHTML"];
 
 _.extend(Format.prototype, {
-  
+
   title: '',
   className: '',
   cmd: null,
@@ -15,9 +15,9 @@ _.extend(Format.prototype, {
   param: null,
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
-  
+
   initialize: function(){},
-  
+
   _configure: function(options) {
     if (this.options) options = _.extend({}, this.options, options);
     for (var i = 0, l = formatOptions.length; i < l; i++) {
@@ -26,22 +26,22 @@ _.extend(Format.prototype, {
     }
     this.options = options;
   },
-  
+
   _bindToBlock: function(block) {
-    
+
     var formatter = this,
         ctrlDown = false;
-        
+
     block
       .on('keyup','.st-text-block', function(ev) {
-        if(ev.which == 17 || ev.which == 224) { 
+        if(ev.which == 17 || ev.which == 224) {
           ctrlDown = false;
         }
       })
       .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
-        if(ev.which == 17 || ev.which == 224) { 
+        if(ev.which == 17 || ev.which == 224) {
           ctrlDown = true;
-        }  
+        }
         if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
           document.execCommand(ev.data.formatter.cmd, false, true);
           ev.preventDefault();

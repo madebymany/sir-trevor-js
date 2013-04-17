@@ -3,13 +3,20 @@
 }
 
 .st-block {
+  padding: 0 0 $block-controls-height 0;
+}
+
+.st-block__inner {
   border: 2px solid #fff;
   position: relative;
-  margin: $block-margin;
+}
 
-  &.st-block--active {
-    border-color: $accent-color;
-  }
+.st-block--active .st-block__inner {
+  border-color: $accent-color;
+}
+
+.st-block--with-plus {
+  background: url(images/sir-trevor/ui/add.png) no-repeat center bottom;
 }
 
 .st-text-block {
@@ -27,7 +34,7 @@
 }
 
 .st-block--active .st-block__ui {
-  opacity: 1; 
+  opacity: 1;
 }
 
 .st-block__reorder,

@@ -37,19 +37,19 @@ _.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
 
     block_controls_btn.bind('click', this.handleUIButtonClick);
 
-    this.$el.delegate('.st-block-control', 'click', this.handleControlButtonClick);
+    this.$inner.delegate('.st-block-control', 'click', this.handleControlButtonClick);
   },
 
   toggleState: function() {
-    this.$el.toggleClass('st-block-control--active');
+    this.$inner.addClass('st-block-controls__inner--active');
   },
 
   handleUIButtonClick: function() {
-    this.toggleState();
+    this.trigger('showBlockControls', this.$el);
   },
 
   handleControlButtonClick: function(e) {
-    e.preventDefault();
+    console.log("CLICKED");
     this.trigger('createBlock', e.currentTarget.dataset.type);
     this.toggleState();
   }

@@ -1,5 +1,5 @@
 (function ($, _){
-  
+
   var root = this,
       SirTrevor;
 
@@ -7,16 +7,16 @@
   var push = array.push;
   var slice = array.slice;
   var splice = array.splice;
-   
+
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = true;
   SirTrevor.SKIP_VALIDATION = false;
-  
+
   /*
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
   */
-  
+
   SirTrevor.DEFAULTS = {
     baseCSSClass: "sir-trevor",
     errorClass: "error",
@@ -53,9 +53,9 @@
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
-  
+
   var formBound = false; // Flag to tell us once we've bound our submit event
-  
+
   /* Generic function binding utility, used by lots of our classes */
   var FunctionBind = {
     bound: [],
@@ -98,7 +98,7 @@
       return this;
     }
   };
-  
+
   //= helpers
   //= vendor
   //= extensions
@@ -120,7 +120,7 @@
   //= sir-trevor-editor.js
 
   /* We need a form handler here to handle all the form submits */
-  
+
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
       SirTrevor.submittable();
@@ -128,7 +128,7 @@
       formBound = true;
     }
   };
-  
+
   SirTrevor.onBeforeSubmit = function(should_validate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
@@ -136,19 +136,19 @@
       errors += inst.onFormSubmit(should_validate);
     });
     SirTrevor.log("Total errors: " + errors);
-    
+
     return errors;
   };
-  
+
   SirTrevor.onFormSubmit = function(ev) {
     var errors = SirTrevor.onBeforeSubmit();
-    
+
     if(errors > 0) {
       SirTrevor.publish("onError");
       ev.preventDefault();
     }
   };
-  
+
   SirTrevor.runOnAllInstances = function(method) {
     if (_.has(SirTrevor.Editor.prototype, method)) {
       // augment the arguments pseudo array and pass on to invoke()
@@ -159,6 +159,6 @@
       SirTrevor.log("method doesn't exist");
     }
   };
-  
+
 }(jQuery, _));
 

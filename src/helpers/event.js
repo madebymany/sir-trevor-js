@@ -1,7 +1,6 @@
 /* Halt event execution */
 function halt(ev){
   ev.preventDefault();
-  ev.stopPropagation();
 }
 
 function controlKeyDown(ev){
@@ -19,7 +18,7 @@ function isElementNear($element, distance, event) {
   return ( x > left && x < right && y > top && y < bottom );
 }
 
-/* 
+/*
   Drop Area Plugin from @maccman
   http://blog.alexmaccaw.com/svbtle-image-uploading
   --
@@ -46,12 +45,12 @@ function isElementNear($element, distance, event) {
          bind("dragleave", dragLeave);
     return this;
   };
-  
+
   $.fn.noDropArea = function(){
     this.unbind("dragenter").
          unbind("dragover").
          unbind("dragleave");
     return this;
   };
-  
+
 })(jQuery);
