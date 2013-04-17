@@ -920,7 +920,7 @@
       );
   
       this.$inner = this.$el.find('.st-block__inner');
-      this.$editor = editor_html;
+      this.$editor = this.$inner.children().first();
   
       this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
   
@@ -1135,9 +1135,8 @@
   
       this.loading();
   
-      if(this.dropEnabled) {
+      if(this.droppable) {
         this.$dropzone.hide();
-        //this.$editor.show();
       }
   
       SirTrevor.publish("editor/block/loadData");
@@ -1631,7 +1630,7 @@
     },
   
     loadData: function(data){
-      this.$inner.append(_.template(tweet_template, data));
+      this.$inner.prepend(_.template(tweet_template, data));
     },
   
     onContentPasted: function(event){

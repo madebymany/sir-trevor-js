@@ -119,7 +119,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     );
 
     this.$inner = this.$el.find('.st-block__inner');
-    this.$editor = editor_html;
+    this.$editor = this.$inner.children().first();
 
     this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
 
@@ -334,9 +334,8 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
     this.loading();
 
-    if(this.dropEnabled) {
+    if(this.droppable) {
       this.$dropzone.hide();
-      //this.$editor.show();
     }
 
     SirTrevor.publish("editor/block/loadData");

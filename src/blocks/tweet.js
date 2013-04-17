@@ -13,7 +13,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
   },
 
   loadData: function(data){
-    this.$inner.append(_.template(tweet_template, data));
+    this.$inner.prepend(_.template(tweet_template, data));
   },
 
   onContentPasted: function(event){
