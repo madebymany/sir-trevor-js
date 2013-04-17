@@ -842,7 +842,7 @@
   
   _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   
-    bound: ["_handleDrop", "_handleContentPaste", "onFocus", "onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
+    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
   
     className: 'st-block',
     block_template: _.template(
@@ -1055,22 +1055,31 @@
   
     /* Generic implementation to tell us when the block is active */
     focus: function() {
-      this.$('.st-text-block').bind('focus', this.onFocus);
+      this.$('.st-text-block').focus();
     },
   
     blur: function() {
-      this.$('.st-text-block').bind('blur', this.onBlur);
+      this.$('.st-text-block').blur();
+    },
+  
+    onFocus: function() {
+      this.$('.st-text-block').bind('focus', this._onFocus);
+    },
+  
+    onBlur: function() {
+      this.$('.st-text-block').bind('blur', this._onBlur);
     },
   
     /*
     * Event handlers
     */
   
-    onFocus: function() {
+    _onFocus: function() {
       this.$el.addClass('st-block--active');
+      this.trigger('blockFocus', this.$el);
     },
   
-    onBlur: function() {
+    _onBlur: function() {
       //this.$el.removeClass('st-block--active');
     },
   
@@ -1201,7 +1210,7 @@
         drop_html.append(drop_options.upload_html);
       }
   
-      this.$el.append(drop_html);
+      this.$inner.append(drop_html);
       this.$dropzone = drop_html;
   
       // Bind our drop event
@@ -1219,8 +1228,8 @@
       this.$inner.append(ui_element);
       this.$ui = ui_element;
   
-      this.focus();
-      this.blur();
+      this.onFocus();
+      this.onBlur();
   
       this._initReordering();
       this._initDeletion();
@@ -1609,44 +1618,44 @@
   });
   var tweet_template = '<div class="tweet"><img src="<%= user.profile_image_url %>" class="tweet-avatar"><div class="tweet-body"><p class="tweet-user"><a href="http://twitter.com/#!/<%= user.screen_name %>" class="tweet-user">@<%= user.screen_name %></a> on Twitter</p><p class="tweet-text"><%= text %></p><time><%= created_at %></time></div></div>';
   
-  SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({ 
-    
+  SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
+  
     type: "Tweet",
     droppable: true,
     drop_options: {
       pastable: true
     },
-    
+  
     icon_name: function() {
       return 'twitter';
     },
   
     loadData: function(data){
-      this.$el.append(_.template(tweet_template, data));
+      this.$inner.append(_.template(tweet_template, data));
     },
-    
+  
     onContentPasted: function(event){
       // Content pasted. Delegate to the drop parse method
       var input = $(event.target),
           val = input.val();
-      
+  
       // Pass this to the same handler as onDrop
       this.handleTwitterDropPaste(val);
     },
-    
+  
     handleTwitterDropPaste: function(url){
-      
-      if(_.isURI(url)) 
+  
+      if(_.isURI(url))
       {
         if (url.indexOf("twitter") != -1 && url.indexOf("status") != -1) {
           // Twitter status
           var tweetID = url.match(/[^\/]+$/);
           if (!_.isEmpty(tweetID)) {
-            
+  
             this.loading();
-            
+  
             tweetID = tweetID[0];
-            
+  
             var tweetCallbackSuccess = function(data) {
               // Parse the twitter object into something a bit slimmer..
               var obj = {
@@ -1660,18 +1669,18 @@
                 created_at: data.created_at,
                 status_url: url
               };
-              
+  
               // Save this data on the block
               this.setData(obj);
               this._loadData();
-              
+  
               this.ready();
             };
   
             var tweetCallbackFail = function(){
               this.ready();
             };
-            
+  
             // Make our AJAX call
             $.ajax({
               url: "http://api.twitter.com/1/statuses/show/" + tweetID + ".json",
@@ -1682,7 +1691,7 @@
           }
         }
       }
-      
+  
     },
   
     onDrop: function(transferData){
@@ -1694,39 +1703,26 @@
     Unordered List
   */
   
-  var template = '<div class="st-text-block" contenteditable="true"></div>';
+  var template = '<ul class="st-text-block" contenteditable="true"><li></li></ul>';
   
-  SirTrevor.Blocks.Ul = SirTrevor.Block.extend({ 
-    
+  SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
+  
     type: "List",
-    
+  
     editorHTML: function() {
       return _.template(template, this);
     },
-    
-    onBlockRender: function() {
-      this.$$('.st-text-block').bind('click', function(){
-        if($(this).html().length === 0){
-          document.execCommand("insertUnorderedList",false,false);
-        }
-      });
-      
-      // Put in a list
-      if (_.isEmpty(this.data)) {
-        this.$$('.st-text-block').focus().click();
-      }
-    },
-      
+  
     loadData: function(data){
       this.$$('.st-text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
     },
-    
+  
     toMarkdown: function(markdown) {
       return markdown.replace(/<\/li>/mg,"\n")
                      .replace(/<\/?[^>]+(>|$)/g, "")
-                     .replace(/^(.+)$/mg," - $1"); 
+                     .replace(/^(.+)$/mg," - $1");
     },
-    
+  
     toHTML: function(html) {
   		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
   		return "<ul>" + html + "</ul>";
@@ -1902,44 +1898,35 @@
   
   _.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
   
-    bound: ['handleUIButtonClick', 'handleControlButtonClick'],
+    bound: ['handleControlButtonClick'],
+    block_controls: null,
   
     className: "st-block-controls",
   
     initialize: function() {
-      var block_controls_btn = $("<a>", { 'class': 'st-block-controls__activate-btn' });
-      this.$el.append(block_controls_btn);
-  
-      var block_control_inner = $("<div>", { 'class': 'st-block-controls__inner' });
-      this.$el.append(block_control_inner);
-      this.$inner = block_control_inner;
-  
       for(var block_type in this.available_types) {
         if (SirTrevor.Blocks.hasOwnProperty(block_type)) {
           var block_control = new SirTrevor.BlockControl(block_type, this.instance_scope);
           if (block_control.can_be_rendered) {
-            this.$inner.append(block_control.render().$el);
+            this.$el.append(block_control.render().$el);
           }
         }
       }
   
-      block_controls_btn.bind('click', this.handleUIButtonClick);
-  
-      this.$inner.delegate('.st-block-control', 'click', this.handleControlButtonClick);
+      this.$el.delegate('.st-block-control', 'click', this.handleControlButtonClick);
     },
   
-    toggleState: function() {
-      this.$inner.addClass('st-block-controls__inner--active');
+    show: function() {
+      this.$el.addClass('st-block-controls--active');
     },
   
-    handleUIButtonClick: function() {
-      this.trigger('showBlockControls', this.$el);
+    hide: function() {
+      this.$el.removeClass('st-block-controls--active');
     },
   
     handleControlButtonClick: function(e) {
-      console.log("CLICKED");
       this.trigger('createBlock', e.currentTarget.dataset.type);
-      this.toggleState();
+      this.hide();
     }
   
   });
@@ -1993,7 +1980,6 @@
   
     handleBlockClick: function(e) {
       var block = $(e.currentTarget);
-  
       this.trigger('showBlockControls', block);
     },
   
@@ -2151,11 +2137,8 @@
       this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
   
       this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-      this.listenTo(this.block_controls, 'showBlockControls', this.showBlockControls);
       this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
   
-      // Render marker & format bar
-      //this.marker.render();
       this.formatBar.render();
   
       this.$outer.prepend(this.fl_block_controls.render().$el);
@@ -2182,8 +2165,9 @@
     },
   
     showBlockControls: function(container) {
-      this.block_controls.toggleState();
-      container.append(this.block_controls.$inner.detach());
+      this.block_controls.show();
+      container.append(this.block_controls.$el.detach());
+      this.block_controls.current_container = container;
     },
   
     store: function(){
@@ -2196,7 +2180,7 @@
       A block will have a reference to an Editor instance & the parent BlockType.
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
-    createBlock: function(type, data, place_before) {
+    createBlock: function(type, data, place_after) {
       type = _.capitalize(type); // Proper case
   
       if (!this._isBlockTypeAvailable(type)) {
@@ -2212,19 +2196,30 @@
   
       var block = new SirTrevor.Blocks[type](data, this.ID);
   
-      if (!_.isUndefined(place_before)) {
-        place_before.before(block.render().$el);
-      } else {
-        this.$wrapper.append(block.render().$el);
-      }
+      this._renderInPosition(block.render().$el);
   
       this.listenTo(block, 'removeBlock', this.removeBlock);
+      this.listenTo(block, 'blockFocus', this.blockFocus);
   
       this.blocks.push(block);
       this._incrementBlockTypeCount(type);
   
+      block.focus();
+  
       SirTrevor.publish("editor/block/createBlock");
       SirTrevor.log("Block created of type " + type);
+    },
+  
+    blockFocus: function(block) {
+      this.block_controls.current_container = null;
+    },
+  
+    _renderInPosition: function(block) {
+      if (this.block_controls.current_container) {
+        this.block_controls.current_container.after(block);
+      } else {
+        this.$wrapper.append(block);
+      }
     },
   
     _incrementBlockTypeCount: function(type) {

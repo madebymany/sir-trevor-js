@@ -45,7 +45,6 @@ _.extend(FloatingBlockControls.prototype, FunctionBind, Renderable, Events, {
 
   handleBlockClick: function(e) {
     var block = $(e.currentTarget);
-
     this.trigger('showBlockControls', block);
   },
 

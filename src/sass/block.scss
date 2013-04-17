@@ -4,6 +4,7 @@
 
 .st-block {
   padding: 0 0 $block-controls-height 0;
+  position: relative;
 }
 
 .st-block__inner {
@@ -15,7 +16,15 @@
   border-color: $accent-color;
 }
 
-.st-block--with-plus {
+.st-block--with-plus:after,
+.st-block:last-child:after {
+  content: "";
+  display: block;
+  width: 26px; height: 25px;
+  background: url(images/sir-trevor/ui/add.png) no-repeat center center;
+  position: absolute; z-index: 1;
+  top: 50%; left: 50%;
+  margin: ($block-controls-height / 2) 0 0 -13px;
   background: url(images/sir-trevor/ui/add.png) no-repeat center bottom;
 }
 

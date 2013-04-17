@@ -1,21 +1,6 @@
 // Block Control
 
 .st-block-controls {
-  height: $block-controls-height;
-  width: 100%;
-  position: relative;
-}
-
-.st-block-controls__activate-btn {
-  display: block;
-  width: 26px; height: 25px;
-  background: url(images/sir-trevor/ui/add.png) no-repeat center center;
-  position: absolute; z-index: 1;
-  top: 50%; left: 50%;
-  margin: -12px 0 0 -13px;
-}
-
-.st-block-controls__inner {
   font-family: $base-font-family-dark;
   background-color: $blocks-control-bg-color;
   visibility: hidden; opacity: 0;
@@ -28,7 +13,7 @@
   text-align: center;
 }
 
-.st-block-controls__inner--active {
+.st-block-controls--active {
   visibility: visible; opacity: 1;
 }
 
@@ -46,24 +31,4 @@
 
 .st-block-control:hover {
   color: #000;
-}
-
-.st-fl-block-controls {
-  position: absolute;
-  width: 100%;
-  height: 20px;
-  margin-top: -10px;
-  z-index: 2;
-}
-
-.st-fl-block-controls--hidden {
-  display: none;
-}
-
-.st-fl-block-controls a {
-  display: block;
-  width: 20px;
-  height: 20px;
-  background: #000;
-  margin: 0pt auto;
 }

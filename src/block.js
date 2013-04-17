@@ -41,7 +41,7 @@ var default_drop_options = {
 
 _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
-  bound: ["_handleDrop", "_handleContentPaste", "onFocus", "onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
+  bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
 
   className: 'st-block',
   block_template: _.template(
@@ -254,22 +254,31 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
   /* Generic implementation to tell us when the block is active */
   focus: function() {
-    this.$('.st-text-block').bind('focus', this.onFocus);
+    this.$('.st-text-block').focus();
   },
 
   blur: function() {
-    this.$('.st-text-block').bind('blur', this.onBlur);
+    this.$('.st-text-block').blur();
+  },
+
+  onFocus: function() {
+    this.$('.st-text-block').bind('focus', this._onFocus);
+  },
+
+  onBlur: function() {
+    this.$('.st-text-block').bind('blur', this._onBlur);
   },
 
   /*
   * Event handlers
   */
 
-  onFocus: function() {
+  _onFocus: function() {
     this.$el.addClass('st-block--active');
+    this.trigger('blockFocus', this.$el);
   },
 
-  onBlur: function() {
+  _onBlur: function() {
     //this.$el.removeClass('st-block--active');
   },
 
@@ -400,7 +409,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       drop_html.append(drop_options.upload_html);
     }
 
-    this.$el.append(drop_html);
+    this.$inner.append(drop_html);
     this.$dropzone = drop_html;
 
     // Bind our drop event
@@ -418,8 +427,8 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     this.$inner.append(ui_element);
     this.$ui = ui_element;
 
-    this.focus();
-    this.blur();
+    this.onFocus();
+    this.onBlur();
 
     this._initReordering();
     this._initDeletion();

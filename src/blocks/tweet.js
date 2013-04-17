@@ -1,43 +1,43 @@
 var tweet_template = '<div class="tweet"><img src="<%= user.profile_image_url %>" class="tweet-avatar"><div class="tweet-body"><p class="tweet-user"><a href="http://twitter.com/#!/<%= user.screen_name %>" class="tweet-user">@<%= user.screen_name %></a> on Twitter</p><p class="tweet-text"><%= text %></p><time><%= created_at %></time></div></div>';
 
-SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({ 
-  
+SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
+
   type: "Tweet",
   droppable: true,
   drop_options: {
     pastable: true
   },
-  
+
   icon_name: function() {
     return 'twitter';
   },
 
   loadData: function(data){
-    this.$el.append(_.template(tweet_template, data));
+    this.$inner.append(_.template(tweet_template, data));
   },
-  
+
   onContentPasted: function(event){
     // Content pasted. Delegate to the drop parse method
     var input = $(event.target),
         val = input.val();
-    
+
     // Pass this to the same handler as onDrop
     this.handleTwitterDropPaste(val);
   },
-  
+
   handleTwitterDropPaste: function(url){
-    
-    if(_.isURI(url)) 
+
+    if(_.isURI(url))
     {
       if (url.indexOf("twitter") != -1 && url.indexOf("status") != -1) {
         // Twitter status
         var tweetID = url.match(/[^\/]+$/);
         if (!_.isEmpty(tweetID)) {
-          
+
           this.loading();
-          
+
           tweetID = tweetID[0];
-          
+
           var tweetCallbackSuccess = function(data) {
             // Parse the twitter object into something a bit slimmer..
             var obj = {
@@ -51,18 +51,18 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
               created_at: data.created_at,
               status_url: url
             };
-            
+
             // Save this data on the block
             this.setData(obj);
             this._loadData();
-            
+
             this.ready();
           };
 
           var tweetCallbackFail = function(){
             this.ready();
           };
-          
+
           // Make our AJAX call
           $.ajax({
             url: "http://api.twitter.com/1/statuses/show/" + tweetID + ".json",
@@ -73,7 +73,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
         }
       }
     }
-    
+
   },
 
   onDrop: function(transferData){

@@ -52,11 +52,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
 
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-    this.listenTo(this.block_controls, 'showBlockControls', this.showBlockControls);
     this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
 
-    // Render marker & format bar
-    //this.marker.render();
     this.formatBar.render();
 
     this.$outer.prepend(this.fl_block_controls.render().$el);
@@ -83,8 +80,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   },
 
   showBlockControls: function(container) {
-    this.block_controls.toggleState();
-    container.append(this.block_controls.$inner.detach());
+    this.block_controls.show();
+    container.append(this.block_controls.$el.detach());
+    this.block_controls.current_container = container;
   },
 
   store: function(){
@@ -97,7 +95,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     A block will have a reference to an Editor instance & the parent BlockType.
     We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
   */
-  createBlock: function(type, data, place_before) {
+  createBlock: function(type, data, place_after) {
     type = _.capitalize(type); // Proper case
 
     if (!this._isBlockTypeAvailable(type)) {
@@ -113,19 +111,30 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     var block = new SirTrevor.Blocks[type](data, this.ID);
 
-    if (!_.isUndefined(place_before)) {
-      place_before.before(block.render().$el);
-    } else {
-      this.$wrapper.append(block.render().$el);
-    }
+    this._renderInPosition(block.render().$el);
 
     this.listenTo(block, 'removeBlock', this.removeBlock);
+    this.listenTo(block, 'blockFocus', this.blockFocus);
 
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);
 
+    block.focus();
+
     SirTrevor.publish("editor/block/createBlock");
     SirTrevor.log("Block created of type " + type);
+  },
+
+  blockFocus: function(block) {
+    this.block_controls.current_container = null;
+  },
+
+  _renderInPosition: function(block) {
+    if (this.block_controls.current_container) {
+      this.block_controls.current_container.after(block);
+    } else {
+      this.$wrapper.append(block);
+    }
   },
 
   _incrementBlockTypeCount: function(type) {
