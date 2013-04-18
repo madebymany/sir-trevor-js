@@ -1285,8 +1285,8 @@
     },
   
     _initTextBlocks: function() {
-      document.execCommand("styleWithCSS", false, false);
-      document.execCommand("insertBrOnReturn", false, true);
+      //document.execCommand("styleWithCSS", false, false);
+      //document.execCommand("insertBrOnReturn", false, true);
   
       this.$$('.st-text-block')
         .bind('paste', this._handleContentPaste);

@@ -135,9 +135,8 @@
   background: url(images/sir-trevor/ui/add.png) no-repeat center center;
   position: absolute;
   z-index: 1;
-  top: 50%;
   left: 50%;
-  margin: 62px 0 0 -13px;
+  margin: 49px 0 0 -13px;
   background: url(images/sir-trevor/ui/add.png) no-repeat center bottom; }
 
 .st-block.st-drag-over:after,
