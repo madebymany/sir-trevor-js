@@ -804,7 +804,85 @@
   };
 
   /* Block Mixins */
-
+  /* Adds drop functionaltiy to this block */
+  
+  var Droppable = SirTrevor.BlockMixins.Droppable = {
+  
+    name: "Droppable",
+  
+    initializeDroppable: function() {
+      SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
+  
+      var drop_options = _.extend(default_drop_options, this.drop_options);
+  
+      // Build the dropzone interface
+      var drop_html = $(_.template(drop_options.drop_html, this));
+  
+      if (this.drop_options.pastable) {
+        drop_html.append(drop_options.paste_html);
+      }
+  
+      if (this.drop_options.uploadable) {
+        drop_html.append(drop_options.upload_html);
+      }
+  
+      this.$inner.append(drop_html);
+      this.$dropzone = drop_html;
+  
+      // Bind our drop event
+      this.$dropzone.bind('drop', this._handleDrop)
+                    .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
+                    .bind('dragover', function(e) {
+                      e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
+                      $(this).addClass('st-dropzone--dragover');
+                    })
+                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
+    },
+  
+    onDrop: function(dataTransferObj) {},
+  
+    _handleDrop: function(e) {
+      e.preventDefault();
+      e = e.originalEvent;
+  
+      SirTrevor.publish("editor/block/handleDrop");
+  
+      var el = $(e.target),
+          types = e.dataTransfer.types,
+          type, data = [];
+  
+      this.$dropzone.removeClass('st-dropzone--dragover');
+  
+      /*
+        Check the type we just received,
+        delegate it away to our blockTypes to process
+      */
+  
+      if (!_.isUndefined(types)) {
+        if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) {
+          this.onDrop(e.dataTransfer);
+        }
+      }
+    },
+  
+  };
+  /* Adds paste functionaltiy to this block */
+  
+  var Pastable = SirTrevor.BlockMixins.Pastable = {
+  
+    name: "Pastable",
+  
+    initializePastable: function() {
+  
+    }
+  
+  };
+  /* Adds upload functionaltiy to this block */
+  
+  var Uploadable = SirTrevor.BlockMixins.Uploadable = {
+    name: "Uploadable",
+    initializeUploadable: function() {}
+  };
 
   var Block = SirTrevor.Block = function(data, instance_id) {
     this.store("create", this, { data: data || {} });
@@ -917,6 +995,12 @@
       }
     },
   
+    withMixin: function(mixin) {
+      if (!_.isObject(mixin)) { return; }
+      _.extend(this, mixin);
+      this["initialize" + mixin.name]();
+    },
+  
     render: function() {
       this.beforeBlockRender();
   
@@ -934,7 +1018,7 @@
       this._loadAndSetData();
   
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this._initDroppable(); }
+      if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
       if (this.formattingEnabled) { this._initFormatting(); }
   
       this._initUIComponents();
@@ -1186,30 +1270,6 @@
       _.delay(_.bind(timed, this, ev), 100);
     },
   
-    _handleDrop: function(e) {
-      e.preventDefault();
-      e = e.originalEvent;
-  
-      SirTrevor.publish("editor/block/handleDrop");
-  
-      var el = $(e.target),
-          types = e.dataTransfer.types,
-          type, data = [];
-  
-      this.$dropzone.removeClass('st-dropzone--dragover');
-  
-      /*
-        Check the type we just received,
-        delegate it away to our blockTypes to process
-      */
-  
-      if (!_.isUndefined(types)) {
-        if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) {
-          this.onDrop(e.dataTransfer);
-        }
-      }
-    },
-  
     _getBlockClass: function() {
       return 'st-block--' + this.className;
     },
@@ -1217,35 +1277,6 @@
     /*
     * Init functions for adding functionality
     */
-  
-    _initDroppable: function() {
-      SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
-  
-      var drop_options = _.extend(default_drop_options, this.drop_options);
-  
-      // Build the dropzone interface
-      var drop_html = $(_.template(drop_options.drop_html, this));
-  
-      if (this.drop_options.pastable) {
-        drop_html.append(drop_options.paste_html);
-      }
-  
-      if (this.drop_options.uploadable) {
-        drop_html.append(drop_options.upload_html);
-      }
-  
-      this.$inner.append(drop_html);
-      this.$dropzone = drop_html;
-  
-      // Bind our drop event
-      this.$dropzone.bind('drop', this._handleDrop)
-                    .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
-                    .bind('dragover', function(e) {
-                      e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
-                      $(this).addClass('st-dropzone--dragover');
-                    })
-                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
-    },
   
     _initUIComponents: function() {
       var ui_element = $("<div>", { 'class': 'st-block__ui' });
