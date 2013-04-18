@@ -127,7 +127,7 @@
   border: 2px solid #fff;
   position: relative; }
 
-.st-block--active .st-block__inner {
+.st-block__inner:hover {
   border-color: #2cc46c; }
 
 .st-block--with-plus:after,
@@ -156,7 +156,7 @@
   bottom: 0;
   right: 0; }
 
-.st-block--active .st-block__ui {
+.st-block__inner:hover .st-block__ui {
   opacity: 1; }
 
 .st-block__reorder,

@@ -12,7 +12,7 @@
   position: relative;
 }
 
-.st-block--active .st-block__inner {
+.st-block__inner:hover {
   border-color: $accent-color;
 }
 
@@ -42,7 +42,7 @@
   right: 0;
 }
 
-.st-block--active .st-block__ui {
+.st-block__inner:hover .st-block__ui {
   opacity: 1;
 }
 

@@ -274,7 +274,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   */
 
   _onFocus: function() {
-    this.$el.addClass('st-block--active');
     this.trigger('blockFocus', this.$el);
   },
 

@@ -56,7 +56,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.formatBar.render();
 
-    this.$outer.prepend(this.fl_block_controls.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     var store = this.store("read", this);
