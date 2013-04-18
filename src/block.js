@@ -41,7 +41,7 @@ var default_drop_options = {
 
 _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
-  bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
+  bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd", "onReorderDrop"],
 
   className: 'st-block',
   block_template: _.template(
@@ -278,7 +278,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   },
 
   _onBlur: function() {
-    //this.$el.removeClass('st-block--active');
   },
 
   onDrop: function(dataTransferObj) {},
@@ -292,6 +291,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
     ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
 
+    this.trigger("reorderBlockDragStart");
     block.addClass('st-block--dragging');
   },
 
@@ -299,6 +299,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     var item = $(ev.target),
         block = item.parents('.st-block');
 
+    this.trigger("reorderBlockDragEnd");
     block.removeClass('st-block--dragging');
   },
 
@@ -308,6 +309,20 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       this.trigger('removeBlock', this.blockID, this.type);
       halt(ev);
     }
+  },
+
+  onReorderDrop: function(ev) {
+    ev.preventDefault();
+
+    var dropped_on = this.$el,
+        item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+        block = $('#' + item_id);
+
+    if (!_.isUndefined(item_id) && !_.isEmpty(block)) {
+      dropped_on.after(block);
+    }
+
+    this.trigger("reorderBlockDropped");
   },
 
   onContentPasted: function(ev){
@@ -443,9 +458,8 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       .bind('drag', this.onDrag);
 
     this.$el
-      .bind('drop', halt)
-      .bind('dragleave', halt)
-      .bind('dragover', function(ev){ ev.preventDefault(); });
+      .dropArea()
+      .bind('drop', this.onReorderDrop);
   },
 
   _initDeletion: function() {

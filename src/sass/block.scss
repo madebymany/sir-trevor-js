@@ -8,7 +8,7 @@
 }
 
 .st-block__inner {
-  border: 2px solid #fff;
+  border: 2px solid rgba($accent-color, 0.1);
   position: relative;
 }
 
@@ -28,6 +28,22 @@
   background: url(images/sir-trevor/ui/add.png) no-repeat center bottom;
 }
 
+.st-block.st-drag-over:after,
+.st-block.st-drag-over:last-child:after {
+  content: "Drop block here";
+  width: 100%;
+  text-align: center;
+  line-height: $block-controls-height;
+  height: $block-controls-height;
+  position: absolute; z-index: 1;
+  top: auto; left: auto;
+  margin: 0;
+  background: #FFF0A0;
+  color: darken(#FFF0A0, 60%);
+  font-size: 18px;
+  font-weight: 700;
+}
+
 .st-text-block {
   min-height: 50px;
   font-size: $text-block-font-size;
@@ -37,7 +53,7 @@
 
 .st-block__ui {
   position: absolute;
-  opacity: 0;
+  opacity: 0.1;
   bottom: 0;
   right: 0;
 }
@@ -68,7 +84,7 @@
 }
 
 .st-block__dropzone {
-  padding: 15px 0;
+  padding: 25px 0;
 }
 
 .st-block__dropzone .st-icon {

@@ -32,10 +32,12 @@ function isElementNear($element, distance, event) {
 
   function dragOver(e) {
     e.originalEvent.dataTransfer.dropEffect = "copy";
+    $(e.currentTarget).addClass('st-drag-over');
     halt(e);
   }
 
   function dragLeave(e) {
+    $(e.currentTarget).removeClass('st-drag-over');
     halt(e);
   }
 

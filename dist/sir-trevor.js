@@ -144,10 +144,12 @@
   
     function dragOver(e) {
       e.originalEvent.dataTransfer.dropEffect = "copy";
+      $(e.currentTarget).addClass('st-drag-over');
       halt(e);
     }
   
     function dragLeave(e) {
+      $(e.currentTarget).removeClass('st-drag-over');
       halt(e);
     }
   
@@ -842,7 +844,7 @@
   
   _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   
-    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd"],
+    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd", "onReorderDrop"],
   
     className: 'st-block',
     block_template: _.template(
@@ -1079,7 +1081,6 @@
     },
   
     _onBlur: function() {
-      //this.$el.removeClass('st-block--active');
     },
   
     onDrop: function(dataTransferObj) {},
@@ -1093,6 +1094,7 @@
       ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
       ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
   
+      this.trigger("reorderBlockDragStart");
       block.addClass('st-block--dragging');
     },
   
@@ -1100,6 +1102,7 @@
       var item = $(ev.target),
           block = item.parents('.st-block');
   
+      this.trigger("reorderBlockDragEnd");
       block.removeClass('st-block--dragging');
     },
   
@@ -1109,6 +1112,20 @@
         this.trigger('removeBlock', this.blockID, this.type);
         halt(ev);
       }
+    },
+  
+    onReorderDrop: function(ev) {
+      ev.preventDefault();
+  
+      var dropped_on = this.$el,
+          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+          block = $('#' + item_id);
+  
+      if (!_.isUndefined(item_id) && !_.isEmpty(block)) {
+        dropped_on.after(block);
+      }
+  
+      this.trigger("reorderBlockDropped");
     },
   
     onContentPasted: function(ev){
@@ -1244,9 +1261,8 @@
         .bind('drag', this.onDrag);
   
       this.$el
-        .bind('drop', halt)
-        .bind('dragleave', halt)
-        .bind('dragover', function(ev){ ev.preventDefault(); });
+        .dropArea()
+        .bind('drop', this.onReorderDrop);
     },
   
     _initDeletion: function() {
@@ -2186,6 +2202,8 @@
   
       this.listenTo(block, 'removeBlock', this.removeBlock);
       this.listenTo(block, 'blockFocus', this.blockFocus);
+      this.listenTo(block, 'reorderBlockDragStart', this.hideBlockControls);
+      this.listenTo(block, 'reorderBlockDropped', this.removeBlockDragOver);
   
       this.blocks.push(block);
       this._incrementBlockTypeCount(type);
@@ -2198,6 +2216,14 @@
   
     blockFocus: function(block) {
       this.block_controls.current_container = null;
+    },
+  
+    hideBlockControls: function() {
+      this.block_controls.hide();
+    },
+  
+    removeBlockDragOver: function() {
+      this.$wrapper.find('.st-drag-over').removeClass('st-drag-over');
     },
   
     _renderInPosition: function(block) {

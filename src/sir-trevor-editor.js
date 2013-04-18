@@ -114,6 +114,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.listenTo(block, 'removeBlock', this.removeBlock);
     this.listenTo(block, 'blockFocus', this.blockFocus);
+    this.listenTo(block, 'reorderBlockDragStart', this.hideBlockControls);
+    this.listenTo(block, 'reorderBlockDropped', this.removeBlockDragOver);
 
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);
@@ -126,6 +128,14 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
   blockFocus: function(block) {
     this.block_controls.current_container = null;
+  },
+
+  hideBlockControls: function() {
+    this.block_controls.hide();
+  },
+
+  removeBlockDragOver: function() {
+    this.$wrapper.find('.st-drag-over').removeClass('st-drag-over');
   },
 
   _renderInPosition: function(block) {
