@@ -1121,7 +1121,7 @@
           item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
           block = $('#' + item_id);
   
-      if (!_.isUndefined(item_id) && !_.isEmpty(block)) {
+      if (!_.isUndefined(item_id) && !_.isEmpty(block) && this.blockID != item_id && this.instanceID == block.attr('data-instance')) {
         dropped_on.after(block);
       }
   
