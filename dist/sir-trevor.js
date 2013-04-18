@@ -50,6 +50,7 @@
     baseImageUrl: '/sir-trevor-uploads/'
   };
 
+  SirTrevor.BlockMixins = {};
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
@@ -801,6 +802,10 @@
   
     return markdown;  
   };
+
+  /* Block Mixins */
+
+
   var Block = SirTrevor.Block = function(data, instance_id) {
     this.store("create", this, { data: data || {} });
     this.blockID = _.uniqueId(this.className + '-');
@@ -1121,7 +1126,11 @@
           item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
           block = $('#' + item_id);
   
-      if (!_.isUndefined(item_id) && !_.isEmpty(block) && this.blockID != item_id && this.instanceID == block.attr('data-instance')) {
+      if (!_.isUndefined(item_id) &&
+        !_.isEmpty(block) &&
+        this.blockID != item_id &&
+        this.instanceID == block.attr('data-instance')
+      ) {
         dropped_on.after(block);
       }
   
@@ -2250,6 +2259,8 @@
   
     removeBlock: function(block_id, type) {
       this.blockCounts[type] = this.blockCounts[type] - 1;
+      var block = _.select(this.blocks, function(item){ return (item.blockID == block_id); });
+      this.stopListening(block);
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
       SirTrevor.publish("editor/block/removeBlock");
     },

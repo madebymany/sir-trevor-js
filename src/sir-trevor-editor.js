@@ -162,6 +162,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
   removeBlock: function(block_id, type) {
     this.blockCounts[type] = this.blockCounts[type] - 1;
+    var block = _.select(this.blocks, function(item){ return (item.blockID == block_id); });
+    this.stopListening(block);
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
     SirTrevor.publish("editor/block/removeBlock");
   },

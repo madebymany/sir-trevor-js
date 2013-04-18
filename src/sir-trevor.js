@@ -50,6 +50,7 @@
     baseImageUrl: '/sir-trevor-uploads/'
   };
 
+  SirTrevor.BlockMixins = {};
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
@@ -104,6 +105,10 @@
   //= extensions
   //= to-html.js
   //= to-markdown.js
+
+  /* Block Mixins */
+
+
   //= block.js
   //= formatter.js
 
