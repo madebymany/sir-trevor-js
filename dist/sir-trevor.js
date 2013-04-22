@@ -83,10 +83,17 @@
 
     _ensureElement: function() {
       if (!this.el) {
-        var attrs = _.extend({}, _.result(this, 'attributes'));
+        var attrs = _.extend({}, _.result(this, 'attributes')),
+            html;
         if (this.id) { attrs.id = this.id; }
         if (this.className) { attrs['class'] = this.className; }
+
+        if (attrs.html) {
+          html = attrs.html;
+          delete attrs.html;
+        }
         var $el = $('<' + this.tagName + '>').attr(attrs);
+        if (html) { $el.html(html); }
         this._setElement($el);
       } else {
         this._setElement(this.el);
@@ -803,10 +810,12 @@
     return markdown;  
   };
 
+  SirTrevor.EventBus = _.extend({}, SirTrevor.Events);
+
   /* Block Mixins */
   /* Adds drop functionaltiy to this block */
   
-  var Droppable = SirTrevor.BlockMixins.Droppable = {
+  SirTrevor.BlockMixins.Droppable = {
   
     name: "Droppable",
   
@@ -863,7 +872,7 @@
           this.onDrop(e.dataTransfer);
         }
       }
-    },
+    }
   
   };
   /* Adds paste functionaltiy to this block */
@@ -883,7 +892,96 @@
     name: "Uploadable",
     initializeUploadable: function() {}
   };
-
+  var BlockReorder = SirTrevor.BlockReorder = function(block_element) {
+    this.$block = block_element;
+  
+    this._ensureElement();
+    this._bindFunctions();
+    this.initialize.apply(this, arguments);
+  };
+  
+  _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
+  
+    bound: ['onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+  
+    className: 'st-block__reorder st-icon',
+    tagName: 'a',
+  
+    attributes: function() {
+      return {
+        'html': 'reorder',
+        'draggable': 'true'
+      };
+    },
+  
+    initialize: function() {
+      this.$el.bind('dragstart', this.onDragStart)
+              .bind('dragend', this.onDragEnd)
+              .bind('drag', this.onDrag);
+  
+      this.$block.dropArea()
+                 .bind('drop', this.onDrop);
+    },
+  
+    onDrop: function(ev) {
+      ev.preventDefault();
+  
+      var dropped_on = this.$block,
+          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+          block = $('#' + item_id);
+  
+      if (!_.isUndefined(item_id) &&
+        !_.isEmpty(block) &&
+        dropped_on.attr('id') != item_id &&
+        dropped_on.attr('data-instance') == block.attr('data-instance')
+      ) {
+        dropped_on.after(block);
+      }
+  
+      SirTrevor.EventBus.trigger("block:reorder:drop");
+    },
+  
+    onDragStart: function(ev) {
+      var item = $(ev.target),
+          block = item.parents('.st-block');
+  
+      ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
+      ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
+  
+      SirTrevor.EventBus.trigger("block:reorder:dragstart");
+      block.addClass('st-block--dragging');
+    },
+  
+    onDragEnd: function(ev) {
+      var item = $(ev.target),
+          block = item.parents('.st-block');
+  
+      SirTrevor.EventBus.trigger("block:reorder:dragend");
+      block.removeClass('st-block--dragging');
+    },
+  
+    onDrag: function(ev){},
+  
+    render: function() {
+      return this;
+    }
+  
+  });
+  var BlockDeletion = SirTrevor.BlockDeletion = function() {
+    this._ensureElement();
+    this._bindFunctions();
+  };
+  
+  _.extend(BlockDeletion.prototype, FunctionBind, Renderable, {
+  
+    tagName: 'a',
+    className: 'st-block__remove st-icon',
+  
+    attributes: {
+      html: 'delete'
+    }
+  
+  });
   var Block = SirTrevor.Block = function(data, instance_id) {
     this.store("create", this, { data: data || {} });
     this.blockID = _.uniqueId(this.className + '-');
@@ -927,7 +1025,7 @@
   
   _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   
-    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDrag", "onDragStart", "onDragEnd", "onReorderDrop"],
+    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
   
     className: 'st-block',
     block_template: _.template(
@@ -1169,31 +1267,9 @@
       this.trigger('blockFocus', this.$el);
     },
   
-    _onBlur: function() {
-    },
+    _onBlur: function() {},
   
     onDrop: function(dataTransferObj) {},
-  
-    onDrag: function(ev){},
-  
-    onDragStart: function(ev){
-      var item = $(ev.target),
-          block = item.parents('.st-block');
-  
-      ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
-      ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
-  
-      this.trigger("reorderBlockDragStart");
-      block.addClass('st-block--dragging');
-    },
-  
-    onDragEnd: function(ev){
-      var item = $(ev.target),
-          block = item.parents('.st-block');
-  
-      this.trigger("reorderBlockDragEnd");
-      block.removeClass('st-block--dragging');
-    },
   
     onDeleteClick: function(ev) {
       if (confirm('Are you sure you wish to delete this content?')) {
@@ -1201,24 +1277,6 @@
         this.trigger('removeBlock', this.blockID, this.type);
         halt(ev);
       }
-    },
-  
-    onReorderDrop: function(ev) {
-      ev.preventDefault();
-  
-      var dropped_on = this.$el,
-          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
-          block = $('#' + item_id);
-  
-      if (!_.isUndefined(item_id) &&
-        !_.isEmpty(block) &&
-        this.blockID != item_id &&
-        this.instanceID == block.attr('data-instance')
-      ) {
-        dropped_on.after(block);
-      }
-  
-      this.trigger("reorderBlockDropped");
     },
   
     onContentPasted: function(ev){
@@ -1283,32 +1341,13 @@
       this.$inner.append(ui_element);
       this.$ui = ui_element;
   
+      this.$ui.append(new SirTrevor.BlockReorder(this.$el).render().$el);
+      this.$ui.append(new SirTrevor.BlockDeletion().render().$el);
+  
+      this.$ui.on('click', '.st-block__remove', this.onDeleteClick);
+  
       this.onFocus();
       this.onBlur();
-  
-      this._initReordering();
-      this._initDeletion();
-    },
-  
-    _initReordering: function() {
-      var reorder_element = $('<a>', { 'class': 'st-block__reorder st-icon', 'html': 'reorder', 'draggable': 'true' });
-  
-      this.$ui.append(reorder_element);
-  
-      reorder_element
-        .bind('dragstart', this.onDragStart)
-        .bind('dragend', this.onDragEnd)
-        .bind('drag', this.onDrag);
-  
-      this.$el
-        .dropArea()
-        .bind('drop', this.onReorderDrop);
-    },
-  
-    _initDeletion: function() {
-      var delete_el = $('<a>',{ 'class': 'st-block__remove st-icon', 'html': 'delete' });
-      this.$ui.append(delete_el);
-      delete_el.bind('click', this.onDeleteClick);
     },
   
     _initFormatting: function() {
@@ -2182,6 +2221,9 @@
       this.listenTo(this.block_controls, 'createBlock', this.createBlock);
       this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
   
+      SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
+      SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
+  
       this.formatBar.render();
   
       this.$outer.append(this.block_controls.render().$el);
@@ -2241,9 +2283,6 @@
       this._renderInPosition(block.render().$el);
   
       this.listenTo(block, 'removeBlock', this.removeBlock);
-      this.listenTo(block, 'blockFocus', this.blockFocus);
-      this.listenTo(block, 'reorderBlockDragStart', this.hideBlockControls);
-      this.listenTo(block, 'reorderBlockDropped', this.removeBlockDragOver);
   
       this.blocks.push(block);
       this._incrementBlockTypeCount(type);

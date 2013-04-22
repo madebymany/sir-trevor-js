@@ -1,6 +1,6 @@
 /* Adds drop functionaltiy to this block */
 
-var Droppable = SirTrevor.BlockMixins.Droppable = {
+SirTrevor.BlockMixins.Droppable = {
 
   name: "Droppable",
 
@@ -57,6 +57,6 @@ var Droppable = SirTrevor.BlockMixins.Droppable = {
         this.onDrop(e.dataTransfer);
       }
     }
-  },
+  }
 
 };

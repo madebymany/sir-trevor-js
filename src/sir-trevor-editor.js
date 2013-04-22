@@ -54,6 +54,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
     this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
 
+    SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
+    SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
+
     this.formatBar.render();
 
     this.$outer.append(this.block_controls.render().$el);
@@ -113,9 +116,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this._renderInPosition(block.render().$el);
 
     this.listenTo(block, 'removeBlock', this.removeBlock);
-    this.listenTo(block, 'blockFocus', this.blockFocus);
-    this.listenTo(block, 'reorderBlockDragStart', this.hideBlockControls);
-    this.listenTo(block, 'reorderBlockDropped', this.removeBlockDragOver);
 
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);

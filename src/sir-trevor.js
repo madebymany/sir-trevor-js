@@ -83,10 +83,17 @@
 
     _ensureElement: function() {
       if (!this.el) {
-        var attrs = _.extend({}, _.result(this, 'attributes'));
+        var attrs = _.extend({}, _.result(this, 'attributes')),
+            html;
         if (this.id) { attrs.id = this.id; }
         if (this.className) { attrs['class'] = this.className; }
+
+        if (attrs.html) {
+          html = attrs.html;
+          delete attrs.html;
+        }
         var $el = $('<' + this.tagName + '>').attr(attrs);
+        if (html) { $el.html(html); }
         this._setElement($el);
       } else {
         this._setElement(this.el);
@@ -106,9 +113,12 @@
   //= to-html.js
   //= to-markdown.js
 
+  SirTrevor.EventBus = _.extend({}, SirTrevor.Events);
+
   /* Block Mixins */
   //= block_mixins
-
+  //= block.reorder.js
+  //= block.deletion.js
   //= block.js
   //= formatter.js
 
