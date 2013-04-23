@@ -839,7 +839,7 @@
       this.$dropzone = drop_html;
   
       // Bind our drop event
-      this.$dropzone.bind('drop', this._handleDrop)
+      this.$dropzone.bind('drop', _.bind(this._handleDrop, this))
                     .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
                     .bind('dragover', function(e) {
                       e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
@@ -847,8 +847,6 @@
                     })
                     .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
     },
-  
-    onDrop: function(dataTransferObj) {},
   
     _handleDrop: function(e) {
       e.preventDefault();
@@ -860,7 +858,7 @@
           types = e.dataTransfer.types,
           type, data = [];
   
-      this.$dropzone.removeClass('st-dropzone--dragover');
+      el.removeClass('st-dropzone--dragover');
   
       /*
         Check the type we just received,
@@ -872,6 +870,8 @@
           this.onDrop(e.dataTransfer);
         }
       }
+  
+      SirTrevor.EventBus.trigger('block:content:dropped');
     }
   
   };
@@ -2223,6 +2223,7 @@
   
       SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
+      SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
   
       this.formatBar.render();
   
@@ -2329,8 +2330,6 @@
   
     removeBlock: function(block_id, type) {
       this.blockCounts[type] = this.blockCounts[type] - 1;
-      var block = _.select(this.blocks, function(item){ return (item.blockID == block_id); });
-      this.stopListening(block);
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
       SirTrevor.publish("editor/block/removeBlock");
     },

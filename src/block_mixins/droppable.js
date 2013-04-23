@@ -24,7 +24,7 @@ SirTrevor.BlockMixins.Droppable = {
     this.$dropzone = drop_html;
 
     // Bind our drop event
-    this.$dropzone.bind('drop', this._handleDrop)
+    this.$dropzone.bind('drop', _.bind(this._handleDrop, this))
                   .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
                   .bind('dragover', function(e) {
                     e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
@@ -32,8 +32,6 @@ SirTrevor.BlockMixins.Droppable = {
                   })
                   .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
   },
-
-  onDrop: function(dataTransferObj) {},
 
   _handleDrop: function(e) {
     e.preventDefault();
@@ -45,7 +43,7 @@ SirTrevor.BlockMixins.Droppable = {
         types = e.dataTransfer.types,
         type, data = [];
 
-    this.$dropzone.removeClass('st-dropzone--dragover');
+    el.removeClass('st-dropzone--dragover');
 
     /*
       Check the type we just received,
@@ -57,6 +55,8 @@ SirTrevor.BlockMixins.Droppable = {
         this.onDrop(e.dataTransfer);
       }
     }
+
+    SirTrevor.EventBus.trigger('block:content:dropped');
   }
 
 };
