@@ -2,22 +2,22 @@
   Simple Image Block
 */
 
-SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
-  
+SirTrevor.Blocks.Image = SirTrevor.Block.extend({
+
   type: "Image",
   droppable: true,
 
   drop_options: {
     uploadable: true
   },
-    
+
   loadData: function(data){
     // Create our image tag
     this.$editor.html($('<img>', {
       src: data.file.url
     }));
   },
-  
+
   onBlockRender: function(){
     /* Setup the upload button */
     this.$dropzone.find('button').bind('click', halt);
@@ -25,11 +25,13 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.onDrop(ev.currentTarget);
     }, this));
   },
-  
+
   onDrop: function(transferData){
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
-        
+
+        console.log(transferData, file);
+
     // Handle one upload at a time
     if (/image/.test(file.type)) {
       this.loading();
@@ -39,11 +41,11 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
         src: urlAPI.createObjectURL(file)
       }));
       this.$editor.show();
-      
+
       // Upload!
-      SirTrevor.publish('setSubmitButton', ['Please wait...']); 
+      SirTrevor.publish('setSubmitButton', ['Please wait...']);
       this.uploader(
-        file, 
+        file,
         function(data){
           // Store the data on this block
           this.setData(data);

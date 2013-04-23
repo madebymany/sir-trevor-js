@@ -818,6 +818,7 @@
   SirTrevor.BlockMixins.Droppable = {
   
     name: "Droppable",
+    valid_drop_file_types: ['File', 'text/plain', 'text/uri-list'],
   
     initializeDroppable: function() {
       SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
@@ -839,17 +840,13 @@
       this.$dropzone = drop_html;
   
       // Bind our drop event
-      this.$dropzone.bind('drop', _.bind(this._handleDrop, this))
-                    .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
-                    .bind('dragover', function(e) {
-                      e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
-                      $(this).addClass('st-dropzone--dragover');
-                    })
-                    .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
+      this.$dropzone.dropArea()
+                    .bind('drop', _.bind(this._handleDrop, this));
     },
   
     _handleDrop: function(e) {
       e.preventDefault();
+  
       e = e.originalEvent;
   
       SirTrevor.publish("editor/block/handleDrop");
@@ -865,10 +862,9 @@
         delegate it away to our blockTypes to process
       */
   
-      if (!_.isUndefined(types)) {
-        if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) {
-          this.onDrop(e.dataTransfer);
-        }
+      if (!_.isUndefined(types) &&
+        _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {
+        this.onDrop(e.dataTransfer);
       }
   
       SirTrevor.EventBus.trigger('block:content:dropped');
@@ -1641,22 +1637,22 @@
     Simple Image Block
   */
   
-  SirTrevor.Blocks.Image = SirTrevor.Block.extend({ 
-    
+  SirTrevor.Blocks.Image = SirTrevor.Block.extend({
+  
     type: "Image",
     droppable: true,
   
     drop_options: {
       uploadable: true
     },
-      
+  
     loadData: function(data){
       // Create our image tag
       this.$editor.html($('<img>', {
         src: data.file.url
       }));
     },
-    
+  
     onBlockRender: function(){
       /* Setup the upload button */
       this.$dropzone.find('button').bind('click', halt);
@@ -1664,11 +1660,13 @@
         this.onDrop(ev.currentTarget);
       }, this));
     },
-    
+  
     onDrop: function(transferData){
       var file = transferData.files[0],
           urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
-          
+  
+          console.log(transferData, file);
+  
       // Handle one upload at a time
       if (/image/.test(file.type)) {
         this.loading();
@@ -1678,11 +1676,11 @@
           src: urlAPI.createObjectURL(file)
         }));
         this.$editor.show();
-        
+  
         // Upload!
-        SirTrevor.publish('setSubmitButton', ['Please wait...']); 
+        SirTrevor.publish('setSubmitButton', ['Please wait...']);
         this.uploader(
-          file, 
+          file,
           function(data){
             // Store the data on this block
             this.setData(data);

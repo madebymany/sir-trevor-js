@@ -3,6 +3,7 @@
 SirTrevor.BlockMixins.Droppable = {
 
   name: "Droppable",
+  valid_drop_file_types: ['File', 'text/plain', 'text/uri-list'],
 
   initializeDroppable: function() {
     SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
@@ -24,17 +25,13 @@ SirTrevor.BlockMixins.Droppable = {
     this.$dropzone = drop_html;
 
     // Bind our drop event
-    this.$dropzone.bind('drop', _.bind(this._handleDrop, this))
-                  .bind('dragenter', function(e) { halt(e); $(this).addClass('st-dropzone--dragover'); })
-                  .bind('dragover', function(e) {
-                    e.originalEvent.dataTransfer.dropEffect = "copy"; halt(e);
-                    $(this).addClass('st-dropzone--dragover');
-                  })
-                  .bind('dragleave', function(e) { halt(e); $(this).removeClass('st-dropzone--dragover'); });
+    this.$dropzone.dropArea()
+                  .bind('drop', _.bind(this._handleDrop, this));
   },
 
   _handleDrop: function(e) {
     e.preventDefault();
+
     e = e.originalEvent;
 
     SirTrevor.publish("editor/block/handleDrop");
@@ -50,10 +47,9 @@ SirTrevor.BlockMixins.Droppable = {
       delegate it away to our blockTypes to process
     */
 
-    if (!_.isUndefined(types)) {
-      if (_.include(types, 'Files') || _.include(types, 'text/plain') || _.include(types, 'text/uri-list')) {
-        this.onDrop(e.dataTransfer);
-      }
+    if (!_.isUndefined(types) &&
+      _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {
+      this.onDrop(e.dataTransfer);
     }
 
     SirTrevor.EventBus.trigger('block:content:dropped');
