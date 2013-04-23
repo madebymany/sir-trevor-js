@@ -1364,7 +1364,16 @@
       //document.execCommand("insertBrOnReturn", false, true);
   
       this.$$('.st-text-block')
-        .bind('paste', this._handleContentPaste);
+        .bind('paste', this._handleContentPaste)
+        .bind('mouseup', function(){
+          var range = window.getSelection().getRangeAt(0);
+  
+          if (!range.collapsed) {
+            var bb = range.getBoundingClientRect();
+            SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left, width: bb.width });
+          }
+        });
+  
     },
   
     hasTextBlock: function() {
@@ -2145,6 +2154,11 @@
   
     remove: function(){ this.$el.remove(); },
   
+    renderAt: function(coords) {
+      this.show();
+      console.log(coords);
+    },
+  
     onFormatButtonClick: function(ev){
       halt(ev);
   
@@ -2222,6 +2236,7 @@
       SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
+      SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
   
       this.formatBar.render();
   

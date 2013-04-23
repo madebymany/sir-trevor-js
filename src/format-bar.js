@@ -74,6 +74,11 @@ _.extend(FormatBar.prototype, FunctionBind, {
 
   remove: function(){ this.$el.remove(); },
 
+  renderAt: function(coords) {
+    this.show();
+    console.log(coords);
+  },
+
   onFormatButtonClick: function(ev){
     halt(ev);
 

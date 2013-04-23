@@ -384,7 +384,16 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     //document.execCommand("insertBrOnReturn", false, true);
 
     this.$$('.st-text-block')
-      .bind('paste', this._handleContentPaste);
+      .bind('paste', this._handleContentPaste)
+      .bind('mouseup', function(){
+        var range = window.getSelection().getRangeAt(0);
+
+        if (!range.collapsed) {
+          var bb = range.getBoundingClientRect();
+          SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left, width: bb.width });
+        }
+      });
+
   },
 
   hasTextBlock: function() {

@@ -57,6 +57,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
+    SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
 
     this.formatBar.render();
 
