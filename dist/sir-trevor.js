@@ -1370,7 +1370,7 @@
   
           if (!range.collapsed) {
             var bb = range.getBoundingClientRect();
-            SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left, width: bb.width });
+            SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
           }
         });
   
@@ -1706,12 +1706,12 @@
   /*
     Text Block
   */
-  SirTrevor.Blocks.Text = SirTrevor.Block.extend({ 
-    
+  SirTrevor.Blocks.Text = SirTrevor.Block.extend({
+  
     type: 'Text',
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
-    
+  
     loadData: function(data){
       this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
     }
@@ -2085,78 +2085,50 @@
     Renders with all available options for the editor instance
   */
   
-  var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
-    this.instance = editorInstance;
+  var FormatBar = SirTrevor.FormatBar = function(options) {
     this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
-    this.className = this.instance.baseCSS(this.options.baseCSSClass);
-    this.clicked = false;
+    this._ensureElement();
     this._bindFunctions();
+  
+    this.initialize.apply(this, arguments);
   };
   
-  _.extend(FormatBar.prototype, FunctionBind, {
+  _.extend(FormatBar.prototype, FunctionBind, Events, Renderable, {
+  
+    className: 'st-format-bar',
   
     bound: ["onFormatButtonClick"],
   
-    render: function(){
-      var bar = $("<div>", {
-        "class": this.className
-      });
-  
-      //this.instance.$wrapper.prepend(bar);
-      this.$el = bar;
-  
+    initialize: function() {
       var formatName, format;
   
       for (formatName in SirTrevor.Formatters) {
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
           $("<button>", {
-            'class': this.instance.baseCSS("format-button"),
+            'class': 'st-format-btn st-format-btn--' + formatName,
             'text': format.title,
             'data-type': formatName,
-            'data-cmd': format.cmd,
-            click: this.onFormatButtonClick
+            'data-cmd': format.cmd
           }).appendTo(this.$el);
         }
       }
   
-      if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
-      this.show();
-    },
-  
-    handleDocumentScroll: function() {
-      var instance_height = this.instance.$outer.height(),
-          instance_offset = this.instance.$outer.offset().top,
-          viewport_top = $(document).scrollTop();
-  
-      if (this.$el.hasClass('fixed')) {
-        instance_offset = this.$el.offset().top;
-      }
-  
-      if ((viewport_top > 5) && viewport_top >= instance_offset) {
-        this.$el.addClass('fixed')
-                .css({ 'width': this.instance.$wrapper.width() });
-  
-        this.instance.$wrapper.css({ 'padding-top': '104px' });
-      } else {
-        this.$el.removeClass('fixed').css({ 'width': '100%' });
-        this.instance.$wrapper.css({ 'padding-top': '16px' });
-      }
+      this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
     },
   
     hide: function() {
-      this.$el.removeClass(this.instance.baseCSS('item-ready'));
+      this.$el.removeClass('st-format-bar--is-ready');
     },
   
     show: function() {
-      this.$el.addClass(this.instance.baseCSS('item-ready'));
+      this.$el.addClass('st-format-bar--is-ready');
     },
   
     remove: function(){ this.$el.remove(); },
   
     renderAt: function(coords) {
-      this.show();
-      console.log(coords);
+      this.$el.css(coords);
     },
   
     onFormatButtonClick: function(ev){
@@ -2172,8 +2144,6 @@
         // Call default
         document.execCommand(btn.attr('data-cmd'), false, format.param);
       }
-      // Make sure we still show the bar
-      this.show();
     }
   
   });
@@ -2196,8 +2166,6 @@
     this.ID = _.uniqueId('st-editor-');
   
     if (!this._ensureAndSetElements()) { return false; }
-  
-    this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
   
     if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
       this.onEditorRender = this.options.onEditorRender;
@@ -2229,6 +2197,7 @@
   
       this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
       this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
+      this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
   
       this.listenTo(this.block_controls, 'createBlock', this.createBlock);
       this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
@@ -2237,9 +2206,12 @@
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
+      SirTrevor.EventBus.on("formatter:show", this.formatBar.show);
+      SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
       this.formatBar.render();
   
+      this.$outer.append(this.formatBar.render().$el);
       this.$outer.append(this.block_controls.render().$el);
   
       var store = this.store("read", this);
@@ -2278,7 +2250,7 @@
       A block will have a reference to an Editor instance & the parent BlockType.
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
-    createBlock: function(type, data, place_after) {
+    createBlock: function(type, data, render_at) {
       type = _.capitalize(type); // Proper case
   
       if (!this._isBlockTypeAvailable(type)) {
@@ -2293,7 +2265,6 @@
       }
   
       var block = new SirTrevor.Blocks[type](data, this.ID);
-  
       this._renderInPosition(block.render().$el);
   
       this.listenTo(block, 'removeBlock', this.removeBlock);

@@ -390,7 +390,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
         if (!range.collapsed) {
           var bb = range.getBoundingClientRect();
-          SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left, width: bb.width });
+          SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
         }
       });
 

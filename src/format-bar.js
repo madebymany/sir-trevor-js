@@ -5,78 +5,50 @@
   Renders with all available options for the editor instance
 */
 
-var FormatBar = SirTrevor.FormatBar = function(options, editorInstance) {
-  this.instance = editorInstance;
+var FormatBar = SirTrevor.FormatBar = function(options) {
   this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
-  this.className = this.instance.baseCSS(this.options.baseCSSClass);
-  this.clicked = false;
+  this._ensureElement();
   this._bindFunctions();
+
+  this.initialize.apply(this, arguments);
 };
 
-_.extend(FormatBar.prototype, FunctionBind, {
+_.extend(FormatBar.prototype, FunctionBind, Events, Renderable, {
+
+  className: 'st-format-bar',
 
   bound: ["onFormatButtonClick"],
 
-  render: function(){
-    var bar = $("<div>", {
-      "class": this.className
-    });
-
-    //this.instance.$wrapper.prepend(bar);
-    this.$el = bar;
-
+  initialize: function() {
     var formatName, format;
 
     for (formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         $("<button>", {
-          'class': this.instance.baseCSS("format-button"),
+          'class': 'st-format-btn st-format-btn--' + formatName,
           'text': format.title,
           'data-type': formatName,
-          'data-cmd': format.cmd,
-          click: this.onFormatButtonClick
+          'data-cmd': format.cmd
         }).appendTo(this.$el);
       }
     }
 
-    if(this.$el.find('button').length === 0) this.$el.addClass('hidden');
-    this.show();
-  },
-
-  handleDocumentScroll: function() {
-    var instance_height = this.instance.$outer.height(),
-        instance_offset = this.instance.$outer.offset().top,
-        viewport_top = $(document).scrollTop();
-
-    if (this.$el.hasClass('fixed')) {
-      instance_offset = this.$el.offset().top;
-    }
-
-    if ((viewport_top > 5) && viewport_top >= instance_offset) {
-      this.$el.addClass('fixed')
-              .css({ 'width': this.instance.$wrapper.width() });
-
-      this.instance.$wrapper.css({ 'padding-top': '104px' });
-    } else {
-      this.$el.removeClass('fixed').css({ 'width': '100%' });
-      this.instance.$wrapper.css({ 'padding-top': '16px' });
-    }
+    this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
   },
 
   hide: function() {
-    this.$el.removeClass(this.instance.baseCSS('item-ready'));
+    this.$el.removeClass('st-format-bar--is-ready');
   },
 
   show: function() {
-    this.$el.addClass(this.instance.baseCSS('item-ready'));
+    this.$el.addClass('st-format-bar--is-ready');
   },
 
   remove: function(){ this.$el.remove(); },
 
   renderAt: function(coords) {
-    this.show();
-    console.log(coords);
+    this.$el.css(coords);
   },
 
   onFormatButtonClick: function(ev){
@@ -92,8 +64,6 @@ _.extend(FormatBar.prototype, FunctionBind, {
       // Call default
       document.execCommand(btn.attr('data-cmd'), false, format.param);
     }
-    // Make sure we still show the bar
-    this.show();
   }
 
 });

@@ -18,8 +18,6 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
 
   if (!this._ensureAndSetElements()) { return false; }
 
-  this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this);
-
   if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
     this.onEditorRender = this.options.onEditorRender;
   }
@@ -50,6 +48,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
     this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
+    this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
 
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
     this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
@@ -58,9 +57,12 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
     SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
+    SirTrevor.EventBus.on("formatter:show", this.formatBar.show);
+    SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
     this.formatBar.render();
 
+    this.$outer.append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     var store = this.store("read", this);
@@ -99,7 +101,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     A block will have a reference to an Editor instance & the parent BlockType.
     We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
   */
-  createBlock: function(type, data, place_after) {
+  createBlock: function(type, data, render_at) {
     type = _.capitalize(type); // Proper case
 
     if (!this._isBlockTypeAvailable(type)) {
@@ -114,7 +116,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     }
 
     var block = new SirTrevor.Blocks[type](data, this.ID);
-
     this._renderInPosition(block.render().$el);
 
     this.listenTo(block, 'removeBlock', this.removeBlock);
