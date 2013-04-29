@@ -1368,9 +1368,18 @@
         .bind('mouseup', function(){
           var range = window.getSelection().getRangeAt(0);
   
+  
+  
           if (!range.collapsed) {
-            var bb = range.getBoundingClientRect();
-            SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
+            var bb = range.getClientRects();
+  
+            console.log(bb);
+  
+            if (bb.width > 10) {
+              SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
+            }
+          } else {
+            SirTrevor.EventBus.trigger('formatter:hide');
           }
         });
   
@@ -1899,49 +1908,49 @@
   /* Our base formatters */
   
   var Bold = SirTrevor.Formatter.extend({
-    title: "B",
+    title: "bold",
     className: "bold",
     cmd: "bold",
     keyCode: 66
   });
   
   var Italic = SirTrevor.Formatter.extend({
-    title: "I",
+    title: "italic",
     className: "italic",
     cmd: "italic",
     keyCode: 73
   });
   
   var Underline = SirTrevor.Formatter.extend({
-    title: "U",
+    title: "underline",
     className: "underline",
     cmd: "underline"
   });
   
   var Link = SirTrevor.Formatter.extend({
-    
-    title: "Link",
+  
+    title: "link",
     className: "link",
     cmd: "CreateLink",
-    
+  
     onClick: function() {
-      
+  
       var link = prompt("Enter a link"),
           link_regex = /(ftp|http|https):\/\/./;
-      
+  
       if(link && link.length > 0) {
-        
+  
        if (!link_regex.test(link)) {
          link = "http://" + link;
        }
-       
+  
        document.execCommand(this.cmd, false, link);
       }
     }
   });
   
   var UnLink = SirTrevor.Formatter.extend({
-    title: "Unlink",
+    title: "unlink",
     className: "link",
     cmd: "unlink"
   });
@@ -1951,6 +1960,7 @@
   */
   SirTrevor.Formatters.Bold = new Bold();
   SirTrevor.Formatters.Italic = new Italic();
+  SirTrevor.Formatters.Underline = new Underline();
   SirTrevor.Formatters.Link = new Link();
   SirTrevor.Formatters.Unlink = new UnLink();
   /* Marker */
@@ -2106,7 +2116,7 @@
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
           $("<button>", {
-            'class': 'st-format-btn st-format-btn--' + formatName,
+            'class': 'st-format-btn st-icon st-format-btn--' + formatName,
             'text': format.title,
             'data-type': formatName,
             'data-cmd': format.cmd
@@ -2128,11 +2138,12 @@
     remove: function(){ this.$el.remove(); },
   
     renderAt: function(coords) {
+      this.show();
       this.$el.css(coords);
     },
   
     onFormatButtonClick: function(ev){
-      halt(ev);
+      ev.stopPropagation();
   
       var btn = $(ev.target),
           format = SirTrevor.Formatters[btn.attr('data-type')];
@@ -2184,7 +2195,7 @@
   
   _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   
-    bound: ['onFormSubmit', 'showBlockControls'],
+    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings'],
   
     initialize: function() {},
     /*
@@ -2206,13 +2217,12 @@
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
-      SirTrevor.EventBus.on("formatter:show", this.formatBar.show);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
-  
-      this.formatBar.render();
   
       this.$outer.append(this.formatBar.render().$el);
       this.$outer.append(this.block_controls.render().$el);
+  
+      $(window).bind('click', this.hideAllTheThings);
   
       var store = this.store("read", this);
   
@@ -2232,6 +2242,11 @@
       if(!_.isUndefined(this.onEditorRender)) {
         this.onEditorRender();
       }
+    },
+  
+    hideAllTheThings: function(e) {
+      e.preventDefault();
+      this.formatBar.hide();
     },
   
     showBlockControls: function(container) {

@@ -1,6 +1,30 @@
 .st-format-bar {
   position: absolute;
-  margin: -40px 0 0 -30px;
+  margin: -50px 0 0 -50px;
   background: #000;
-  width: 150px;
+  opacity: 0;
+}
+
+.st-format-bar:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 50%; top: 30px;
+  width: 0; height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #000;
+  margin-left: -10px;
+}
+
+.st-format-bar--is-ready {
+  opacity: 1;
+}
+
+.st-format-btn {
+  background: transparent;
+  border: 0;
+  font-size: 16px;
+  color: #fff;
+  padding: 5px;
 }

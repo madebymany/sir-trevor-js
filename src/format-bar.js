@@ -26,7 +26,7 @@ _.extend(FormatBar.prototype, FunctionBind, Events, Renderable, {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         $("<button>", {
-          'class': 'st-format-btn st-format-btn--' + formatName,
+          'class': 'st-format-btn st-icon st-format-btn--' + formatName,
           'text': format.title,
           'data-type': formatName,
           'data-cmd': format.cmd
@@ -48,11 +48,12 @@ _.extend(FormatBar.prototype, FunctionBind, Events, Renderable, {
   remove: function(){ this.$el.remove(); },
 
   renderAt: function(coords) {
+    this.show();
     this.$el.css(coords);
   },
 
   onFormatButtonClick: function(ev){
-    halt(ev);
+    ev.stopPropagation();
 
     var btn = $(ev.target),
         format = SirTrevor.Formatters[btn.attr('data-type')];

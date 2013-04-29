@@ -35,7 +35,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
 
 _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
-  bound: ['onFormSubmit', 'showBlockControls'],
+  bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings'],
 
   initialize: function() {},
   /*
@@ -57,13 +57,12 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
     SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
-    SirTrevor.EventBus.on("formatter:show", this.formatBar.show);
     SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
-
-    this.formatBar.render();
 
     this.$outer.append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
+
+    $(window).bind('click', this.hideAllTheThings);
 
     var store = this.store("read", this);
 
@@ -83,6 +82,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
     }
+  },
+
+  hideAllTheThings: function(e) {
+    e.preventDefault();
+    this.formatBar.hide();
   },
 
   showBlockControls: function(container) {

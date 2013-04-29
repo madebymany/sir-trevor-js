@@ -388,9 +388,18 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       .bind('mouseup', function(){
         var range = window.getSelection().getRangeAt(0);
 
+
+
         if (!range.collapsed) {
-          var bb = range.getBoundingClientRect();
-          SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
+          var bb = range.getClientRects();
+
+          console.log(bb);
+
+          if (bb.width > 10) {
+            SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
+          }
+        } else {
+          SirTrevor.EventBus.trigger('formatter:hide');
         }
       });
 
