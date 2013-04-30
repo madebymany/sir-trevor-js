@@ -125,7 +125,13 @@ ul.st-text-block {
 .st-upload-btn {
   border: 0;
   background: $base-ui-color;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-family: $base-font-family;
+  cursor: pointer;
   color: #fff;
+  position: relative;
+  z-index: 10;
 }
 
 .st-block__editor--with-sixteen-by-nine-media {
@@ -145,3 +151,20 @@ ul.st-text-block {
 .st-block__editor img {
   width: 100%; height: auto;
 }
+
+.st-block__upload-container {
+  margin: 20px 0 0 0;
+  text-align: center;
+}
+
+.st-block__upload-container input[type="file"] {
+  position: absolute;
+  z-index: 50;
+  opacity: 0;
+  cursor: pointer;
+  left: 0;
+  width: 100%;
+  padding: 7px;
+  text-align: center;
+}
+

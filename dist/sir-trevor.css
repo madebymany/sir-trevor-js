@@ -86,6 +86,11 @@
 .st-icon-vimeo:before {
   content: "\76\69\6d\65\6f"; }
 
+.st-spinner {
+  position: absolute !important;
+  left: 50%;
+  top: 50%; }
+
 .st-text-block,
 .st-block input[type="text"],
 .st-block textarea {
@@ -226,7 +231,13 @@ ul.st-text-block {
 .st-upload-btn {
   border: 0;
   background: #7f8b96;
-  color: #fff; }
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  cursor: pointer;
+  color: #fff;
+  position: relative;
+  z-index: 10; }
 
 .st-block__editor--with-sixteen-by-nine-media {
   padding-top: 56.25%;
@@ -246,6 +257,20 @@ ul.st-text-block {
 .st-block__editor img {
   width: 100%;
   height: auto; }
+
+.st-block__upload-container {
+  margin: 20px 0 0 0;
+  text-align: center; }
+
+.st-block__upload-container input[type="file"] {
+  position: absolute;
+  z-index: 50;
+  opacity: 0;
+  cursor: pointer;
+  left: 0;
+  width: 100%;
+  padding: 7px;
+  text-align: center; }
 
 .st-block-controls {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
