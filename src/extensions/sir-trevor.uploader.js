@@ -1,20 +1,20 @@
-/* 
+/*
 *   Sir Trevor Uploader
 *   Generic Upload implementation that can be extended for blocks
 */
 
 SirTrevor.fileUploader = function(block, file, success, error) {
-  
+
   SirTrevor.publish("onUploadStart");
-  
+
   var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
-  
+
   var data = new FormData();
-  
+
   data.append('attachment[name]', file.name);
   data.append('attachment[file]', file);
   data.append('attachment[uid]', uid);
-  
+
   var callbackSuccess = function(data){
     if (!_.isUndefined(success) && _.isFunction(success)) {
       SirTrevor.log('Upload callback called');
@@ -22,15 +22,15 @@ SirTrevor.fileUploader = function(block, file, success, error) {
       _.bind(success, block)(data);
     }
   };
-  
+
   var callbackError = function(jqXHR, status, errorThrown){
     if (!_.isUndefined(error) && _.isFunction(error)) {
       SirTrevor.log('Upload callback error called');
       SirTrevor.publish("onUploadError");
-      _.bind(error, block)(status); 
+      _.bind(error, block)(status);
     }
   };
-  
+
   $.ajax({
     url: SirTrevor.DEFAULTS.uploadUrl,
     data: data,
@@ -41,5 +41,5 @@ SirTrevor.fileUploader = function(block, file, success, error) {
     success: callbackSuccess,
     error: callbackError
   });
-  
+
 };

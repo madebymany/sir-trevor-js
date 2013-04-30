@@ -18,11 +18,9 @@
   */
 
   SirTrevor.DEFAULTS = {
-    baseCSSClass: "sir-trevor",
-    errorClass: "error",
     defaultType: "Text",
     spinner: {
-      className: 'spinner',
+      className: 'st-spinner',
       lines: 9,
       length: 8,
       width: 3,
@@ -33,15 +31,6 @@
       shadow: false,
       left: '50%',
       top: '50%'
-    },
-    marker: {
-      baseCSSClass: "marker",
-      buttonClass: "button",
-      addText: "Click to add:",
-      dropText: "Drop to place content"
-    },
-    formatBar: {
-      baseCSSClass: "formatting-control"
     },
     blockLimit: 0,
     blockTypeLimits: {},

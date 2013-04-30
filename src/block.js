@@ -171,11 +171,11 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     this.spinner = new Spinner(SirTrevor.DEFAULTS.spinner);
     this.spinner.spin(this.$el[0]);
 
-    this.$el.addClass('st-loading');
+    this.$el.addClass('st--is-loading');
   },
 
   ready: function() {
-    this.$el.removeClass('st-loading');
+    this.$el.removeClass('st--is-loading');
     if (!_.isUndefined(this.spinner)) {
       this.spinner.stop();
       delete this.spinner;

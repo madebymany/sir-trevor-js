@@ -18,11 +18,9 @@
   */
 
   SirTrevor.DEFAULTS = {
-    baseCSSClass: "sir-trevor",
-    errorClass: "error",
     defaultType: "Text",
     spinner: {
-      className: 'spinner',
+      className: 'st-spinner',
       lines: 9,
       length: 8,
       width: 3,
@@ -33,15 +31,6 @@
       shadow: false,
       left: '50%',
       top: '50%'
-    },
-    marker: {
-      baseCSSClass: "marker",
-      buttonClass: "button",
-      addText: "Click to add:",
-      dropText: "Drop to place content"
-    },
-    formatBar: {
-      baseCSSClass: "formatting-control"
     },
     blockLimit: 0,
     blockTypeLimits: {},
@@ -121,21 +110,6 @@
   /* Halt event execution */
   function halt(ev){
     ev.preventDefault();
-  }
-  
-  function controlKeyDown(ev){
-    return (ev.which == 17 || ev.which == 224);
-  }
-  
-  function isElementNear($element, distance, event) {
-    var left = $element.offset().left - distance,
-        top = $element.offset().top - distance,
-        right = left + $element.width() + ( 2 * distance ),
-        bottom = top + $element.height() + ( 2 * distance ),
-        x = event.pageX,
-        y = event.pageY;
-  
-    return ( x > left && x < right && y > top && y < bottom );
   }
   
   /*
@@ -438,7 +412,7 @@
         this.attr('data-maxlength',this.attr('maxlength'));
         this.removeAttr('maxlength');
       }
-      
+  
       if(this.parents('.extended_input').length === 0) {
   
         count = (this.chars()<this.attr('data-maxlength')) ? this.chars() : '<em>'+this.chars()+'</em>';
@@ -446,7 +420,7 @@
         // Build UI
         this.wrap($('<div>',{
           "class": "extended_input"
-        })).after($('<span>', { 
+        })).after($('<span>', {
           "class": "count",
           html: count+' of '+this.attr('data-maxlength')
         }));
@@ -465,11 +439,11 @@
       count = (this.attr('contenteditable')!==undefined) ? this.text().length : this.val().length;
       return count;
     };
-    
+  
     $.fn.too_long = function() {
       return this.chars() > this.attr('data-maxlength');
     };
-    
+  
   })(jQuery);
   /*
   * Sir Trevor Block Store
@@ -478,36 +452,36 @@
   */
   
   SirTrevor.blockStore = function(method, block, options) {
-    
+  
     var resp;
-    
+  
     options = options || {};
-    
+  
     switch(method) {
-      
+  
       case "create":
         var data = options.data || {};
         block.dataStore = { type: block.type.toLowerCase(), data: data };
       break;
-      
+  
       case "save":
         if (options.data) {
           block.dataStore.data = options.data;
           resp = block.dataStore;
         }
       break;
-      
+  
       case "read":
         resp = block.dataStore;
       break;
-      
+  
     }
-    
+  
     if(resp) {
       return resp;
     }
-    
-  }; 
+  
+  };
   /*
   * Sir Trevor Editor Store
   * By default we store the complete data on the instances $el
@@ -569,7 +543,7 @@
     }
   
   };
-  /* 
+  /*
     SirTrevor.Submittable
     --
     We need a global way of setting if the editor can and can't be submitted,
@@ -583,70 +557,70 @@
   };
   
   _.extend(Submittable.prototype, {
-    
+  
     intialize: function(){
       this.submitBtn = $("input[type='submit']");
-      
+  
       var btnTitles = [];
-      
+  
       _.each(this.submitBtn, function(btn){
         btnTitles.push($(btn).attr('value'));
       });
-      
+  
       this.submitBtnTitles = btnTitles;
       this.canSubmit = true;
       this.globalUploadCount = 0;
       this._bindEvents();
     },
-    
+  
     setSubmitButton: function(e, message) {
       this.submitBtn.attr('value', message);
     },
-    
+  
     resetSubmitButton: function(){
       _.each(this.submitBtn, _.bind(function(item, index){
         $(item).attr('value', this.submitBtnTitles[index]);
       }, this));
     },
-    
+  
     onUploadStart: function(e){
       this.globalUploadCount++;
       SirTrevor.log('onUploadStart called ' + this.globalUploadCount);
-      
+  
       if(this.globalUploadCount === 1) {
         this._disableSubmitButton();
       }
     },
-    
+  
     onUploadStop: function(e) {
       this.globalUploadCount = (this.globalUploadCount <= 0) ? 0 : this.globalUploadCount - 1;
-      
+  
       SirTrevor.log('onUploadStop called ' + this.globalUploadCount);
-      
+  
       if(this.globalUploadCount === 0) {
         this._enableSubmitButton();
       }
     },
-    
+  
     onError: function(e){
       SirTrevor.log('onError called');
       this.canSubmit = false;
     },
-    
+  
     _disableSubmitButton: function(message){
       this.setSubmitButton(null, message || "Please wait...");
       this.submitBtn
         .attr('disabled', 'disabled')
         .addClass('disabled');
     },
-    
+  
     _enableSubmitButton: function(){
       this.resetSubmitButton();
       this.submitBtn
         .removeAttr('disabled')
         .removeClass('disabled');
     },
-    
+  
     _bindEvents: function(){
       SirTrevor.subscribe("disableSubmitButton", _.bind(this._disableSubmitButton, this));
       SirTrevor.subscribe("enableSubmitButton", _.bind(this._enableSubmitButton, this));
@@ -656,29 +630,29 @@
       SirTrevor.subscribe("onUploadStart", _.bind(this.onUploadStart, this));
       SirTrevor.subscribe("onUploadStop", _.bind(this.onUploadStop, this));
     }
-    
+  
   });
   
   SirTrevor.submittable = function(){
     new Submittable();
   };
-  /* 
+  /*
   *   Sir Trevor Uploader
   *   Generic Upload implementation that can be extended for blocks
   */
   
   SirTrevor.fileUploader = function(block, file, success, error) {
-    
+  
     SirTrevor.publish("onUploadStart");
-    
+  
     var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
-    
+  
     var data = new FormData();
-    
+  
     data.append('attachment[name]', file.name);
     data.append('attachment[file]', file);
     data.append('attachment[uid]', uid);
-    
+  
     var callbackSuccess = function(data){
       if (!_.isUndefined(success) && _.isFunction(success)) {
         SirTrevor.log('Upload callback called');
@@ -686,15 +660,15 @@
         _.bind(success, block)(data);
       }
     };
-    
+  
     var callbackError = function(jqXHR, status, errorThrown){
       if (!_.isUndefined(error) && _.isFunction(error)) {
         SirTrevor.log('Upload callback error called');
         SirTrevor.publish("onUploadError");
-        _.bind(error, block)(status); 
+        _.bind(error, block)(status);
       }
     };
-    
+  
     $.ajax({
       url: SirTrevor.DEFAULTS.uploadUrl,
       data: data,
@@ -705,7 +679,7 @@
       success: callbackSuccess,
       error: callbackError
     });
-    
+  
   };
   /*
     Underscore helpers
@@ -1152,11 +1126,11 @@
       this.spinner = new Spinner(SirTrevor.DEFAULTS.spinner);
       this.spinner.spin(this.$el[0]);
   
-      this.$el.addClass('st-loading');
+      this.$el.addClass('st--is-loading');
     },
   
     ready: function() {
-      this.$el.removeClass('st-loading');
+      this.$el.removeClass('st--is-loading');
       if (!_.isUndefined(this.spinner)) {
         this.spinner.stop();
         delete this.spinner;
@@ -2280,7 +2254,6 @@
     },
   
     hideAllTheThings: function(e) {
-      e.preventDefault();
       this.block_controls.hide();
       this.formatBar.hide();
     },
@@ -2535,10 +2508,6 @@
     /* Get our required blocks (if any) */
     _setRequired: function() {
       this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
-    },
-  
-    baseCSS: function(additional) {
-      return this.options.baseCSSClass + "-" + additional;
     }
   });
   

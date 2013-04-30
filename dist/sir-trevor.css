@@ -116,11 +116,12 @@
   padding-top: 24px; }
 
 .st-block {
-  padding: 0 0 124px 0;
+  padding: 0 0 80px 0;
   position: relative; }
 
 .st-block__inner {
-  border: 2px solid rgba(44, 196, 108, 0.1);
+  padding: 30px;
+  border: 2px solid #fff;
   position: relative; }
 
 .st-block__inner:hover {
@@ -136,7 +137,7 @@
   position: absolute;
   z-index: 1;
   left: 50%;
-  margin: 49px 0 0 -13px;
+  margin: 27px 0 0 -13px;
   background: url(images/sir-trevor/ui/add.png) no-repeat center bottom; }
 
 .st-block.st-drag-over:after,
@@ -144,8 +145,8 @@
   content: "Drop block here";
   width: 100%;
   text-align: center;
-  line-height: 124px;
-  height: 124px;
+  line-height: 80px;
+  height: 80px;
   position: absolute;
   z-index: 1;
   top: auto;
@@ -159,15 +160,14 @@
 .st-text-block {
   min-height: 50px;
   font-size: 1.375em;
-  line-height: 1.45;
-  padding: 30px 30px 48px 30px; }
+  line-height: 1.45; }
 
 ul.st-text-block {
   margin-left: 30px; }
 
 .st-block__ui {
   position: absolute;
-  opacity: 0.1;
+  opacity: 0;
   bottom: 0;
   right: 0; }
 
@@ -243,6 +243,10 @@ ul.st-text-block {
   top: 0;
   position: absolute; }
 
+.st-block__editor img {
+  width: 100%;
+  height: auto; }
+
 .st-block-controls {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background-color: #ecf0f5;
@@ -255,7 +259,8 @@ ul.st-text-block {
   position: absolute;
   z-index: 2;
   width: 100%;
-  text-align: center; }
+  text-align: center;
+  margin-top: -22px; }
 
 .st-block-controls--active {
   visibility: visible;
@@ -281,6 +286,7 @@ ul.st-text-block {
   opacity: 0;
   visibility: hidden;
   z-index: 10;
+  border-radius: 4px;
   -webkit-transition: opacity 0.2s ease-in-out;
   -moz-transition: opacity 0.2s ease-in-out;
   transition: opacity 0.2s ease-in-out; }

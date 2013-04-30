@@ -3,21 +3,6 @@ function halt(ev){
   ev.preventDefault();
 }
 
-function controlKeyDown(ev){
-  return (ev.which == 17 || ev.which == 224);
-}
-
-function isElementNear($element, distance, event) {
-  var left = $element.offset().left - distance,
-      top = $element.offset().top - distance,
-      right = left + $element.width() + ( 2 * distance ),
-      bottom = top + $element.height() + ( 2 * distance ),
-      x = event.pageX,
-      y = event.pageY;
-
-  return ( x > left && x < right && y > top && y < bottom );
-}
-
 /*
   Drop Area Plugin from @maccman
   http://blog.alexmaccaw.com/svbtle-image-uploading

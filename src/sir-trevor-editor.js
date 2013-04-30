@@ -85,7 +85,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   },
 
   hideAllTheThings: function(e) {
-    e.preventDefault();
     this.block_controls.hide();
     this.formatBar.hide();
   },
@@ -340,10 +339,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   /* Get our required blocks (if any) */
   _setRequired: function() {
     this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
-  },
-
-  baseCSS: function(additional) {
-    return this.options.baseCSSClass + "-" + additional;
   }
 });
 

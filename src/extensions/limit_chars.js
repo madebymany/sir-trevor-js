@@ -11,7 +11,7 @@
       this.attr('data-maxlength',this.attr('maxlength'));
       this.removeAttr('maxlength');
     }
-    
+
     if(this.parents('.extended_input').length === 0) {
 
       count = (this.chars()<this.attr('data-maxlength')) ? this.chars() : '<em>'+this.chars()+'</em>';
@@ -19,7 +19,7 @@
       // Build UI
       this.wrap($('<div>',{
         "class": "extended_input"
-      })).after($('<span>', { 
+      })).after($('<span>', {
         "class": "count",
         html: count+' of '+this.attr('data-maxlength')
       }));
@@ -38,9 +38,9 @@
     count = (this.attr('contenteditable')!==undefined) ? this.text().length : this.val().length;
     return count;
   };
-  
+
   $.fn.too_long = function() {
     return this.chars() > this.attr('data-maxlength');
   };
-  
+
 })(jQuery);
