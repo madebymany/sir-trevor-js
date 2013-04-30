@@ -30,8 +30,6 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
 
-        console.log(transferData, file);
-
     // Handle one upload at a time
     if (/image/.test(file.type)) {
       this.loading();

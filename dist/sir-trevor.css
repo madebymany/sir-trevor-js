@@ -121,7 +121,7 @@
   padding-top: 24px; }
 
 .st-block {
-  padding: 0 0 80px 0;
+  padding: 0 0 124px 0;
   position: relative; }
 
 .st-block__inner {
@@ -142,7 +142,7 @@
   position: absolute;
   z-index: 1;
   left: 50%;
-  margin: 27px 0 0 -13px;
+  margin: 49px 0 0 -13px;
   background: url(images/sir-trevor/ui/add.png) no-repeat center bottom; }
 
 .st-block.st-drag-over:after,
@@ -150,8 +150,8 @@
   content: "Drop block here";
   width: 100%;
   text-align: center;
-  line-height: 80px;
-  height: 80px;
+  line-height: 124px;
+  height: 124px;
   position: absolute;
   z-index: 1;
   top: auto;
@@ -166,6 +166,10 @@
   min-height: 50px;
   font-size: 1.375em;
   line-height: 1.45; }
+
+h1.st-text-block {
+  line-height: 1.1;
+  font-size: 2.2em; }
 
 ul.st-text-block {
   margin-left: 30px; }
@@ -285,7 +289,7 @@ ul.st-text-block {
   z-index: 2;
   width: 100%;
   text-align: center;
-  margin-top: -22px; }
+  margin-top: 0px; }
 
 .st-block-controls--active {
   visibility: visible;

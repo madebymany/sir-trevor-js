@@ -1637,6 +1637,19 @@
     
   });
   /*
+    Text Block
+  */
+  SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
+  
+    type: 'Heading',
+  
+    editorHTML: '<h1 class="st-required st-text-block" contenteditable="true"></h1>',
+  
+    loadData: function(data){
+      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+    }
+  });
+  /*
     Simple Image Block
   */
   
@@ -1667,8 +1680,6 @@
     onDrop: function(transferData){
       var file = transferData.files[0],
           urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
-  
-          console.log(transferData, file);
   
       // Handle one upload at a time
       if (/image/.test(file.type)) {
