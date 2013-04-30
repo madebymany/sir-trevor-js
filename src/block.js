@@ -380,29 +380,38 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   },
 
   _initTextBlocks: function() {
-    //document.execCommand("styleWithCSS", false, false);
-    //document.execCommand("insertBrOnReturn", false, true);
+    var shift_down = false;
 
     this.$$('.st-text-block')
       .bind('paste', this._handleContentPaste)
-      .bind('mouseup', function(){
-        var range = window.getSelection().getRangeAt(0);
+      .bind('keydown', function(e){
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 16) shift_down = true;
+      })
+      .bind('keyup', _.bind(function(e){
+        var code = (e.keyCode ? e.keyCode : e.which);
 
-
-
-        if (!range.collapsed) {
-          var bb = range.getClientRects();
-
-          console.log(bb);
-
-          if (bb.width > 10) {
-            SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
-          }
-        } else {
-          SirTrevor.EventBus.trigger('formatter:hide');
+        if (shift_down && (code == 37 || code == 39 || code == 40 || code == 38)) {
+          this.getSelectionForFormatter();
         }
-      });
 
+        if (code == 16) {
+          shift_down = false;
+        }
+
+      }, this))
+      .bind('mouseup', this.getSelectionForFormatter);
+  },
+
+  getSelectionForFormatter: function() {
+    var range = window.getSelection().getRangeAt(0),
+        rects = range.getClientRects();
+
+    if (!range.collapsed && rects.length) {
+      SirTrevor.EventBus.trigger('formatter:positon', rects);
+    } else {
+      SirTrevor.EventBus.trigger('formatter:hide');
+    }
   },
 
   hasTextBlock: function() {

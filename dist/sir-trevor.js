@@ -1360,29 +1360,38 @@
     },
   
     _initTextBlocks: function() {
-      //document.execCommand("styleWithCSS", false, false);
-      //document.execCommand("insertBrOnReturn", false, true);
+      var shift_down = false;
   
       this.$$('.st-text-block')
         .bind('paste', this._handleContentPaste)
-        .bind('mouseup', function(){
-          var range = window.getSelection().getRangeAt(0);
+        .bind('keydown', function(e){
+          var code = (e.keyCode ? e.keyCode : e.which);
+          if (code == 16) shift_down = true;
+        })
+        .bind('keyup', _.bind(function(e){
+          var code = (e.keyCode ? e.keyCode : e.which);
   
-  
-  
-          if (!range.collapsed) {
-            var bb = range.getClientRects();
-  
-            console.log(bb);
-  
-            if (bb.width > 10) {
-              SirTrevor.EventBus.trigger('formatter:positon', { top: bb.top, left: bb.left });
-            }
-          } else {
-            SirTrevor.EventBus.trigger('formatter:hide');
+          if (shift_down && (code == 37 || code == 39 || code == 40 || code == 38)) {
+            this.getSelectionForFormatter();
           }
-        });
   
+          if (code == 16) {
+            shift_down = false;
+          }
+  
+        }, this))
+        .bind('mouseup', this.getSelectionForFormatter);
+    },
+  
+    getSelectionForFormatter: function() {
+      var range = window.getSelection().getRangeAt(0),
+          rects = range.getClientRects();
+  
+      if (!range.collapsed && rects.length) {
+        SirTrevor.EventBus.trigger('formatter:positon', rects);
+      } else {
+        SirTrevor.EventBus.trigger('formatter:hide');
+      }
     },
   
     hasTextBlock: function() {
@@ -2082,6 +2091,8 @@
     },
   
     handleBlockClick: function(e) {
+      e.stopPropagation();
+  
       var block = $(e.currentTarget);
       this.trigger('showBlockControls', block);
     }
@@ -2124,6 +2135,7 @@
         }
       }
   
+      this.width = this.$el.width();
       this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
     },
   
@@ -2137,7 +2149,24 @@
   
     remove: function(){ this.$el.remove(); },
   
-    renderAt: function(coords) {
+    render_by_selection: function(rectangles) {
+      var coords = {},
+          width = this.$el.width();
+  
+      if (rectangles.length == 1) {
+        coords = {
+          left: rectangles[0].left + ((rectangles[0].width - width) / 2),
+          top: rectangles[0].top
+        };
+      } else {
+        // Calculate the mid position
+        var max_width = _.max(rectangles, function(rect){ return rect.width; });
+        coords = {
+          left: max_width.width / 2,
+          top: rectangles[0].top
+        };
+      }
+  
       this.show();
       this.$el.css(coords);
     },
@@ -2155,6 +2184,8 @@
         // Call default
         document.execCommand(btn.attr('data-cmd'), false, format.param);
       }
+  
+      return false;
     }
   
   });
@@ -2216,7 +2247,7 @@
       SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
-      SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
+      SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
       this.$outer.append(this.formatBar.render().$el);
@@ -2246,6 +2277,7 @@
   
     hideAllTheThings: function(e) {
       e.preventDefault();
+      this.block_controls.hide();
       this.formatBar.hide();
     },
   

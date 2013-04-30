@@ -56,7 +56,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
-    SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderAt);
+    SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
     SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
     this.$outer.append(this.formatBar.render().$el);
@@ -86,6 +86,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
   hideAllTheThings: function(e) {
     e.preventDefault();
+    this.block_controls.hide();
     this.formatBar.hide();
   },
 

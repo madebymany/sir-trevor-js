@@ -1,8 +1,10 @@
 .st-format-bar {
   position: absolute;
-  margin: -50px 0 0 -50px;
+  margin: -55px 0 0 0;
   background: #000;
-  opacity: 0;
+  opacity: 0; visibility: hidden;
+  z-index: 10;
+  @include transition(opacity 0.2s ease-in-out);
 }
 
 .st-format-bar:before {
@@ -18,6 +20,7 @@
 }
 
 .st-format-bar--is-ready {
+  visibility: visible;
   opacity: 1;
 }
 

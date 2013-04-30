@@ -37,6 +37,8 @@ _.extend(FloatingBlockControls.prototype, FunctionBind, Events, {
   },
 
   handleBlockClick: function(e) {
+    e.stopPropagation();
+
     var block = $(e.currentTarget);
     this.trigger('showBlockControls', block);
   }
