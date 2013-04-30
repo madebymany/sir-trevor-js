@@ -1,4 +1,11 @@
-var tweet_template = '<div class="tweet"><img src="<%= user.profile_image_url %>" class="tweet-avatar"><div class="tweet-body"><p class="tweet-user"><a href="http://twitter.com/#!/<%= user.screen_name %>" class="tweet-user">@<%= user.screen_name %></a> on Twitter</p><p class="tweet-text"><%= text %></p><time><%= created_at %></time></div></div>';
+var tweet_template = [
+  "<blockquote class='twitter-tweet' align='center'>",
+  "<p><%= text %></p>",
+  "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
+  "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
+  "</blockquote>",
+  '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
+].join("\n");
 
 SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
 
