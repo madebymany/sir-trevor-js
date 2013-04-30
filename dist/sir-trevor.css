@@ -162,6 +162,9 @@
   line-height: 1.45;
   padding: 30px 30px 48px 30px; }
 
+ul.st-text-block {
+  margin-left: 30px; }
+
 .st-block__ui {
   position: absolute;
   opacity: 0.1;
@@ -224,6 +227,21 @@
   border: 0;
   background: #7f8b96;
   color: #fff; }
+
+.st-block__editor--with-sixteen-by-nine-media {
+  padding-top: 56.25%;
+  /* 16:9 */
+  height: 0;
+  position: relative;
+  width: 100%; }
+
+.st-block__editor--with-sixteen-by-nine-media video,
+.st-block__editor--with-sixteen-by-nine-media iframe {
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: absolute; }
 
 .st-block-controls {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;

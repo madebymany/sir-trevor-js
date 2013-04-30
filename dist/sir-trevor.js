@@ -836,7 +836,8 @@
         drop_html.append(drop_options.upload_html);
       }
   
-      this.$inner.append(drop_html);
+      this.$editor.hide();
+      this.$inner.append(drop_html).addClass('st-block__inner--droppable');
       this.$dropzone = drop_html;
   
       // Bind our drop event
@@ -1299,6 +1300,7 @@
       this.loading();
   
       if(this.droppable) {
+        this.$editor.show();
         this.$dropzone.hide();
       }
   
@@ -1849,42 +1851,44 @@
   });
   var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
   
-  SirTrevor.Blocks.Video = SirTrevor.Block.extend({ 
-    
+  SirTrevor.Blocks.Video = SirTrevor.Block.extend({
+  
     type: 'Video',
   
     droppable: true,
-    
+  
     drop_options: {
       pastable: true
     },
-    
-    loadData: function(data){    
+  
+    loadData: function(data){
+      this.$editor.show().addClass('st-block__editor--with-sixteen-by-nine-media');
+  
       if(data.source == "youtube" || data.source == "youtu") {
         this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
       } else if(data.source == "vimeo") {
         this.$editor.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
       }
     },
-    
+  
     onContentPasted: function(event){
       // Content pasted. Delegate to the drop parse method
       var input = $(event.target),
           val = input.val();
-      
+  
       // Pass this to the same handler as onDrop
       this.handleDropPaste(val);
     },
-    
+  
     handleDropPaste: function(url){
-      
-      if(_.isURI(url)) 
+  
+      if(_.isURI(url))
       {
         if (url.indexOf("youtu") != -1 || url.indexOf("vimeo") != -1) {
-            
+  
           var data = {},
           videos = url.match(video_regex);
-            
+  
           // Work out the source and extract ID
           if(videos[3] !== undefined) {
             data.source = videos[3];
@@ -1893,21 +1897,21 @@
             data.source = videos[1];
             data.remote_id = videos[2];
           }
-        
-          if (data.source == "youtu") { 
+  
+          if (data.source == "youtu") {
             data.source = "youtube";
           }
-          
+  
           // Save the data
           this.setData(data);
-          
-          // Render  
-          this._loadData();  
+  
+          // Render
+          this._loadData();
         }
       }
-      
+  
     },
-    
+  
     onDrop: function(transferData){
       var url = transferData.getData('text/plain');
       this.handleDropPaste(url);
@@ -2135,7 +2139,7 @@
         }
       }
   
-      this.width = this.$el.width();
+      this.$b = $(document.body);
       this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
     },
   
@@ -2156,14 +2160,14 @@
       if (rectangles.length == 1) {
         coords = {
           left: rectangles[0].left + ((rectangles[0].width - width) / 2),
-          top: rectangles[0].top
+          top: rectangles[0].top + this.$b.scrollTop()
         };
       } else {
         // Calculate the mid position
         var max_width = _.max(rectangles, function(rect){ return rect.width; });
         coords = {
           left: max_width.width / 2,
-          top: rectangles[0].top
+          top: rectangles[0].top + this.$b.scrollTop()
         };
       }
   

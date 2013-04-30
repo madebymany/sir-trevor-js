@@ -51,6 +51,10 @@
   padding: $inner-block-padding;
 }
 
+ul.st-text-block {
+  margin-left: 30px;
+}
+
 .st-block__ui {
   position: absolute;
   opacity: 0.1;
@@ -123,3 +127,18 @@
   background: $base-ui-color;
   color: #fff;
 }
+
+.st-block__editor--with-sixteen-by-nine-media {
+  padding-top: 56.25%; /* 16:9 */
+  height: 0;
+  position: relative;
+  width: 100%;
+}
+
+.st-block__editor--with-sixteen-by-nine-media video,
+.st-block__editor--with-sixteen-by-nine-media iframe {
+  height: 100%; width: 100%;
+  left: 0; top: 0;
+  position: absolute;
+}
+

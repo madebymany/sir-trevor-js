@@ -319,6 +319,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
     this.loading();
 
     if(this.droppable) {
+      this.$editor.show();
       this.$dropzone.hide();
     }
 

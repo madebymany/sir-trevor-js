@@ -21,7 +21,8 @@ SirTrevor.BlockMixins.Droppable = {
       drop_html.append(drop_options.upload_html);
     }
 
-    this.$inner.append(drop_html);
+    this.$editor.hide();
+    this.$inner.append(drop_html).addClass('st-block__inner--droppable');
     this.$dropzone = drop_html;
 
     // Bind our drop event
