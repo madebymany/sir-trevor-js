@@ -2274,11 +2274,20 @@
     hideAllTheThings: function(e) {
       this.block_controls.hide();
       this.formatBar.hide();
+  
+      if (!_.isUndefined(this.block_controls.current_container)) {
+        this.block_controls.current_container.removeClass("st-block--with-controls");
+      }
     },
   
     showBlockControls: function(container) {
+      if (!_.isUndefined(this.block_controls.current_container)) {
+        this.block_controls.current_container.removeClass("st-block--with-controls");
+      }
+  
       this.block_controls.show();
       container.append(this.block_controls.$el.detach());
+      container.addClass('st-block--with-controls');
       this.block_controls.current_container = container;
     },
   
