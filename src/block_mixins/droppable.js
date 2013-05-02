@@ -3,7 +3,7 @@
 SirTrevor.BlockMixins.Droppable = {
 
   name: "Droppable",
-  valid_drop_file_types: ['File', 'text/plain', 'text/uri-list'],
+  valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
 
   initializeDroppable: function() {
     SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
@@ -47,6 +47,8 @@ SirTrevor.BlockMixins.Droppable = {
       Check the type we just received,
       delegate it away to our blockTypes to process
     */
+
+    console.log(types, e.dataTransfer);
 
     if (!_.isUndefined(types) &&
       _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {

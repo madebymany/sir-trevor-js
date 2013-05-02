@@ -1,6 +1,6 @@
 SirTrevor.toMarkdown = function(content, type) {
   var markdown;
-    
+
   markdown = content.replace(/\n/mg,"")
                     .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
                     .replace(/<\/?b>/g,"**")
@@ -43,5 +43,5 @@ SirTrevor.toMarkdown = function(content, type) {
   // Strip remaining HTML
   markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
 
-  return markdown;  
+  return markdown;
 };
