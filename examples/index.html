@@ -1,0 +1,42 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="../dist/sir-trevor.css" type="text/css" media="screen" title="no title" charset="utf-8">
+</head>
+<body>
+  <form>
+    <textarea class="sir-trevor"></textarea>
+    <input type="submit" class="submit-btn">
+  </form>
+  
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="../public/javascripts/underscore.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../dist/sir-trevor.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    $(function(){
+
+      var set_quote_and_text_limits = function() {
+        var editable = this.$$('[contenteditable="true"]');
+        editable.attr('maxlength', '300');
+        editable.limit_chars();
+      }
+
+      SirTrevor.Blocks.Text.prototype.setTextLimit = set_quote_and_text_limits;
+      SirTrevor.Blocks.Quote.prototype.setTextLimit = set_quote_and_text_limits;
+
+      window.editor = new SirTrevor.Editor({ 
+        el: $('.sir-trevor')
+      });
+
+    });
+  </script>
+</body>
+</html>

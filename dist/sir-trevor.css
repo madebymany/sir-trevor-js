@@ -1,0 +1,439 @@
+/* Basic Sir Trevor styles */
+body { margin: 0; font-size: 1em; line-height: 1.4; }
+
+.sir-trevor {
+  min-width: 600px;
+  padding: 0;
+  z-index: 1;
+}
+
+.sir-trevor-blocks {
+  padding: 16px 0 44px 0;
+  position: relative;
+}
+
+.sir-trevor { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+
+.sir-trevor {
+  font-family: "Helvetica Neue", 'Arial', sans-serif; 
+  color: #222; 
+}
+
+.sir-trevor * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.sir-trevor p,
+.sir-trevor h1, 
+.sir-trevor h2,
+.sir-trevor h3,
+.sir-trevor h4 {
+  margin: 0 0 10px 0;
+}
+
+/* Formatting control bar */
+
+.sir-trevor-formatting-control {
+  background: #E9E9E9;
+  border: 1px solid #DADADA;
+  padding: 8px;
+  margin: 0;
+  width: 100%;
+  position: relative;
+  z-index: 12;
+  margin-bottom: 35px;
+}
+
+.sir-trevor-formatting-control.fixed {
+  position: fixed;
+  top: 0;
+}
+
+.sir-trevor-format-button {
+  padding: 2px 4px;
+  min-width: 30px;
+  border-radius: 4px;
+  color: white;
+  border: 1px solid #9A9A9A;
+  background: #B2B2B2;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  font-size: 0.875em;
+  font-family: Arial;
+  margin-right: 10px;
+}
+
+.sir-trevor-format-button:hover {
+  background: #606060;
+  border: 1px solid #606060;  
+}
+
+/* Marker */
+
+.sir-trevor-marker {
+  display: block;
+  cursor: pointer;
+  background: #F5F297;
+  border: 1px dotted #DAC962;
+  height: 46px;
+  text-align: center;
+  color: #9B8816;
+  position: absolute;
+  width: 100%;
+  margin-top: -35px;
+  z-index: 11;
+  font-size: 11px;
+}
+
+.sir-trevor-marker p,
+.sir-trevor-buttons { 
+  display: inline-block; 
+}
+
+.sir-trevor-marker p {
+  font-weight: bold;
+  position: relative;
+  top: -10px;
+  margin: 0 20px 0 0;
+}
+
+.sir-trevor-marker.drop-zone p { top: 15px; }
+
+.sir-trevor-button {
+  display: inline-block;
+  border-left: 1px dotted #DAC962;
+  height: 45px;
+  padding: 25px 13px 5px;
+  color: #AF9B24;
+  background-repeat: no-repeat;
+  background-position: center 7px;
+  text-decoration: none;
+}
+
+.sir-trevor-button:last-child { border-right: 1px dotted #DAC962; }
+
+.sir-trevor-button.new-quote {
+  background-image: url(images/sir-trevor/icons/block_editor_blockquote.png);
+}
+
+.sir-trevor-button.new-image,
+.sir-trevor-button.new-gallery {
+  background-image: url(images/sir-trevor/icons/block_editor_image.png);
+}
+
+.sir-trevor-button.new-text {
+  background-image: url(images/sir-trevor/icons/block_editor_text.png);
+}
+
+.sir-trevor-button.new-list {
+  background-image: url(images/sir-trevor/icons/block_editor_list.png);
+}
+
+.sir-trevor-button.new-tweet {
+  background-image: url(images/sir-trevor/icons/block_editor_tweet.png);
+}
+
+.sir-trevor-button.new-video {
+  background-image: url(images/sir-trevor/icons/block_editor_video.png);
+}
+
+/* Blocks */
+
+.sir-trevor-block {
+  position: relative;
+  margin: 0px 0 23px 0;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.sir-trevor-editor-block {
+  padding: 15px 20px;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+
+.sir-trevor-editor-block [contenteditable=true] {
+  margin: 0 20px;
+  min-height: 75px;
+}
+
+.sir-trevor-editor-block [contenteditable=true]:focus {
+  outline: none;
+}
+
+.sir-trevor-remove-block {
+  width: 14px; height: 14px;
+  border: 1px solid #B3B3B3;
+  position: absolute; 
+  top: 10px; right : 8px;
+  cursor: pointer;
+  display: none;
+  background: #fff url(images/sir-trevor/icons/close.gif) no-repeat center center;
+}
+
+.sir-trevor-drag-handle {
+  width: 14px;
+  height: 100%;
+  cursor: move;
+  position: absolute;
+  border-radius: 4px 0 0 4px;
+  left: 0;
+  top: 0;
+  display: none;
+  background: #606060 url(images/sir-trevor/icons/handle.gif) repeat-y 2px 2px;
+}
+
+/*** BLOCK STATES ***/
+
+  /* Block Active State */
+
+  .active .sir-trevor-editor-block,
+  .focussed .sir-trevor-editor-block { 
+    border-top: 1px solid #e9e9e9;
+    border-bottom: 1px solid #e9e9e9;
+  }
+
+  .active .sir-trevor-remove-block,
+  .active .sir-trevor-drag-handle,
+  .focussed .sir-trevor-remove-block,
+  .focussed .sir-trevor-drag-handle {
+    display: block;
+  }
+
+  /* Block Error State */
+
+  .sir-trevor-block-with-errors {
+    background: #CFEEFA;
+  }
+
+  .sir-trevor-block-with-errors .sir-trevor-editor-block { 
+    border-top: 1px solid #7FD7F7;
+    border-bottom: 1px solid #7FD7F7;
+  }
+
+  /* Block Dragging State */
+
+  .sir-trevor-block.dragging {
+    opacity: 0.5;
+    background: #fff;
+  }
+
+  /* Block Loading State */
+
+  .sir-trevor-block.loading {
+    opacity: 0.6;
+  }
+
+  .sir-trevor-block.loading .spinner {
+    width: 32px;
+    height: 32px;
+    top: 50%; left: 50%;
+    position: absolute!important;
+  }
+
+/* Dropzone Blocks */
+
+.sir-trevor-block .dropzone {
+  background-color: #E9E9E9;
+  border: 1px dotted #B3B3B3;
+  padding: 20px;
+  text-align: center;
+  margin: 10px auto;
+  max-width: 550px;
+}
+
+.sir-trevor-block .dropzone p {
+  display: inline-block;
+  font-size: 24px;
+  border: 1px dotted #B3B3B3;
+  color: #282828;
+  padding: 15px 60px 15px 100px;
+}
+
+.sir-trevor-block .dropzone.drag-enter {
+  background: #F5F297;
+  border-color: #DAC962;
+}
+
+.sir-trevor-block .dropzone.drag-enter p {
+  color: #9B8816;
+}
+
+.sir-trevor-block .dropzone input[type="file"] {
+  position: absolute;
+  z-index: 50;
+  opacity: 0;
+  cursor: pointer;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.sir-trevor-block .dropzone button {
+  background: #5F5F5F;
+  border-radius: 4px;
+  border: none;
+  font-family: Arial;
+  padding: 4px 16px;
+  color: white;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.sir-trevor .sir-trevor-block .dropzone label { width: 50%; display: inline; font-weight: normal; color: #666; }
+.sir-trevor .sir-trevor-block .dropzone input[type=text] { width: 50%; display: inline-block; margin: 0 0 0 10px; }
+
+/* Block Specific Styles */
+
+  .sir-trevor-editor-block.quote-block {
+    padding: 15px 60px;
+  }
+
+  .sir-trevor-editor-block.quote-block [contenteditable=true] { font-size: 1.2em; }
+
+  .sir-trevor-editor-block.quote-block:before {
+    content: '"';
+    font-size: 48px;
+    font-family: serif;
+    position: absolute;
+    top: 5px; left: 50px;
+    color: #ccc;
+    display: block;
+  }
+
+  .sir-trevor-editor-block.quote-block .input {
+    margin: 15px 0 0 20px;
+  } 
+
+  /*
+    Image block
+  */
+
+  .image-block.dropzone p,
+  .gallery-block.dropzone p {
+    padding-left: 94px;
+    background: url(images/sir-trevor/icons/new_image.png) no-repeat 15px 8px;
+  }
+
+  /* Video */
+
+  .video-block.dropzone p {
+    padding-left: 240px;
+    padding-right: 45px;
+    background: url(images/sir-trevor/icons/new_video.png) no-repeat 15px 8px;
+  }
+
+  /* Tweet */
+
+  .tweet-block.dropzone p {
+    padding-left: 94px;
+    background: url(images/sir-trevor/icons/new_tweet.png) no-repeat 15px 8px;
+  }
+
+  .tweet-block .tweet {
+    padding: 24px;
+    overflow: hidden;
+  }
+  
+  .tweet-block .tweet-avatar {
+    float: left;
+    margin: 3px 15px 20px 0;
+  }
+  
+  .tweet-block .tweet .tweet-body {
+    float: left;
+    width: 450px;
+  }
+  
+  .tweet-block .tweet .tweet-user {
+    font-weight: bold;
+    font-size: 1.125em;
+    margin-bottom: 6px;
+    line-height: 1.125em;
+  }
+  
+  .tweet-block .tweet .tweet-text {
+    margin-bottom: 4px;
+  }
+
+  .tweet-block .tweet time {
+    color: #7f7f7f;
+    font-size: 0.75em;
+  }
+
+  .drag-enter.tweet-block.dropzone p,
+  .drag-enter.image-block.dropzone p,
+  .drag-enter.gallery-block.dropzone p {
+    background-position: 15px -192px;
+  }
+
+  .drag-enter.video-block.dropzone p {
+    background-position: 15px -243px;
+  }
+
+/* Generic Form / Input Styles */
+
+.sir-trevor-block label {
+  margin-bottom: 12px;
+  display: block;
+  font-weight: bold;
+}
+
+.sir-trevor-block input[type=text] {
+  font-size: 100%;
+  font-family: arial, sans-serif;
+  border: 1px solid #E9E9E9;
+  padding: 8px;
+  width: 100%;
+  display: block;
+}
+
+.sir-trevor-block input[type=text]:focus { outline: 0; }
+
+  /* Error States */
+  .sir-trevor-block input[type=text].sir-trevor-error {
+    border-color: #7FD7F7;
+  }
+
+/* Extended inputs */
+
+.sir-trevor-block .extended_input { position: relative; }
+
+.sir-trevor-block .extended_input .count {
+  position: absolute;
+  display: none;
+  right: -5px; bottom: -3px;
+  font-size: 11px;
+  color: #BDBDBD;
+  font-style: italic;
+  z-index: 15;
+  padding: 2px;
+}
+
+.sir-trevor-block .extended_input .count em { font-weight: bold; }
+
+.sir-trevor-block.active .extended_input .count,
+.sir-trevor-block.focussed .extended_input .count { display: block; }
+
+
+/* Generic fade-in ready function */
+
+.sir-trevor-block,
+.sir-trevor-marker,
+.sir-trevor-formatting-control {
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  -moz-transition: opacity 0.2s ease-in-out;
+  -ms-transition: opacity 0.2s ease-in-out;
+  -o-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.sir-trevor-item-ready {
+  opacity: 1;
+}

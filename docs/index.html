@@ -1,0 +1,158 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Sir Trevor - Documentation</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/libs/modernizr-2.5.3.min.js"></script>
+</head>
+<body>
+  <div>
+    <aside>
+      <ul>
+        <li><a href="#">Sir Trevor JS (0.1.0)</a></li>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#examples">Examples</a></li>
+        <li><a href="#downloads">Downloads</a></li>
+        
+        <li>
+          <a href="#editor">Editor</a>
+          <ul>
+            <li><a href="#Editor-initialize">initialize</a></li>
+            <li><a href="#Editor-build">build</a></li>
+            <li><a href="#Editor-store">store</a></li>
+            <li><a href="#Editor-createBlock">createBlock</a></li>
+            <li><a href="#Editor-removeBlock">removeBlock</a></li>
+            <li><a href="#Editor-onFormSubmit">onFormSubmit</a></li>
+            <li><a href="#Editor-renderErrors">renderErrors</a></li>
+            <li><a href="#Editor-removeErrors">removeErrors</a></li>
+            <li><a href="#Editor-blockTypeAvailable">_blockTypeAvailable</a></li>
+            <li><a href="#Editor-formatterAvailable">_formatterAvailable</a></li>
+          </ul>
+        </li>
+        
+        <li><a href="#block">Block</a></li>
+        <li><a href="#formatbar">Format Bar</a></li>
+        <li><a href="#formatter">Def</a></li>
+        <li><a href="#marker">Marker</a></li>
+        <li><a href="#uploader">Uploader</a></li>
+        <li><a href="#submittable">Submittable</a></li>
+        <li><a href="#editorstore">Editor Store</a></li>
+        <li><a href="#blockstore">Block Store</a></li>
+        
+      </ul>
+    </aside>
+    <section class="main">
+      
+      <h1>Sir Trevor JS</h1>
+      <p>Herp derp. This is an editor.</p>
+      
+      <h2 id="examples">Examples</h2>
+      
+      <h2 id="downloads">Downloads</h2>
+
+      <h2 id="editor">Editor</h2>
+      
+      <p>
+        The editor represents one instance of SirTrevor. It is always tied to a <tt>&lt;textarea&gt;</tt> that represents the data from your database.
+      </p>
+      
+      <div id="Editor-initialize">
+        <h3>initialize</h3>
+        
+        <code>
+          new SirTrevor.Editor([ attributes ])
+        </code>
+        
+        <p>
+          Creating a new instance of the editor will invoke the <tt>initialize</tt> function. The only required element within the attributes object is the <tt>el</tt> which <strong>must</strong> refer to a jQuery object containing a <tt>textarea</tt>. 
+        </p>
+      </div>
+      
+      <div id="Editor-build">
+        <h3>build</h3><code>editor.build()</code>
+        <p>
+          Build will loop through the data of the Editor and either create the necessary blocks from the data, or create a default block if no data is present.
+        </p>
+      </div>
+      
+      <div id="Editor-store">
+        <h3>store</h3><code>editor.store(method, editor, [options])</code>
+        <p>Store is just a wrapper for our <a href="#editorstore"><tt>EditorStore</tt></a>. Any function for data storage will call this method.</p>
+      </div>
+      
+      <div id="Editor-createBlock">
+        <h3>createBlock</h3><code>editor.createBlock(type, [data])</code>
+        <p>
+          Invoking the <tt>createBlock</tt> function will try and create a block of the type specified using the <tt>type</tt> parameter. Passing the optional <tt>data</tt> parameter will create the block with the data specified. 
+        </p>
+        
+        <p>When creating a block we consider the following:</p>
+        <ul>
+          <li>Whether there is an instance limit for this block (passed using the <tt>blockTypeLimits</tt> option on init)</li>
+          <li>Whether there is a global limit for this block</li>
+          <li>Whether there is a total block limit for the editor (passed using the <tt>blockLimit</tt> option on init)</li>
+        </ul>
+      </div>
+      
+      <div id="Editor-removeBlock">
+        <h3>removeBlock</h3><code>editor.removeBlock(SirTrevor.Block)</code>
+        <p>
+          Calling <tt>removeBlock</tt> will remove the current block passed from the editors <tt>blocks</tt> array, and also remove it from the dom. 
+        </p>
+      </div>
+      
+      <div id="Editor-onFormSubmit">
+        <h3>onFormSubmit</h3>
+      </div>
+      
+      <div id="Editor-renderErrors">
+        <h3>renderErrors</h3>
+      </div>
+      
+      <div id="Editor-removeErrors">
+        <h3>removeErrors</h3>
+      </div>
+      
+      <div id="Editor-blockTypeAvailable">
+        <h3>_blockTypeAvailable</h3><code>editor._blockTypeAvailable(blockName)</code>
+        <p>
+          Returns <tt>true</tt> if the current editor instance has this Block available to it.
+        </p>
+<pre>if(editor._blockTypeAvailable("Text")) {
+  ...
+}</pre>
+        
+      </div>
+      
+      <div id="Editor-formatterAvailable">
+        <h3>_formatterAvailable</h3><code>editor._formatterAvailable(formatterName)</code>
+        <p>
+          Returns <tt>true</tt> if the current editor instance has this Formatter available to it.
+        </p>
+<pre>if(editor._formatterAvailable("Bold")) {
+  ...
+}</pre>
+      </div>
+      
+    </section>
+  </div>
+  
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>
