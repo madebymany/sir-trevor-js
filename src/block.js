@@ -66,7 +66,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
   blockCSSClass: function() {
     // Memoize the slug.
-    this.blockCSSClass = toSlug(this.type);
+    this.blockCSSClass = _.to_slug(this.type);
     return this.blockCSSClass;
   },
 

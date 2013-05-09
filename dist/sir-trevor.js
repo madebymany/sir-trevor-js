@@ -183,15 +183,6 @@
       console.log(message);
     }
   };
-  /* String to slug */
-  
-  function toSlug(string)
-  {
-      return string
-          .toLowerCase()
-          .replace(/[^\w ]+/g,'')
-          .replace(/ +/g,'-');
-  }
   // Backbone.Events
   // ---------------
   
@@ -690,6 +681,13 @@
         x[(_.isArray(obj)) ? a : b] = true;
       });
       return x;
+    },
+  
+    to_slug: function(str) {
+      return str
+          .toLowerCase()
+          .replace(/[^\w ]+/g,'')
+          .replace(/ +/g,'-');
     }
   
   });
@@ -1015,7 +1013,7 @@
   
     blockCSSClass: function() {
       // Memoize the slug.
-      this.blockCSSClass = toSlug(this.type);
+      this.blockCSSClass = _.to_slug(this.type);
       return this.blockCSSClass;
     },
   

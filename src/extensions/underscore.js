@@ -23,6 +23,13 @@ _.mixin({
       x[(_.isArray(obj)) ? a : b] = true;
     });
     return x;
+  },
+
+  to_slug: function(str) {
+    return str
+        .toLowerCase()
+        .replace(/[^\w ]+/g,'')
+        .replace(/ +/g,'-');
   }
 
 });
