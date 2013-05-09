@@ -15,6 +15,14 @@ _.mixin({
 
   trim : function(string) {
     return string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+  },
+
+  flattern: function(obj) {
+    var x = {};
+    _.each(obj, function(a,b) {
+      x[(_.isArray(obj)) ? a : b] = true;
+    });
+    return x;
   }
 
 });

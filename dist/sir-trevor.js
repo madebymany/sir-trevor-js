@@ -97,17 +97,6 @@
   };
 
   /*
-    Given an array or object, flatten it and return only the key => true
-  */
-  
-  function flattern(obj){
-    var x = {};
-    _.each(obj, function(a,b) {
-      x[(_.isArray(obj)) ? a : b] = true;
-    });
-    return x;
-  }
-  /*
     Drop Area Plugin from @maccman
     http://blog.alexmaccaw.com/svbtle-image-uploading
     --
@@ -693,6 +682,14 @@
   
     trim : function(string) {
       return string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+    },
+  
+    flattern: function(obj) {
+      var x = {};
+      _.each(obj, function(a,b) {
+        x[(_.isArray(obj)) ? a : b] = true;
+      });
+      return x;
     }
   
   });
@@ -2519,7 +2516,7 @@
       These will either be set on a per Editor instance, or set on a global scope.
     */
     _setBlocksTypes: function() {
-      this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
+      this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
     },
   
     /* Get our required blocks (if any) */

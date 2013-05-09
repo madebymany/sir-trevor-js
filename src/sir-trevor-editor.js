@@ -342,7 +342,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     These will either be set on a per Editor instance, or set on a global scope.
   */
   _setBlocksTypes: function() {
-    this.blockTypes = flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
+    this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
   },
 
   /* Get our required blocks (if any) */
