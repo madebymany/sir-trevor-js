@@ -6,9 +6,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-sass');
-  
+
   grunt.initConfig({
-    
+
     'jasmine' : {
       'sir-trevor': {
         src : 'dist/sir-trevor.js',

@@ -1,8 +1,3 @@
-/* Halt event execution */
-function halt(ev){
-  ev.preventDefault();
-}
-
 /*
   Drop Area Plugin from @maccman
   http://blog.alexmaccaw.com/svbtle-image-uploading
@@ -12,18 +7,18 @@ function halt(ev){
 
 (function($){
   function dragEnter(e) {
-    halt(e);
+    e.preventDefault();
   }
 
   function dragOver(e) {
     e.originalEvent.dataTransfer.dropEffect = "copy";
     $(e.currentTarget).addClass('st-drag-over');
-    halt(e);
+    e.preventDefault();
   }
 
   function dragLeave(e) {
     $(e.currentTarget).removeClass('st-drag-over');
-    halt(e);
+    e.preventDefault();
   }
 
   $.fn.dropArea = function(){

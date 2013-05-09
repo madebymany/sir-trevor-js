@@ -288,10 +288,11 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   onDrop: function(dataTransferObj) {},
 
   onDeleteClick: function(ev) {
+    ev.preventDefault();
+
     if (confirm('Are you sure you wish to delete this content?')) {
       this.remove();
       this.trigger('removeBlock', this.blockID, this.type);
-      halt(ev);
     }
   },
 
