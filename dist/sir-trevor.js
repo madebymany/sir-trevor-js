@@ -2504,7 +2504,9 @@
       this.$el.wrap($outer).wrap($wrapper);
   
       this.$outer = this.$form.find('#' + this.ID);
-      this.$wrapper = this.$form.find('.st-blocks');
+      this.$wrapper = this.$outer.find('.st-blocks');
+  
+      console.log(this.$wrapper);
   
       return true;
     },
