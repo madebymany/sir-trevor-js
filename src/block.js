@@ -247,11 +247,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       }
     });
 
-    this.$$('input[type="file"]').each(function(index,input) {
-      input = $(input);
-      dataObj.file = input.data('json');
-    });
-
     // Set
     if(!_.isEmpty(dataObj)) {
       this.setData(dataObj);

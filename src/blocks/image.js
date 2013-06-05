@@ -33,16 +33,13 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.loading();
       // Show this image on here
       this.$dropzone.hide();
-      this.$editor.html($('<img>', {
-        src: urlAPI.createObjectURL(file)
-      }));
-      this.$editor.show();
+      this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
       // Upload!
       SirTrevor.publish('setSubmitButton', ['Please wait...']);
       this.uploader(
         file,
-        function(data){
+        function(data) {
           // Store the data on this block
           this.setData(data);
           // Done
