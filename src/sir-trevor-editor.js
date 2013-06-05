@@ -218,7 +218,6 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.removeErrors();
     this.store("reset", this);
-    this.blocks = this.$('.st-block');
 
     this.validateBlocks(should_validate);
     this.validateBlockTypesExist(should_validate);
@@ -235,12 +234,17 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     }
 
     var blockIterator = function(block,index) {
+      var _block = _.find(this.blocks, function(b) {
+        return (b.blockID == $(block).attr('id')); });
+
+      if (_.isUndefined(_block)) { return false; }
+
       // Find our block
-      this.performValidations(block, should_validate);
-      this.saveBlockStateToStore(block);
+      this.performValidations(_block, should_validate);
+      this.saveBlockStateToStore(_block);
     };
 
-    _.each(this.blocks, _.bind(blockIterator, this));
+    _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
   },
 
   validateBlockTypesExist: function(should_validate) {
