@@ -1649,9 +1649,7 @@
   
     loadData: function(data){
       // Create our image tag
-      this.$editor.html($('<img>', {
-        src: data.file.url
-      }));
+      this.$editor.html($('<img>', { src: data.file.url }));
     },
   
     onBlockRender: function(){
@@ -2527,6 +2525,9 @@
   
 
   /* We need a form handler here to handle all the form submits */
+  SirTrevor.setDefaults = function(options) {
+    SirTrevor.DEFAULTS = _.extend(SirTrevor.DEFAULTS, options || {});
+  };
 
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {

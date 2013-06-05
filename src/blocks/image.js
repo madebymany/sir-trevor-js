@@ -13,9 +13,7 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
 
   loadData: function(data){
     // Create our image tag
-    this.$editor.html($('<img>', {
-      src: data.file.url
-    }));
+    this.$editor.html($('<img>', { src: data.file.url }));
   },
 
   onBlockRender: function(){

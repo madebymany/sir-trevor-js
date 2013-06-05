@@ -124,6 +124,9 @@
   //= sir-trevor-editor.js
 
   /* We need a form handler here to handle all the form submits */
+  SirTrevor.setDefaults = function(options) {
+    SirTrevor.DEFAULTS = _.extend(SirTrevor.DEFAULTS, options || {});
+  };
 
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
