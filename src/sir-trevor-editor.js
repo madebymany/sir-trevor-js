@@ -218,6 +218,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     this.removeErrors();
     this.store("reset", this);
+    this.blocks = this.$('.st-block');
 
     this.validateBlocks(should_validate);
     this.validateBlockTypesExist(should_validate);
