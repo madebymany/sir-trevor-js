@@ -11,7 +11,7 @@ SirTrevor.Blocks.Video = SirTrevor.Block.extend({
   },
 
   loadData: function(data){
-    this.$editor.show().addClass('st-block__editor--with-sixteen-by-nine-media');
+    this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
 
     if(data.source == "youtube" || data.source == "youtu") {
       this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");

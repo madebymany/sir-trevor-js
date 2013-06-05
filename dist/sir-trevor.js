@@ -1076,11 +1076,11 @@
   
       this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
   
-      this._loadAndSetData();
-  
       if (this.hasTextBlock) { this._initTextBlocks(); }
       if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
       if (this.formattingEnabled) { this._initFormatting(); }
+  
+      this._loadAndSetData();
   
       this._initUIComponents();
       this._initPaste();
@@ -1839,7 +1839,7 @@
     },
   
     loadData: function(data){
-      this.$editor.show().addClass('st-block__editor--with-sixteen-by-nine-media');
+      this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
   
       if(data.source == "youtube" || data.source == "youtu") {
         this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");

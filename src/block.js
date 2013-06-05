@@ -129,11 +129,11 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
     this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
 
-    this._loadAndSetData();
-
     if (this.hasTextBlock) { this._initTextBlocks(); }
     if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
     if (this.formattingEnabled) { this._initFormatting(); }
+
+    this._loadAndSetData();
 
     this._initUIComponents();
     this._initPaste();
