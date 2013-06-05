@@ -827,8 +827,6 @@
         delegate it away to our blockTypes to process
       */
   
-      console.log(types, e.dataTransfer);
-  
       if (!_.isUndefined(types) &&
         _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {
         this.onDrop(e.dataTransfer);
@@ -2325,7 +2323,7 @@
     },
   
     _incrementBlockTypeCount: function(type) {
-      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type] + 1;
+      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
     },
   
     _getBlockTypeCount: function(type) {
@@ -2465,7 +2463,7 @@
     _getBlockTypeLimit: function(t) {
       if (!this._isBlockTypeAvailable(t)) { return 0; }
   
-      return (_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t];
+      return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
     },
   
     /*
@@ -2495,8 +2493,6 @@
   
       this.$outer = this.$form.find('#' + this.ID);
       this.$wrapper = this.$outer.find('.st-blocks');
-  
-      console.log(this.$wrapper);
   
       return true;
     },

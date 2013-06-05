@@ -48,8 +48,6 @@ SirTrevor.BlockMixins.Droppable = {
       delegate it away to our blockTypes to process
     */
 
-    console.log(types, e.dataTransfer);
-
     if (!_.isUndefined(types) &&
       _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {
       this.onDrop(e.dataTransfer);
