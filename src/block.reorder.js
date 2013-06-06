@@ -49,7 +49,6 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
 
   onDragStart: function(ev) {
 
-    console.log("onDragStart");
     var item = $(ev.target),
         block = item.parents('.st-block');
 
