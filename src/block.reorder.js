@@ -45,7 +45,7 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
       dropped_on.after(block);
     }
 
-    SirTrevor.EventBus.trigger("block:reorder:drop");
+    SirTrevor.EventBus.trigger("block:reorder:drop", item_id);
   },
 
   onDragStart: function(ev) {

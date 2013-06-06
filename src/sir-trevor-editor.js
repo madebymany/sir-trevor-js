@@ -56,6 +56,9 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
+
+    SirTrevor.EventBus.on("block:content:drop", this.onBlockDropped);
+
     SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
     SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
@@ -117,6 +120,11 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   createBlock: function(type, data, render_at) {
     type = _.capitalize(type); // Proper case
 
+    if(this._blockLimitReached()) {
+      SirTrevor.log("Cannot add any more blocks. Limit reached.");
+      return false;
+    }
+
     if (!this._isBlockTypeAvailable(type)) {
       SirTrevor.log("Block type not available " + type);
       return false;
@@ -154,6 +162,14 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.$wrapper.find('.st-drag-over').removeClass('st-drag-over');
   },
 
+  onBlockDropped: function(block_id) {
+    var block = this.findBlockById(block_id);
+
+    if (block) {
+      block.render();
+    }
+  },
+
   _renderInPosition: function(block) {
     if (this.block_controls.current_container) {
       this.block_controls.current_container.after(block);
@@ -174,6 +190,10 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     var block_type_limit = this._getBlockTypeLimit(type);
 
     return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
+  },
+
+  _blockLimitReached: function() {
+    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
   },
 
   removeBlock: function(block_id, type) {
@@ -298,6 +318,10 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.$errors.find('ul').html('');
 
     this.errors = [];
+  },
+
+  returnBlockByID: function(block_id) {
+    return _.find(this.blocks, function(b){ return b.blockID == block_id; });
   },
 
   /*
