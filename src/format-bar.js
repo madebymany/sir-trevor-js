@@ -53,6 +53,7 @@ _.extend(FormatBar.prototype, FunctionBind, Events, Renderable, {
         width = this.$el.width();
 
     if (rectangles.length == 1) {
+
       coords = {
         left: rectangles[0].left + ((rectangles[0].width - width) / 2),
         top: rectangles[0].top + this.$b.scrollTop()

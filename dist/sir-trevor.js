@@ -877,8 +877,8 @@
   
     initialize: function() {
       this.$el.bind('dragstart', this.onDragStart)
-              .bind('dragend', this.onDragEnd)
-              .bind('drag', this.onDrag);
+              .bind('dragend touchend', this.onDragEnd)
+              .bind('drag touchmove', this.onDrag);
   
       this.$block.dropArea()
                  .bind('drop', this.onDrop);
@@ -903,6 +903,8 @@
     },
   
     onDragStart: function(ev) {
+  
+      console.log("onDragStart");
       var item = $(ev.target),
           block = item.parents('.st-block');
   
@@ -2124,6 +2126,7 @@
           width = this.$el.width();
   
       if (rectangles.length == 1) {
+  
         coords = {
           left: rectangles[0].left + ((rectangles[0].width - width) / 2),
           top: rectangles[0].top + this.$b.scrollTop()

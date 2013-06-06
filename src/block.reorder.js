@@ -22,8 +22,8 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
 
   initialize: function() {
     this.$el.bind('dragstart', this.onDragStart)
-            .bind('dragend', this.onDragEnd)
-            .bind('drag', this.onDrag);
+            .bind('dragend touchend', this.onDragEnd)
+            .bind('drag touchmove', this.onDrag);
 
     this.$block.dropArea()
                .bind('drop', this.onDrop);
@@ -48,6 +48,8 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
   },
 
   onDragStart: function(ev) {
+
+    console.log("onDragStart");
     var item = $(ev.target),
         block = item.parents('.st-block');
 
