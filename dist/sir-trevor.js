@@ -827,8 +827,6 @@
         delegate it away to our blockTypes to process
       */
   
-      console.log(types, e.dataTransfer);
-  
       if (!_.isUndefined(types) &&
         _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {
         this.onDrop(e.dataTransfer);
@@ -2328,7 +2326,7 @@
     },
   
     _incrementBlockTypeCount: function(type) {
-      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type] + 1;
+      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
     },
   
     _getBlockTypeCount: function(type) {
@@ -2399,12 +2397,17 @@
       }
   
       var blockIterator = function(block,index) {
+        var _block = _.find(this.blocks, function(b) {
+          return (b.blockID == $(block).attr('id')); });
+  
+        if (_.isUndefined(_block)) { return false; }
+  
         // Find our block
-        this.performValidations(block, should_validate);
-        this.saveBlockStateToStore(block);
+        this.performValidations(_block, should_validate);
+        this.saveBlockStateToStore(_block);
       };
   
-      _.each(this.blocks, _.bind(blockIterator, this));
+      _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
     },
   
     validateBlockTypesExist: function(should_validate) {
@@ -2468,7 +2471,7 @@
     _getBlockTypeLimit: function(t) {
       if (!this._isBlockTypeAvailable(t)) { return 0; }
   
-      return (_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t];
+      return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
     },
   
     /*
@@ -2498,8 +2501,6 @@
   
       this.$outer = this.$form.find('#' + this.ID);
       this.$wrapper = this.$outer.find('.st-blocks');
-  
-      console.log(this.$wrapper);
   
       return true;
     },
