@@ -899,7 +899,7 @@
         dropped_on.after(block);
       }
   
-      SirTrevor.EventBus.trigger("block:reorder:drop");
+      SirTrevor.EventBus.trigger("block:reorder:drop", item_id);
     },
   
     onDragStart: function(ev) {
@@ -2220,6 +2220,9 @@
       SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
+  
+      SirTrevor.EventBus.on("block:content:drop", this.onBlockDropped);
+  
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
@@ -2321,6 +2324,14 @@
   
     removeBlockDragOver: function() {
       this.$wrapper.find('.st-drag-over').removeClass('st-drag-over');
+    },
+  
+    onBlockDropped: function(block_id) {
+      var block = this.findBlockById(block_id);
+  
+      if (block) {
+        block.render();
+      }
     },
   
     _renderInPosition: function(block) {
@@ -2471,6 +2482,10 @@
       this.$errors.find('ul').html('');
   
       this.errors = [];
+    },
+  
+    returnBlockByID: function(block_id) {
+      return _.find(this.blocks, function(b){ return b.blockID == block_id; });
     },
   
     /*
