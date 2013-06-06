@@ -12,14 +12,16 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
   type: "Tweet",
   droppable: true,
   drop_options: {
-    pastable: true
+    pastable: true,
+    re_render_on_reorder: true
   },
 
   icon_name: function() {
     return 'twitter';
   },
 
-  loadData: function(data){
+  loadData: function(data) {
+    this.$inner.find('iframe').remove();
     this.$inner.prepend(_.template(tweet_template, data));
   },
 

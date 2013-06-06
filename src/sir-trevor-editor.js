@@ -57,7 +57,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
 
-    SirTrevor.EventBus.on("block:content:drop", this.onBlockDropped);
+    SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
 
     SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
     SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
@@ -165,8 +165,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   onBlockDropped: function(block_id) {
     var block = this.findBlockById(block_id);
 
-    if (block) {
-      block.render();
+    if (!_.isUndefined(block) && block.drop_options.re_render_on_reorder) {
+        block._loadData();
     }
   },
 
@@ -320,7 +320,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
     this.errors = [];
   },
 
-  returnBlockByID: function(block_id) {
+  findBlockById: function(block_id) {
     return _.find(this.blocks, function(b){ return b.blockID == block_id; });
   },
 

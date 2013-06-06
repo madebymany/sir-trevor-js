@@ -34,6 +34,7 @@ var blockOptions = [
 var default_drop_options = {
   uploadable: false,
   pastable: false,
+  re_render_on_reorder: false,
   drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
   upload_html: '<div class="st-block__upload-container"><input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button></div>',
   paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
@@ -47,6 +48,8 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   block_template: _.template(
     "<div class='st-block__inner'><%= editor_html %></div>"
   ),
+
+  drop_options: default_drop_options,
 
   attributes: function() {
     return {

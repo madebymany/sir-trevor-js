@@ -900,7 +900,7 @@
         dropped_on.after(block);
       }
   
-      SirTrevor.EventBus.trigger("block:reorder:drop", item_id);
+      SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
     },
   
     onDragStart: function(ev) {
@@ -981,6 +981,7 @@
   var default_drop_options = {
     uploadable: false,
     pastable: false,
+    re_render_on_reorder: false,
     drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
     upload_html: '<div class="st-block__upload-container"><input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button></div>',
     paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
@@ -994,6 +995,8 @@
     block_template: _.template(
       "<div class='st-block__inner'><%= editor_html %></div>"
     ),
+  
+    drop_options: default_drop_options,
   
     attributes: function() {
       return {
@@ -1711,14 +1714,16 @@
     type: "Tweet",
     droppable: true,
     drop_options: {
-      pastable: true
+      pastable: true,
+      re_render_on_reorder: true
     },
   
     icon_name: function() {
       return 'twitter';
     },
   
-    loadData: function(data){
+    loadData: function(data) {
+      this.$inner.find('iframe').remove();
       this.$inner.prepend(_.template(tweet_template, data));
     },
   
@@ -2221,7 +2226,7 @@
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
   
-      SirTrevor.EventBus.on("block:content:drop", this.onBlockDropped);
+      SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
   
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
@@ -2329,8 +2334,8 @@
     onBlockDropped: function(block_id) {
       var block = this.findBlockById(block_id);
   
-      if (block) {
-        block.render();
+      if (!_.isUndefined(block) && block.drop_options.re_render_on_reorder) {
+          block._loadData();
       }
     },
   
@@ -2484,7 +2489,7 @@
       this.errors = [];
     },
   
-    returnBlockByID: function(block_id) {
+    findBlockById: function(block_id) {
       return _.find(this.blocks, function(b){ return b.blockID == block_id; });
     },
   
