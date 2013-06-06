@@ -1457,7 +1457,8 @@
     droppable: true,
   
     drop_options: {
-      uploadable: true
+      uploadable: true,
+      upload_html: '<div class="st-block__upload-container"><input type="file" multiple="true" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button></div>'
     },
   
     editorHTML: "<div class=\"gallery-items\"><p>Gallery Contents:</p><ul></ul></div>",
@@ -2277,6 +2278,11 @@
     createBlock: function(type, data, render_at) {
       type = _.capitalize(type); // Proper case
   
+      if(this._blockLimitReached()) {
+        SirTrevor.log("Cannot add any more blocks. Limit reached.");
+        return false;
+      }
+  
       if (!this._isBlockTypeAvailable(type)) {
         SirTrevor.log("Block type not available " + type);
         return false;
@@ -2334,6 +2340,10 @@
       var block_type_limit = this._getBlockTypeLimit(type);
   
       return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
+    },
+  
+    _blockLimitReached: function() {
+      return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
     },
   
     removeBlock: function(block_id, type) {
