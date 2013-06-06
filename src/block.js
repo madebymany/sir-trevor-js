@@ -93,7 +93,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
 
   initialize: function() {},
 
-  loadData: function(data) {},
+  loadData: function() {},
   onBlockRender: function(){},
   beforeBlockRender: function(){},
   setTextLimit: function() {},

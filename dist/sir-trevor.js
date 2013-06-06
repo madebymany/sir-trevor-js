@@ -858,7 +858,8 @@
   
     this._ensureElement();
     this._bindFunctions();
-    this.initialize.apply(this, arguments);
+    this.initialize();
+  
   };
   
   _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
@@ -1039,7 +1040,7 @@
   
     initialize: function() {},
   
-    loadData: function(data) {},
+    loadData: function() {},
     onBlockRender: function(){},
     beforeBlockRender: function(){},
     setTextLimit: function() {},

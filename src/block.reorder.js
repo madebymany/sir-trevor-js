@@ -3,7 +3,8 @@ var BlockReorder = SirTrevor.BlockReorder = function(block_element) {
 
   this._ensureElement();
   this._bindFunctions();
-  this.initialize.apply(this, arguments);
+  this.initialize();
+
 };
 
 _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
