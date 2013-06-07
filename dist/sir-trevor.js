@@ -1675,6 +1675,8 @@
     },
   
     loadData: function(data) {
+      if (_.isUndefined(data.status_url)) { data.status_url = ''; }
+  
       this.$inner.find('iframe').remove();
       this.$inner.prepend(_.template(tweet_template, data));
     },
