@@ -151,7 +151,7 @@
     var errors = SirTrevor.onBeforeSubmit();
 
     if(errors > 0) {
-      SirTrevor.publish("onError");
+      SirTrevor.EventBus.trigger("onError");
       ev.preventDefault();
     }
   };

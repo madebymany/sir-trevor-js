@@ -35,7 +35,7 @@ SirTrevor.BlockMixins.Droppable = {
 
     e = e.originalEvent;
 
-    SirTrevor.publish("editor/block/handleDrop");
+    SirTrevor.EventBus.trigger("editor/block/handleDrop");
 
     var el = $(e.target),
         types = e.dataTransfer.types,

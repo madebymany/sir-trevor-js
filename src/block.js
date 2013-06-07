@@ -320,7 +320,7 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
       this.$dropzone.hide();
     }
 
-    SirTrevor.publish("editor/block/loadData");
+    SirTrevor.EventBus.trigger("editor/block/loadData");
 
     this.loadData(this.getData());
     this.ready();

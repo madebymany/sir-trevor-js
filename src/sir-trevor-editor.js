@@ -146,7 +146,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
 
     block.focus();
 
-    SirTrevor.publish("editor/block/createBlock");
+    SirTrevor.EventBus.trigger("editor/block/createBlock");
     SirTrevor.log("Block created of type " + type);
   },
 
@@ -199,7 +199,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
   removeBlock: function(block_id, type) {
     this.blockCounts[type] = this.blockCounts[type] - 1;
     this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
-    SirTrevor.publish("editor/block/removeBlock");
+    SirTrevor.EventBus.trigger("editor/block/removeBlock");
   },
 
   performValidations : function(block, should_validate) {

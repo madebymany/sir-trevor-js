@@ -76,14 +76,20 @@ _.extend(Submittable.prototype, {
       .removeClass('disabled');
   },
 
+  _events : {
+    "disableSubmitButton" : "_disableSubmitButton",
+    "enableSubmitButton"  : "_enableSubmitButton",
+    "setSubmitButton"     : "setSubmitButton",
+    "resetSubmitButton"   : "resetSubmitButton",
+    "onError"             : "onError",
+    "onUploadStart"       : "onUploadStart",
+    "onUploadStop"        : "onUploadStop"
+  },
+
   _bindEvents: function(){
-    SirTrevor.subscribe("disableSubmitButton", _.bind(this._disableSubmitButton, this));
-    SirTrevor.subscribe("enableSubmitButton", _.bind(this._enableSubmitButton, this));
-    SirTrevor.subscribe("setSubmitButton", _.bind(this.setSubmitButton, this));
-    SirTrevor.subscribe("resetSubmitButton", _.bind(this.resetSubmitButton, this));
-    SirTrevor.subscribe("onError", _.bind(this.onError, this));
-    SirTrevor.subscribe("onUploadStart", _.bind(this.onUploadStart, this));
-    SirTrevor.subscribe("onUploadStop", _.bind(this.onUploadStop, this));
+    _.forEach(this._events, function(callback, type) {
+      SirTrevor.EventBus.on(type, this[callback], this);
+    }, this);
   }
 
 });
