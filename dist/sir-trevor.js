@@ -2329,7 +2329,7 @@
       block._beforeValidate();
   
       if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-        if(!block.validate()){
+        if(!block.validate()){3
           this.errors.push({ text: _.result(block, 'validationFailMsg') });
           SirTrevor.log("Block " + block.blockID + " failed validation");
           ++errors;
@@ -2435,8 +2435,7 @@
     removeErrors: function() {
       if (this.errors.length === 0) { return false; }
   
-      this.$errors.hide();
-      this.$errors.find('ul').html('');
+      this.$errors.hide().find('ul').html('');
   
       this.errors = [];
     },
