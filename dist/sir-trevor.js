@@ -608,23 +608,6 @@
     }
   
   };
-  /* Adds paste functionaltiy to this block */
-  
-  var Pastable = SirTrevor.BlockMixins.Pastable = {
-  
-    name: "Pastable",
-  
-    initializePastable: function() {
-  
-    }
-  
-  };
-  /* Adds upload functionaltiy to this block */
-  
-  var Uploadable = SirTrevor.BlockMixins.Uploadable = {
-    name: "Uploadable",
-    initializeUploadable: function() {}
-  };
   var BlockReorder = SirTrevor.BlockReorder = function(block_element) {
     this.$block = block_element;
   
@@ -1493,6 +1476,8 @@
     },
   
     loadData: function(data) {
+      if (_.isUndefined(data.status_url)) { data.status_url = ''; }
+  
       this.$inner.find('iframe').remove();
       this.$inner.prepend(_.template(tweet_template, data));
     },
