@@ -790,23 +790,6 @@
     }
   
   };
-  /* Adds paste functionaltiy to this block */
-  
-  var Pastable = SirTrevor.BlockMixins.Pastable = {
-  
-    name: "Pastable",
-  
-    initializePastable: function() {
-  
-    }
-  
-  };
-  /* Adds upload functionaltiy to this block */
-  
-  var Uploadable = SirTrevor.BlockMixins.Uploadable = {
-    name: "Uploadable",
-    initializeUploadable: function() {}
-  };
   var BlockReorder = SirTrevor.BlockReorder = function(block_element) {
     this.$block = block_element;
   
