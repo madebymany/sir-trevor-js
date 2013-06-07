@@ -26,7 +26,6 @@ var blockOptions = [
   "onContentPasted",
   "onBlockRender",
   "beforeBlockRender",
-  "setTextLimit",
   "toMarkdown",
   "toHTML"
 ];
@@ -99,7 +98,6 @@ _.extend(Block.prototype, FunctionBind, Events, Renderable, {
   loadData: function() {},
   onBlockRender: function(){},
   beforeBlockRender: function(){},
-  setTextLimit: function() {},
   toMarkdown: function(markdown){ return markdown; },
   toHTML: function(html){ return html; },
 
