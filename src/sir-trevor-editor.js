@@ -33,7 +33,7 @@ var SirTrevorEditor = SirTrevor.Editor = function(options) {
   SirTrevor.bindFormSubmit(this.$form);
 };
 
-_.extend(SirTrevorEditor.prototype, FunctionBind, Events, {
+_.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
   bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings'],
 

@@ -39,7 +39,7 @@ var default_drop_options = {
   paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
 };
 
-_.extend(Block.prototype, FunctionBind, Events, Renderable, {
+_.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
   bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
 

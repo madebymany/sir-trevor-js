@@ -43,6 +43,7 @@
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
   SirTrevor.instances = [];
+  SirTrevor.Events = Eventable;
 
   var formBound = false; // Flag to tell us once we've bound our submit event
 

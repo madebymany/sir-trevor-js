@@ -5,7 +5,7 @@ var BlockControl = SirTrevor.BlockControl = function(type, instance_scope) {
   this.initialize();
 };
 
-_.extend(BlockControl.prototype, FunctionBind, Renderable, Events, {
+_.extend(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
 
   tagName: 'a',
   className: "st-block-control",

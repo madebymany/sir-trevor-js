@@ -13,7 +13,7 @@ var FormatBar = SirTrevor.FormatBar = function(options) {
   this.initialize.apply(this, arguments);
 };
 
-_.extend(FormatBar.prototype, FunctionBind, Events, Renderable, {
+_.extend(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
   className: 'st-format-bar',
 

@@ -10,7 +10,7 @@ var FloatingBlockControls = SirTrevor.FloatingBlockControls = function(wrapper) 
   this.initialize();
 };
 
-_.extend(FloatingBlockControls.prototype, FunctionBind, Events, {
+_.extend(FloatingBlockControls.prototype, FunctionBind, SirTrevor.Events, {
 
   bound: ['handleWrapperMouseOver', 'handleBlockMouseOut', 'handleBlockClick'],
 

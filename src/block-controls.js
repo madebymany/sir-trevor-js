@@ -12,7 +12,7 @@ var BlockControls = SirTrevor.BlockControls = function(available_types, instance
   this.initialize();
 };
 
-_.extend(BlockControls.prototype, FunctionBind, Renderable, Events, {
+_.extend(BlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
 
   bound: ['handleControlButtonClick'],
   block_controls: null,
