@@ -82,6 +82,17 @@ There are more blocks available in the dedicated [Blocks repository](https://git
 For a well commented version of a custom Block, check out our [example Block](https://github.com/madebymany/sir-trevor-js/blob/master/examples/javascript/example_block.js) that you can use a base.
 Also see our wiki pages on [creating your own Block types](https://github.com/madebymany/sir-trevor-js/wiki/Creating your own Block types)
 
+## Tweets
+
+Due to Twitters API change in 1.1, client side request of tweets are no longer supported. Instead you'll have to have a server-side script that grabs the content and returns it back (as json).
+
+To cutomise the Twitter Fetch URL use the new ``setDefaults`` method.
+
+``SirTrevor.setDefaults({ twitter: {
+  fetchUrl: 'foo/bar'
+}})``
+
+Note that the tweet id is appended as a querystring parameter ``?tweet_id=`` 
 
 ## Image Uploading
 

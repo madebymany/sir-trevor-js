@@ -36,7 +36,10 @@
     blockTypeLimits: {},
     required: [],
     uploadUrl: '/attachments',
-    baseImageUrl: '/sir-trevor-uploads/'
+    baseImageUrl: '/sir-trevor-uploads/',
+    twitter: {
+      fetchURL: '/tweets/fetch' // Set this to your server
+    }
   };
 
   SirTrevor.BlockMixins = {};
