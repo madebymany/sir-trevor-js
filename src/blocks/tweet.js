@@ -76,7 +76,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
 
           // Make our AJAX call
           $.ajax({
-            url: SirTrevor.DEFAULTS.twitter.fetchUrl + "?tweet_id=" + tweetID,
+            url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
             dataType: "JSONP",
             success: _.bind(tweetCallbackSuccess, this),
             error: _.bind(tweetCallbackFail, this)
