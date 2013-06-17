@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "underscore": "~1.4.4",
-    "Eventable": "~1.0.1"
+    "Eventable": "~1.0.1",
+    "jquery": "~1.9.1"
   }
 }

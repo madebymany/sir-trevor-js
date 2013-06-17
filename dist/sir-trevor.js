@@ -36,7 +36,10 @@
     blockTypeLimits: {},
     required: [],
     uploadUrl: '/attachments',
-    baseImageUrl: '/sir-trevor-uploads/'
+    baseImageUrl: '/sir-trevor-uploads/',
+    twitter: {
+      fetchURL: '/tweets/fetch' // Set this to your server
+    }
   };
 
   SirTrevor.BlockMixins = {};
@@ -1531,8 +1534,8 @@
   
             // Make our AJAX call
             $.ajax({
-              url: "http://api.twitter.com/1/statuses/show/" + tweetID + ".json",
-              dataType: "JSONP",
+              url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
+              dataType: "json",
               success: _.bind(tweetCallbackSuccess, this),
               error: _.bind(tweetCallbackFail, this)
             });

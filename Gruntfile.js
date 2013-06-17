@@ -13,7 +13,7 @@ module.exports = function(grunt) {
       'sir-trevor': {
         src : 'dist/sir-trevor.js',
         options: {
-          vendor: 'public/javascripts/*.js',
+          vendor: ['components/jquery/jquery.js', 'components/underscore/underscore.js', 'components/Eventable/eventable.js'],
           specs : 'spec/**/*.spec.js',
           helpers : 'spec/helpers/*.js'
         }
