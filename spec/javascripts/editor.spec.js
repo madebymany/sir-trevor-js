@@ -40,7 +40,7 @@ describe("a SirTrevor.Editor instance", function(){
   });
 
   it("should have all default block types available if none are explicity passed", function() {
-    var blockTypes = ["Text", "Quote", "Ul"];
+    var blockTypes = ["Text", "Quote", "List"];
 
     for (var i = blockTypes.length - 1; i >= 0; i--){
       expect(editor_with_options._isBlockTypeAvailable(blockTypes[i])).toBe(true);

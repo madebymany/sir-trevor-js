@@ -1556,7 +1556,7 @@
   
   var template = '<ul class="st-text-block" contenteditable="true"><li></li></ul>';
   
-  SirTrevor.Blocks.Ul = SirTrevor.Block.extend({
+  SirTrevor.Blocks.List = SirTrevor.Block.extend({
   
     type: "List",
   
