@@ -940,7 +940,7 @@
       if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
         this.$$('input[type="text"]').each(function(index,input){
           input = $(input);
-          if (input.val().length > 0 && hasTextAndData) {
+          if (hasTextAndData) {
             dataObj[input.attr('name')] = input.val();
           }
         });
