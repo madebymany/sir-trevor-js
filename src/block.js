@@ -43,7 +43,7 @@ _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
   bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
 
-  className: 'st-block',
+  className: 'st-block st-icon--add',
   block_template: _.template(
     "<div class='st-block__inner'><%= editor_html %></div>"
   ),
@@ -54,7 +54,8 @@ _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
     return {
       'id': this.blockID,
       'data-type': this.type,
-      'data-instance': this.instanceID
+      'data-instance': this.instanceID,
+      'data-icon' : "add"
     };
   },
 

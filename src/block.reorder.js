@@ -17,7 +17,8 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
   attributes: function() {
     return {
       'html': 'reorder',
-      'draggable': 'true'
+      'draggable': 'true',
+      'data-icon': 'move'
     };
   },
 

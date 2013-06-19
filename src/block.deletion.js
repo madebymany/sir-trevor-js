@@ -9,7 +9,8 @@ _.extend(BlockDeletion.prototype, FunctionBind, Renderable, {
   className: 'st-block__remove st-icon',
 
   attributes: {
-    html: 'delete'
+    html: 'delete',
+    'data-icon': 'bin'
   }
 
 });

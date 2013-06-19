@@ -7,10 +7,11 @@
   border-radius: 3px;
   color: $base-ui-color;
   font-size: 18px;
-  height: $block-controls-height;
+  height: 124px;
   position: absolute; z-index: 2;
   width: 100%;
   text-align: center;
+  margin:20px 0;
 }
 
 .st-block-controls--active {
@@ -30,5 +31,5 @@
 }
 
 .st-block-control:hover {
-  color: #000;
+  color: $accent-color;
 }

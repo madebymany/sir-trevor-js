@@ -1,7 +1,7 @@
 .st-format-bar {
   position: absolute;
   margin: -55px 0 0 0;
-  background: #000;
+  background: #4d5358;
   opacity: 0; visibility: hidden;
   z-index: 10;
   border-radius: 4px;
@@ -19,7 +19,7 @@
   width: 0; height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-top: 10px solid #000;
+  border-top: 10px solid #4d5358;
   margin-left: -10px;
 }
 
@@ -34,4 +34,21 @@
   font-size: 16px;
   color: #fff;
   padding: 5px;
+  vertical-align: middle;
+}
+
+.st-format-btn:hover {
+  color:$accent-color;
+}
+
+.st-format-btn--Italic {
+  font-style:italic;
+}
+
+.st-format-btn--Underline {
+  text-decoration:underline;
+}
+
+.st-format-btn--Unlink {
+  text-decoration: line-through;
 }

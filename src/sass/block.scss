@@ -1,9 +1,9 @@
 .st-blocks {
-  padding-top: 24px;
+  padding-top: 20px;
 }
 
 .st-block {
-  padding: 0 0 $block-add-height 0;
+  padding:0;
   position: relative;
 }
 
@@ -17,32 +17,41 @@
   border-color: $accent-color;
 }
 
-.st-block--with-plus:after,
-.st-block:last-child:after {
-  content: "";
+.st-block--with-plus:before,
+.st-icon--add:before {
   display: block;
   width: 26px; height: 25px;
-  background: url(images/sir-trevor/ui/add.png) no-repeat center center;
   position: absolute; z-index: 1;
-  left: 50%;
-  margin: ($block-add-height / 2 - 13) 0 0 -13px;
-  background: url(images/sir-trevor/ui/add.png) no-repeat center bottom;
+  bottom:0;
 }
 
-.st-block:last-child {
-  padding-bottom: $block-controls-height;
+.st-icon--add {
+  padding-bottom: 60px;
 }
 
-.st-block:last-child:after {
-  margin-top: ($block-controls-height / 2 - 13);
+.st-icon--add:before {
+  margin-top: 49px;
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+  padding: 8px 0;
+  line-height: 0.9em;
+}
+
+.st-icon--add:hover:before {
+  background: #f9f9f9;
 }
 
 .st-block--with-controls {
   padding-bottom: $block-controls-height;
 }
 
-.st-block.st-drag-over:after,
-.st-block.st-drag-over:last-child:after {
+.st-block--with-controls:before {
+  display:none
+}
+
+.st-block.st-drag-over:before,
+.st-block.st-drag-over:last-child:before {
   content: "Drop block here";
   width: 100%;
   text-align: center;
@@ -106,6 +115,7 @@ ul.st-text-block {
 
 .st-block__dropzone {
   padding: 25px 0;
+  background:$blocks-control-bg-color;
 }
 
 .st-block__dropzone .st-icon {
@@ -135,8 +145,9 @@ ul.st-text-block {
 }
 
 .st-block__paste-input {
-  color: $light-ui-color;
+  color: #42474b;
   text-align: center;
+  border:1px solid #d4d4d4;
 }
 
 .st-upload-btn {

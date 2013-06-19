@@ -25,9 +25,10 @@ _.extend(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
     for (formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
+
         $("<button>", {
-          'class': 'st-format-btn st-icon st-format-btn--' + formatName,
-          'text': format.title,
+          'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
+          'text': format.text,
           'data-type': formatName,
           'data-cmd': format.cmd
         }).appendTo(this.$el);

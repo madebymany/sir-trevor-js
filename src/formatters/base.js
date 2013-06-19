@@ -2,29 +2,30 @@
 
 var Bold = SirTrevor.Formatter.extend({
   title: "bold",
-  className: "bold",
   cmd: "bold",
-  keyCode: 66
+  keyCode: 66,
+  text : "B"
 });
 
 var Italic = SirTrevor.Formatter.extend({
   title: "italic",
-  className: "italic",
   cmd: "italic",
-  keyCode: 73
+  keyCode: 73,
+  text : "i"
 });
 
 var Underline = SirTrevor.Formatter.extend({
   title: "underline",
-  className: "underline",
-  cmd: "underline"
+  cmd: "underline",
+  text : "U"
 });
 
 var Link = SirTrevor.Formatter.extend({
 
   title: "link",
-  className: "link",
+  iconName: "link",
   cmd: "CreateLink",
+  text : "link",
 
   onClick: function() {
 
@@ -44,8 +45,9 @@ var Link = SirTrevor.Formatter.extend({
 
 var UnLink = SirTrevor.Formatter.extend({
   title: "unlink",
-  className: "link",
-  cmd: "unlink"
+  iconName: "link",
+  cmd: "unlink",
+  text : "link",
 });
 
 /*

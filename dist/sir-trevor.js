@@ -630,7 +630,8 @@
     attributes: function() {
       return {
         'html': 'reorder',
-        'draggable': 'true'
+        'draggable': 'true',
+        'data-icon': 'move'
       };
     },
   
@@ -699,7 +700,8 @@
     className: 'st-block__remove st-icon',
   
     attributes: {
-      html: 'delete'
+      html: 'delete',
+      'data-icon': 'bin'
     }
   
   });
@@ -748,7 +750,7 @@
   
     bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
   
-    className: 'st-block',
+    className: 'st-block st-icon--add',
     block_template: _.template(
       "<div class='st-block__inner'><%= editor_html %></div>"
     ),
@@ -759,7 +761,8 @@
       return {
         'id': this.blockID,
         'data-type': this.type,
-        'data-instance': this.instanceID
+        'data-instance': this.instanceID,
+        'data-icon' : "add"
       };
     },
   
@@ -1653,29 +1656,30 @@
   
   var Bold = SirTrevor.Formatter.extend({
     title: "bold",
-    className: "bold",
     cmd: "bold",
-    keyCode: 66
+    keyCode: 66,
+    text : "B"
   });
   
   var Italic = SirTrevor.Formatter.extend({
     title: "italic",
-    className: "italic",
     cmd: "italic",
-    keyCode: 73
+    keyCode: 73,
+    text : "i"
   });
   
   var Underline = SirTrevor.Formatter.extend({
     title: "underline",
-    className: "underline",
-    cmd: "underline"
+    cmd: "underline",
+    text : "U"
   });
   
   var Link = SirTrevor.Formatter.extend({
   
     title: "link",
-    className: "link",
+    iconName: "link",
     cmd: "CreateLink",
+    text : "link",
   
     onClick: function() {
   
@@ -1695,8 +1699,9 @@
   
   var UnLink = SirTrevor.Formatter.extend({
     title: "unlink",
-    className: "link",
-    cmd: "unlink"
+    iconName: "link",
+    cmd: "unlink",
+    text : "link",
   });
   
   /*
@@ -1861,9 +1866,10 @@
       for (formatName in SirTrevor.Formatters) {
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
+  
           $("<button>", {
-            'class': 'st-format-btn st-icon st-format-btn--' + formatName,
-            'text': format.title,
+            'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
+            'text': format.text,
             'data-type': formatName,
             'data-cmd': format.cmd
           }).appendTo(this.$el);
