@@ -48,6 +48,7 @@
 
 .st-block.st-drag-over:before,
 .st-block.st-drag-over:last-child:before {
+  font-family:inherit;
   content: "Drop block here";
   width: 100%;
   text-align: center;
