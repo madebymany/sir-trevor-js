@@ -19,6 +19,8 @@ _.extend(BlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
 
   className: "st-block-controls",
 
+  html: "<a class='st-icon st-icon--close'>close</a>",
+
   initialize: function() {
     for(var block_type in this.available_types) {
       if (SirTrevor.Blocks.hasOwnProperty(block_type)) {

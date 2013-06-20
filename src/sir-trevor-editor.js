@@ -163,8 +163,8 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
   },
 
   onBlockDropped: function(block_id) {
+    this.hideAllTheThings();
     var block = this.findBlockById(block_id);
-    console.log(block.dataStore.data);
     if (
       !_.isUndefined(block) &&
       block.dataStore.data.length > 0 &&

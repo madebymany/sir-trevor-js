@@ -1492,6 +1492,7 @@
     },
   
     loadData: function(data) {
+      if (_.isUndefined(data.status_url)) { data.status_url = ''; }
       this.$inner.find('iframe').remove();
       this.$inner.prepend(tweet_template(data));
     },
@@ -1769,6 +1770,8 @@
     block_controls: null,
   
     className: "st-block-controls",
+  
+    html: "<a class='st-icon st-icon--close'>close</a>",
   
     initialize: function() {
       for(var block_type in this.available_types) {
@@ -2104,8 +2107,8 @@
     },
   
     onBlockDropped: function(block_id) {
+      this.hideAllTheThings();
       var block = this.findBlockById(block_id);
-      console.log(block.dataStore.data);
       if (
         !_.isUndefined(block) &&
         block.dataStore.data.length > 0 &&
