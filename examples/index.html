@@ -13,7 +13,7 @@
 </head>
 <body>
   <form>
-    <textarea class="sir-trevor--one"></textarea>
+    <!-- <textarea class="sir-trevor--one"></textarea> -->
     <textarea class="sir-trevor--two"></textarea>
     <input type="submit" class="submit-btn">
   </form>
@@ -35,12 +35,12 @@
       SirTrevor.Blocks.Text.prototype.onBlockRender = set_quote_and_text_limits;
       SirTrevor.Blocks.Quote.prototype.onBlockRender = set_quote_and_text_limits;
 
-      window.editor = new SirTrevor.Editor({
-        el: $('.sir-trevor--one'),
-        blockTypes: ["Text"],
-        required: ['Text'],
-        blockTypeLimits: { "Text": 1 }
-      });
+      // window.editor = new SirTrevor.Editor({
+      //   el: $('.sir-trevor--one'),
+      //   blockTypes: ["Text"],
+      //   required: ['Text'],
+      //   blockTypeLimits: { "Text": 1 }
+      // });
 
       window.editor = new SirTrevor.Editor({
         el: $('.sir-trevor--two')

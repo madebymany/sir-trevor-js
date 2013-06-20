@@ -26,6 +26,11 @@
   border: none;
 }
 
-.st-block input[type="text"] {
-  width: 100%;  
+.st-block input[type="text"],
+.st-block input[type="text"]:active,
+.st-block input[type="text"]:focus {
+  // width: 100%;
+  color: #42474b;
+  border:1px solid #d4d4d4;
+  padding:.6em;
 }

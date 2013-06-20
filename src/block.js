@@ -1,6 +1,6 @@
 var Block = SirTrevor.Block = function(data, instance_id) {
   this.store("create", this, { data: data || {} });
-  this.blockID = _.uniqueId(this.className + '-');
+  this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
 
   this._ensureElement();
@@ -44,6 +44,7 @@ _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
   bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
 
   className: 'st-block st-icon--add',
+
   block_template: _.template(
     "<div class='st-block__inner'><%= editor_html %></div>"
   ),

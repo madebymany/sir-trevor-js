@@ -3,7 +3,7 @@
 .st-block-controls {
   font-family: $base-font-family-dark;
   background-color: $blocks-control-bg-color;
-  visibility: hidden; opacity: 0;
+  display:none;
   border-radius: 3px;
   color: $base-ui-color;
   font-size: 18px;
@@ -15,7 +15,7 @@
 }
 
 .st-block-controls--active {
-  visibility: visible; opacity: 1;
+  display:block;
 }
 
 .st-block-control {

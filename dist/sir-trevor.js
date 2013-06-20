@@ -658,7 +658,6 @@
       ) {
         dropped_on.after(block);
       }
-  
       SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
     },
   
@@ -707,7 +706,7 @@
   });
   var Block = SirTrevor.Block = function(data, instance_id) {
     this.store("create", this, { data: data || {} });
-    this.blockID = _.uniqueId(this.className + '-');
+    this.blockID = _.uniqueId('st-block-');
     this.instanceID = instance_id;
   
     this._ensureElement();
@@ -751,6 +750,7 @@
     bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
   
     className: 'st-block st-icon--add',
+  
     block_template: _.template(
       "<div class='st-block__inner'><%= editor_html %></div>"
     ),
@@ -1459,14 +1459,14 @@
       this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
     }
   });
-  var tweet_template = [
+  var tweet_template = _.template([
     "<blockquote class='twitter-tweet' align='center'>",
     "<p><%= text %></p>",
     "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
     "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
     "</blockquote>",
     '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
-  ].join("\n");
+  ].join("\n"));
   
   SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
   
@@ -1481,11 +1481,19 @@
       return 'twitter';
     },
   
-    loadData: function(data) {
-      if (_.isUndefined(data.status_url)) { data.status_url = ''; }
+    default_data : {
+      text : "",
+      user : {
+        name : "",
+        screen_name : ""
+      },
+      status_url : "",
+      created_at : ""
+    },
   
+    loadData: function(data) {
       this.$inner.find('iframe').remove();
-      this.$inner.prepend(_.template(tweet_template, data));
+      this.$inner.prepend(tweet_template(data));
     },
   
     onContentPasted: function(event){
@@ -2097,9 +2105,13 @@
   
     onBlockDropped: function(block_id) {
       var block = this.findBlockById(block_id);
-  
-      if (!_.isUndefined(block) && block.drop_options.re_render_on_reorder) {
-          block._loadData();
+      console.log(block.dataStore.data);
+      if (
+        !_.isUndefined(block) &&
+        block.dataStore.data.length > 0 &&
+        block.drop_options.re_render_on_reorder
+      ) {
+          block._loadData(block.dataStore);
       }
     },
   

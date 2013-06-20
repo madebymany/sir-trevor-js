@@ -164,9 +164,13 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
   onBlockDropped: function(block_id) {
     var block = this.findBlockById(block_id);
-
-    if (!_.isUndefined(block) && block.drop_options.re_render_on_reorder) {
-        block._loadData();
+    console.log(block.dataStore.data);
+    if (
+      !_.isUndefined(block) &&
+      block.dataStore.data.length > 0 &&
+      block.drop_options.re_render_on_reorder
+    ) {
+        block._loadData(block.dataStore);
     }
   },
 

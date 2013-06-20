@@ -45,7 +45,6 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
     ) {
       dropped_on.after(block);
     }
-
     SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
   },
 

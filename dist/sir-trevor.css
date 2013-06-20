@@ -84,11 +84,12 @@
   outline: none;
   border: none; }
 
-.st-block input[type="text"] {
-  width: 100%; }
-
-.st-blocks {
-  padding-top: 20px; }
+.st-block input[type="text"],
+.st-block input[type="text"]:active,
+.st-block input[type="text"]:focus {
+  color: #42474b;
+  border: 1px solid #d4d4d4;
+  padding: .6em; }
 
 .st-block {
   padding: 0;
@@ -109,10 +110,10 @@
   height: 25px;
   position: absolute;
   z-index: 1;
-  bottom: 0; }
+  bottom: 20px; }
 
 .st-icon--add {
-  padding-bottom: 60px; }
+  padding-bottom: 80px; }
 
 .st-icon--add:before {
   margin-top: 49px;
@@ -215,10 +216,11 @@ ul.st-text-block {
 .st-dropzone--dragover .st-icon {
   color: #34e0c2; }
 
-.st-block__paste-input {
-  color: #42474b;
+.st-block .st-block__paste-input[type="text"] {
   text-align: center;
-  border: 1px solid #d4d4d4; }
+  width: 80%;
+  display: block;
+  margin: 5px auto 0; }
 
 .st-upload-btn {
   border: 0;
@@ -226,10 +228,14 @@ ul.st-text-block {
   border-radius: 4px;
   padding: 10px 16px;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-size: 20px;
   cursor: pointer;
   color: #fff;
   position: relative;
   z-index: 10; }
+
+.st-block__upload-container:hover .st-upload-btn {
+  background: #34e0c2; }
 
 .st-block__editor--with-sixteen-by-nine-media {
   padding-top: 56.25%;
@@ -267,8 +273,7 @@ ul.st-text-block {
 .st-block-controls {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
   background-color: #f9f9f9;
-  visibility: hidden;
-  opacity: 0;
+  display: none;
   border-radius: 3px;
   color: #42474b;
   font-size: 18px;
@@ -280,8 +285,7 @@ ul.st-text-block {
   margin: 20px 0; }
 
 .st-block-controls--active {
-  visibility: visible;
-  opacity: 1; }
+  display: block; }
 
 .st-block-control {
   margin: 25px 10px 0;
