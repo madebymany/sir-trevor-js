@@ -67,6 +67,7 @@ SirTrevor.Blocks.Tweet = SirTrevor.Block.extend({
                 screen_name: data.user.screen_name,
                 name: data.user.name
               },
+              id: data.id,
               text: data.text,
               created_at: data.created_at,
               status_url: url
