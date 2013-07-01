@@ -145,6 +145,9 @@
 .st-block__inner:hover {
   border-color: #34e0c2; }
 
+.st-block--with-errors .st-block__inner {
+  border-color: #d70014; }
+
 .st-block--with-plus:after,
 .st-icon--add:after {
   display: block;
@@ -215,10 +218,19 @@ ul.st-text-block {
   border-bottom: 0;
   cursor: pointer; }
 
+.st-block--with-errors .st-block__reorder,
+.st-block--with-errors .st-block__remove {
+  color: #d70014;
+  border-color: #d70014; }
+
 .st-block__reorder:hover,
 .st-block__remove:hover {
   color: #fff;
   background: #34e0c2; }
+
+.st-block--with-errors .st-block__reorder:hover,
+.st-block--with-errors .st-block__remove:hover {
+  background-color: #d70014; }
 
 .st-block__dropzone {
   padding: 1.6em 0 1em;

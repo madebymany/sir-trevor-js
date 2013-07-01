@@ -13,6 +13,10 @@
   border-color: $accent-color;
 }
 
+.st-block--with-errors .st-block__inner {
+  border-color: $error-color;
+}
+
 .st-block--with-plus:after,
 .st-icon--add:after {
   display: block;
@@ -95,10 +99,21 @@ ul.st-text-block {
   cursor: pointer;
 }
 
+.st-block--with-errors .st-block__reorder,
+.st-block--with-errors .st-block__remove {
+  color: $error-color;
+  border-color: $error-color;
+}
+
 .st-block__reorder:hover,
 .st-block__remove:hover {
   color: #fff;
   background: $accent-color;
+}
+
+.st-block--with-errors .st-block__reorder:hover,
+.st-block--with-errors .st-block__remove:hover {
+  background-color: $error-color;
 }
 
 .st-block__dropzone {
