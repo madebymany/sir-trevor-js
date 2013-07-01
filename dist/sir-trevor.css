@@ -301,15 +301,13 @@ ul.st-text-block {
 
 .st-format-bar {
   position: absolute;
-  margin: -55px 0 0 0;
+  margin: -3em 0 0 0;
   background: #4d5358;
   opacity: 0;
   visibility: hidden;
   z-index: 10;
-  border-radius: 4px;
-  height: 36px;
-  line-height: 36px;
-  padding: 0 5px;
+  border-radius: 0.4em;
+  padding: 0.5em 0.9em;
   -webkit-transition: opacity 0.2s ease-in-out;
   -moz-transition: opacity 0.2s ease-in-out;
   transition: opacity 0.2s ease-in-out; }
@@ -319,13 +317,13 @@ ul.st-text-block {
   display: block;
   position: absolute;
   left: 50%;
-  top: 36px;
+  top: 2.12em;
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-top: 10px solid #4d5358;
-  margin-left: -10px; }
+  border-left: 0.625em solid transparent;
+  border-right: 0.625em solid transparent;
+  border-top: 0.625em solid #4d5358;
+  margin-left: -0.625em; }
 
 .st-format-bar--is-ready {
   visibility: visible;
@@ -335,8 +333,16 @@ ul.st-text-block {
   background: transparent;
   border: 0;
   color: #fff;
-  padding: 5px;
-  vertical-align: middle; }
+  padding: 0 0.6em 0 0;
+  margin: 0 0.6em 0 0;
+  font-size: 1em;
+  vertical-align: middle;
+  border-right: 1px solid #3e4245; }
+
+.st-format-btn:last-child {
+  border-right: none;
+  padding-right: 0;
+  margin-right: 0; }
 
 .st-format-btn:hover {
   color: #34e0c2; }
