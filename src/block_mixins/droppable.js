@@ -2,7 +2,7 @@
 
 SirTrevor.BlockMixins.Droppable = {
 
-  name: "Droppable",
+  mixinName: "Droppable",
   valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
 
   initializeDroppable: function() {

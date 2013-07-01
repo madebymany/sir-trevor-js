@@ -56,7 +56,7 @@ _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
       'id': this.blockID,
       'data-type': this.type,
       'data-instance': this.instanceID,
-      'data-icon' : "add"
+      'data-icon-after' : "add"
     };
   },
 
@@ -115,7 +115,7 @@ _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
   withMixin: function(mixin) {
     if (!_.isObject(mixin)) { return; }
     _.extend(this, mixin);
-    this["initialize" + mixin.name]();
+    this["initialize" + mixin.mixinName]();
   },
 
   render: function() {

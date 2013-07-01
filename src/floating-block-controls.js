@@ -4,20 +4,54 @@
   Draws the 'plus' between blocks
 */
 
-var FloatingBlockControls = SirTrevor.FloatingBlockControls = function(wrapper) {
+var FloatingBlockControls = SirTrevor.FloatingBlockControls = function(wrapper, instance_id) {
   this.$wrapper = wrapper;
+  this.instance_id = instance_id;
+
+  this._ensureElement();
   this._bindFunctions();
+
   this.initialize();
 };
 
-_.extend(FloatingBlockControls.prototype, FunctionBind, SirTrevor.Events, {
+_.extend(FloatingBlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+
+  className: "st-block-controls__top",
+
+  attributes: function() {
+    return {
+      'data-icon': 'add'
+    };
+  },
 
   bound: ['handleWrapperMouseOver', 'handleBlockMouseOut', 'handleBlockClick'],
 
   initialize: function() {
-    this.$wrapper.on('mouseover', '.st-block', this.handleBlockMouseOver);
-    this.$wrapper.on('click', '.st-block--with-plus', this.handleBlockClick);
-    this.$wrapper.on('mouseout', '.st-block', this.handleBlockMouseOut);
+    this.$el.on('click', this.handleBlockClick)
+            .dropArea()
+            .bind('drop', this.onDrop);
+
+    this.$wrapper.on('mouseover', '.st-block', this.handleBlockMouseOver)
+                 .on('mouseout', '.st-block', this.handleBlockMouseOut)
+                 .on('click', '.st-block--with-plus', this.handleBlockClick);
+  },
+
+  onDrop: function(ev) {
+    ev.preventDefault();
+
+    var dropped_on = this.$el,
+        item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+        block = $('#' + item_id);
+
+    if (!_.isUndefined(item_id) &&
+      !_.isEmpty(block) &&
+      dropped_on.attr('id') != item_id &&
+      this.instance_id == block.attr('data-instance')
+    ) {
+      dropped_on.after(block);
+    }
+
+    SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
   },
 
   handleBlockMouseOver: function(e) {

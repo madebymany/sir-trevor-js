@@ -47,12 +47,13 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
     this.$el.hide();
 
     this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
-    this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
+    this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
     this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
 
     this.listenTo(this.block_controls, 'createBlock', this.createBlock);
     this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
 
+    SirTrevor.EventBus.on("block:reorder:down", this.hideBlockControls);
     SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
     SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
     SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
@@ -62,22 +63,22 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
     SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
     SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
+    this.$wrapper.prepend(this.fl_block_controls.render().$el);
     this.$outer.append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
+
 
     $(window).bind('click', this.hideAllTheThings);
 
     var store = this.store("read", this);
 
-    if (store.data.length === 0) {
-      // Create a default instance
-      this.createBlock(this.options.defaultType);
-    } else {
-      // We have data. Build our blocks from here.
+    if (store.data.length > 0) {
       _.each(store.data, _.bind(function(block){
         SirTrevor.log('Creating: ', block);
         this.createBlock(block.type, block.data);
       }, this));
+    } else if (this.options.defaultType !== false) {
+      this.createBlock(this.options.defaultType);
     }
 
     this.$wrapper.addClass('st-ready');
@@ -92,18 +93,20 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
     this.formatBar.hide();
 
     if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("st-block--with-controls");
+      this.block_controls.current_container.removeClass("with-st-controls");
     }
   },
 
   showBlockControls: function(container) {
     if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("st-block--with-controls");
+      this.block_controls.current_container.removeClass("with-st-controls");
     }
 
     this.block_controls.show();
+
     container.append(this.block_controls.$el.detach());
-    container.addClass('st-block--with-controls');
+    container.addClass('with-st-controls');
+
     this.block_controls.current_container = container;
   },
 
@@ -155,11 +158,15 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
   },
 
   hideBlockControls: function() {
+    if (!_.isUndefined(this.block_controls.current_container)) {
+      this.block_controls.current_container.removeClass("with-st-controls");
+    }
+
     this.block_controls.hide();
   },
 
   removeBlockDragOver: function() {
-    this.$wrapper.find('.st-drag-over').removeClass('st-drag-over');
+    this.$outer.find('.st-drag-over').removeClass('st-drag-over');
   },
 
   onBlockDropped: function(block_id) {
@@ -212,7 +219,7 @@ _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
     block._beforeValidate();
 
     if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-      if(!block.validate()){3
+      if(!block.validate()){
         this.errors.push({ text: _.result(block, 'validationFailMsg') });
         SirTrevor.log("Block " + block.blockID + " failed validation");
         ++errors;

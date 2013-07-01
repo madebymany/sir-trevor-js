@@ -18,7 +18,7 @@
   */
 
   SirTrevor.DEFAULTS = {
-    defaultType: "Text",
+    defaultType: false,
     spinner: {
       className: 'st-spinner',
       lines: 9,
@@ -556,7 +556,7 @@
   
   SirTrevor.BlockMixins.Droppable = {
   
-    name: "Droppable",
+    mixinName: "Droppable",
     valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
   
     initializeDroppable: function() {
@@ -617,12 +617,11 @@
     this._ensureElement();
     this._bindFunctions();
     this.initialize();
-  
   };
   
   _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
   
-    bound: ['onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+    bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
   
     className: 'st-block__reorder st-icon',
     tagName: 'a',
@@ -636,12 +635,17 @@
     },
   
     initialize: function() {
-      this.$el.bind('dragstart', this.onDragStart)
+      this.$el.bind('mousedown touchstart', this.onMouseDown)
+              .bind('dragstart', this.onDragStart)
               .bind('dragend touchend', this.onDragEnd)
               .bind('drag touchmove', this.onDrag);
   
       this.$block.dropArea()
                  .bind('drop', this.onDrop);
+    },
+  
+    onMouseDown: function() {
+      SirTrevor.EventBus.trigger("block:reorder:down");
     },
   
     onDrop: function(ev) {
@@ -762,7 +766,7 @@
         'id': this.blockID,
         'data-type': this.type,
         'data-instance': this.instanceID,
-        'data-icon' : "add"
+        'data-icon-after' : "add"
       };
     },
   
@@ -821,7 +825,7 @@
     withMixin: function(mixin) {
       if (!_.isObject(mixin)) { return; }
       _.extend(this, mixin);
-      this["initialize" + mixin.name]();
+      this["initialize" + mixin.mixinName]();
     },
   
     render: function() {
@@ -1810,20 +1814,54 @@
     Draws the 'plus' between blocks
   */
   
-  var FloatingBlockControls = SirTrevor.FloatingBlockControls = function(wrapper) {
+  var FloatingBlockControls = SirTrevor.FloatingBlockControls = function(wrapper, instance_id) {
     this.$wrapper = wrapper;
+    this.instance_id = instance_id;
+  
+    this._ensureElement();
     this._bindFunctions();
+  
     this.initialize();
   };
   
-  _.extend(FloatingBlockControls.prototype, FunctionBind, SirTrevor.Events, {
+  _.extend(FloatingBlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+  
+    className: "st-block-controls__top",
+  
+    attributes: function() {
+      return {
+        'data-icon': 'add'
+      };
+    },
   
     bound: ['handleWrapperMouseOver', 'handleBlockMouseOut', 'handleBlockClick'],
   
     initialize: function() {
-      this.$wrapper.on('mouseover', '.st-block', this.handleBlockMouseOver);
-      this.$wrapper.on('click', '.st-block--with-plus', this.handleBlockClick);
-      this.$wrapper.on('mouseout', '.st-block', this.handleBlockMouseOut);
+      this.$el.on('click', this.handleBlockClick)
+              .dropArea()
+              .bind('drop', this.onDrop);
+  
+      this.$wrapper.on('mouseover', '.st-block', this.handleBlockMouseOver)
+                   .on('mouseout', '.st-block', this.handleBlockMouseOut)
+                   .on('click', '.st-block--with-plus', this.handleBlockClick);
+    },
+  
+    onDrop: function(ev) {
+      ev.preventDefault();
+  
+      var dropped_on = this.$el,
+          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+          block = $('#' + item_id);
+  
+      if (!_.isUndefined(item_id) &&
+        !_.isEmpty(block) &&
+        dropped_on.attr('id') != item_id &&
+        this.instance_id == block.attr('data-instance')
+      ) {
+        dropped_on.after(block);
+      }
+  
+      SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
     },
   
     handleBlockMouseOver: function(e) {
@@ -1992,12 +2030,13 @@
       this.$el.hide();
   
       this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
-      this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper);
+      this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
       this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
   
       this.listenTo(this.block_controls, 'createBlock', this.createBlock);
       this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
   
+      SirTrevor.EventBus.on("block:reorder:down", this.hideBlockControls);
       SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
       SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
@@ -2007,22 +2046,22 @@
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
+      this.$wrapper.prepend(this.fl_block_controls.render().$el);
       this.$outer.append(this.formatBar.render().$el);
       this.$outer.append(this.block_controls.render().$el);
+  
   
       $(window).bind('click', this.hideAllTheThings);
   
       var store = this.store("read", this);
   
-      if (store.data.length === 0) {
-        // Create a default instance
-        this.createBlock(this.options.defaultType);
-      } else {
-        // We have data. Build our blocks from here.
+      if (store.data.length > 0) {
         _.each(store.data, _.bind(function(block){
           SirTrevor.log('Creating: ', block);
           this.createBlock(block.type, block.data);
         }, this));
+      } else if (this.options.defaultType !== false) {
+        this.createBlock(this.options.defaultType);
       }
   
       this.$wrapper.addClass('st-ready');
@@ -2037,18 +2076,20 @@
       this.formatBar.hide();
   
       if (!_.isUndefined(this.block_controls.current_container)) {
-        this.block_controls.current_container.removeClass("st-block--with-controls");
+        this.block_controls.current_container.removeClass("with-st-controls");
       }
     },
   
     showBlockControls: function(container) {
       if (!_.isUndefined(this.block_controls.current_container)) {
-        this.block_controls.current_container.removeClass("st-block--with-controls");
+        this.block_controls.current_container.removeClass("with-st-controls");
       }
   
       this.block_controls.show();
+  
       container.append(this.block_controls.$el.detach());
-      container.addClass('st-block--with-controls');
+      container.addClass('with-st-controls');
+  
       this.block_controls.current_container = container;
     },
   
@@ -2100,11 +2141,15 @@
     },
   
     hideBlockControls: function() {
+      if (!_.isUndefined(this.block_controls.current_container)) {
+        this.block_controls.current_container.removeClass("with-st-controls");
+      }
+  
       this.block_controls.hide();
     },
   
     removeBlockDragOver: function() {
-      this.$wrapper.find('.st-drag-over').removeClass('st-drag-over');
+      this.$outer.find('.st-drag-over').removeClass('st-drag-over');
     },
   
     onBlockDropped: function(block_id) {
@@ -2157,7 +2202,7 @@
       block._beforeValidate();
   
       if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-        if(!block.validate()){3
+        if(!block.validate()){
           this.errors.push({ text: _.result(block, 'validationFailMsg') });
           SirTrevor.log("Block " + block.blockID + " failed validation");
           ++errors;
