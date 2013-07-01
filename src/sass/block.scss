@@ -5,7 +5,7 @@
 
 .st-block__inner {
   padding: 25px 30px 40px;
-  border: 2px solid #fff;
+  border: 0.125em solid #fff;
   position: relative;
 }
 
@@ -13,58 +13,50 @@
   border-color: $accent-color;
 }
 
-.st-block--with-plus:before,
-.st-icon--add:before {
+.st-block--with-plus:after,
+.st-icon--add:after {
   display: block;
-  width: 26px; height: 25px;
-  position: absolute; z-index: 1;
-  bottom:20px;
+  position: relative; z-index: 1;
+  bottom: 0;
 }
 
-.st-icon--add {
-  padding-bottom: 80px;
-}
+// .st-icon--add {
+//   padding-bottom: 2.75em;
+// }
 
-.st-icon--add:before {
-  margin-top: 49px;
-  width: 100%;
+.st-icon--add:after {
   text-align: center;
-  font-size: 30px;
-  padding: 8px 0;
-  line-height: 0.9em;
+  font-size: 1.875em;
+  padding: 0.3em 0;
+  line-height: 0.9;
 }
 
-.st-icon--add:hover:before {
-  background: #f9f9f9;
+.st-icon--add:hover:after {
+  background: $blocks-control-bg-color;
+  color: $accent-color;
 }
 
-.st-block--with-controls {
-  padding-bottom: $block-controls-height;
-}
-
-.st-block--with-controls:before {
+.with-st-controls:after,
+.with-st-controls:before {
   display:none
 }
 
-.st-block.st-drag-over:before,
-.st-block.st-drag-over:last-child:before {
+.st-block.st-drag-over:after,
+.st-block.st-drag-over:last-child:after,
+.st-block-controls__top.st-drag-over:before {
   font-family:inherit;
   content: "Drop block here";
-  width: 100%;
   text-align: center;
-  line-height: $block-add-height;
-  height: $block-add-height;
-  position: absolute; z-index: 1;
-  top: auto; left: auto;
-  margin: 0;
-  background: #FFF0A0;
-  color: darken(#FFF0A0, 60%);
-  font-size: 18px;
+  padding: 0.7em 0;
+  font-size: 1.125em;
   font-weight: 700;
+  border: 0.125em dashed #d4d4d4;
+  background: transparent;
+  color: #d4d4d4;
 }
 
 .st-text-block {
-  min-height: 50px;
+  min-height: 3em;
   font-size: $text-block-font-size;
   line-height: 1.45;
 }
@@ -75,14 +67,13 @@ h1.st-text-block {
 }
 
 ul.st-text-block {
-  margin-left: 30px;
+  margin-left: 1.875em;
 }
 
 .st-block__ui {
   position: absolute;
+  bottom: 0;  right: 0;
   opacity: 0;
-  bottom: 0;
-  right: 0;
 }
 
 .st-block__inner:hover .st-block__ui {
@@ -98,7 +89,7 @@ ul.st-text-block {
   font-size: 20px;
   color: $accent-color;
   text-align: center;
-  border: 2px solid $accent-color;
+  border: 0.125em solid $accent-color;
   border-right: 0;
   border-bottom: 0;
   cursor: pointer;
@@ -111,29 +102,28 @@ ul.st-text-block {
 }
 
 .st-block__dropzone {
-  padding: 25px 0;
+  padding: 1.6em 0 1em;
   background:$blocks-control-bg-color;
 }
 
 .st-block__dropzone .st-icon {
-  font-size: 72px;
+  font-size: 4em;
   color: $base-ui-color;
   display: block;
-  width: 120px;
   text-align: center;
-  margin: 0pt auto 20px auto;
+  margin: 0 auto 0.2em;
 }
 
 .st-block__dropzone p {
   text-align: center;
   color: $base-ui-color;
-  font-size: 22px;
-  margin: 0 0 10px 0;
+  font-size: 1.2em;
+  margin: 0;
 }
 
 .st-block__dropzone p span {
   text-transform: lowercase;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .st-dropzone--dragover p,
@@ -143,18 +133,18 @@ ul.st-text-block {
 
 .st-block .st-block__paste-input[type="text"] {
   text-align: center;
-  width:80%;
-  display:block;
-  margin:5px auto 0;
+  width: 80%;
+  display: block;
+  margin: 0.4em auto 0;
 }
 
 .st-upload-btn {
   border: 0;
   background: $base-ui-color;
-  border-radius: 4px;
-  padding: 10px 16px;
+  border-radius: 0.4em;
+  padding: 0.35em 1em;
   font-family: $base-font-family;
-  font-size:20px;
+  font-size: 1.125em;
   cursor: pointer;
   color: #fff;
   position: relative;
@@ -184,7 +174,7 @@ ul.st-text-block {
 }
 
 .st-block__upload-container {
-  margin: 20px 0 0 0;
+  margin: 0.4em 0 0 0;
   text-align: center;
 }
 

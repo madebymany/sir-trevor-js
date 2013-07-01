@@ -4,12 +4,11 @@ var BlockReorder = SirTrevor.BlockReorder = function(block_element) {
   this._ensureElement();
   this._bindFunctions();
   this.initialize();
-
 };
 
 _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
 
-  bound: ['onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+  bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
 
   className: 'st-block__reorder st-icon',
   tagName: 'a',
@@ -23,12 +22,17 @@ _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
   },
 
   initialize: function() {
-    this.$el.bind('dragstart', this.onDragStart)
+    this.$el.bind('mousedown touchstart', this.onMouseDown)
+            .bind('dragstart', this.onDragStart)
             .bind('dragend touchend', this.onDragEnd)
             .bind('drag touchmove', this.onDrag);
 
     this.$block.dropArea()
                .bind('drop', this.onDrop);
+  },
+
+  onMouseDown: function() {
+    SirTrevor.EventBus.trigger("block:reorder:down");
   },
 
   onDrop: function(ev) {

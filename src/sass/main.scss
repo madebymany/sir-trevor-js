@@ -7,14 +7,14 @@
 @import 'base.scss';
 @import 'inputs.scss';
 
+// Block Controls
+@import 'block-control.scss';
+
 // Blocks
 @import 'block.scss';
 
 // Block Types
 @import 'blocks/text.scss';
-
-// Block Controls
-@import 'block-control.scss';
 
 // Format Bar
 @import 'format-bar.scss';
