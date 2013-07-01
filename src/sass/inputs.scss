@@ -6,7 +6,7 @@
 .st-block textarea {
   font-family: $base-font-family;
   font-size: inherit;
-  margin: 0; padding: 5px 0;
+  margin: 0; padding: 0.3em 0;
 }
 
 // Focus / Active styles
@@ -31,6 +31,6 @@
 .st-block input[type="text"]:focus {
   // width: 100%;
   color: #42474b;
-  border:1px solid #d4d4d4;
+  border: 0.1em solid #d4d4d4;
   padding:.6em;
 }

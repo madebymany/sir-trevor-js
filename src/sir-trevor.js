@@ -18,7 +18,7 @@
   */
 
   SirTrevor.DEFAULTS = {
-    defaultType: "Text",
+    defaultType: false,
     spinner: {
       className: 'st-spinner',
       lines: 9,

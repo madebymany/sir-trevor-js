@@ -5,10 +5,11 @@
   opacity: 0; visibility: hidden;
   z-index: 10;
   border-radius: 4px;
-  @include transition(opacity 0.2s ease-in-out);
   height: 36px;
   line-height: 36px;
   padding: 0 5px;
+
+  @include transition(opacity 0.2s ease-in-out);
 }
 
 .st-format-bar:before {
@@ -31,7 +32,6 @@
 .st-format-btn {
   background: transparent;
   border: 0;
-  font-size: 16px;
   color: #fff;
   padding: 5px;
   vertical-align: middle;
