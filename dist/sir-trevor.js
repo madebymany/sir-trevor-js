@@ -2154,6 +2154,7 @@
         var block = this.$wrapper.find('.st-block').eq(position - 1);
         if(block && block.attr('id') !== block_el.attr('id')) {
           block[where](block_el);
+          $('html, body').animate({ scrollTop: block_el.position().top });
         }
       },
   
