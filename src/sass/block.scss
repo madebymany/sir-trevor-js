@@ -4,7 +4,7 @@
 }
 
 .st-block__inner {
-  padding: 25px 30px 40px;
+  padding: 1.875em 1.875em 2.8em;
   border: 0.125em solid #fff;
   position: relative;
 }
@@ -92,6 +92,7 @@ ul.st-text-block {
   line-height: 48px;
   font-size: 20px;
   color: $accent-color;
+  background: #fff;
   text-align: center;
   border: 0.125em solid $accent-color;
   border-right: 0;

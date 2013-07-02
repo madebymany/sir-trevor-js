@@ -612,7 +612,6 @@
   SirTrevor.BlockPositioner = (function(){
   
     var template = [
-      "<h2 class='st-block-positioner__title'>Position</h2>",
       "<div class='st-block-positioner__inner'>",
       "<span class='st-block-positioner__selected-value'></span>",
       "<select class='st-block-positioner__select'></select>",
@@ -662,7 +661,7 @@
       },
   
       renderPositionList: function() {
-        var inner = "<option value='0'>Select</option>";
+        var inner = "<option value='0'>Position</option>";
         for(var i = 1; i <= this.total_blocks; i++) {
           inner += "<option value="+i+">"+i+"</option>";
         }

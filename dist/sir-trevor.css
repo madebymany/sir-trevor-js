@@ -138,7 +138,7 @@
   position: relative; }
 
 .st-block__inner {
-  padding: 25px 30px 40px;
+  padding: 1.875em 1.875em 2.8em;
   border: 0.125em solid #fff;
   position: relative; }
 
@@ -212,6 +212,7 @@ ul.st-text-block {
   line-height: 48px;
   font-size: 20px;
   color: #34e0c2;
+  background: #fff;
   text-align: center;
   border: 0.125em solid #34e0c2;
   border-right: 0;
@@ -312,11 +313,11 @@ ul.st-text-block {
   text-align: center; }
 
 .st-block-positioner {
-  border: 0.2em solid #34e0c2;
+  border: 0.125em solid #34e0c2;
   position: absolute;
   z-index: 2;
-  left: -5em;
-  top: -0.7em;
+  left: -5.5em;
+  bottom: 0.4em;
   background: #fff;
   visibility: hidden;
   opacity: 0;
@@ -335,9 +336,9 @@ ul.st-text-block {
   height: 0.4em;
   position: absolute;
   z-index: 1;
-  right: -0.4em;
-  bottom: 0.5em;
-  border: 0.2em solid #34e0c2;
+  right: -0.3em;
+  bottom: 0.6em;
+  border: 0.125em solid #34e0c2;
   background: #fff;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);

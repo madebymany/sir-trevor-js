@@ -1,8 +1,8 @@
 .st-block-positioner {
-  border: 0.2em solid $accent-color;
+  border: 0.125em solid $accent-color;
   position: absolute;
   z-index: 2;
-  left: -5em; top: -0.7em;
+  left: -5.5em; bottom: 0.4em;
   background: #fff;
 
   visibility: hidden;
@@ -21,8 +21,8 @@
   width: 0.4em; height: 0.4em;
   position: absolute;
   z-index: 1;
-  right: -0.4em; bottom: 0.5em;
-  border: 0.2em solid $accent-color;
+  right: -0.3em; bottom: 0.6em;
+  border: 0.125em solid $accent-color;
   background: #fff;
 
   @include transform(rotate(45deg));
