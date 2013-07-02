@@ -37,7 +37,7 @@ SirTrevor.Editor = (function(){
 
   _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
-    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings'],
+    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'onNewBlockCreated'],
 
     initialize: function() {},
     /*
@@ -61,8 +61,7 @@ SirTrevor.Editor = (function(){
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
 
       SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
-      SirTrevor.EventBus.on("editor/block/createBlock", this.hideBlockControls);
-
+      SirTrevor.EventBus.on("block:create:new", this.onNewBlockCreated);
 
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
@@ -153,8 +152,15 @@ SirTrevor.Editor = (function(){
 
       block.focus();
 
-      SirTrevor.EventBus.trigger("editor/block/createBlock");
+      var create_event = (data) ? "block:create:existing" : "block:create:new";
+
+      SirTrevor.EventBus.trigger(create_event, block);
       SirTrevor.log("Block created of type " + type);
+    },
+
+    onNewBlockCreated: function(block) {
+      this.hideBlockControls();
+      $('html, body').animate({ scrollTop: block.$el.position().top });
     },
 
     blockFocus: function(block) {
@@ -214,7 +220,8 @@ SirTrevor.Editor = (function(){
     removeBlock: function(block_id, type) {
       this.blockCounts[type] = this.blockCounts[type] - 1;
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
-      SirTrevor.EventBus.trigger("editor/block/removeBlock");
+
+      SirTrevor.EventBus.trigger("block:remove");
     },
 
     performValidations : function(block, should_validate) {
