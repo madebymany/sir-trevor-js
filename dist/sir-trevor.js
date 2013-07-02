@@ -1678,8 +1678,9 @@
       },
   
       handleControlButtonClick: function(e) {
+        e.stopPropagation();
+  
         this.trigger('createBlock', e.currentTarget.dataset.type);
-        this.hide();
       }
   
     });
@@ -1937,6 +1938,8 @@
         SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
   
         SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
+        SirTrevor.EventBus.on("editor/block/createBlock", this.hideBlockControls);
+  
   
         SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
         SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
