@@ -589,8 +589,6 @@
   
       e = e.originalEvent;
   
-      SirTrevor.EventBus.trigger("editor/block/handleDrop");
-  
       var el = $(e.target),
           types = e.dataTransfer.types,
           type, data = [];
