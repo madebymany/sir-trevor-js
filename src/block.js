@@ -245,12 +245,12 @@ SirTrevor.Block = (function(){
         });
       }
 
-      this.$$('select').each(function(index,input){
-        input = $(input);
-        if(input.val().length > 0 && hasTextAndData) {
-          dataObj[input.attr('name')] = input.val();
-        }
-      });
+      // this.$$('select').each(function(index,input){
+      //   input = $(input);
+      //   if(input.val().length > 0 && hasTextAndData) {
+      //     dataObj[input.attr('name')] = input.val();
+      //   }
+      // });
 
       // Set
       if(!_.isEmpty(dataObj)) {
@@ -359,10 +359,15 @@ SirTrevor.Block = (function(){
       this.$inner.append(ui_element);
       this.$ui = ui_element;
 
-      this.$ui.append(new SirTrevor.BlockReorder(this.$el).render().$el);
+      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID),
+          reorder = new SirTrevor.BlockReorder(this.$el);
+
+      this.$ui.append(reorder.render().$el);
       this.$ui.append(new SirTrevor.BlockDeletion().render().$el);
+      this.$ui.append(positioner.render().$el);
 
       this.$ui.on('click', '.st-block__remove', this.onDeleteClick);
+      this.$ui.on('click', '.st-block__reorder', positioner.toggle);
 
       this.onFocus();
       this.onBlur();

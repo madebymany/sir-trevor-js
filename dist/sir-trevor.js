@@ -609,6 +609,84 @@
     }
   
   };
+  SirTrevor.BlockPositioner = (function(){
+  
+    var template = [
+      "<h2 class='st-block-positioner__title'>Position</h2>",
+      "<div class='st-block-positioner__inner'>",
+      "<span class='st-block-positioner__selected-value'></span>",
+      "<select class='st-block-positioner__select'></select>",
+      "</div>"
+    ].join("\n");
+  
+    var BlockPositioner = function(block_element, instance_id) {
+      this.$block = block_element;
+      this.instanceID = instance_id;
+      this.total_blocks = 0;
+  
+      this._ensureElement();
+      this._bindFunctions();
+  
+      this.initialize();
+    };
+  
+    _.extend(BlockPositioner.prototype, FunctionBind, Renderable, {
+  
+      bound: ['onBlockCountChange', 'onSelectChange'],
+  
+      className: 'st-block-positioner',
+  
+      initialize: function(){
+        this.$el.append(template);
+        this.$select = this.$('.st-block-positioner__select');
+  
+        this.$select.on('change', this.onSelectChange);
+  
+        SirTrevor.EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
+      },
+  
+      onBlockCountChange: function(new_count) {
+        if (new_count != this.total_blocks) {
+          this.total_blocks = new_count;
+          this.renderPositionList();
+        }
+      },
+  
+      onSelectChange: function() {
+        var val = this.$select.val();
+        if (val !== 0) {
+          SirTrevor.EventBus.trigger(this.instanceID + ":blocks:change_position",
+            this.$block, val, (val == 1 ? 'before' : 'after'));
+          this.toggle();
+        }
+      },
+  
+      renderPositionList: function() {
+        var inner = "<option value='0'>Select</option>";
+        for(var i = 1; i <= this.total_blocks; i++) {
+          inner += "<option value="+i+">"+i+"</option>";
+        }
+        this.$select.html(inner);
+      },
+  
+      toggle: function() {
+        this.$select.val(0);
+        this.$el.toggleClass('st-block-positioner--is-visible');
+      },
+  
+      show: function(){
+        this.$el.addClass('st-block-positioner--is-visible');
+      },
+  
+      hide: function(){
+        this.$el.removeClass('st-block-positioner--is-visible');
+      }
+  
+    });
+  
+    return BlockPositioner;
+  
+  })();
   SirTrevor.BlockReorder = (function(){
   
     var BlockReorder = function(block_element) {
@@ -616,12 +694,13 @@
   
       this._ensureElement();
       this._bindFunctions();
+  
       this.initialize();
     };
   
     _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
   
-      bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+      bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
   
       className: 'st-block__reorder st-icon',
       tagName: 'a',
@@ -636,6 +715,7 @@
   
       initialize: function() {
         this.$el.bind('mousedown touchstart', this.onMouseDown)
+                .bind('click', this.onClick)
                 .bind('dragstart', this.onDragStart)
                 .bind('dragend touchend', this.onDragEnd)
                 .bind('drag touchmove', this.onDrag);
@@ -686,6 +766,9 @@
       },
   
       onDrag: function(ev){},
+  
+      onClick: function() {
+      },
   
       render: function() {
         return this;
@@ -965,12 +1048,12 @@
           });
         }
   
-        this.$$('select').each(function(index,input){
-          input = $(input);
-          if(input.val().length > 0 && hasTextAndData) {
-            dataObj[input.attr('name')] = input.val();
-          }
-        });
+        // this.$$('select').each(function(index,input){
+        //   input = $(input);
+        //   if(input.val().length > 0 && hasTextAndData) {
+        //     dataObj[input.attr('name')] = input.val();
+        //   }
+        // });
   
         // Set
         if(!_.isEmpty(dataObj)) {
@@ -1079,10 +1162,15 @@
         this.$inner.append(ui_element);
         this.$ui = ui_element;
   
-        this.$ui.append(new SirTrevor.BlockReorder(this.$el).render().$el);
+        var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID),
+            reorder = new SirTrevor.BlockReorder(this.$el);
+  
+        this.$ui.append(reorder.render().$el);
         this.$ui.append(new SirTrevor.BlockDeletion().render().$el);
+        this.$ui.append(positioner.render().$el);
   
         this.$ui.on('click', '.st-block__remove', this.onDeleteClick);
+        this.$ui.on('click', '.st-block__reorder', positioner.toggle);
   
         this.onFocus();
         this.onBlur();
@@ -1912,7 +2000,7 @@
   
     _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
   
-      bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'onNewBlockCreated'],
+      bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'onNewBlockCreated', 'changeBlockPosition'],
   
       initialize: function() {},
       /*
@@ -1937,6 +2025,8 @@
   
         SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
         SirTrevor.EventBus.on("block:create:new", this.onNewBlockCreated);
+  
+        SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
   
         SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
         SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
@@ -2031,6 +2121,8 @@
   
         SirTrevor.EventBus.trigger(create_event, block);
         SirTrevor.log("Block created of type " + type);
+  
+        this.triggerBlockCountUpdate();
       },
   
       onNewBlockCreated: function(block) {
@@ -2052,6 +2144,17 @@
   
       removeBlockDragOver: function() {
         this.$outer.find('.st-drag-over').removeClass('st-drag-over');
+      },
+  
+      triggerBlockCountUpdate: function() {
+        SirTrevor.EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
+      },
+  
+      changeBlockPosition: function(block_el, position, where) {
+        var block = this.$wrapper.find('.st-block').eq(position - 1);
+        if(block && block.attr('id') !== block_el.attr('id')) {
+          block[where](block_el);
+        }
       },
   
       onBlockDropped: function(block_id) {
@@ -2097,6 +2200,7 @@
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
   
         SirTrevor.EventBus.trigger("block:remove");
+        this.triggerBlockCountUpdate();
       },
   
       performValidations : function(block, should_validate) {

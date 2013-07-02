@@ -110,6 +110,7 @@
 
   /* Block Mixins */
   //= block_mixins
+  //= block.positioner.js
   //= block.reorder.js
   //= block.deletion.js
   //= block.js

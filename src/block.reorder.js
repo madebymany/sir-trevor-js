@@ -5,12 +5,13 @@ SirTrevor.BlockReorder = (function(){
 
     this._ensureElement();
     this._bindFunctions();
+
     this.initialize();
   };
 
   _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
 
-    bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+    bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
 
     className: 'st-block__reorder st-icon',
     tagName: 'a',
@@ -25,6 +26,7 @@ SirTrevor.BlockReorder = (function(){
 
     initialize: function() {
       this.$el.bind('mousedown touchstart', this.onMouseDown)
+              .bind('click', this.onClick)
               .bind('dragstart', this.onDragStart)
               .bind('dragend touchend', this.onDragEnd)
               .bind('drag touchmove', this.onDrag);
@@ -75,6 +77,9 @@ SirTrevor.BlockReorder = (function(){
     },
 
     onDrag: function(ev){},
+
+    onClick: function() {
+    },
 
     render: function() {
       return this;

@@ -37,7 +37,7 @@ SirTrevor.Editor = (function(){
 
   _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
-    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'onNewBlockCreated'],
+    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'onNewBlockCreated', 'changeBlockPosition'],
 
     initialize: function() {},
     /*
@@ -62,6 +62,8 @@ SirTrevor.Editor = (function(){
 
       SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
       SirTrevor.EventBus.on("block:create:new", this.onNewBlockCreated);
+
+      SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
 
       SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
@@ -156,6 +158,8 @@ SirTrevor.Editor = (function(){
 
       SirTrevor.EventBus.trigger(create_event, block);
       SirTrevor.log("Block created of type " + type);
+
+      this.triggerBlockCountUpdate();
     },
 
     onNewBlockCreated: function(block) {
@@ -177,6 +181,17 @@ SirTrevor.Editor = (function(){
 
     removeBlockDragOver: function() {
       this.$outer.find('.st-drag-over').removeClass('st-drag-over');
+    },
+
+    triggerBlockCountUpdate: function() {
+      SirTrevor.EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
+    },
+
+    changeBlockPosition: function(block_el, position, where) {
+      var block = this.$wrapper.find('.st-block').eq(position - 1);
+      if(block && block.attr('id') !== block_el.attr('id')) {
+        block[where](block_el);
+      }
     },
 
     onBlockDropped: function(block_id) {
@@ -222,6 +237,7 @@ SirTrevor.Editor = (function(){
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
 
       SirTrevor.EventBus.trigger("block:remove");
+      this.triggerBlockCountUpdate();
     },
 
     performValidations : function(block, should_validate) {

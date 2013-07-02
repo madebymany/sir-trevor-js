@@ -311,6 +311,56 @@ ul.st-text-block {
   padding: 7px 0;
   text-align: center; }
 
+.st-block-positioner {
+  border: 0.2em solid #34e0c2;
+  position: absolute;
+  z-index: 2;
+  left: -5em;
+  top: -0.7em;
+  background: #fff;
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  -moz-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out; }
+
+.st-block-positioner--is-visible {
+  visibility: visible;
+  opacity: 1; }
+
+.st-block-positioner:after {
+  content: '';
+  display: block;
+  width: 0.4em;
+  height: 0.4em;
+  position: absolute;
+  z-index: 1;
+  right: -0.4em;
+  bottom: 0.5em;
+  border: 0.2em solid #34e0c2;
+  background: #fff;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg); }
+
+.st-block-positioner__title {
+  color: #34e0c2;
+  font-size: 0.7em;
+  font-style: italic;
+  font-weight: normal;
+  margin: 0;
+  border-bottom: 1px solid #34e0c2;
+  padding: 0.5em;
+  text-align: center; }
+
+.st-block-positioner__inner {
+  background: #fff;
+  position: relative;
+  z-index: 2;
+  padding: 0.3em 0.5em; }
+
 .st-format-bar {
   position: absolute;
   margin: -3em 0 0 0;
