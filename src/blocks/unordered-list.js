@@ -2,29 +2,32 @@
   Unordered List
 */
 
-var template = '<ul class="st-text-block" contenteditable="true"><li></li></ul>';
+SirTrevor.Blocks.List = (function() {
 
-SirTrevor.Blocks.List = SirTrevor.Block.extend({
+  var template = '<ul class="st-text-block" contenteditable="true"><li></li></ul>';
 
-  type: "List",
+  return SirTrevor.Block.extend({
 
-  editorHTML: function() {
-    return _.template(template, this);
-  },
+    type: "List",
 
-  loadData: function(data){
-    this.$$('.st-text-block').html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
-  },
+    editorHTML: function() {
+      return _.template(template, this);
+    },
 
-  toMarkdown: function(markdown) {
-    return markdown.replace(/<\/li>/mg,"\n")
-                   .replace(/<\/?[^>]+(>|$)/g, "")
-                   .replace(/^(.+)$/mg," - $1");
-  },
+    loadData: function(data){
+      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+    },
 
-  toHTML: function(html) {
-		html = html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
-		return "<ul>" + html + "</ul>";
-  }
+    toMarkdown: function(markdown) {
+      return markdown.replace(/<\/li>/mg,"\n")
+                     .replace(/<\/?[^>]+(>|$)/g, "")
+                     .replace(/^(.+)$/mg," - $1");
+    },
 
-});
+    toHTML: function(html) {
+      return html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
+    }
+
+  });
+
+})();

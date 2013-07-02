@@ -8,7 +8,7 @@ SirTrevor.BlockMixins.Droppable = {
   initializeDroppable: function() {
     SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
 
-    var drop_options = _.extend(default_drop_options, this.drop_options);
+    var drop_options = _.extend(SirTrevor.DEFAULTS.default_drop_options, this.drop_options);
 
     // Build the dropzone interface
     var drop_html = $(_.template(drop_options.drop_html, this));

@@ -1,53 +1,59 @@
-var Format = SirTrevor.Formatter = function(options){
-  this.formatId = _.uniqueId('format-');
-  this._configure(options || {});
-  this.initialize.apply(this, arguments);
-};
+SirTrevor.Formatter = (function(){
 
-var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick", "toMarkdown", "toHTML"];
+  var Format = function(options){
+    this.formatId = _.uniqueId('format-');
+    this._configure(options || {});
+    this.initialize.apply(this, arguments);
+  };
 
-_.extend(Format.prototype, {
+  var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick", "toMarkdown", "toHTML"];
 
-  title: '',
-  className: '',
-  cmd: null,
-  keyCode: null,
-  param: null,
-  toMarkdown: function(markdown){ return markdown; },
-  toHTML: function(html){ return html; },
+  _.extend(Format.prototype, {
 
-  initialize: function(){},
+    title: '',
+    className: '',
+    cmd: null,
+    keyCode: null,
+    param: null,
+    toMarkdown: function(markdown){ return markdown; },
+    toHTML: function(html){ return html; },
 
-  _configure: function(options) {
-    if (this.options) options = _.extend({}, this.options, options);
-    for (var i = 0, l = formatOptions.length; i < l; i++) {
-      var attr = formatOptions[i];
-      if (options[attr]) this[attr] = options[attr];
-    }
-    this.options = options;
-  },
+    initialize: function(){},
 
-  _bindToBlock: function(block) {
+    _configure: function(options) {
+      if (this.options) options = _.extend({}, this.options, options);
+      for (var i = 0, l = formatOptions.length; i < l; i++) {
+        var attr = formatOptions[i];
+        if (options[attr]) this[attr] = options[attr];
+      }
+      this.options = options;
+    },
 
-    var formatter = this,
-        ctrlDown = false;
+    _bindToBlock: function(block) {
 
-    block
-      .on('keyup','.st-text-block', function(ev) {
-        if(ev.which == 17 || ev.which == 224) {
+      var formatter = this,
           ctrlDown = false;
-        }
-      })
-      .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
-        if(ev.which == 17 || ev.which == 224) {
-          ctrlDown = true;
-        }
-        if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
-          document.execCommand(ev.data.formatter.cmd, false, true);
-          ev.preventDefault();
-        }
-      });
-  }
-});
 
-Format.extend = extend; // Allow our Formatters to be extended.
+      block
+        .on('keyup','.st-text-block', function(ev) {
+          if(ev.which == 17 || ev.which == 224) {
+            ctrlDown = false;
+          }
+        })
+        .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
+          if(ev.which == 17 || ev.which == 224) {
+            ctrlDown = true;
+          }
+          if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
+            document.execCommand(ev.data.formatter.cmd, false, true);
+            ev.preventDefault();
+          }
+        });
+    }
+  });
+
+  Format.extend = extend; // Allow our Formatters to be extended.
+
+  return Format;
+
+})();

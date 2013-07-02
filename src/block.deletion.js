@@ -1,16 +1,22 @@
-var BlockDeletion = SirTrevor.BlockDeletion = function() {
-  this._ensureElement();
-  this._bindFunctions();
-};
+SirTrevor.BlockDeletion = (function(){
 
-_.extend(BlockDeletion.prototype, FunctionBind, Renderable, {
+  var BlockDeletion = function() {
+    this._ensureElement();
+    this._bindFunctions();
+  };
 
-  tagName: 'a',
-  className: 'st-block__remove st-icon',
+  _.extend(BlockDeletion.prototype, FunctionBind, Renderable, {
 
-  attributes: {
-    html: 'delete',
-    'data-icon': 'bin'
-  }
+    tagName: 'a',
+    className: 'st-block__remove st-icon',
 
-});
+    attributes: {
+      html: 'delete',
+      'data-icon': 'bin'
+    }
+
+  });
+
+  return BlockDeletion;
+
+})();
