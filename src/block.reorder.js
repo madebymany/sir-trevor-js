@@ -57,23 +57,18 @@ SirTrevor.BlockReorder = (function(){
     },
 
     onDragStart: function(ev) {
+      var btn = $(ev.currentTarget).parent();
 
-      var item = $(ev.target),
-          block = item.parents('.st-block');
-
-      ev.originalEvent.dataTransfer.setDragImage(block[0], 0, 0);
-      ev.originalEvent.dataTransfer.setData('Text', block.attr('id'));
+      ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
+      ev.originalEvent.dataTransfer.setData('Text', this.$block.attr('id'));
 
       SirTrevor.EventBus.trigger("block:reorder:dragstart");
-      block.addClass('st-block--dragging');
+      this.$block.addClass('st-block--dragging');
     },
 
     onDragEnd: function(ev) {
-      var item = $(ev.target),
-          block = item.parents('.st-block');
-
       SirTrevor.EventBus.trigger("block:reorder:dragend");
-      block.removeClass('st-block--dragging');
+      this.$block.removeClass('st-block--dragging');
     },
 
     onDrag: function(ev){},
