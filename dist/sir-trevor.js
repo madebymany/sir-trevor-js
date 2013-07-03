@@ -9,7 +9,7 @@
   var splice = array.splice;
 
   SirTrevor = root.SirTrevor = {};
-  SirTrevor.DEBUG = true;
+  SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
   /*
