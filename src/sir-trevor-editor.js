@@ -255,7 +255,7 @@ SirTrevor.Editor = (function(){
       }
 
       this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
-      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.ID); });
+      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
 
       block.remove();
