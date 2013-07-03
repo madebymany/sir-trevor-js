@@ -37,7 +37,8 @@ SirTrevor.Editor = (function(){
 
   _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
-    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'onNewBlockCreated', 'changeBlockPosition'],
+    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
+            'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd'],
 
     initialize: function() {},
     /*
@@ -56,8 +57,8 @@ SirTrevor.Editor = (function(){
       this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
 
       SirTrevor.EventBus.on("block:reorder:down", this.hideBlockControls);
-      SirTrevor.EventBus.on("block:reorder:dragstart", this.hideBlockControls);
-      SirTrevor.EventBus.on("block:reorder:dragend", this.removeBlockDragOver);
+      SirTrevor.EventBus.on("block:reorder:dragstart", this.onBlockDragStart);
+      SirTrevor.EventBus.on("block:reorder:dragend", this.onBlockDragEnd);
       SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
 
       SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
@@ -206,6 +207,16 @@ SirTrevor.Editor = (function(){
       ) {
           block._loadData(block.dataStore);
       }
+    },
+
+    onBlockDragStart: function() {
+      this.hideBlockControls();
+      this.$wrapper.addClass("st-outer--is-reordering");
+    },
+
+    onBlockDragEnd: function() {
+      this.removeBlockDragOver();
+      this.$wrapper.removeClass("st-outer--is-reordering");
     },
 
     _renderInPosition: function(block) {

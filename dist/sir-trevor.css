@@ -186,9 +186,9 @@
 .with-st-controls:before {
   display: none; }
 
-.st-block.st-drag-over:after,
-.st-block.st-drag-over:last-child:after,
-.st-block-controls__top.st-drag-over:before {
+.st-outer--is-reordering .st-block.st-drag-over:after,
+.st-outer--is-reordering .st-block.st-drag-over:last-child:after,
+.st-outer--is-reordering .st-block-controls__top.st-drag-over:before {
   font-family: inherit;
   content: "Drop block here";
   text-align: center;
