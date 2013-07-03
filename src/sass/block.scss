@@ -77,7 +77,9 @@ ul.st-text-block {
 
 .st-block__dropzone {
   padding: 1.6em 0 1em;
-  background:$blocks-control-bg-color;
+  border-radius: 0.3em;
+  background: $blocks-control-bg-color;
+  border-top: 0.125em solid transparent;
 }
 
 .st-block__dropzone .st-icon {
@@ -100,9 +102,8 @@ ul.st-text-block {
   font-weight: 700;
 }
 
-.st-dropzone--dragover p,
-.st-dropzone--dragover .st-icon {
-  color: $accent-color;
+.st-drag-over .st-block__dropzone {
+  border-top-color: darken($blocks-control-bg-color, 15%);
 }
 
 .st-block .st-block__paste-input[type="text"] {

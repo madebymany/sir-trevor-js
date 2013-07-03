@@ -213,7 +213,9 @@ ul.st-text-block {
 
 .st-block__dropzone {
   padding: 1.6em 0 1em;
-  background: #f3f3f3; }
+  border-radius: 0.3em;
+  background: #f3f3f3;
+  border-top: 0.125em solid transparent; }
 
 .st-block__dropzone .st-icon {
   font-size: 4em;
@@ -232,9 +234,8 @@ ul.st-text-block {
   text-transform: lowercase;
   font-weight: 700; }
 
-.st-dropzone--dragover p,
-.st-dropzone--dragover .st-icon {
-  color: #34e0c2; }
+.st-drag-over .st-block__dropzone {
+  border-top-color: #cdcdcd; }
 
 .st-block .st-block__paste-input[type="text"] {
   text-align: center;
