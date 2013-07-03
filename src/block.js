@@ -32,6 +32,14 @@ SirTrevor.Block = (function(){
     "toHTML"
   ];
 
+  var delete_template = [
+    "<div class='st-block__ui-delete-controls'>",
+      "<label class='st-block__delete-label'>Delete?</label>",
+      "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
+      "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
+    "</div>"
+  ].join("\n");
+
   SirTrevor.DEFAULTS.default_drop_options = {
     uploadable: false,
     pastable: false,
@@ -290,10 +298,25 @@ SirTrevor.Block = (function(){
     onDeleteClick: function(ev) {
       ev.preventDefault();
 
-      if (confirm('Are you sure you wish to delete this content?')) {
+      this.$inner.append(delete_template);
+      this.$el.addClass('st-block--delete-active');
+
+      var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
+
+      var onDeleteConfirm = function(e) {
+        e.preventDefault();
         this.remove();
         this.trigger('removeBlock', this.blockID, this.type);
-      }
+      };
+
+      var onDeleteDeny = function(e) {
+        e.preventDefault();
+        this.$el.removeClass('st-block--delete-active');
+        $delete_el.remove();
+      };
+
+      this.$inner.on('click', '.st-block-ui-btn--confirm-delete', _.bind(onDeleteConfirm, this))
+                 .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
     },
 
     onContentPasted: function(ev){
@@ -356,6 +379,7 @@ SirTrevor.Block = (function(){
 
     _initUIComponents: function() {
       var ui_element = $("<div>", { 'class': 'st-block__ui' });
+
       this.$inner.append(ui_element);
       this.$ui = ui_element;
 
@@ -366,8 +390,8 @@ SirTrevor.Block = (function(){
       this.$ui.append(new SirTrevor.BlockDeletion().render().$el);
       this.$ui.append(positioner.render().$el);
 
-      this.$ui.on('click', '.st-block__remove', this.onDeleteClick);
-      this.$ui.on('click', '.st-block__reorder', positioner.toggle);
+      this.$ui.on('click', '.st-block-ui-btn--delete', this.onDeleteClick);
+      this.$ui.on('click', '.st-block-ui-btn--reorder', positioner.toggle);
 
       this.onFocus();
       this.onBlur();

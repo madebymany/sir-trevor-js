@@ -13,7 +13,7 @@ SirTrevor.BlockReorder = (function(){
 
     bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
 
-    className: 'st-block__reorder st-icon',
+    className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
     tagName: 'a',
 
     attributes: function() {
