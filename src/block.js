@@ -305,8 +305,7 @@ SirTrevor.Block = (function(){
 
       var onDeleteConfirm = function(e) {
         e.preventDefault();
-        this.remove();
-        this.trigger('removeBlock', this.blockID, this.type);
+        this.trigger('removeBlock', this.blockID);
       };
 
       var onDeleteDeny = function(e) {

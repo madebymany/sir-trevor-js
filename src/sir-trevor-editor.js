@@ -234,9 +234,20 @@ SirTrevor.Editor = (function(){
       return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
     },
 
-    removeBlock: function(block_id, type) {
-      this.blockCounts[type] = this.blockCounts[type] - 1;
-      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block_id); });
+    removeBlock: function(block_id) {
+      var block = this.findBlockById(block_id),
+          controls = block.$el.find('.st-block-controls');
+
+      if (controls.length) {
+        this.block_controls.hide();
+        this.$wrapper.prepend(controls);
+      }
+
+      this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
+      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.ID); });
+      this.stopListening(block);
+
+      block.remove();
 
       SirTrevor.EventBus.trigger("block:remove");
       this.triggerBlockCountUpdate();
