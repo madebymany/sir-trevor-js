@@ -120,11 +120,11 @@
 
 .st-block-controls__top:hover:before {
   color: #34e0c2;
-  background: #f9f9f9; }
+  background: #f3f3f3; }
 
 .st-block-controls {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  background-color: #f9f9f9;
+  background-color: #f3f3f3;
   display: none;
   border-radius: 3px;
   color: #42474b;
@@ -179,7 +179,7 @@
   line-height: 0.9; }
 
 .st-icon--add:hover:after {
-  background: #f9f9f9;
+  background: #f3f3f3;
   color: #34e0c2; }
 
 .with-st-controls:after,
@@ -213,7 +213,7 @@ ul.st-text-block {
 
 .st-block__dropzone {
   padding: 1.6em 0 1em;
-  background: #f9f9f9; }
+  background: #f3f3f3; }
 
 .st-block__dropzone .st-icon {
   font-size: 4em;
