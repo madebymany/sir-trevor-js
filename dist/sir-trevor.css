@@ -313,9 +313,9 @@ ul.st-text-block {
   width: 0.4em;
   height: 0.4em;
   position: absolute;
-  z-index: 1;
   right: -0.3em;
   bottom: 0.6em;
+  z-index: 1;
   border: 0.125em solid #34e0c2;
   background: #fff;
   -webkit-transform: rotate(45deg);
