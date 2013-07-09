@@ -8,17 +8,17 @@ SirTrevor.BlockMixins.Droppable = {
   initializeDroppable: function() {
     SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
 
-    var drop_options = _.extend(SirTrevor.DEFAULTS.default_drop_options, this.drop_options);
+    this.drop_options = _.extend({}, SirTrevor.DEFAULTS.default_drop_options, this.drop_options);
 
     // Build the dropzone interface
-    var drop_html = $(_.template(drop_options.drop_html, this));
+    var drop_html = $(_.template(this.drop_options.drop_html, this));
 
     if (this.drop_options.pastable) {
-      drop_html.append(drop_options.paste_html);
+      drop_html.append(this.drop_options.paste_html);
     }
 
     if (this.drop_options.uploadable) {
-      drop_html.append(drop_options.upload_html);
+      drop_html.append(this.drop_options.upload_html);
     }
 
     this.$editor.hide();
