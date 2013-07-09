@@ -15,7 +15,6 @@
   <form>
     <!-- <textarea class="sir-trevor--one"></textarea> -->
     <textarea class="sir-trevor--two"></textarea>
-    <input type="submit" class="submit-btn">
   </form>
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -45,8 +44,7 @@
       // });
 
       window.editor = new SirTrevor.Editor({
-        el: $('.sir-trevor--two'),
-        defaultType: 'Text'
+        el: $('.sir-trevor--two')
       });
 
       $('form').bind('submit', function(){
