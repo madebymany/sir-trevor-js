@@ -36,3 +36,16 @@
   };
 
 })(jQuery);
+
+function text_diff(first, second) {
+  var start = 0;
+  while (start < first.length && first[start] == second[start]) {
+      ++start;
+  }
+  var end = 0;
+  while (first.length - end > start && first[first.length - end - 1] == second[second.length - end - 1]) {
+      ++end;
+  }
+  end = second.length - end;
+  return second.substr(start, end - start);
+}

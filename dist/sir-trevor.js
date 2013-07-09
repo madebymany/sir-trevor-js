@@ -138,6 +138,19 @@
     };
   
   })(jQuery);
+  
+  function text_diff(first, second) {
+    var start = 0;
+    while (start < first.length && first[start] == second[start]) {
+        ++start;
+    }
+    var end = 0;
+    while (first.length - end > start && first[first.length - end - 1] == second[second.length - end - 1]) {
+        ++end;
+    }
+    end = second.length - end;
+    return second.substr(start, end - start);
+  }
   /*
     Backbone Inheritence 
     --
@@ -823,6 +836,7 @@
       "toData",
       "onDrop",
       "onContentPasted",
+      "onTextContentPasted",
       "onBlockRender",
       "beforeBlockRender",
       "toMarkdown",
@@ -1115,12 +1129,36 @@
                    .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
       },
   
-      onContentPasted: function(ev){
-        var textBlock = this.$$('.st-text-block');
-        if (textBlock.length > 0) {
-          textBlock.html(SirTrevor.toHTML(SirTrevor.toMarkdown(textBlock.html(), this.type), this.type));
+      onTextContentPasted: function(target, before, event){
+        var after = target[0].innerHTML;
+  
+        var pos1 = -1,
+            pos2 = -1,
+            after_len = after.length,
+            before_len = before.length;
+  
+        for (var i = 0; i < after_len; i++) {
+          if (pos1 == -1 && before.substr(i, 1) != after.substr(i, 1)) {
+            pos1 = i - 1;
+          }
+  
+          if (pos2 == -1 &&
+              before.substr(before_len - i - 1, 1) !=
+              after.substr(after_len - i - 1, 1)
+            ) {
+            pos2 = i;
+          }
         }
+  
+        var pasted = after.substr(pos1, after_len - pos2 - pos1 + 1);
+  
+        var replace = SirTrevor.toHTML(SirTrevor.toMarkdown(pasted, this.type), this.type);
+  
+        // replace the HTML mess with the plain content
+        target[0].innerHTML = after.substr(0, pos1) + replace + after.substr(pos1 + pasted.length);
       },
+  
+      onContentPasted: function(event, target){},
   
       /*
         Generic Upload Attachment Function
@@ -1157,12 +1195,14 @@
       },
   
       _handleContentPaste: function(ev) {
-        // We need a little timeout here
-        var timed = function(ev){
-          // Delegate this off to the super method that can be overwritten
-          this.onContentPasted(ev);
-        };
-        _.delay(_.bind(timed, this, ev), 100);
+        var target = $(ev.currentTarget),
+            original_content = target.html();
+  
+        if (target.hasClass('st-text-block')) {
+          _.delay(_.bind(this.onTextContentPasted, this, target, original_content, ev), 0);
+        } else {
+          _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
+        }
       },
   
       _getBlockClass: function() {
@@ -1349,7 +1389,7 @@
   
     type: 'Heading',
   
-    editorHTML: '<h1 class="st-required st-text-block" contenteditable="true"></h1>',
+    editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
     loadData: function(data){
       this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
