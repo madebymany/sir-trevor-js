@@ -1,3 +1,14 @@
+/*!
+ * Sir Trevor JS v0.3.0
+ *
+ * Created by Made by Many (http://madebymany.com)
+ *
+ * Released under the MIT license
+ * www.opensource.org/licenses/MIT
+ *
+ * Date: 2013-07-09
+ */
+
 (function ($, _){
 
   var root = this,

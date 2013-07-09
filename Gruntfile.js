@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 
     rig: {
       build: {
-        src: ['<banner:meta.banner>', 'src/sir-trevor.js'],
+        src: 'src/sir-trevor.js',
         dest: 'dist/sir-trevor.js'
       }
     },
