@@ -15,7 +15,7 @@ SirTrevor.Blocks.List = (function() {
     },
 
     loadData: function(data){
-      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     },
 
     toMarkdown: function(markdown) {

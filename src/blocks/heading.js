@@ -8,6 +8,6 @@ SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
   editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
 
   loadData: function(data){
-    this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+    this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
   }
 });

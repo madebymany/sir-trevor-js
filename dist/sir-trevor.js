@@ -1045,14 +1045,14 @@
             dataObj = {};
   
         /* Simple to start. Add conditions later */
-        if (this.$$('.st-text-block').length > 0) {
-          var content = this.$$('.st-text-block').html();
+        if (this.hasTextBlock()) {
+          var content = this.getTextBlock().html();
           if (content.length > 0) {
             dataObj.text = SirTrevor.toMarkdown(content, this.type);
           }
         }
   
-        var hasTextAndData = (!_.isUndefined(dataObj.text) || this.$$('.st-text-block').length === 0);
+        var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
   
         // Add any inputs to the data attr
         if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
@@ -1079,19 +1079,19 @@
   
       /* Generic implementation to tell us when the block is active */
       focus: function() {
-        this.$('.st-text-block').focus();
+        this.getTextBlock().focus();
       },
   
       blur: function() {
-        this.$('.st-text-block').blur();
+        this.getTextBlock().blur();
       },
   
       onFocus: function() {
-        this.$('.st-text-block').bind('focus', this._onFocus);
+        this.getTextBlock().bind('focus', this._onFocus);
       },
   
       onBlur: function() {
-        this.$('.st-text-block').bind('blur', this._onBlur);
+        this.getTextBlock().bind('blur', this._onBlur);
       },
   
       /*
@@ -1249,7 +1249,7 @@
       _initTextBlocks: function() {
         var shift_down = false;
   
-        this.$$('.st-text-block')
+        this.getTextBlock()
           .bind('paste', this._handleContentPaste)
           .bind('keydown', function(e){
             var code = (e.keyCode ? e.keyCode : e.which);
@@ -1282,7 +1282,15 @@
       },
   
       hasTextBlock: function() {
-        return this.$('.st-text-block').length > 0;
+        return this.getTextBlock().length > 0;
+      },
+  
+      getTextBlock: function() {
+        if (_.isUndefined(this.text_block)) {
+          this.text_block = this.$('.st-text-block');
+        }
+  
+        return this.text_block;
       },
   
       _initPaste: function() {
@@ -1363,25 +1371,33 @@
     Block Quote
   */
   
-  SirTrevor.Blocks.Quote = SirTrevor.Block.extend({ 
-    
-    type: 'Quote',
-    
-    editorHTML: function() {
-      return _.template('<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote>\
-          <input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />', this);
-    },
-    
-    loadData: function(data){
-      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
-      this.$$('input').val(data.cite);
-    },
-    
-    toMarkdown: function(markdown) {
-      return markdown.replace(/^(.+)$/mg,"> $1");
-    }
-    
-  });
+  SirTrevor.Blocks.Quote = (function(){
+  
+    var template = _.template([
+      '<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote>',
+      '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />'
+    ].join("\n"));
+  
+    return SirTrevor.Block.extend({
+  
+      type: 'Quote',
+  
+      editorHTML: function() {
+        return template(this);
+      },
+  
+      loadData: function(data){
+        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+        this.$$('input').val(data.cite);
+      },
+  
+      toMarkdown: function(markdown) {
+        return markdown.replace(/^(.+)$/mg,"> $1");
+      }
+  
+    });
+  
+  })();
   /*
     Text Block
   */
@@ -1392,7 +1408,7 @@
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
     loadData: function(data){
-      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
   });
   /*
@@ -1459,7 +1475,7 @@
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
     loadData: function(data){
-      this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
   });
   SirTrevor.Blocks.Tweet = (function(){
@@ -1587,7 +1603,7 @@
       },
   
       loadData: function(data){
-        this.$$('.st-text-block').html(SirTrevor.toHTML(data.text, this.type));
+        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
       },
   
       toMarkdown: function(markdown) {

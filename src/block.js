@@ -235,14 +235,14 @@ SirTrevor.Block = (function(){
           dataObj = {};
 
       /* Simple to start. Add conditions later */
-      if (this.$$('.st-text-block').length > 0) {
-        var content = this.$$('.st-text-block').html();
+      if (this.hasTextBlock()) {
+        var content = this.getTextBlock().html();
         if (content.length > 0) {
           dataObj.text = SirTrevor.toMarkdown(content, this.type);
         }
       }
 
-      var hasTextAndData = (!_.isUndefined(dataObj.text) || this.$$('.st-text-block').length === 0);
+      var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
 
       // Add any inputs to the data attr
       if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
@@ -269,19 +269,19 @@ SirTrevor.Block = (function(){
 
     /* Generic implementation to tell us when the block is active */
     focus: function() {
-      this.$('.st-text-block').focus();
+      this.getTextBlock().focus();
     },
 
     blur: function() {
-      this.$('.st-text-block').blur();
+      this.getTextBlock().blur();
     },
 
     onFocus: function() {
-      this.$('.st-text-block').bind('focus', this._onFocus);
+      this.getTextBlock().bind('focus', this._onFocus);
     },
 
     onBlur: function() {
-      this.$('.st-text-block').bind('blur', this._onBlur);
+      this.getTextBlock().bind('blur', this._onBlur);
     },
 
     /*
@@ -439,7 +439,7 @@ SirTrevor.Block = (function(){
     _initTextBlocks: function() {
       var shift_down = false;
 
-      this.$$('.st-text-block')
+      this.getTextBlock()
         .bind('paste', this._handleContentPaste)
         .bind('keydown', function(e){
           var code = (e.keyCode ? e.keyCode : e.which);
@@ -472,7 +472,15 @@ SirTrevor.Block = (function(){
     },
 
     hasTextBlock: function() {
-      return this.$('.st-text-block').length > 0;
+      return this.getTextBlock().length > 0;
+    },
+
+    getTextBlock: function() {
+      if (_.isUndefined(this.text_block)) {
+        this.text_block = this.$('.st-text-block');
+      }
+
+      return this.text_block;
     },
 
     _initPaste: function() {
