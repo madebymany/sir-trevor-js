@@ -22,6 +22,15 @@ Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://
 
 For Rails based installations, please see the [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails) gem.
 
+## Browser support
+
+Sir Trevor is only tested on the following modern browsers:
+
+1. IE10+
+2. Chrome 25+
+3. Safari 5+
+4. Firefox 16+
+
 ## Customising
 
 We use [Sass](http://sass-lang.com/) for our styles, if you'd like to change the default styling please fork the repository and [make changes to the Sass](https://github.com/madebymany/sir-trevor-js/wiki/Customising-the-default-styling) before recompiling. Alternatively, you can override the base styles with your own CSS.
