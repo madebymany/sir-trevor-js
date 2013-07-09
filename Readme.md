@@ -4,6 +4,14 @@
 
 ![Sir Trevor in action](https://raw.github.com/madebymany/sir-trevor-js/v3/examples/sir-trevor.gif)
 
+Existing WYSIWYG content editors were designed for immutable display media. In contrast, Sir Trevor is rich content editing entirely re-imagined for the web: an intuitive editor for web content which does not presuppose anything about how it will be rendered.
+
+It believes in three guiding principles:
+
+- Display-neutrality: content must be stored in a clean, structured and standards-based format
+- Technology agnosticism: act as an abstraction layer on top of any technology which can render HTML
+- Extensibility: the interface must be easily extended to include input mechanics for any web-based artefact
+
 Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
 ## Quick start
