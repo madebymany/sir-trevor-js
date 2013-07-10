@@ -165,7 +165,11 @@ SirTrevor.Editor = (function(){
 
     onNewBlockCreated: function(block) {
       this.hideBlockControls();
-      $('html, body').animate({ scrollTop: block.$el.position().top });
+      this.scrollTo(block.$el);
+    },
+
+    scrollTo: function(element) {
+      $('html, body').animate({ scrollTop: element.position().top });
     },
 
     blockFocus: function(block) {
@@ -193,7 +197,7 @@ SirTrevor.Editor = (function(){
       if(block && block.attr('id') !== block_el.attr('id')) {
         this.hideAllTheThings();
         block[where](block_el);
-        $('html, body').animate({ scrollTop: block_el.position().top });
+        this.scrollTo(block_el);
       }
     },
 
