@@ -5,11 +5,9 @@
 SirTrevor.Blocks.Image = SirTrevor.Block.extend({
 
   type: "Image",
-  droppable: true,
 
-  drop_options: {
-    uploadable: true
-  },
+  droppable: true,
+  uploadable: true,
 
   loadData: function(data){
     // Create our image tag
@@ -18,8 +16,8 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
 
   onBlockRender: function(){
     /* Setup the upload button */
-    this.$dropzone.find('button').bind('click', function(ev){ ev.preventDefault(); });
-    this.$dropzone.find('input').on('change', _.bind(function(ev){
+    this.$inputs.find('button').bind('click', function(ev){ ev.preventDefault(); });
+    this.$inputs.find('input').on('change', _.bind(function(ev){
       this.onDrop(ev.currentTarget);
     }, this));
   },
@@ -32,7 +30,7 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
     if (/image/.test(file.type)) {
       this.loading();
       // Show this image on here
-      this.$dropzone.hide();
+      this.$inputs.hide();
       this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
       // Upload!
