@@ -6,28 +6,21 @@ SirTrevor.BlockMixins.Droppable = {
   valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
 
   initializeDroppable: function() {
-    SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
+    SirTrevor.log("Adding droppable to block " + this.blockID);
 
-    this.drop_options = _.extend({}, SirTrevor.DEFAULTS.default_drop_options, this.drop_options);
+    this.drop_options = _.extend({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
 
-    // Build the dropzone interface
-    var drop_html = $(_.template(this.drop_options.drop_html, this));
-
-    if (this.drop_options.pastable) {
-      drop_html.append(this.drop_options.paste_html);
-    }
-
-    if (this.drop_options.uploadable) {
-      drop_html.append(this.drop_options.upload_html);
-    }
+    var drop_html = $(_.template(this.drop_options.html, this));
 
     this.$editor.hide();
-    this.$inner.append(drop_html).addClass('st-block__inner--droppable');
+    this.$inputs.append(drop_html);
     this.$dropzone = drop_html;
 
     // Bind our drop event
     this.$dropzone.dropArea()
                   .bind('drop', _.bind(this._handleDrop, this));
+
+    this.$inner.addClass('st-block__inner--droppable');
   },
 
   _handleDrop: function(e) {

@@ -77,7 +77,7 @@ ul.st-text-block {
   margin-left: 1.875em;
 }
 
-.st-block__dropzone {
+.st-block__inputs {
   padding: 1.6em 0 1em;
   border-radius: 0.3em;
   background: $blocks-control-bg-color;
@@ -104,7 +104,7 @@ ul.st-text-block {
   font-weight: 700;
 }
 
-.st-drag-over .st-block__dropzone {
+.st-drag-over .st-block__inputs {
   border-top-color: darken($blocks-control-bg-color, 15%);
 }
 

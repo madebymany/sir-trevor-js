@@ -571,28 +571,21 @@
     valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
   
     initializeDroppable: function() {
-      SirTrevor.log("Adding drag and drop capabilities for block " + this.blockID);
+      SirTrevor.log("Adding droppable to block " + this.blockID);
   
-      this.drop_options = _.extend({}, SirTrevor.DEFAULTS.default_drop_options, this.drop_options);
+      this.drop_options = _.extend({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
   
-      // Build the dropzone interface
-      var drop_html = $(_.template(this.drop_options.drop_html, this));
-  
-      if (this.drop_options.pastable) {
-        drop_html.append(this.drop_options.paste_html);
-      }
-  
-      if (this.drop_options.uploadable) {
-        drop_html.append(this.drop_options.upload_html);
-      }
+      var drop_html = $(_.template(this.drop_options.html, this));
   
       this.$editor.hide();
-      this.$inner.append(drop_html).addClass('st-block__inner--droppable');
+      this.$inputs.append(drop_html);
       this.$dropzone = drop_html;
   
       // Bind our drop event
       this.$dropzone.dropArea()
                     .bind('drop', _.bind(this._handleDrop, this));
+  
+      this.$inner.addClass('st-block__inner--droppable');
     },
   
     _handleDrop: function(e) {
@@ -617,6 +610,37 @@
       }
   
       SirTrevor.EventBus.trigger('block:content:dropped');
+    }
+  
+  };
+  SirTrevor.BlockMixins.Pastable = {
+  
+    mixinName: "Pastable",
+  
+    initializePastable: function() {
+      SirTrevor.log("Adding pastable to block " + this.blockID);
+  
+      this.paste_options = _.extend({}, SirTrevor.DEFAULTS.Block.paste_options, this.paste_options);
+      this.$inputs.append(_.template(this.paste_options.html, this));
+  
+      this.$('.st-paste-block')
+        .bind('click', function(){ $(this).select(); })
+        .bind('paste', this._handleContentPaste)
+        .bind('submit', this._handleContentPaste);
+    }
+  
+  };
+  SirTrevor.BlockMixins.Uploadable = {
+  
+    mixinName: "Uploadable",
+  
+    uploadsCount: 0,
+  
+    initializeUploadable: function() {
+      SirTrevor.log("Adding uploadable to block " + this.blockID);
+  
+      this.upload_options = _.extend({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
+      this.$inputs.append(_.template(this.upload_options.html, this));
     }
   
   };
@@ -819,28 +843,6 @@
       this.initialize.apply(this, arguments);
     };
   
-    var blockOptions = [
-      "type",
-      "toolbarEnabled",
-      "formattingEnabled",
-      "droppable",
-      "drop_options",
-      "validationFailMsg",
-      "title",
-      "editorHTML",
-      "dropzoneHTML",
-      "validate",
-      "loadData",
-      "toData",
-      "onDrop",
-      "onContentPasted",
-      "onTextContentPasted",
-      "onBlockRender",
-      "beforeBlockRender",
-      "toMarkdown",
-      "toHTML"
-    ];
-  
     var delete_template = [
       "<div class='st-block__ui-delete-controls'>",
         "<label class='st-block__delete-label'>Delete?</label>",
@@ -849,13 +851,30 @@
       "</div>"
     ].join("\n");
   
-    SirTrevor.DEFAULTS.default_drop_options = {
-      uploadable: false,
-      pastable: false,
-      re_render_on_reorder: false,
-      drop_html: '<div class="st-block__dropzone"><span class="st-icon"><%= icon_name() %></span><p>Drag <span><%= type %></span> here</p></div>',
-      upload_html: '<div class="st-block__upload-container"><input type="file" type="st-file-upload" /><button class="st-upload-btn">...or choose a file</button></div>',
-      paste_html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+    var drop_options = {
+      html: ['<div class="st-block__dropzone">',
+             '<span class="st-icon"><%= icon_name() %></span>',
+             '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
+      re_render_on_reorder: false
+    };
+  
+    var paste_options = {
+      html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+    };
+  
+    var upload_options = {
+      html: [
+        '<div class="st-block__upload-container">',
+        '<input type="file" type="st-file-upload">',
+        '<button class="st-upload-btn">...or choose a file</button>',
+        '</div>'
+      ].join('\n')
+    };
+  
+    SirTrevor.DEFAULTS.Block = {
+      drop_options: drop_options,
+      paste_options: paste_options,
+      upload_options: upload_options
     };
   
     _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
@@ -867,8 +886,6 @@
       block_template: _.template(
         "<div class='st-block__inner'><%= editor_html %></div>"
       ),
-  
-      drop_options: SirTrevor.DEFAULTS.default_drop_options,
   
       attributes: function() {
         return {
@@ -901,18 +918,20 @@
         return this.$el.find(selector);
       },
   
-      /* Defaults to be overriden if required */
       type: '',
       editorHTML: '<div class="st-block__editor"></div>',
   
       toolbarEnabled: true,
   
       droppable: false,
+      pastable: false,
+      uploadable: false,
+  
+      drop_options: {},
+      paste_options: {},
+      upload_options: {},
+  
       formattable: true,
-  
-      formattingEnabled: true,
-  
-      uploadsCount: 0,
   
       initialize: function() {},
   
@@ -951,14 +970,21 @@
   
         this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
   
+        if(this.droppable || this.pastable || this.uploadable) {
+          var input_html = $("<div>", { 'class': 'st-block__inputs' });
+          this.$inner.append(input_html);
+          this.$inputs = input_html;
+        }
+  
         if (this.hasTextBlock) { this._initTextBlocks(); }
         if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
-        if (this.formattingEnabled) { this._initFormatting(); }
+        if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
+        if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
+  
+        if (this.formattable) { this._initFormatting(); }
   
         this._loadAndSetData();
-  
         this._initUIComponents();
-        this._initPaste();
   
         this.$el.addClass('st-item-ready');
         this.save();
@@ -1061,13 +1087,6 @@
             }
           });
         }
-  
-        // this.$$('select').each(function(index,input){
-        //   input = $(input);
-        //   if(input.val().length > 0 && hasTextAndData) {
-        //     dataObj[input.attr('name')] = input.val();
-        //   }
-        // });
   
         // Set
         if(!_.isEmpty(dataObj)) {
@@ -1174,9 +1193,9 @@
   
         this.loading();
   
-        if(this.droppable) {
+        if(this.droppable || this.uploadable || this.pastable) {
           this.$editor.show();
-          this.$dropzone.hide();
+          this.$inputs.hide();
         }
   
         SirTrevor.EventBus.trigger("editor/block/loadData");
@@ -1289,14 +1308,8 @@
         }
   
         return this.text_block;
-      },
-  
-      _initPaste: function() {
-        this.$('.st-paste-block')
-          .bind('click', function(){ $(this).select(); })
-          .bind('paste', this._handleContentPaste)
-          .bind('submit', this._handleContentPaste);
       }
+  
     });
   
     Block.extend = extend; // Allow our Block to be extended.
@@ -1416,11 +1429,9 @@
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   
     type: "Image",
-    droppable: true,
   
-    drop_options: {
-      uploadable: true
-    },
+    droppable: true,
+    uploadable: true,
   
     loadData: function(data){
       // Create our image tag
@@ -1429,8 +1440,8 @@
   
     onBlockRender: function(){
       /* Setup the upload button */
-      this.$dropzone.find('button').bind('click', function(ev){ ev.preventDefault(); });
-      this.$dropzone.find('input').on('change', _.bind(function(ev){
+      this.$inputs.find('button').bind('click', function(ev){ ev.preventDefault(); });
+      this.$inputs.find('input').on('change', _.bind(function(ev){
         this.onDrop(ev.currentTarget);
       }, this));
     },
@@ -1443,7 +1454,7 @@
       if (/image/.test(file.type)) {
         this.loading();
         // Show this image on here
-        this.$dropzone.hide();
+        this.$inputs.hide();
         this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
   
         // Upload!
@@ -1491,8 +1502,9 @@
   
       type: "Tweet",
       droppable: true,
+      pastable: true,
+  
       drop_options: {
-        pastable: true,
         re_render_on_reorder: true
       },
   
@@ -1626,10 +1638,7 @@
       type: 'Video',
   
       droppable: true,
-  
-      drop_options: {
-        pastable: true
-      },
+      pastable: true,
   
       loadData: function(data){
         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');

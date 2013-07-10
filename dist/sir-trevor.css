@@ -213,7 +213,7 @@
 ul.st-text-block {
   margin-left: 1.875em; }
 
-.st-block__dropzone {
+.st-block__inputs {
   padding: 1.6em 0 1em;
   border-radius: 0.3em;
   background: #f3f3f3;
@@ -236,7 +236,7 @@ ul.st-text-block {
   text-transform: lowercase;
   font-weight: 700; }
 
-.st-drag-over .st-block__dropzone {
+.st-drag-over .st-block__inputs {
   border-top-color: #cdcdcd; }
 
 .st-block .st-block__paste-input[type="text"] {
