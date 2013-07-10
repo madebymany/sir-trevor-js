@@ -13,8 +13,9 @@ SirTrevor.Blocks.Tweet = (function(){
 
     type: "Tweet",
     droppable: true,
+    pastable: true,
+
     drop_options: {
-      pastable: true,
       re_render_on_reorder: true
     },
 
