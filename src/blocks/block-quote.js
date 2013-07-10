@@ -5,7 +5,7 @@
 SirTrevor.Blocks.Quote = (function(){
 
   var template = _.template([
-    '<blockquote class="st-required st-text-block <%= className %>" contenteditable="true"></blockquote>',
+    '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
     '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />'
   ].join("\n"));
 
