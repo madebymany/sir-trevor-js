@@ -18,6 +18,7 @@
   var Underline = SirTrevor.Formatter.extend({
     title: "underline",
     cmd: "underline",
+    keyCode: 85,
     text : "U"
   });
 

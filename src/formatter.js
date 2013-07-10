@@ -30,20 +30,20 @@ SirTrevor.Formatter = (function(){
     },
 
     _bindToBlock: function(block) {
-
       var formatter = this,
           ctrlDown = false;
 
       block
         .on('keyup','.st-text-block', function(ev) {
-          if(ev.which == 17 || ev.which == 224) {
+          if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
             ctrlDown = false;
           }
         })
         .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
-          if(ev.which == 17 || ev.which == 224) {
+          if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
             ctrlDown = true;
           }
+
           if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
             document.execCommand(ev.data.formatter.cmd, false, true);
             ev.preventDefault();
