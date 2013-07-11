@@ -4,9 +4,9 @@ SirTrevor.toMarkdown = function(content, type) {
   markdown = content.replace(/\n/mg,"")
                     .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
                     .replace(/<\/?b>/g,"**")
-                    .replace(/<\/?STRONG>/g,"**")                   // Bold
+                    .replace(/<\/?STRONG>/gi,"**")                   // Bold
                     .replace(/<\/?i>/g,"_")
-                    .replace(/<\/?EM>/g,"_");                        // Italic
+                    .replace(/<\/?EM>/gi,"_");                        // Italic
 
   // Use custom formatters toMarkdown functions (if any exist)
   var formatName, format;

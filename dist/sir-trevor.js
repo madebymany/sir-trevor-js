@@ -482,10 +482,10 @@
     var html = markdown;
   
     html = html.replace(/^\> (.+)$/mg,"$1")
-               .replace(/\n\n/g,"<br>")
+               .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
                .replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g, "$1<strong>$3</strong>$4")
                .replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g, "$1<em>$3</em>$4")
-               .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>");
+               .replace(/\n\n/g, "<br>");
   
     // Use custom formatters toHTML functions (if any exist)
     var formatName, format;
@@ -518,9 +518,9 @@
     markdown = content.replace(/\n/mg,"")
                       .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
                       .replace(/<\/?b>/g,"**")
-                      .replace(/<\/?STRONG>/g,"**")                   // Bold
+                      .replace(/<\/?STRONG>/gi,"**")                   // Bold
                       .replace(/<\/?i>/g,"_")
-                      .replace(/<\/?EM>/g,"_");                        // Italic
+                      .replace(/<\/?EM>/gi,"_");                        // Italic
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
