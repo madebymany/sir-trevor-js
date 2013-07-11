@@ -92,4 +92,36 @@ describe("Editor", function(){
 
   });
 
+  describe("getBlocksByType", function(){
+
+    beforeEach(function(){
+      editor = new SirTrevor.Editor({ el: element });
+
+      editor.blocks = [
+        { type: "Text" },
+        { type: "Image" }
+      ];
+    });
+
+    it("returns all the blocks of the type", function(){
+      expect(editor.getBlocksByType("Text").length).toBe(1);
+    });
+  });
+
+  describe("getBlocksByIDs", function(){
+
+    beforeEach(function(){
+      editor = new SirTrevor.Editor({ el: element });
+
+      editor.blocks = [
+        { blockID: 1 },
+        { blockID: 2 }
+      ];
+    });
+
+    it("returns all the blocks of the type", function(){
+      expect(editor.getBlocksByIDs([1]).length).toBe(1);
+    });
+  });
+
 });

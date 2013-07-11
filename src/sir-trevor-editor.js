@@ -394,7 +394,7 @@ SirTrevor.Editor = (function(){
     },
 
     getBlocksByIDs: function(block_ids) {
-      return _.where(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+      return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
     },
 
     /*
