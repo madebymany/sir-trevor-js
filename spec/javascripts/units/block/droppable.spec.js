@@ -5,21 +5,18 @@ describe("Droppable Block", function(){
   beforeEach(function(){
     element = $("<textarea>");
     editor = new SirTrevor.Editor({ el: element });
-    block = new SirTrevor.Blocks.Tweet({}, editor.ID);
-  });
 
-  describe("drop_options", function(){
-
-    it("has defaults", function(){
-      expect(block.drop_options).not.toBe(undefined);
+    SirTrevor.Blocks.DroppableBlock = SirTrevor.Block.extend({
+      droppable: true
     });
 
+    block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID);
   });
 
   describe("render", function(){
 
     beforeEach(function(){
-      spyOn(block, 'withMixin');
+      spyOn(block, 'withMixin').andCallThrough();
       block = block.render();
     });
 
@@ -30,6 +27,16 @@ describe("Droppable Block", function(){
 
     it("adds a droppable class to $inner", function(){
       expect(block.$inner.hasClass('st-block__inner--droppable'));
+    });
+
+    it("creates an $inputs element", function(){
+      expect(block.$inputs)
+        .not.toBe(undefined);
+    });
+
+    it("appends the html to the inputs element", function(){
+      expect(block.$inputs.find('.st-block__dropzone').length)
+        .toBe(1);
     });
 
   });

@@ -242,7 +242,7 @@ SirTrevor.Editor = (function(){
     _canAddBlockType: function(type) {
       var block_type_limit = this._getBlockTypeLimit(type);
 
-      return !(block_type_limit !== 0 && this._getBlockTypeCount(type) > block_type_limit);
+      return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
     },
 
     _blockLimitReached: function() {

@@ -1,6 +1,12 @@
 SirTrevor.toHTML = function(markdown, type) {
   var html = markdown;
 
+  html = html.replace(/^\> (.+)$/mg,"$1")
+             .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
+             .replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g, "$1<strong>$3</strong>$4")
+             .replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g, "$1<em>$3</em>$4")
+             .replace(/  +\n/g, " <br>\n");
+
   // Use custom formatters toHTML functions (if any exist)
   var formatName, format;
   for(formatName in this.formatters) {
@@ -23,12 +29,6 @@ SirTrevor.toHTML = function(markdown, type) {
       html = block.prototype.toHTML(html);
     }
   }
-
-  html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
-              .replace(/\n\n/g,"<br>")                                           // Give me some <br>s
-              .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")        // Links
-              .replace(/(?:_)([^*|_(http)]+)(?:_)/g,"<i>$1</i>")                 // Italic, avoid italicizing two links with underscores next to each other
-              .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<b>$1</b>");                // Bold
 
   return html;
 };
