@@ -7,10 +7,7 @@ SirTrevor.Blocks.Video = (function(){
     type: 'Video',
 
     droppable: true,
-
-    drop_options: {
-      pastable: true
-    },
+    pastable: true,
 
     loadData: function(data){
       this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
