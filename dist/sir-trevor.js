@@ -2433,6 +2433,14 @@
         return _.find(this.blocks, function(b){ return b.blockID == block_id; });
       },
   
+      getBlocksByType: function(block_type) {
+        return _.filter(this.blocks, function(b){ return b.type == block_type; });
+      },
+  
+      getBlocksByIDs: function(block_ids) {
+        return _.where(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+      },
+  
       /*
         Get Block Type Limit
         --
