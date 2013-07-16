@@ -4,3 +4,4 @@ node_modules
 .rvmrc
 .sass-cache
 components
+/website/build/
