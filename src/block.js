@@ -434,9 +434,6 @@ SirTrevor.Block = (function(){
     _initTextBlocks: function() {
       var shift_down = false;
 
-      document.execCommand("styleWithCSS", false, false);
-      document.execCommand("insertBrOnReturn", false, true);
-
       this.getTextBlock()
         .bind('paste', this._handleContentPaste)
         .bind('keydown', function(e){

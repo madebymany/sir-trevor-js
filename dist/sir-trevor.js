@@ -1266,9 +1266,6 @@
       _initTextBlocks: function() {
         var shift_down = false;
   
-        document.execCommand("styleWithCSS", false, false);
-        document.execCommand("insertBrOnReturn", false, true);
-  
         this.getTextBlock()
           .bind('paste', this._handleContentPaste)
           .bind('keydown', function(e){
@@ -1601,7 +1598,7 @@
   
   SirTrevor.Blocks.List = (function() {
   
-    var template = '<ul class="st-text-block" contenteditable="true"><li></li></ul>';
+    var template = '<div class="st-text-block" contenteditable="true"><ul><li></li></ul></div>';
   
     return SirTrevor.Block.extend({
   
@@ -1612,7 +1609,15 @@
       },
   
       loadData: function(data){
-        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+      },
+  
+      onBlockRender: function() {
+        this.getTextBlock().bind('click', function(){
+          if($(this).text().length < 1) {
+            document.execCommand("insertUnorderedList",false,false);
+          }
+        });
       },
   
       toMarkdown: function(markdown) {
@@ -1622,7 +1627,12 @@
       },
   
       toHTML: function(html) {
-        return html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
+        html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+                   .replace(/\n/mg,"");
+  
+        html = "<ul>" + html + "</ul>";
+  
+        return html;
       }
   
     });

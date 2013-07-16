@@ -4,7 +4,7 @@
 
 SirTrevor.Blocks.List = (function() {
 
-  var template = '<ul class="st-text-block" contenteditable="true"><li></li></ul>';
+  var template = '<div class="st-text-block" contenteditable="true"><ul><li></li></ul></div>';
 
   return SirTrevor.Block.extend({
 
@@ -15,7 +15,15 @@ SirTrevor.Blocks.List = (function() {
     },
 
     loadData: function(data){
-      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+      this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+    },
+
+    onBlockRender: function() {
+      this.getTextBlock().bind('click', function(){
+        if($(this).text().length < 1) {
+          document.execCommand("insertUnorderedList",false,false);
+        }
+      });
     },
 
     toMarkdown: function(markdown) {
@@ -25,7 +33,12 @@ SirTrevor.Blocks.List = (function() {
     },
 
     toHTML: function(html) {
-      return html.replace(/^ - (.+)$/mg,"<li>$1</li>").replace(/\n/mg,"");
+      html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+                 .replace(/\n/mg,"");
+
+      html = "<ul>" + html + "</ul>";
+
+      return html;
     }
 
   });
