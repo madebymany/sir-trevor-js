@@ -1,0 +1,393 @@
+$base-font-size: 20px;
+
+@function px-to-em($px, $base: $base-font-size) {
+  @return ($px / $base) * 1em;
+}
+
+$large-break: px-to-em(960px);
+$medium-break: px-to-em(760px);
+$small-break: px-to-em(480px);
+
+$accent-color: #34E0C2;
+$dark-grey: #42474B;
+
+@mixin breakpoint($point) {
+  @media (max-width: $point) { @content; }
+}
+
+html {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 100%;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-size: $base-font-size;
+  color: #707477;
+
+  @include breakpoint($medium-break) {
+    font-size: 16px;
+  }
+}
+
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+.cf:after { clear: both;}
+.cf { *zoom: 1; }
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.dark-bg  {
+  background: $dark-grey;
+  color: #fff;
+}
+
+.site-width {
+  width: $large-break;
+  margin: 0pt auto;
+  overflow: hidden;
+
+  @include breakpoint($large-break + 20) {
+    margin: 0 5%;
+    width: auto;
+  }
+}
+
+.site-logo {
+  display: inline-block;
+  margin: px-to-em(20px) 0;
+  font-size: px-to-em(28px);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+
+  .st-icon {
+    color: $accent-color;
+  }
+
+  &:hover {
+    color: $accent-color;
+
+   .st-icon {
+      color: #fff;
+    }
+  }
+}
+
+.cta {
+  display: inline-block;
+  padding: px-to-em(10px) 0;
+  font-size: px-to-em(16px);
+}
+
+.btn {
+  display: block;
+  border-radius: 0.2em;
+  border: 1px solid #fff;
+  max-width: px-to-em(300px);
+  text-align: center;
+  padding: px-to-em(8px) 0;
+  margin: 0 0 px-to-em(10px) 0;
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    background: #fff;
+    color: $dark-grey;
+  }
+
+  @include breakpoint($medium-break) {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.btn--primary {
+  border-color: $accent-color;
+  background-color: $accent-color;
+  color: $dark-grey;
+
+  &:hover {
+    border-color: darken($accent-color, 20%);
+    background-color: darken($accent-color, 20%);
+    color: #fff;
+  }
+}
+
+.btn--secondary {
+  border-color: #E0E0E0;
+
+  &:hover {
+    background-color: #E0E0E0;
+  }
+}
+
+%grid {
+  float: left;
+}
+
+%grid-half {
+  @extend %grid;
+  width: 50%;
+
+  @include breakpoint($medium-break) {
+    float: none;
+    width: auto;
+  }
+}
+
+%grid-six {
+  @extend %grid;
+  width: 16.666666666666668%;
+
+  @include breakpoint($medium-break) {
+    width: 33.333333333%;
+  }
+}
+
+%grid-one-third {
+  @extend %grid;
+  width: 33.333333333%;
+
+  @include breakpoint($medium-break) {
+    float: none;
+    width: auto;
+  }
+}
+
+%grid-two-thirds {
+  @extend %grid;
+  width: 66.666666666%;
+
+  @include breakpoint($medium-break) {
+    float: none;
+    width: auto;
+  }
+}
+
+.site-header__intro {
+  @include breakpoint(px-to-em(1400px)) {
+    width: 75%;
+  }
+
+  @include breakpoint($medium-break) {
+    width: auto;
+  }
+}
+
+.site-header__intro,
+.site-header__video {
+  @extend %grid-half;
+}
+
+.site-header__info-container {
+  padding: px-to-em(20px) 0;
+  position: relative;
+}
+
+.site-header__video {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  @include breakpoint(px-to-em(1400px)) {
+    display: none;
+  }
+}
+
+.example-video {
+  padding-bottom: 59.7%;
+  background: url(../images/screen.png) no-repeat 0 0;
+  background-size: 100%;
+}
+
+img { margin:0;padding:0;float:left; }
+
+.typer {
+  margin: px-to-em(40px) 0;
+
+  @include breakpoint($medium-break) {
+    margin: px-to-em(20px) 0;
+  }
+}
+
+.intro {
+  margin: 0; padding: 0;
+
+  @include breakpoint($medium-break) {
+    font-size: 1.3em;
+  }
+}
+
+.typer-text {
+  min-height: px-to-em(56px);
+
+  @include breakpoint($medium-break) {
+    min-height: px-to-em(84px);
+  }
+}
+
+.js .typer-target {
+  border-right: 1px solid $accent-color;
+}
+
+.typer-target span {
+  background-color: $accent-color!important;
+  color: #fff!important;
+}
+
+.intro-copy {
+  width: 80%;
+  margin: 0 0 px-to-em(50px) 0;
+  line-height: 1.5;
+}
+
+.block-types {
+  @extend .cf;
+  margin: px-to-em(40px) 0; padding: 0;
+}
+
+.block-type {
+  display: block;
+  @extend %grid-six;
+  text-align: center;
+  margin-bottom: px-to-em(5px);
+
+  .st-icon {
+    display: block;
+    line-height: 1;
+    margin-bottom: px-to-em(5px);
+    font-size: px-to-em(76px);
+  }
+}
+
+.features,
+.block-types {
+  margin: px-to-em(40px) 0;
+  padding: 0;
+}
+
+.features {
+  margin-bottom: 0;
+}
+
+.feature {
+  @extend %grid-half;
+  display: block;
+  margin: 0 0 px-to-em(10px) 0; padding: 0;
+}
+
+.feature:before {
+  color: $accent-color;
+  margin-right: px-to-em(5px);
+}
+
+.example-gif {
+  width: 100%;
+}
+
+.block {
+  @extend .site-width;
+  border-top: 1px solid #F3F3F3;
+  padding-top: px-to-em(50px);
+  padding-bottom: px-to-em(30px);
+  margin-top: px-to-em(30px);
+}
+
+.block--features {
+  margin-top: 0;
+  border-top: 0;
+}
+
+.block h2 {
+  color: #42474B;
+  margin-top: 0;
+}
+
+.more-info__copy {
+  @extend %grid-two-thirds;
+  margin-bottom: px-to-em(30px);
+}
+
+.more-info__copy p {
+  width: 90%;
+  font-size: px-to-em(24px);
+  margin: 0;
+}
+
+.more-info__ctas {
+  @extend %grid-one-third;
+}
+
+.block--more-info {
+  padding: px-to-em(60px) 0;
+}
+
+a {
+  color: $accent-color;
+
+  &:hover {
+    color: darken($accent-color, 20%);
+  }
+}
+
+.footer_intro {
+  display: block;
+  margin-bottom: px-to-em(30px);
+}
+
+.footer__meta-items {
+  @extend .cf;
+  margin: 0; padding: 0;
+}
+
+.footer__meta-item {
+  list-style: none;
+  @extend %grid-one-third;
+}
+
+.footer_license {
+  font-size: 0.8em;
+  color: #E0E0E0;
+}
+
+.logo {
+  display: block;
+  text-indent: -999em;
+  margin: 0 0 px-to-em(40px) 0;
+  font-size: 1em;
+
+  @include breakpoint($medium-break) {
+    font-size: 0.8em;
+    float: none;
+  }
+}
+
+.logo--itv {
+  background: url(../images/itv.png) no-repeat;
+  background-size: 100%;
+  width: px-to-em(120px);
+  height: px-to-em(61px);
+}
+
+.logo--mxm {
+  background: url(../images/mxm.png) no-repeat;
+  background-size: 100%;
+  width: px-to-em(203px);
+  height: px-to-em(35px);
+  margin-top: px-to-em(20px);
+}
+
+.site-footer {
+  padding: px-to-em(30px) 0;
+}
