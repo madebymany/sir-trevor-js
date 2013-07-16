@@ -55,6 +55,8 @@ SirTrevor.FormatBar = (function(){
       var coords = {},
           width = this.$el.width();
 
+      console.log(rectangles);
+
       if (rectangles.length == 1) {
 
         coords = {

@@ -1273,6 +1273,7 @@
             if (code == 16) shift_down = true;
           })
           .bind('keyup', _.bind(function(e){
+  
             var code = (e.keyCode ? e.keyCode : e.which);
   
             if (shift_down && (code == 37 || code == 39 || code == 40 || code == 38)) {
@@ -1287,6 +1288,17 @@
           .bind('mouseup', this.getSelectionForFormatter)
           .on('DOMNodeInserted', this.checkForSpan);
       },
+  
+      getSelectionForFormatter: function() {
+         var range = window.getSelection().getRangeAt(0),
+             rects = range.getClientRects();
+  
+         if (!range.collapsed && rects.length) {
+           SirTrevor.EventBus.trigger('formatter:positon', rects);
+         } else {
+           SirTrevor.EventBus.trigger('formatter:hide');
+         }
+       },
   
       checkForSpan: function(e) {
         if (e.target.tagName == "SPAN") {
@@ -2009,6 +2021,8 @@
       render_by_selection: function(rectangles) {
         var coords = {},
             width = this.$el.width();
+  
+        console.log(rectangles);
   
         if (rectangles.length == 1) {
   
