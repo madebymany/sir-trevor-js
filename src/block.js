@@ -47,7 +47,7 @@ SirTrevor.Block = (function(){
 
   _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
-    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick"],
+    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "checkForSpan"],
 
     className: 'st-block st-icon--add',
 
@@ -434,6 +434,9 @@ SirTrevor.Block = (function(){
     _initTextBlocks: function() {
       var shift_down = false;
 
+      document.execCommand("styleWithCSS", false, false);
+      document.execCommand("insertBrOnReturn", false, true);
+
       this.getTextBlock()
         .bind('paste', this._handleContentPaste)
         .bind('keydown', function(e){
@@ -452,17 +455,13 @@ SirTrevor.Block = (function(){
           }
 
         }, this))
-        .bind('mouseup', this.getSelectionForFormatter);
+        .bind('mouseup', this.getSelectionForFormatter)
+        .on('DOMNodeInserted', this.checkForSpan);
     },
 
-    getSelectionForFormatter: function() {
-      var range = window.getSelection().getRangeAt(0),
-          rects = range.getClientRects();
-
-      if (!range.collapsed && rects.length) {
-        SirTrevor.EventBus.trigger('formatter:positon', rects);
-      } else {
-        SirTrevor.EventBus.trigger('formatter:hide');
+    checkForSpan: function(e) {
+      if (e.target.tagName == "SPAN") {
+        $(e.target).attr('style', ''); // Hacky fix for Chrome.
       }
     },
 
