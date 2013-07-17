@@ -879,7 +879,7 @@
   
     _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
   
-      bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "checkForSpan"],
+      bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
   
       className: 'st-block st-icon--add',
   
@@ -1286,7 +1286,7 @@
   
           }, this))
           .bind('mouseup', this.getSelectionForFormatter)
-          .on('DOMNodeInserted', this.checkForSpan);
+          .on('DOMNodeInserted', this.clearInsertedStyles);
       },
   
       getSelectionForFormatter: function() {
@@ -1300,10 +1300,8 @@
          }
        },
   
-      checkForSpan: function(e) {
-        if (e.target.tagName == "SPAN") {
-          $(e.target).attr('style', ''); // Hacky fix for Chrome.
-        }
+      clearInsertedStyles: function(e) {
+        e.target.removeAttribute('style'); // Hacky fix for Chrome.
       },
   
       hasTextBlock: function() {
@@ -2021,8 +2019,6 @@
       render_by_selection: function(rectangles) {
         var coords = {},
             width = this.$el.width();
-  
-        console.log(rectangles);
   
         if (rectangles.length == 1) {
   

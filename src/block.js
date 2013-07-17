@@ -47,7 +47,7 @@ SirTrevor.Block = (function(){
 
   _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
-    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "checkForSpan"],
+    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
 
     className: 'st-block st-icon--add',
 
@@ -454,7 +454,7 @@ SirTrevor.Block = (function(){
 
         }, this))
         .bind('mouseup', this.getSelectionForFormatter)
-        .on('DOMNodeInserted', this.checkForSpan);
+        .on('DOMNodeInserted', this.clearInsertedStyles);
     },
 
     getSelectionForFormatter: function() {
@@ -468,10 +468,8 @@ SirTrevor.Block = (function(){
        }
      },
 
-    checkForSpan: function(e) {
-      if (e.target.tagName == "SPAN") {
-        $(e.target).attr('style', ''); // Hacky fix for Chrome.
-      }
+    clearInsertedStyles: function(e) {
+      e.target.removeAttribute('style'); // Hacky fix for Chrome.
     },
 
     hasTextBlock: function() {
