@@ -44,10 +44,6 @@ SirTrevor.Block = (function(){
 
     className: 'st-block st-icon--add',
 
-    block_template: _.template(
-      "<div class='st-block__inner'><%= editor_html %></div>"
-    ),
-
     attributes: function() {
       return _.extend(SirTrevor.SimpleBlock.prototype.attributes(), {
         'data-icon-after' : "add"
@@ -87,16 +83,9 @@ SirTrevor.Block = (function(){
     render: function() {
       this.beforeBlockRender();
 
-      var editor_html = _.result(this, 'editorHTML');
+      this._setBlockInner();
 
-      this.$el.append(
-        this.block_template({ editor_html: editor_html })
-      );
-
-      this.$inner = this.$el.find('.st-block__inner');
       this.$editor = this.$inner.children().first();
-
-      this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
 
       if(this.droppable || this.pastable || this.uploadable) {
         var input_html = $("<div>", { 'class': 'st-block__inputs' });

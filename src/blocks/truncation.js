@@ -4,7 +4,9 @@ SirTrevor.Blocks.Truncation = (function(){
 
     type: "Truncation",
 
-    className: 'st-block st-truncation-block'
+    className: 'st-block st-truncation-block',
+
+    editorHTML : '<span class="st-truncation-block__text">Truncate here</span>'
 
   });
 

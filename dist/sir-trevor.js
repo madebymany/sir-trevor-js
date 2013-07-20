@@ -849,6 +849,10 @@
   
       className: 'st-block',
   
+      block_template: _.template(
+        "<div class='st-block__inner'><%= editor_html %></div>"
+      ),
+  
       attributes: function() {
         return {
           'id': this.blockID,
@@ -890,12 +894,24 @@
         }
       },
   
+      _setBlockInner : function() {
+        var editor_html = _.result(this, 'editorHTML');
+  
+        this.$el.append(
+          this.block_template({ editor_html: editor_html })
+        );
+  
+        this.$inner = this.$el.find('.st-block__inner');
+        this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
+      },
+  
       render: function() {
         this.beforeBlockRender();
   
-        var editor_html = _.result(this, 'editorHTML');
+        this._setBlockInner();
   
         this._loadAndSetData();
+        this._initUI();
   
         this.$el.addClass('st-item-ready');
         this.save();
@@ -1047,10 +1063,6 @@
   
       className: 'st-block st-icon--add',
   
-      block_template: _.template(
-        "<div class='st-block__inner'><%= editor_html %></div>"
-      ),
-  
       attributes: function() {
         return _.extend(SirTrevor.SimpleBlock.prototype.attributes(), {
           'data-icon-after' : "add"
@@ -1090,16 +1102,9 @@
       render: function() {
         this.beforeBlockRender();
   
-        var editor_html = _.result(this, 'editorHTML');
+        this._setBlockInner();
   
-        this.$el.append(
-          this.block_template({ editor_html: editor_html })
-        );
-  
-        this.$inner = this.$el.find('.st-block__inner');
         this.$editor = this.$inner.children().first();
-  
-        this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
   
         if(this.droppable || this.pastable || this.uploadable) {
           var input_html = $("<div>", { 'class': 'st-block__inputs' });
@@ -1611,7 +1616,9 @@
   
       type: "Truncation",
   
-      className: 'st-block st-truncation-block'
+      className: 'st-block st-truncation-block',
+  
+      editorHTML : '<span class="st-truncation-block__text">Truncate here</span>'
   
     });
   

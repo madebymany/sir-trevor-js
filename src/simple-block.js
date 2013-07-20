@@ -15,6 +15,10 @@ SirTrevor.SimpleBlock = (function(){
 
     className: 'st-block',
 
+    block_template: _.template(
+      "<div class='st-block__inner'><%= editor_html %></div>"
+    ),
+
     attributes: function() {
       return {
         'id': this.blockID,
@@ -56,12 +60,24 @@ SirTrevor.SimpleBlock = (function(){
       }
     },
 
+    _setBlockInner : function() {
+      var editor_html = _.result(this, 'editorHTML');
+
+      this.$el.append(
+        this.block_template({ editor_html: editor_html })
+      );
+
+      this.$inner = this.$el.find('.st-block__inner');
+      this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
+    },
+
     render: function() {
       this.beforeBlockRender();
 
-      var editor_html = _.result(this, 'editorHTML');
+      this._setBlockInner();
 
       this._loadAndSetData();
+      this._initUI();
 
       this.$el.addClass('st-item-ready');
       this.save();
