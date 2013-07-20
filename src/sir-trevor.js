@@ -14,10 +14,9 @@
   var root = this,
       SirTrevor;
 
-  var array = [];
-  var push = array.push;
-  var slice = array.slice;
-  var splice = array.splice;
+  var push = [].push;
+  var slice = [].slice;
+  var splice = [].splice;
 
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
