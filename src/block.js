@@ -112,7 +112,7 @@ SirTrevor.Block = (function(){
       if (this.formattable) { this._initFormatting(); }
 
       this._loadAndSetData();
-      this._initUIComponents();
+      this._initUI();
 
       this.$el.addClass('st-item-ready');
       this.save();
@@ -340,20 +340,20 @@ SirTrevor.Block = (function(){
     */
 
     _initUIComponents: function() {
-      var ui_element = $("<div>", { 'class': 'st-block__ui' });
 
-      this.$inner.append(ui_element);
-      this.$ui = ui_element;
+      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID);
 
-      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID),
-          reorder = new SirTrevor.BlockReorder(this.$el);
+      this._withUIComponent(
+        positioner, '.st-block-ui-btn--reorder', positioner.toggle
+      );
 
-      this.$ui.append(reorder.render().$el);
-      this.$ui.append(new SirTrevor.BlockDeletion().render().$el);
-      this.$ui.append(positioner.render().$el);
+      this._withUIComponent(
+        new SirTrevor.BlockReorder(this.$el)
+      );
 
-      this.$ui.on('click', '.st-block-ui-btn--delete', this.onDeleteClick);
-      this.$ui.on('click', '.st-block-ui-btn--reorder', positioner.toggle);
+      this._withUIComponent(
+        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
+      );
 
       this.onFocus();
       this.onBlur();

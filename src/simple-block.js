@@ -62,7 +62,6 @@ SirTrevor.SimpleBlock = (function(){
       var editor_html = _.result(this, 'editorHTML');
 
       this._loadAndSetData();
-      this._initUIComponents();
 
       this.$el.addClass('st-item-ready');
       this.save();
@@ -72,13 +71,9 @@ SirTrevor.SimpleBlock = (function(){
       return this;
     },
 
-    remove: function() {
-      this.$el.remove();
-    },
-
     /* Save the state of this block onto the blocks data attr */
     save: function() {
-      this.toData();
+      // this.toData();
       return this.store("read", this);
     },
 
@@ -95,36 +90,52 @@ SirTrevor.SimpleBlock = (function(){
       Generic toData implementation.
       Can be overwritten, although hopefully this will cover most situations
     */
-    toData: function() {
-      SirTrevor.log("toData for " + this.blockID);
+    // toData: function() {
+    //   SirTrevor.log("toData for " + this.blockID);
 
-      var bl = this.$el,
-          dataObj = {};
+    //   var bl = this.$el,
+    //       dataObj = {};
 
-      /* Simple to start. Add conditions later */
-      if (this.hasTextBlock()) {
-        var content = this.getTextBlock().html();
-        if (content.length > 0) {
-          dataObj.text = SirTrevor.toMarkdown(content, this.type);
-        }
-      }
+    //   /* Simple to start. Add conditions later */
+    //   if (this.hasTextBlock()) {
+    //     var content = this.getTextBlock().html();
+    //     if (content.length > 0) {
+    //       dataObj.text = SirTrevor.toMarkdown(content, this.type);
+    //     }
+    //   }
 
-      var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
+    //   var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
 
-      // Add any inputs to the data attr
-      if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
-        this.$$('input[type="text"]').each(function(index,input){
-          input = $(input);
-          if (hasTextAndData) {
-            dataObj[input.attr('name')] = input.val();
-          }
-        });
-      }
+    //   // Add any inputs to the data attr
+    //   if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
+    //     this.$$('input[type="text"]').each(function(index,input){
+    //       input = $(input);
+    //       if (hasTextAndData) {
+    //         dataObj[input.attr('name')] = input.val();
+    //       }
+    //     });
+    //   }
 
-      // Set
-      if(!_.isEmpty(dataObj)) {
-        this.setData(dataObj);
-      }
+    //   // Set
+    //   if(!_.isEmpty(dataObj)) {
+    //     this.setData(dataObj);
+    //   }
+    // },
+
+    _withUIComponent: function(component, className, callback) {
+      this.$ui.append(component.render().$el);
+      (className && callback) && this.$ui.on('click', className, callback);
+    },
+
+    _initUI : function() {
+      var ui_element = $("<div>", { 'class': 'st-block__ui' });
+      this.$inner.append(ui_element);
+      this.$ui = ui_element;
+      this._initUIComponents();
+    },
+
+    _initUIComponents: function() {
+      this._withUIComponent(new SirTrevor.BlockReorder(this.$el));
     },
 
     _loadData: function() {
@@ -145,7 +156,9 @@ SirTrevor.SimpleBlock = (function(){
 
     _getBlockClass: function() {
       return 'st-block--' + this.className;
-    }
+    },
+
+    focus : function() {}
 
   });
 
