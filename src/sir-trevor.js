@@ -29,6 +29,7 @@
 
   SirTrevor.DEFAULTS = {
     defaultType: false,
+    useTruncationBlock: false,
     spinner: {
       className: 'st-spinner',
       lines: 9,
@@ -43,7 +44,9 @@
       top: '50%'
     },
     blockLimit: 0,
-    blockTypeLimits: {},
+    blockTypeLimits: {
+      'Truncation' : 1
+    },
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
@@ -123,6 +126,7 @@
   //= block.positioner.js
   //= block.reorder.js
   //= block.deletion.js
+  //= simple-block.js
   //= block.js
   //= formatter.js
 

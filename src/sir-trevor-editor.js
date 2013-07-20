@@ -83,8 +83,13 @@ SirTrevor.Editor = (function(){
           SirTrevor.log('Creating: ', block);
           this.createBlock(block.type, block.data);
         }, this));
-      } else if (this.options.defaultType !== false) {
-        this.createBlock(this.options.defaultType);
+      } else {
+        if (this.options.defaultType !== false) {
+          this.createBlock(this.options.defaultType);
+        }
+        if (this.options.useTruncationBlock) {
+          this.createBlock("Truncation");
+        }
       }
 
       this.$wrapper.addClass('st-ready');
