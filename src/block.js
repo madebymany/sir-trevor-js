@@ -38,14 +38,14 @@ SirTrevor.Block = (function(){
     upload_options: upload_options
   };
 
-  _.extend(Block.prototype, SirTrevor.SimpleBlock.prototype, {
+  _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, {
 
     bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
 
     className: 'st-block st-icon--add',
 
     attributes: function() {
-      return _.extend(SirTrevor.SimpleBlock.prototype.attributes(), {
+      return _.extend(SirTrevor.SimpleBlock.fn.attributes.call(this), {
         'data-icon-after' : "add"
       });
     },
@@ -109,6 +109,12 @@ SirTrevor.Block = (function(){
       this.onBlockRender();
 
       return this;
+    },
+
+    /* Save the state of this block onto the blocks data attr */
+    save: function() {
+      this.toData();
+      return SirTrevor.SimpleBlock.fn.save.call(this);
     },
 
     remove: function() {
@@ -291,7 +297,6 @@ SirTrevor.Block = (function(){
     /* Private methods */
 
     _loadData: function() {
-      SirTrevor.log("loadData for " + this.blockID);
 
       this.loading();
 
@@ -300,9 +305,8 @@ SirTrevor.Block = (function(){
         this.$inputs.hide();
       }
 
-      SirTrevor.EventBus.trigger("editor/block/loadData");
+      SirTrevor.SimpleBlock.fn._loadData.call(this);
 
-      this.loadData(this.getData());
       this.ready();
     },
 
