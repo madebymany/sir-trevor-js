@@ -1,14 +1,7 @@
 SirTrevor.Block = (function(){
 
   var Block = function(data, instance_id) {
-    this.store("create", this, { data: data || {} });
-    this.blockID = _.uniqueId('st-block-');
-    this.instanceID = instance_id;
-
-    this._ensureElement();
-    this._bindFunctions();
-
-    this.initialize.apply(this, arguments);
+    SirTrevor.SimpleBlock.apply(this, arguments);
   };
 
   var delete_template = [
@@ -45,7 +38,7 @@ SirTrevor.Block = (function(){
     upload_options: upload_options
   };
 
-  _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
+  _.extend(Block.prototype, SirTrevor.SimpleBlock.prototype, {
 
     bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
 
@@ -56,37 +49,19 @@ SirTrevor.Block = (function(){
     ),
 
     attributes: function() {
-      return {
-        'id': this.blockID,
-        'data-type': this.type,
-        'data-instance': this.instanceID,
+      return _.extend(SirTrevor.SimpleBlock.prototype.attributes(), {
         'data-icon-after' : "add"
-      };
-    },
-
-    title: function() {
-      return _.capitalize(this.type);
+      });
     },
 
     icon_name: function() {
       return this.type.toLowerCase();
     },
 
-    blockCSSClass: function() {
-      // Memoize the slug.
-      this.blockCSSClass = _.to_slug(this.type);
-      return this.blockCSSClass;
-    },
-
     validationFailMsg: function() {
       return this.type + ' block is invalid';
     },
 
-    $$: function(selector) {
-      return this.$el.find(selector);
-    },
-
-    type: '',
     editorHTML: '<div class="st-block__editor"></div>',
 
     toolbarEnabled: true,
@@ -101,22 +76,7 @@ SirTrevor.Block = (function(){
 
     formattable: true,
 
-    initialize: function() {},
-
-    loadData: function() {},
-    onBlockRender: function(){},
-    beforeBlockRender: function(){},
     toMarkdown: function(markdown){ return markdown; },
-    toHTML: function(html){ return html; },
-
-    store: function(){ return SirTrevor.blockStore.apply(this, arguments); },
-
-    _loadAndSetData: function() {
-      var currentData = this.getData();
-      if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
-        this._loadData();
-      }
-    },
 
     withMixin: function(mixin) {
       if (!_.isObject(mixin)) { return; }
@@ -164,21 +124,6 @@ SirTrevor.Block = (function(){
 
     remove: function() {
       this.$el.remove();
-    },
-
-    /* Save the state of this block onto the blocks data attr */
-    save: function() {
-      this.toData();
-      return this.store("read", this);
-    },
-
-    getData: function() {
-      return this.store("read", this).data;
-    },
-
-    setData: function(data) {
-      SirTrevor.log("Setting data for block " + this.blockID);
-      this.store("save", this, { data: _.extend(this.dataStore.data, data) });
     },
 
     loading: function() {
@@ -388,10 +333,6 @@ SirTrevor.Block = (function(){
       } else {
         _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
       }
-    },
-
-    _getBlockClass: function() {
-      return 'st-block--' + this.className;
     },
 
     /*
