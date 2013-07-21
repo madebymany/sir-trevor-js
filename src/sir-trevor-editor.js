@@ -312,7 +312,7 @@ SirTrevor.Editor = (function(){
 
       this.validateBlocks(should_validate);
       this.validateBlockTypesExist(should_validate);
-      console.log(this.dataStore);
+
       this.renderErrors();
       this.store("save", this);
 
