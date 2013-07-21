@@ -29,7 +29,6 @@
 
   SirTrevor.DEFAULTS = {
     defaultType: false,
-    useTruncationBlock: false,
     spinner: {
       className: 'st-spinner',
       lines: 9,
@@ -44,9 +43,7 @@
       top: '50%'
     },
     blockLimit: 0,
-    blockTypeLimits: {
-      'Truncation' : 1
-    },
+    blockTypeLimits: {},
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
@@ -1567,27 +1564,6 @@
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
   });
-  SirTrevor.Blocks.Truncation = (function(){
-  
-    return SirTrevor.SimpleBlock.extend({
-  
-      type: "Truncation",
-  
-      className: 'st-block st-truncation-block',
-  
-      editorHTML : '<span class="st-truncation-block__text">Truncate here</span>',
-  
-      toData : function() {
-        this.setData({ truncate : true });
-      },
-  
-      validate : function() {
-        return true;
-      }
-  
-    });
-  
-  })();
   SirTrevor.Blocks.Tweet = (function(){
   
     var tweet_template = _.template([
@@ -2241,13 +2217,8 @@
             SirTrevor.log('Creating: ', block);
             this.createBlock(block.type, block.data);
           }, this));
-        } else {
-          if (this.options.defaultType !== false) {
-            this.createBlock(this.options.defaultType);
-          }
-          if (this.options.useTruncationBlock) {
-            this.createBlock("Truncation");
-          }
+        } else if (this.options.defaultType !== false) {
+          this.createBlock(this.options.defaultType);
         }
   
         this.$wrapper.addClass('st-ready');
