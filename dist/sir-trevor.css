@@ -293,39 +293,6 @@ ul.st-text-block {
   padding: 7px 0;
   text-align: center; }
 
-.st-truncation-block .st-block__ui {
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0; }
-
-.st-truncation-block .st-block__inner {
-  border: 0;
-  padding: .5em 0;
-  z-index: 1; }
-
-.st-truncation-block .st-block__inner:before {
-  content: "";
-  position: absolute;
-  border-top: 1px dashed #cccccc;
-  width: 100%;
-  bottom: 50%;
-  z-index: -1; }
-
-.st-truncation-block .st-block__inner:hover .st-block__ui {
-  opacity: 0; }
-
-.st-truncation-block .st-block-ui-btn {
-  float: none;
-  width: 100%;
-  border: 0;
-  height: 100%; }
-
-.st-truncation-block__text {
-  margin: 0 1.25em;
-  padding: 0 .5em;
-  background: #fff; }
-
 .st-block-positioner {
   border: 0.125em solid #34e0c2;
   position: absolute;
