@@ -286,7 +286,7 @@ SirTrevor.Editor = (function(){
 
     saveBlockStateToStore: function(block) {
       var store = block.save();
-      if(!_.isEmpty(store.data)) {
+      if(store && !_.isEmpty(store.data)) {
         SirTrevor.log("Adding data for block " + block.blockID + " to block store");
         this.store("add", this, { data: store });
       }

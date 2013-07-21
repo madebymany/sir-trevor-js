@@ -9,6 +9,10 @@ describe("Block", function(){
     block_two = new SirTrevor.Blocks.Text({}, editor.ID);
   });
 
+  it("block is instance of ST.Block", function(){
+    expect(block instanceof SirTrevor.Block).toBeTruthy();
+  });
+
   it("can be able to be created", function(){
     expect(block).not.toBe(undefined);
   });

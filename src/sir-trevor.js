@@ -14,10 +14,9 @@
   var root = this,
       SirTrevor;
 
-  var array = [];
-  var push = array.push;
-  var slice = array.slice;
-  var splice = array.splice;
+  var push = [].push;
+  var slice = [].slice;
+  var splice = [].splice;
 
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
@@ -124,6 +123,7 @@
   //= block.positioner.js
   //= block.reorder.js
   //= block.deletion.js
+  //= simple-block.js
   //= block.js
   //= formatter.js
 
