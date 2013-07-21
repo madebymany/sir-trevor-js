@@ -5,7 +5,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-sass');
 
   grunt.initConfig({
 
@@ -13,8 +12,8 @@ module.exports = function(grunt) {
       'sir-trevor': {
         src : 'dist/sir-trevor.js',
         options: {
-          vendor: ['components/jquery/jquery.js', 'components/underscore/underscore.js', 'components/Eventable/eventable.js'],
-          specs : 'spec/javascripts/**/*.spec.js',
+          vendor: 'public/javascripts/*.js',
+          specs : 'spec/**/*.spec.js',
           helpers : 'spec/helpers/*.js'
         }
       }
@@ -22,7 +21,7 @@ module.exports = function(grunt) {
 
     rig: {
       build: {
-        src: 'src/sir-trevor.js',
+        src: ['<banner:meta.banner>', 'src/sir-trevor.js'],
         dest: 'dist/sir-trevor.js'
       }
     },
@@ -40,8 +39,8 @@ module.exports = function(grunt) {
 
     watch: {
       scripts: {
-        files: ['src/*.js', 'src/**/*.js', 'src/sass/*.scss'],
-        tasks: ['sass', 'rig']
+        files: ['src/*.js', 'src/**/*.js'],
+        tasks: 'default'
       }
     },
 
@@ -66,14 +65,6 @@ module.exports = function(grunt) {
         _: true,
         console: true
       }
-    },
-
-    sass: {
-      dist: {
-        files: {
-          'dist/sir-trevor.css': 'src/sass/main.scss'
-        }
-      }
     }
 
   });
@@ -83,7 +74,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('travis', ['rig', 'jasmine']);
 
-  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine']);
+  grunt.registerTask('default', ['rig', 'uglify', 'jasmine']);
 
   grunt.registerTask('jasmine-browser', ['server','watch']);
 
