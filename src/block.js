@@ -58,6 +58,10 @@ SirTrevor.Block = (function(){
       return this.type + ' block is invalid';
     },
 
+    $$: function(selector) {
+      return this.$el.find(selector);
+    },
+
     editorHTML: '<div class="st-block__editor"></div>',
 
     toolbarEnabled: true,
@@ -72,7 +76,10 @@ SirTrevor.Block = (function(){
 
     formattable: true,
 
+    initialize: function() {},
+
     toMarkdown: function(markdown){ return markdown; },
+    toHTML: function(html){ return html; },
 
     withMixin: function(mixin) {
       if (!_.isObject(mixin)) { return; }
@@ -100,21 +107,11 @@ SirTrevor.Block = (function(){
 
       if (this.formattable) { this._initFormatting(); }
 
-      this._loadAndSetData();
-      this._initUI();
-
-      this.$el.addClass('st-item-ready');
-      this.save();
+      this._blockPrepare();
 
       this.onBlockRender();
 
       return this;
-    },
-
-    /* Save the state of this block onto the blocks data attr */
-    save: function() {
-      this.toData();
-      return SirTrevor.SimpleBlock.fn.save.call(this);
     },
 
     remove: function() {
@@ -326,6 +323,10 @@ SirTrevor.Block = (function(){
       } else {
         _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
       }
+    },
+
+    _getBlockClass: function() {
+      return 'st-block--' + this.className;
     },
 
     /*

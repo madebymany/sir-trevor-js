@@ -13,10 +13,10 @@ SirTrevor.SimpleBlock = (function(){
 
   _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
+    focus : function() {},
     _beforeValidate : function() {},
-    validate : function() {
-      return true;
-    },
+    validate : function() { return true; },
+    toData : function() {},
 
     className: 'st-block',
 
@@ -37,35 +37,27 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     blockCSSClass: function() {
-      // Memoize the slug.
       this.blockCSSClass = _.to_slug(this.type);
       return this.blockCSSClass;
-    },
-
-    $$: function(selector) {
-      return this.$el.find(selector);
     },
 
     type: '',
     editorHTML: '',
 
-    initialize: function() {
-      console.log(this);
-    },
+    initialize: function() {},
 
-    // loadData: function() {},
+    loadData: function() {},
     onBlockRender: function(){},
     beforeBlockRender: function(){},
-    // toHTML: function(html){ return html; },
 
     store: function(){ return SirTrevor.blockStore.apply(this, arguments); },
 
-    // _loadAndSetData: function() {
-    //   var currentData = this.getData();
-    //   if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
-    //     this._loadData();
-    //   }
-    // },
+    _loadAndSetData: function() {
+      var currentData = this.getData();
+      if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
+        this._loadData();
+      }
+    },
 
     _setBlockInner : function() {
       var editor_html = _.result(this, 'editorHTML');
@@ -82,20 +74,24 @@ SirTrevor.SimpleBlock = (function(){
       this.beforeBlockRender();
 
       this._setBlockInner();
-
-      // this._loadAndSetData();
-      this._initUI();
-
-      this.$el.addClass('st-item-ready');
-      this.save();
+      this._blockPrepare();
 
       this.onBlockRender();
 
       return this;
     },
 
+    _blockPrepare : function() {
+      this._loadAndSetData();
+      this._initUI();
+
+      this.$el.addClass('st-item-ready');
+      this.save();
+    },
+
     /* Save the state of this block onto the blocks data attr */
     save: function() {
+      this.toData();
       return this.store("read", this);
     },
 
@@ -128,13 +124,7 @@ SirTrevor.SimpleBlock = (function(){
       SirTrevor.log("loadData for " + this.blockID);
       SirTrevor.EventBus.trigger("editor/block/loadData");
       this.loadData(this.getData());
-    },
-
-    _getBlockClass: function() {
-      return 'st-block--' + this.className;
-    },
-
-    focus : function() {}
+    }
 
   });
 

@@ -291,7 +291,6 @@ SirTrevor.Editor = (function(){
 
     saveBlockStateToStore: function(block) {
       var store = block.save();
-      console.log(store.data);
       if(store && !_.isEmpty(store.data)) {
         SirTrevor.log("Adding data for block " + block.blockID + " to block store");
         this.store("add", this, { data: store });
@@ -313,7 +312,7 @@ SirTrevor.Editor = (function(){
 
       this.validateBlocks(should_validate);
       this.validateBlockTypesExist(should_validate);
-
+      console.log(this.dataStore);
       this.renderErrors();
       this.store("save", this);
 

@@ -10,6 +10,10 @@ SirTrevor.Blocks.Truncation = (function(){
 
     toData : function() {
       this.setData({ truncate : true });
+    },
+
+    validate : function() {
+      return true;
     }
 
   });

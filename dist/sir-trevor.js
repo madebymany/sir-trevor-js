@@ -847,10 +847,10 @@
   
     _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, {
   
+      focus : function() {},
       _beforeValidate : function() {},
-      validate : function() {
-        return true;
-      },
+      validate : function() { return true; },
+      toData : function() {},
   
       className: 'st-block',
   
@@ -871,35 +871,27 @@
       },
   
       blockCSSClass: function() {
-        // Memoize the slug.
         this.blockCSSClass = _.to_slug(this.type);
         return this.blockCSSClass;
-      },
-  
-      $$: function(selector) {
-        return this.$el.find(selector);
       },
   
       type: '',
       editorHTML: '',
   
-      initialize: function() {
-        console.log(this);
-      },
+      initialize: function() {},
   
-      // loadData: function() {},
+      loadData: function() {},
       onBlockRender: function(){},
       beforeBlockRender: function(){},
-      // toHTML: function(html){ return html; },
   
       store: function(){ return SirTrevor.blockStore.apply(this, arguments); },
   
-      // _loadAndSetData: function() {
-      //   var currentData = this.getData();
-      //   if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
-      //     this._loadData();
-      //   }
-      // },
+      _loadAndSetData: function() {
+        var currentData = this.getData();
+        if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
+          this._loadData();
+        }
+      },
   
       _setBlockInner : function() {
         var editor_html = _.result(this, 'editorHTML');
@@ -916,20 +908,24 @@
         this.beforeBlockRender();
   
         this._setBlockInner();
-  
-        // this._loadAndSetData();
-        this._initUI();
-  
-        this.$el.addClass('st-item-ready');
-        this.save();
+        this._blockPrepare();
   
         this.onBlockRender();
   
         return this;
       },
   
+      _blockPrepare : function() {
+        this._loadAndSetData();
+        this._initUI();
+  
+        this.$el.addClass('st-item-ready');
+        this.save();
+      },
+  
       /* Save the state of this block onto the blocks data attr */
       save: function() {
+        this.toData();
         return this.store("read", this);
       },
   
@@ -962,13 +958,7 @@
         SirTrevor.log("loadData for " + this.blockID);
         SirTrevor.EventBus.trigger("editor/block/loadData");
         this.loadData(this.getData());
-      },
-  
-      _getBlockClass: function() {
-        return 'st-block--' + this.className;
-      },
-  
-      focus : function() {}
+      }
   
     });
   
@@ -1039,6 +1029,10 @@
         return this.type + ' block is invalid';
       },
   
+      $$: function(selector) {
+        return this.$el.find(selector);
+      },
+  
       editorHTML: '<div class="st-block__editor"></div>',
   
       toolbarEnabled: true,
@@ -1053,7 +1047,10 @@
   
       formattable: true,
   
+      initialize: function() {},
+  
       toMarkdown: function(markdown){ return markdown; },
+      toHTML: function(html){ return html; },
   
       withMixin: function(mixin) {
         if (!_.isObject(mixin)) { return; }
@@ -1081,21 +1078,11 @@
   
         if (this.formattable) { this._initFormatting(); }
   
-        this._loadAndSetData();
-        this._initUI();
-  
-        this.$el.addClass('st-item-ready');
-        this.save();
+        this._blockPrepare();
   
         this.onBlockRender();
   
         return this;
-      },
-  
-      /* Save the state of this block onto the blocks data attr */
-      save: function() {
-        this.toData();
-        return SirTrevor.SimpleBlock.fn.save.call(this);
       },
   
       remove: function() {
@@ -1307,6 +1294,10 @@
         } else {
           _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
         }
+      },
+  
+      _getBlockClass: function() {
+        return 'st-block--' + this.className;
       },
   
       /*
@@ -1588,6 +1579,10 @@
   
       toData : function() {
         this.setData({ truncate : true });
+      },
+  
+      validate : function() {
+        return true;
       }
   
     });
@@ -2454,7 +2449,6 @@
   
       saveBlockStateToStore: function(block) {
         var store = block.save();
-        console.log(store.data);
         if(store && !_.isEmpty(store.data)) {
           SirTrevor.log("Adding data for block " + block.blockID + " to block store");
           this.store("add", this, { data: store });
@@ -2476,7 +2470,7 @@
   
         this.validateBlocks(should_validate);
         this.validateBlockTypesExist(should_validate);
-  
+        console.log(this.dataStore);
         this.renderErrors();
         this.store("save", this);
   
