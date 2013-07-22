@@ -1,14 +1,7 @@
 SirTrevor.Block = (function(){
 
   var Block = function(data, instance_id) {
-    this.store("create", this, { data: data || {} });
-    this.blockID = _.uniqueId('st-block-');
-    this.instanceID = instance_id;
-
-    this._ensureElement();
-    this._bindFunctions();
-
-    this.initialize.apply(this, arguments);
+    SirTrevor.SimpleBlock.apply(this, arguments);
   };
 
   var delete_template = [
@@ -45,37 +38,20 @@ SirTrevor.Block = (function(){
     upload_options: upload_options
   };
 
-  _.extend(Block.prototype, FunctionBind, SirTrevor.Events, Renderable, {
+  _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, {
 
     bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
 
     className: 'st-block st-icon--add',
 
-    block_template: _.template(
-      "<div class='st-block__inner'><%= editor_html %></div>"
-    ),
-
     attributes: function() {
-      return {
-        'id': this.blockID,
-        'data-type': this.type,
-        'data-instance': this.instanceID,
+      return _.extend(SirTrevor.SimpleBlock.fn.attributes.call(this), {
         'data-icon-after' : "add"
-      };
-    },
-
-    title: function() {
-      return _.capitalize(this.type);
+      });
     },
 
     icon_name: function() {
       return this.type.toLowerCase();
-    },
-
-    blockCSSClass: function() {
-      // Memoize the slug.
-      this.blockCSSClass = _.to_slug(this.type);
-      return this.blockCSSClass;
     },
 
     validationFailMsg: function() {
@@ -86,7 +62,6 @@ SirTrevor.Block = (function(){
       return this.$el.find(selector);
     },
 
-    type: '',
     editorHTML: '<div class="st-block__editor"></div>',
 
     toolbarEnabled: true,
@@ -103,20 +78,8 @@ SirTrevor.Block = (function(){
 
     initialize: function() {},
 
-    loadData: function() {},
-    onBlockRender: function(){},
-    beforeBlockRender: function(){},
     toMarkdown: function(markdown){ return markdown; },
     toHTML: function(html){ return html; },
-
-    store: function(){ return SirTrevor.blockStore.apply(this, arguments); },
-
-    _loadAndSetData: function() {
-      var currentData = this.getData();
-      if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
-        this._loadData();
-      }
-    },
 
     withMixin: function(mixin) {
       if (!_.isObject(mixin)) { return; }
@@ -127,16 +90,9 @@ SirTrevor.Block = (function(){
     render: function() {
       this.beforeBlockRender();
 
-      var editor_html = _.result(this, 'editorHTML');
+      this._setBlockInner();
 
-      this.$el.append(
-        this.block_template({ editor_html: editor_html })
-      );
-
-      this.$inner = this.$el.find('.st-block__inner');
       this.$editor = this.$inner.children().first();
-
-      this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
 
       if(this.droppable || this.pastable || this.uploadable) {
         var input_html = $("<div>", { 'class': 'st-block__inputs' });
@@ -151,11 +107,7 @@ SirTrevor.Block = (function(){
 
       if (this.formattable) { this._initFormatting(); }
 
-      this._loadAndSetData();
-      this._initUIComponents();
-
-      this.$el.addClass('st-item-ready');
-      this.save();
+      this._blockPrepare();
 
       this.onBlockRender();
 
@@ -164,21 +116,6 @@ SirTrevor.Block = (function(){
 
     remove: function() {
       this.$el.remove();
-    },
-
-    /* Save the state of this block onto the blocks data attr */
-    save: function() {
-      this.toData();
-      return this.store("read", this);
-    },
-
-    getData: function() {
-      return this.store("read", this).data;
-    },
-
-    setData: function(data) {
-      SirTrevor.log("Setting data for block " + this.blockID);
-      this.store("save", this, { data: _.extend(this.dataStore.data, data) });
     },
 
     loading: function() {
@@ -357,7 +294,6 @@ SirTrevor.Block = (function(){
     /* Private methods */
 
     _loadData: function() {
-      SirTrevor.log("loadData for " + this.blockID);
 
       this.loading();
 
@@ -366,9 +302,8 @@ SirTrevor.Block = (function(){
         this.$inputs.hide();
       }
 
-      SirTrevor.EventBus.trigger("editor/block/loadData");
+      SirTrevor.SimpleBlock.fn._loadData.call(this);
 
-      this.loadData(this.getData());
       this.ready();
     },
 
@@ -399,20 +334,20 @@ SirTrevor.Block = (function(){
     */
 
     _initUIComponents: function() {
-      var ui_element = $("<div>", { 'class': 'st-block__ui' });
 
-      this.$inner.append(ui_element);
-      this.$ui = ui_element;
+      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID);
 
-      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID),
-          reorder = new SirTrevor.BlockReorder(this.$el);
+      this._withUIComponent(
+        positioner, '.st-block-ui-btn--reorder', positioner.toggle
+      );
 
-      this.$ui.append(reorder.render().$el);
-      this.$ui.append(new SirTrevor.BlockDeletion().render().$el);
-      this.$ui.append(positioner.render().$el);
+      this._withUIComponent(
+        new SirTrevor.BlockReorder(this.$el)
+      );
 
-      this.$ui.on('click', '.st-block-ui-btn--delete', this.onDeleteClick);
-      this.$ui.on('click', '.st-block-ui-btn--reorder', positioner.toggle);
+      this._withUIComponent(
+        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
+      );
 
       this.onFocus();
       this.onBlur();

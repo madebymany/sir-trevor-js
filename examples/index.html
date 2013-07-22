@@ -17,7 +17,7 @@
     <textarea class="sir-trevor--two"></textarea>
   </form>
 
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="../components/jquery/jquery.js"></script>
   <script src="../components/underscore/underscore.js" type="text/javascript" charset="utf-8"></script>
   <script src="../components/Eventable/eventable.js" type="text/javascript" charset="utf-8"></script>
   <script src="../dist/sir-trevor.js" type="text/javascript" charset="utf-8"></script>
@@ -44,7 +44,12 @@
       // });
 
       window.editor = new SirTrevor.Editor({
-        el: $('.sir-trevor--two')
+        el: $('.sir-trevor--two'),
+        blockTypes: [
+          "Text",
+          "List",
+          "Quote"
+        ]
       });
 
       $('form').bind('submit', function(){
