@@ -668,6 +668,7 @@
       bound: ['onBlockCountChange', 'onSelectChange'],
   
       className: 'st-block-positioner',
+      visibleClass: 'st-block-positioner--is-visible',
   
       initialize: function(){
         this.$el.append(template);
@@ -689,7 +690,7 @@
         var val = this.$select.val();
         if (val !== 0) {
           SirTrevor.EventBus.trigger(this.instanceID + ":blocks:change_position",
-            this.$block, val, (val == 1 ? 'before' : 'after'));
+                                     this.$block, val, (val == 1 ? 'before' : 'after'));
           this.toggle();
         }
       },
@@ -704,15 +705,15 @@
   
       toggle: function() {
         this.$select.val(0);
-        this.$el.toggleClass('st-block-positioner--is-visible');
+        this.$el.toggleClass(this.visibleClass);
       },
   
       show: function(){
-        this.$el.addClass('st-block-positioner--is-visible');
+        this.$el.addClass(this.visibleClass);
       },
   
       hide: function(){
-        this.$el.removeClass('st-block-positioner--is-visible');
+        this.$el.removeClass(this.visibleClass);
       }
   
     });
@@ -829,6 +830,69 @@
     return BlockDeletion;
   
   })();
+  SirTrevor.BlockValidations = {
+  
+    errors: [],
+  
+    valid: function(){
+      this.performValidations();
+      return this.errors.length === 0;
+    },
+  
+    // This method actually does the leg work
+    // of running our validators and custom validators
+    performValidations: function() {
+      this.resetErrors();
+  
+      var required_fields = this.$('.st-required');
+      _.each(required_fields, _.bind(this.validateField, this));
+      _.each(this.validations, _.bind(this.runValidator, this));
+  
+      this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
+    },
+  
+    // Everything in here should be a function that returns true or false
+    validators: [],
+  
+    validateField: function(field) {
+      field = $(field);
+  
+      var content = field.attr('contenteditable') ? field.text() : field.val();
+  
+      if (content.length === 0) {
+        this.setError(field, "must not be empty");
+      }
+    },
+  
+    runValidator: function(validator) {
+      if (!_.isUndefined(this[validator])) {
+        this[validator].call(this);
+      }
+    },
+  
+    setError: function(field, reason, appendTo) {
+      if (_.isUndefined(appendTo)) {
+        appendTo = this.$messages;
+      }
+  
+      var msg = $("<span>", { html: reason, class: 'st-error-msg' });
+  
+      field.addClass('st-error');
+      appendTo.append(msg);
+  
+      this.errors.push({ field: field, reason: reason, msg: msg });
+    },
+  
+    resetErrors: function() {
+      _.each(this.errors, function(error){
+        error.field.removeClass('st-error');
+        error.msg.remove();
+      });
+  
+      this.errors = [];
+    }
+  
+  };
   SirTrevor.SimpleBlock = (function(){
   
     var SimpleBlock = function(data, instance_id) {
@@ -845,7 +909,7 @@
     _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, {
   
       focus : function() {},
-      _beforeValidate : function() {},
+  
       validate : function() { return true; },
       toData : function() {},
   
@@ -915,6 +979,7 @@
       _blockPrepare : function() {
         this._loadAndSetData();
         this._initUI();
+        this._initMessages();
   
         this.$el.addClass('st-item-ready');
         this.save();
@@ -945,6 +1010,12 @@
         this.$inner.append(ui_element);
         this.$ui = ui_element;
         this._initUIComponents();
+      },
+  
+      _initMessages: function() {
+        var msgs_element = $("<div>", { 'class': 'st-block__messages' });
+        this.$inner.append(msgs_element);
+        this.$messages = msgs_element;
       },
   
       _initUIComponents: function() {
@@ -1006,7 +1077,7 @@
       upload_options: upload_options
     };
   
-    _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, {
+    _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
   
       bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
   
@@ -1101,34 +1172,6 @@
           this.spinner.stop();
           delete this.spinner;
         }
-      },
-  
-      /* Generic implementations */
-  
-      validate: function() {
-        this._beforeValidate();
-  
-        var fields = this.$$('.st-required, [data-maxlength]'),
-            errors = 0;
-  
-        _.each(fields, _.bind(function(field) {
-          field = $(field);
-          var content = (field.attr('contenteditable')) ? field.text() : field.val(),
-              too_long = (field.attr('data-maxlength') && field.too_long()),
-              required = field.hasClass('st-required');
-  
-          if ((required && content.length === 0) || too_long) {
-            // Error!
-            field.addClass('st-error');
-            errors++;
-          }
-        }, this));
-  
-        if (errors > 0) {
-          this.$el.addClass('st-block--with-errors');
-        }
-  
-        return (errors === 0);
       },
   
       /*
@@ -1273,13 +1316,6 @@
         SirTrevor.SimpleBlock.fn._loadData.call(this);
   
         this.ready();
-      },
-  
-      _beforeValidate: function() {
-        this.errors = [];
-        var errorClass = 'st-error';
-        this.$el.removeClass('st-block--with-errors');
-        this.$('.' + errorClass).removeClass(errorClass);
       },
   
       _handleContentPaste: function(ev) {
@@ -2405,10 +2441,8 @@
       performValidations : function(block, should_validate) {
         var errors = 0;
   
-        block._beforeValidate();
-  
         if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-          if(!block.validate()){
+          if(!block.valid()){
             this.errors.push({ text: _.result(block, 'validationFailMsg') });
             SirTrevor.log("Block " + block.blockID + " failed validation");
             ++errors;

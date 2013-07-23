@@ -271,10 +271,8 @@ SirTrevor.Editor = (function(){
     performValidations : function(block, should_validate) {
       var errors = 0;
 
-      block._beforeValidate();
-
       if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-        if(!block.validate()){
+        if(!block.valid()){
           this.errors.push({ text: _.result(block, 'validationFailMsg') });
           SirTrevor.log("Block " + block.blockID + " failed validation");
           ++errors;

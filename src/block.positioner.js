@@ -23,6 +23,7 @@ SirTrevor.BlockPositioner = (function(){
     bound: ['onBlockCountChange', 'onSelectChange'],
 
     className: 'st-block-positioner',
+    visibleClass: 'st-block-positioner--is-visible',
 
     initialize: function(){
       this.$el.append(template);
@@ -44,7 +45,7 @@ SirTrevor.BlockPositioner = (function(){
       var val = this.$select.val();
       if (val !== 0) {
         SirTrevor.EventBus.trigger(this.instanceID + ":blocks:change_position",
-          this.$block, val, (val == 1 ? 'before' : 'after'));
+                                   this.$block, val, (val == 1 ? 'before' : 'after'));
         this.toggle();
       }
     },
@@ -59,15 +60,15 @@ SirTrevor.BlockPositioner = (function(){
 
     toggle: function() {
       this.$select.val(0);
-      this.$el.toggleClass('st-block-positioner--is-visible');
+      this.$el.toggleClass(this.visibleClass);
     },
 
     show: function(){
-      this.$el.addClass('st-block-positioner--is-visible');
+      this.$el.addClass(this.visibleClass);
     },
 
     hide: function(){
-      this.$el.removeClass('st-block-positioner--is-visible');
+      this.$el.removeClass(this.visibleClass);
     }
 
   });

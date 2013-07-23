@@ -84,6 +84,7 @@ SirTrevor.SimpleBlock = (function(){
     _blockPrepare : function() {
       this._loadAndSetData();
       this._initUI();
+      this._initMessages();
 
       this.$el.addClass('st-item-ready');
       this.save();
@@ -116,6 +117,12 @@ SirTrevor.SimpleBlock = (function(){
       this._initUIComponents();
     },
 
+    _initMessages: function() {
+      var msgs_element = $("<div>", { 'class': 'st-block__messages' });
+      this.$inner.append(msgs_element);
+      this.$messages = msgs_element;
+    },
+
     _initUIComponents: function() {
       this._withUIComponent(new SirTrevor.BlockReorder(this.$el));
     },
@@ -124,54 +131,6 @@ SirTrevor.SimpleBlock = (function(){
       SirTrevor.log("loadData for " + this.blockID);
       SirTrevor.EventBus.trigger("editor/block/loadData");
       this.loadData(this.getData());
-    },
-
-    /* Block validator methods */
-
-    errors: [],
-
-    valid: function(){
-      this.performValidations();
-      return this.errors.length > 0;
-    },
-
-    // This method actually does the leg work
-    // of running our validators and custom validators
-    performValidations: function() {
-      var required_fields = this.$('.st-required');
-      _.each(required_fields, _.bind(this.validateField, this));
-      _.each(this.validations, _.bind(this.runValidator, this));
-    },
-
-    // Everything in here should be a function that returns true or false
-    validations: [],
-
-    validateField: function(field) {
-      field = $(field);
-      this.setError(field, "must not be empty");
-    },
-
-    runValidator: function(validator) {
-      if (!_.isUndefined(this[validator])) {
-        this[validator].call(this);
-      }
-    },
-
-    setError: function(field, reason) {
-      field.addClass('st-error')
-           .append("<span>", { html: reason, class: 'st-error-msg' });
-      this.errors.push({ field: field, reason: reason });
-    },
-
-    _resetErrors: function() {
-      _.each(this.errors, function(error){
-        if (!_.isUndefined(error.field)) {
-          error.field.removeClass('st-error')
-                     .find('.st-error-msg').remove();
-        }
-      });
-
-      this.errors = [];
     }
 
   });

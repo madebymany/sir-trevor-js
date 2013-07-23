@@ -123,6 +123,7 @@
   //= block.positioner.js
   //= block.reorder.js
   //= block.deletion.js
+  //= block.validations.js
   //= simple-block.js
   //= block.js
   //= formatter.js
