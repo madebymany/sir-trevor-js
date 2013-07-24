@@ -26,7 +26,7 @@ SirTrevor.FloatingBlockControls = (function(){
       };
     },
 
-    bound: ['handleWrapperMouseOver', 'handleBlockMouseOut', 'handleBlockClick'],
+    bound: ['handleBlockMouseOut', 'handleBlockMouseOver', 'handleBlockClick', 'onDrop'],
 
     initialize: function() {
       this.$el.on('click', this.handleBlockClick)

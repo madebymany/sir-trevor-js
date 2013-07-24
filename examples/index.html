@@ -28,9 +28,9 @@
       SirTrevor.DEBUG = true;
 
       var set_quote_and_text_limits = function() {
-        this.$editor
-          .attr('maxlength', '300')
-          .limit_chars();
+        //this.$editor
+          //.attr('maxlength', '300')
+          //.limit_chars();
       }
 
       SirTrevor.Blocks.Text.prototype.onBlockRender = set_quote_and_text_limits;
@@ -48,7 +48,9 @@
         blockTypes: [
           "Text",
           "List",
-          "Quote"
+          "Quote",
+          "Image",
+          "Video"
         ]
       });
 

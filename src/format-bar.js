@@ -19,7 +19,7 @@ SirTrevor.FormatBar = (function(){
 
     className: 'st-format-bar',
 
-    bound: ["onFormatButtonClick"],
+    bound: ["onFormatButtonClick", "render_by_selection", "hide"],
 
     initialize: function() {
       var formatName, format;

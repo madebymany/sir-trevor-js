@@ -14,8 +14,8 @@ SirTrevor.SimpleBlock = (function(){
   _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
     focus : function() {},
-    _beforeValidate : function() {},
-    validate : function() { return true; },
+
+    valid : function() { return true; },
     toData : function() {},
 
     className: 'st-block',
@@ -84,6 +84,7 @@ SirTrevor.SimpleBlock = (function(){
     _blockPrepare : function() {
       this._loadAndSetData();
       this._initUI();
+      this._initMessages();
 
       this.$el.addClass('st-item-ready');
       this.save();
@@ -114,6 +115,24 @@ SirTrevor.SimpleBlock = (function(){
       this.$inner.append(ui_element);
       this.$ui = ui_element;
       this._initUIComponents();
+    },
+
+    _initMessages: function() {
+      var msgs_element = $("<div>", { 'class': 'st-block__messages' });
+      this.$inner.prepend(msgs_element);
+      this.$messages = msgs_element;
+    },
+
+    addMessage: function(msg, additionalClass) {
+      var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
+      this.$messages.append($msg)
+                    .addClass('st-block__messages--is-visible');
+      return $msg;
+    },
+
+    resetMessages: function() {
+      this.$messages.html('')
+                    .removeClass('st-block__messages--is-visible');
     },
 
     _initUIComponents: function() {
