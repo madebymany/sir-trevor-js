@@ -264,6 +264,9 @@
               editor.dataStore = str;
             }
           } catch(e) {
+            editor.errors.push({ text: "There was a problem loading the contents of the document" });
+            editor.renderErrors();
+  
             console.log('Sorry there has been a problem with parsing the JSON');
             console.log(e);
           }
@@ -831,7 +834,13 @@
   
   })();
   var bestNameFromField = function(field) {
-    return field.attr("data-st-name") || field.attr("name");
+    var msg = field.attr("data-st-name") || field.attr("name");
+  
+    if (!msg) {
+      msg = 'Field';
+    }
+  
+    return _.capitalize(msg);
   };
   
   SirTrevor.BlockValidations = {
@@ -874,17 +883,11 @@
       }
     },
   
-    setError: function(field, reason, appendTo) {
-      if (_.isUndefined(appendTo)) {
-        appendTo = this.$messages;
-      }
-  
-      var msg = $("<span>", { html: reason, class: 'st-error-msg' });
-  
+    setError: function(field, reason) {
+      var $msg = this.addMessage(reason, "st-msg--error");
       field.addClass('st-error');
-      appendTo.append(msg);
   
-      this.errors.push({ field: field, reason: reason, msg: msg });
+      this.errors.push({ field: field, reason: reason, msg: $msg });
     },
   
     resetErrors: function() {
@@ -893,6 +896,7 @@
         error.msg.remove();
       });
   
+      this.$messages.removeClass("st-block__messages--is-visible");
       this.errors = [];
     }
   
@@ -914,7 +918,7 @@
   
       focus : function() {},
   
-      validate : function() { return true; },
+      valid : function() { return true; },
       toData : function() {},
   
       className: 'st-block',
@@ -1018,8 +1022,20 @@
   
       _initMessages: function() {
         var msgs_element = $("<div>", { 'class': 'st-block__messages' });
-        this.$inner.append(msgs_element);
+        this.$inner.prepend(msgs_element);
         this.$messages = msgs_element;
+      },
+  
+      addMessage: function(msg, additionalClass) {
+        var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
+        this.$messages.append($msg)
+                      .addClass('st-block__messages--is-visible');
+        return $msg;
+      },
+  
+      resetMessages: function() {
+        this.$messages.html('')
+                      .removeClass('st-block__messages--is-visible');
       },
   
       _initUIComponents: function() {

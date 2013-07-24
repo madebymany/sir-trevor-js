@@ -1,5 +1,11 @@
 var bestNameFromField = function(field) {
-  return field.attr("data-st-name") || field.attr("name");
+  var msg = field.attr("data-st-name") || field.attr("name");
+
+  if (!msg) {
+    msg = 'Field';
+  }
+
+  return _.capitalize(msg);
 };
 
 SirTrevor.BlockValidations = {
@@ -42,17 +48,11 @@ SirTrevor.BlockValidations = {
     }
   },
 
-  setError: function(field, reason, appendTo) {
-    if (_.isUndefined(appendTo)) {
-      appendTo = this.$messages;
-    }
-
-    var msg = $("<span>", { html: reason, class: 'st-error-msg' });
-
+  setError: function(field, reason) {
+    var $msg = this.addMessage(reason, "st-msg--error");
     field.addClass('st-error');
-    appendTo.append(msg);
 
-    this.errors.push({ field: field, reason: reason, msg: msg });
+    this.errors.push({ field: field, reason: reason, msg: $msg });
   },
 
   resetErrors: function() {
@@ -61,6 +61,7 @@ SirTrevor.BlockValidations = {
       error.msg.remove();
     });
 
+    this.$messages.removeClass("st-block__messages--is-visible");
     this.errors = [];
   }
 

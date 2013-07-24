@@ -15,7 +15,7 @@ SirTrevor.SimpleBlock = (function(){
 
     focus : function() {},
 
-    validate : function() { return true; },
+    valid : function() { return true; },
     toData : function() {},
 
     className: 'st-block',
@@ -119,8 +119,20 @@ SirTrevor.SimpleBlock = (function(){
 
     _initMessages: function() {
       var msgs_element = $("<div>", { 'class': 'st-block__messages' });
-      this.$inner.append(msgs_element);
+      this.$inner.prepend(msgs_element);
       this.$messages = msgs_element;
+    },
+
+    addMessage: function(msg, additionalClass) {
+      var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
+      this.$messages.append($msg)
+                    .addClass('st-block__messages--is-visible');
+      return $msg;
+    },
+
+    resetMessages: function() {
+      this.$messages.html('')
+                    .removeClass('st-block__messages--is-visible');
     },
 
     _initUIComponents: function() {

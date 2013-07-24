@@ -155,7 +155,7 @@
 
 .st-block__inner {
   padding: 1.875em 1.875em 2.8em;
-  border: 0.125em solid #fff;
+  border: 2px solid #fff;
   position: relative; }
 
 .st-block__inner:hover {
@@ -195,7 +195,7 @@
   padding: 0.7em 0;
   font-size: 1.125em;
   font-weight: 700;
-  border: 0.125em dashed #d4d4d4;
+  border: 2px dashed #d4d4d4;
   background: transparent;
   color: #d4d4d4; }
 
@@ -293,7 +293,27 @@ ul.st-text-block {
   padding: 7px 0;
   text-align: center; }
 
-.st-error-msg {
+.st-block__messages {
+  display: none;
+  position: relative;
+  top: -1.9em;
+  left: -1.9em;
+  padding: .3em .5em;
+  border: 2px solid #34e0c2;
+  border-left: none;
+  border-top: none;
+  max-width: 80%; }
+
+.st-block__messages--is-visible {
+  display: block; }
+
+.st-block--with-errors .st-block__messages {
+  border-color: #d70014; }
+
+.st-block__messages span {
+  display: block; }
+
+.st-msg--error {
   color: #d70014; }
 
 .st-block-positioner {
