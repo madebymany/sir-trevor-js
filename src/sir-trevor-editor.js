@@ -37,8 +37,9 @@ SirTrevor.Editor = (function(){
 
   _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
-    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
-            'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd'],
+    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
+            'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
+            'removeBlockDragOver', 'onNewBlockCreated'],
 
     initialize: function() {},
     /*

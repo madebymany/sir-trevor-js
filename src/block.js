@@ -40,7 +40,8 @@ SirTrevor.Block = (function(){
 
   _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
 
-    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
+    bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
+            "clearInsertedStyles", "getSelectionForFormatter"],
 
     className: 'st-block st-icon--add',
 

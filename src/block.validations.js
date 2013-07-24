@@ -1,3 +1,7 @@
+var bestNameFromField = function(field) {
+  return field.attr("data-st-name") || field.attr("name");
+};
+
 SirTrevor.BlockValidations = {
 
   errors: [],
@@ -28,7 +32,7 @@ SirTrevor.BlockValidations = {
     var content = field.attr('contenteditable') ? field.text() : field.val();
 
     if (content.length === 0) {
-      this.setError(field, "must not be empty");
+      this.setError(field, bestNameFromField(field) + " must not be empty");
     }
   },
 

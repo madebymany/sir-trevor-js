@@ -64,10 +64,10 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      var args = [];
-      args.push(this);
-      args.join(this.bound);
-      _.bindAll.apply(this, args);
+      var bindTo = this;
+      _.each(this.bound, function(func){
+        bindTo[func] = _.bind(bindTo[func], bindTo);
+      });
     }
   };
 

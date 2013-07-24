@@ -64,10 +64,10 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      var args = [];
-      args.push(this);
-      args.join(this.bound);
-      _.bindAll.apply(this, args);
+      var bindTo = this;
+      _.each(this.bound, function(func){
+        bindTo[func] = _.bind(bindTo[func], bindTo);
+      });
     }
   };
 
@@ -830,6 +830,10 @@
     return BlockDeletion;
   
   })();
+  var bestNameFromField = function(field) {
+    return field.attr("data-st-name") || field.attr("name");
+  };
+  
   SirTrevor.BlockValidations = {
   
     errors: [],
@@ -860,7 +864,7 @@
       var content = field.attr('contenteditable') ? field.text() : field.val();
   
       if (content.length === 0) {
-        this.setError(field, "must not be empty");
+        this.setError(field, bestNameFromField(field) + " must not be empty");
       }
     },
   
@@ -1079,7 +1083,8 @@
   
     _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
   
-      bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
+      bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
+              "clearInsertedStyles", "getSelectionForFormatter"],
   
       className: 'st-block st-icon--add',
   
@@ -2011,7 +2016,7 @@
         };
       },
   
-      bound: ['handleWrapperMouseOver', 'handleBlockMouseOut', 'handleBlockClick'],
+      bound: ['handleBlockMouseOut', 'handleBlockMouseOver', 'handleBlockClick'],
   
       initialize: function() {
         this.$el.on('click', this.handleBlockClick)
@@ -2091,7 +2096,7 @@
   
       className: 'st-format-bar',
   
-      bound: ["onFormatButtonClick"],
+      bound: ["onFormatButtonClick", "render_by_selection", "hide"],
   
       initialize: function() {
         var formatName, format;
@@ -2207,8 +2212,9 @@
   
     _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
   
-      bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
-              'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd'],
+      bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
+              'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
+              'removeBlockDragOver', 'onNewBlockCreated'],
   
       initialize: function() {},
       /*
