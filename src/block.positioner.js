@@ -20,7 +20,7 @@ SirTrevor.BlockPositioner = (function(){
 
   _.extend(BlockPositioner.prototype, FunctionBind, Renderable, {
 
-    bound: ['onBlockCountChange', 'onSelectChange'],
+    bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
     className: 'st-block-positioner',
     visibleClass: 'st-block-positioner--is-visible',

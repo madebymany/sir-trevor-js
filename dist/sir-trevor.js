@@ -668,7 +668,7 @@
   
     _.extend(BlockPositioner.prototype, FunctionBind, Renderable, {
   
-      bound: ['onBlockCountChange', 'onSelectChange'],
+      bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
   
       className: 'st-block-positioner',
       visibleClass: 'st-block-positioner--is-visible',
@@ -2032,7 +2032,7 @@
         };
       },
   
-      bound: ['handleBlockMouseOut', 'handleBlockMouseOver', 'handleBlockClick'],
+      bound: ['handleBlockMouseOut', 'handleBlockMouseOver', 'handleBlockClick', 'onDrop'],
   
       initialize: function() {
         this.$el.on('click', this.handleBlockClick)

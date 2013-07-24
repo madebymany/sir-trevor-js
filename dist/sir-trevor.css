@@ -386,7 +386,7 @@ ul.st-text-block {
   color: #34e0c2;
   background: #fff;
   text-align: center;
-  border: 0.125em solid #34e0c2;
+  border: 2px solid #34e0c2;
   border-right: 0;
   border-bottom: 0;
   cursor: pointer; }
@@ -410,7 +410,7 @@ ul.st-text-block {
 
 .st-block__delete-label {
   display: block;
-  border: 0.125em solid #d70014;
+  border: 2px solid #d70014;
   border-bottom: none;
   border-right: none;
   text-align: center;
