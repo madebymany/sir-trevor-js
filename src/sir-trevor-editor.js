@@ -39,7 +39,7 @@ SirTrevor.Editor = (function(){
 
     bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
             'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
-            'removeBlockDragOver', 'onNewBlockCreated'],
+            'removeBlockDragOver', 'onBlockDropped', 'createBlock'],
 
     initialize: function() {},
     /*
