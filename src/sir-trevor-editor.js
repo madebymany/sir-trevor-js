@@ -37,8 +37,9 @@ SirTrevor.Editor = (function(){
 
   _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
-    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
-            'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd'],
+    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
+            'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
+            'removeBlockDragOver', 'onBlockDropped', 'createBlock'],
 
     initialize: function() {},
     /*
@@ -271,10 +272,8 @@ SirTrevor.Editor = (function(){
     performValidations : function(block, should_validate) {
       var errors = 0;
 
-      block._beforeValidate();
-
       if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-        if(!block.validate()){
+        if(!block.valid()){
           this.errors.push({ text: _.result(block, 'validationFailMsg') });
           SirTrevor.log("Block " + block.blockID + " failed validation");
           ++errors;

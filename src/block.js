@@ -38,9 +38,10 @@ SirTrevor.Block = (function(){
     upload_options: upload_options
   };
 
-  _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, {
+  _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
 
-    bound: ["_handleDrop", "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles"],
+    bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
+            "clearInsertedStyles", "getSelectionForFormatter"],
 
     className: 'st-block st-icon--add',
 
@@ -133,34 +134,6 @@ SirTrevor.Block = (function(){
         this.spinner.stop();
         delete this.spinner;
       }
-    },
-
-    /* Generic implementations */
-
-    validate: function() {
-      this._beforeValidate();
-
-      var fields = this.$$('.st-required, [data-maxlength]'),
-          errors = 0;
-
-      _.each(fields, _.bind(function(field) {
-        field = $(field);
-        var content = (field.attr('contenteditable')) ? field.text() : field.val(),
-            too_long = (field.attr('data-maxlength') && field.too_long()),
-            required = field.hasClass('st-required');
-
-        if ((required && content.length === 0) || too_long) {
-          // Error!
-          field.addClass('st-error');
-          errors++;
-        }
-      }, this));
-
-      if (errors > 0) {
-        this.$el.addClass('st-block--with-errors');
-      }
-
-      return (errors === 0);
     },
 
     /*
@@ -305,13 +278,6 @@ SirTrevor.Block = (function(){
       SirTrevor.SimpleBlock.fn._loadData.call(this);
 
       this.ready();
-    },
-
-    _beforeValidate: function() {
-      this.errors = [];
-      var errorClass = 'st-error';
-      this.$el.removeClass('st-block--with-errors');
-      this.$('.' + errorClass).removeClass(errorClass);
     },
 
     _handleContentPaste: function(ev) {

@@ -12,7 +12,7 @@ It believes in three guiding principles:
 - **Technology agnosticism**: act as an abstraction layer on top of any technology which can render HTML
 - **Extensibility**: the interface must be easily extended to include input mechanics for any web-based artefact
 
-Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
+Conceived by [Andrew Sprinz](http://github.com/andrewsprinz‎). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
 ## Quick start
 
