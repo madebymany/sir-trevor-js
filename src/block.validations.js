@@ -23,8 +23,8 @@ SirTrevor.BlockValidations = {
     this.resetErrors();
 
     var required_fields = this.$('.st-required');
-    _.each(required_fields, _.bind(this.validateField, this));
-    _.each(this.validations, _.bind(this.runValidator, this));
+    _.each(required_fields, this.validateField, this);
+    _.each(this.validations, this.runValidator, this);
 
     this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
   },

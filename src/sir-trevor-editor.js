@@ -329,7 +329,7 @@ SirTrevor.Editor = (function(){
         this.saveBlockStateToStore(_block);
       };
 
-      _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
+      _.each(this.$wrapper.find('.st-block'), blockIterator, this);
     },
 
     validateBlockTypesExist: function(should_validate) {
@@ -352,7 +352,7 @@ SirTrevor.Editor = (function(){
         }
       };
 
-      _.each(this.required, _.bind(blockTypeIterator, this));
+      _.each(this.required, blockTypeIterator, this);
     },
 
     renderErrors: function() {

@@ -64,10 +64,9 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      var bindTo = this;
       _.each(this.bound, function(func){
-        bindTo[func] = _.bind(bindTo[func], bindTo);
-      });
+        this[func] = _.bind(this[func], this);
+      }, this);
     }
   };
 

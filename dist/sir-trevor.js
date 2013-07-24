@@ -64,10 +64,9 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      var bindTo = this;
       _.each(this.bound, function(func){
-        bindTo[func] = _.bind(bindTo[func], bindTo);
-      });
+        this[func] = _.bind(this[func], this);
+      }, this);
     }
   };
 
@@ -858,8 +857,8 @@
       this.resetErrors();
   
       var required_fields = this.$('.st-required');
-      _.each(required_fields, _.bind(this.validateField, this));
-      _.each(this.validations, _.bind(this.runValidator, this));
+      _.each(required_fields, this.validateField, this);
+      _.each(this.validations, this.runValidator, this);
   
       this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
     },
@@ -2520,7 +2519,7 @@
           this.saveBlockStateToStore(_block);
         };
   
-        _.each(this.$wrapper.find('.st-block'), _.bind(blockIterator, this));
+        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
       },
   
       validateBlockTypesExist: function(should_validate) {
@@ -2543,7 +2542,7 @@
           }
         };
   
-        _.each(this.required, _.bind(blockTypeIterator, this));
+        _.each(this.required, blockTypeIterator, this);
       },
   
       renderErrors: function() {
