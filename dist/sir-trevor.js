@@ -2111,7 +2111,7 @@
   
       className: 'st-format-bar',
   
-      bound: ["onFormatButtonClick", "render_by_selection", "hide"],
+      bound: ["onFormatButtonClick", "renderBySelection", "hide"],
   
       initialize: function() {
         var formatName, format;
@@ -2143,7 +2143,7 @@
   
       remove: function(){ this.$el.remove(); },
   
-      render_by_selection: function(rectangles) {
+      renderBySelection: function(rectangles) {
         var coords = {},
             width = this.$el.width();
   
@@ -2257,7 +2257,7 @@
   
         SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
   
-        SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
+        SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderBySelection);
         SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
         this.$wrapper.prepend(this.fl_block_controls.render().$el);

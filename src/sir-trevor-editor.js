@@ -67,7 +67,7 @@ SirTrevor.Editor = (function(){
 
       SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
 
-      SirTrevor.EventBus.on("formatter:positon", this.formatBar.render_by_selection);
+      SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderBySelection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
       this.$wrapper.prepend(this.fl_block_controls.render().$el);

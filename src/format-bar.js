@@ -19,7 +19,7 @@ SirTrevor.FormatBar = (function(){
 
     className: 'st-format-bar',
 
-    bound: ["onFormatButtonClick", "render_by_selection", "hide"],
+    bound: ["onFormatButtonClick", "renderBySelection", "hide"],
 
     initialize: function() {
       var formatName, format;
@@ -51,7 +51,7 @@ SirTrevor.FormatBar = (function(){
 
     remove: function(){ this.$el.remove(); },
 
-    render_by_selection: function(rectangles) {
+    renderBySelection: function(rectangles) {
       var coords = {},
           width = this.$el.width();
 
