@@ -1,5 +1,9 @@
 // Block Control
 
+.st--block-limit-reached .st-block-controls__top {
+  display: none;
+}
+
 .st-block-controls__top:before {
   width: 100%;
   display: block;

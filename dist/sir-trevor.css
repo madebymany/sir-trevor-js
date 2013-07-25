@@ -110,6 +110,9 @@
   margin-bottom: 0.5em;
   font-weight: 700; }
 
+.st--block-limit-reached .st-block-controls__top {
+  display: none; }
+
 .st-block-controls__top:before {
   width: 100%;
   display: block;
@@ -171,6 +174,10 @@
   position: relative;
   z-index: 1;
   bottom: 0; }
+
+.st--block-limit-reached .st-block--with-plus:after,
+.st--block-limit-reached .st-icon--add:after {
+  display: none; }
 
 .st-icon--add:after {
   text-align: center;

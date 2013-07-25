@@ -161,6 +161,7 @@ SirTrevor.Editor = (function(){
       SirTrevor.EventBus.trigger(create_event, block);
       SirTrevor.log("Block created of type " + type);
 
+      this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
       this.triggerBlockCountUpdate();
     },
 
@@ -267,6 +268,8 @@ SirTrevor.Editor = (function(){
 
       SirTrevor.EventBus.trigger("block:remove");
       this.triggerBlockCountUpdate();
+
+      this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
     },
 
     performValidations : function(block, should_validate) {
