@@ -22,6 +22,10 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
+  function $element(el) {
+    return el instanceof $ ? el : $(el);
+  }
+
   /*
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
@@ -49,7 +53,8 @@
     baseImageUrl: '/sir-trevor-uploads/',
     twitter: {
       fetchURL: '/tweets/fetch' // Set this to your server
-    }
+    },
+    errorsContainer: undefined
   };
 
   SirTrevor.BlockMixins = {};
@@ -101,7 +106,7 @@
     },
 
     _setElement: function(element) {
-      this.$el = element instanceof jQuery ? element : $(element);
+      this.$el = $element(element);
       this.el = this.$el[0];
       return this;
     }

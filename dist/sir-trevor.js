@@ -22,6 +22,10 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
+  function $element(el) {
+    return el instanceof $ ? el : $(el);
+  }
+
   /*
    Define default attributes that can be extended through an object passed to the
    initialize function of SirTrevor
@@ -49,7 +53,8 @@
     baseImageUrl: '/sir-trevor-uploads/',
     twitter: {
       fetchURL: '/tweets/fetch' // Set this to your server
-    }
+    },
+    errorsContainer: undefined
   };
 
   SirTrevor.BlockMixins = {};
@@ -101,7 +106,7 @@
     },
 
     _setElement: function(element) {
-      this.$el = element instanceof jQuery ? element : $(element);
+      this.$el = $element(element);
       this.el = this.$el[0];
       return this;
     }
@@ -2550,11 +2555,7 @@
         if (this.errors.length === 0) { return false; }
   
         if (_.isUndefined(this.$errors)) {
-          this.$errors = $("<div>", {
-            'class': 'st-errors',
-            html: "<p>You have the following errors: </p><ul></ul>"
-          });
-          this.$outer.prepend(this.$errors);
+          this.$errors = this._errorsContainer();
         }
   
         var str = "";
@@ -2565,6 +2566,20 @@
   
         this.$errors.find('ul').append(str);
         this.$errors.show();
+      },
+  
+      _errorsContainer: function() {
+        if (_.isUndefined(this.options.errorsContainer)) {
+          var $container = $("<div>", {
+            'class': 'st-errors',
+            html: "<p>You have the following errors: </p><ul></ul>"
+          });
+  
+          this.$outer.prepend($container);
+          return $container;
+        }
+  
+        return $element(this.options.errorsContainer);
       },
   
       removeErrors: function() {

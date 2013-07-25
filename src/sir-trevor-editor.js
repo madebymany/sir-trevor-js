@@ -362,11 +362,7 @@ SirTrevor.Editor = (function(){
       if (this.errors.length === 0) { return false; }
 
       if (_.isUndefined(this.$errors)) {
-        this.$errors = $("<div>", {
-          'class': 'st-errors',
-          html: "<p>You have the following errors: </p><ul></ul>"
-        });
-        this.$outer.prepend(this.$errors);
+        this.$errors = this._errorsContainer();
       }
 
       var str = "";
@@ -377,6 +373,20 @@ SirTrevor.Editor = (function(){
 
       this.$errors.find('ul').append(str);
       this.$errors.show();
+    },
+
+    _errorsContainer: function() {
+      if (_.isUndefined(this.options.errorsContainer)) {
+        var $container = $("<div>", {
+          'class': 'st-errors',
+          html: "<p>You have the following errors: </p><ul></ul>"
+        });
+
+        this.$outer.prepend($container);
+        return $container;
+      }
+
+      return $element(this.options.errorsContainer);
     },
 
     removeErrors: function() {
