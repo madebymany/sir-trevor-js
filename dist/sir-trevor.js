@@ -2558,13 +2558,15 @@
           this.$errors = this._errorsContainer();
         }
   
-        var str = "";
+        var str = "<ul>";
   
         _.each(this.errors, function(error) {
           str += '<li class="st-errors__msg">'+ error.text +'</li>';
         });
   
-        this.$errors.find('ul').append(str);
+        str += "</ul>";
+  
+        this.$errors.append(str);
         this.$errors.show();
       },
   
@@ -2572,7 +2574,7 @@
         if (_.isUndefined(this.options.errorsContainer)) {
           var $container = $("<div>", {
             'class': 'st-errors',
-            html: "<p>You have the following errors: </p><ul></ul>"
+            html: "<p>You have the following errors: </p>"
           });
   
           this.$outer.prepend($container);
