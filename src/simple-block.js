@@ -1,7 +1,7 @@
 SirTrevor.SimpleBlock = (function(){
 
   var SimpleBlock = function(data, instance_id) {
-    this.store("create", this, { data: data || {} });
+    this.createStore(data);
     this.blockID = _.uniqueId('st-block-');
     this.instanceID = instance_id;
 
@@ -11,12 +11,11 @@ SirTrevor.SimpleBlock = (function(){
     this.initialize.apply(this, arguments);
   };
 
-  _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, {
+  _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, SirTrevor.BlockStore, {
 
     focus : function() {},
 
     valid : function() { return true; },
-    toData : function() {},
 
     className: 'st-block',
 
@@ -46,18 +45,8 @@ SirTrevor.SimpleBlock = (function(){
 
     initialize: function() {},
 
-    loadData: function() {},
     onBlockRender: function(){},
     beforeBlockRender: function(){},
-
-    store: function(){ return SirTrevor.blockStore.apply(this, arguments); },
-
-    _loadAndSetData: function() {
-      var currentData = this.getData();
-      if (!_.isUndefined(currentData) && !_.isEmpty(currentData)) {
-        this._loadData();
-      }
-    },
 
     _setBlockInner : function() {
       var editor_html = _.result(this, 'editorHTML');
@@ -82,27 +71,12 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     _blockPrepare : function() {
-      this._loadAndSetData();
+      this.checkAndLoadData();
       this._initUI();
       this._initMessages();
 
       this.$el.addClass('st-item-ready');
       this.save();
-    },
-
-    /* Save the state of this block onto the blocks data attr */
-    save: function() {
-      this.toData();
-      return this.store("read", this);
-    },
-
-    getData: function() {
-      return this.store("read", this).data;
-    },
-
-    setData: function(data) {
-      SirTrevor.log("Setting data for block " + this.blockID);
-      this.store("save", this, { data: _.extend(this.dataStore.data, data) });
     },
 
     _withUIComponent: function(component, className, callback) {
@@ -137,12 +111,6 @@ SirTrevor.SimpleBlock = (function(){
 
     _initUIComponents: function() {
       this._withUIComponent(new SirTrevor.BlockReorder(this.$el));
-    },
-
-    _loadData: function() {
-      SirTrevor.log("loadData for " + this.blockID);
-      SirTrevor.EventBus.trigger("editor/block/loadData");
-      this.loadData(this.getData());
     }
 
   });

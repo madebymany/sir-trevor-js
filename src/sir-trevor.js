@@ -126,6 +126,7 @@
   //= block.reorder.js
   //= block.deletion.js
   //= block.validations.js
+  //= block.store.js
   //= simple-block.js
   //= block.js
   //= formatter.js
