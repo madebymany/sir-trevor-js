@@ -2,10 +2,11 @@ SirTrevor.BlockMixins.Ajaxable = {
 
   mixinName: "Ajaxable",
 
-  _queued: [],
   ajaxable: true,
 
-  initializeAjaxable: function(){},
+  initializeAjaxable: function(){
+    this._queued = [];
+  },
 
   addQueuedItem: function(name, deffered) {
     SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
@@ -14,8 +15,7 @@ SirTrevor.BlockMixins.Ajaxable = {
 
   removeQueuedItem: function(name) {
     SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
-    this._queued = _.filter(this._queued, function(item){
-                             return item.name != name; });
+    this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
   },
 
   hasItemsInQueue: function() {
@@ -24,6 +24,7 @@ SirTrevor.BlockMixins.Ajaxable = {
 
   resolveAllInQueue: function() {
     _.each(this._queued, function(item){
+      SirTrevor.log("Aborting queued request: " + item.name);
       item.deffered.abort();
     }, this);
   }

@@ -66,7 +66,7 @@ SirTrevor.Blocks.Tweet = (function(){
               url.indexOf("status") !== -1);
     },
 
-    onTweetSuccess: function() {
+    onTweetSuccess: function(data) {
       // Parse the twitter object into something a bit slimmer..
       var obj = {
         user: {
@@ -78,7 +78,7 @@ SirTrevor.Blocks.Tweet = (function(){
         id: data.id_str,
         text: data.text,
         created_at: data.created_at,
-        status_url: url
+        status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
       };
 
       this.setAndLoadData(obj);

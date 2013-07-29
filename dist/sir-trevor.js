@@ -393,7 +393,7 @@
     var callbackError = function(jqXHR, status, errorThrown){
       if (!_.isUndefined(error) && _.isFunction(error)) {
         SirTrevor.log('Upload callback error called');
-        SirTrevor.EventBus.trigger("onUploadError");
+        SirTrevor.EventBus.trigger("onUploadStop");
         _.bind(error, block)(status);
       }
     };
@@ -540,10 +540,11 @@
   
     mixinName: "Ajaxable",
   
-    _queued: [],
     ajaxable: true,
   
-    initializeAjaxable: function(){},
+    initializeAjaxable: function(){
+      this._queued = [];
+    },
   
     addQueuedItem: function(name, deffered) {
       SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
@@ -552,8 +553,7 @@
   
     removeQueuedItem: function(name) {
       SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
-      this._queued = _.filter(this._queued, function(item){
-                               return item.name != name; });
+      this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
     },
   
     hasItemsInQueue: function() {
@@ -562,6 +562,7 @@
   
     resolveAllInQueue: function() {
       _.each(this._queued, function(item){
+        SirTrevor.log("Aborting queued request: " + item.name);
         item.deffered.abort();
       }, this);
     }
@@ -1732,7 +1733,7 @@
                 url.indexOf("status") !== -1);
       },
   
-      onTweetSuccess: function() {
+      onTweetSuccess: function(data) {
         // Parse the twitter object into something a bit slimmer..
         var obj = {
           user: {
@@ -1744,7 +1745,7 @@
           id: data.id_str,
           text: data.text,
           created_at: data.created_at,
-          status_url: url
+          status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
         };
   
         this.setAndLoadData(obj);

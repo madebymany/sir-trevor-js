@@ -27,7 +27,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   var callbackError = function(jqXHR, status, errorThrown){
     if (!_.isUndefined(error) && _.isFunction(error)) {
       SirTrevor.log('Upload callback error called');
-      SirTrevor.EventBus.trigger("onUploadError");
+      SirTrevor.EventBus.trigger("onUploadStop");
       _.bind(error, block)(status);
     }
   };
