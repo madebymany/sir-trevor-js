@@ -2209,6 +2209,15 @@
               'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
               'removeBlockDragOver', 'onBlockDropped', 'createBlock'],
   
+      events: {
+        'block:reorder:down':       'hideBlockControls',
+        'block:reorder:dragstart':  'onBlockDragStart',
+        'block:reorder:dragend':    'onBlockDragEnd',
+        'block:content:dropped':    'removeBlockDragOver',
+        'block:reorder:dropped':    'onBlockDropped',
+        'block:create:new':         'onNewBlockCreated'
+      },
+  
       initialize: function() {},
       /*
         Build the Editor instance.
@@ -2225,23 +2234,15 @@
         this.listenTo(this.block_controls, 'createBlock', this.createBlock);
         this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
   
-        SirTrevor.EventBus.on("block:reorder:down", this.hideBlockControls);
-        SirTrevor.EventBus.on("block:reorder:dragstart", this.onBlockDragStart);
-        SirTrevor.EventBus.on("block:reorder:dragend", this.onBlockDragEnd);
-        SirTrevor.EventBus.on("block:content:dropped", this.removeBlockDragOver);
-  
-        SirTrevor.EventBus.on("block:reorder:dropped", this.onBlockDropped);
-        SirTrevor.EventBus.on("block:create:new", this.onNewBlockCreated);
+        this._setEvents();
   
         SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-  
         SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderBySelection);
         SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
         this.$wrapper.prepend(this.fl_block_controls.render().$el);
         this.$outer.append(this.formatBar.render().$el);
         this.$outer.append(this.block_controls.render().$el);
-  
   
         $(window).bind('click', this.hideAllTheThings);
   
@@ -2261,6 +2262,12 @@
         if(!_.isUndefined(this.onEditorRender)) {
           this.onEditorRender();
         }
+      },
+  
+      _setEvents: function() {
+        _.each(this.events, function(callback, type) {
+          SirTrevor.EventBus.on(type, this[callback], this);
+        }, this);
       },
   
       hideAllTheThings: function(e) {
@@ -2374,12 +2381,10 @@
       onBlockDropped: function(block_id) {
         this.hideAllTheThings();
         var block = this.findBlockById(block_id);
-        if (
-          !_.isUndefined(block) &&
-          block.dataStore.data.length > 0 &&
-          block.drop_options.re_render_on_reorder
-        ) {
-            block._loadData(block.dataStore);
+        if (!_.isUndefined(block) &&
+            !_.isEmpty(block.getData()) &&
+            block.drop_options.re_render_on_reorder) {
+          block.beforeLoadingData();
         }
       },
   
