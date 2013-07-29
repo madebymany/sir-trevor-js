@@ -39,10 +39,6 @@ describe("Block", function(){
       expect(typeof block.$).toBe('function');
     });
 
-    it("has a shorthand method for selecting elements under the $editor", function(){
-      expect(typeof block.$$).toBe('function');
-    });
-
   });
 
   describe("render", function(){

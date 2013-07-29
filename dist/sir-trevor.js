@@ -397,7 +397,7 @@
       }
     };
   
-    $.ajax({
+    var promise = $.ajax({
       url: SirTrevor.DEFAULTS.uploadUrl,
       data: data,
       cache: false,
@@ -1104,10 +1104,6 @@
         return this.type + ' block is invalid';
       },
   
-      $$: function(selector) {
-        return this.$el.find(selector);
-      },
-  
       editorHTML: '<div class="st-block__editor"></div>',
   
       toolbarEnabled: true,
@@ -1200,8 +1196,8 @@
         var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
   
         // Add any inputs to the data attr
-        if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
-          this.$$('input[type="text"]').each(function(index,input){
+        if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
+          this.$('input[type="text"]').each(function(index,input){
             input = $(input);
             if (hasTextAndData) {
               dataObj[input.attr('name')] = input.val();
@@ -1515,7 +1511,7 @@
   
       loadData: function(data){
         this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
-        this.$$('input').val(data.cite);
+        this.$('input').val(data.cite);
       },
   
       toMarkdown: function(markdown) {

@@ -31,7 +31,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
     }
   };
 
-  $.ajax({
+  var promise = $.ajax({
     url: SirTrevor.DEFAULTS.uploadUrl,
     data: data,
     cache: false,

@@ -59,10 +59,6 @@ SirTrevor.Block = (function(){
       return this.type + ' block is invalid';
     },
 
-    $$: function(selector) {
-      return this.$el.find(selector);
-    },
-
     editorHTML: '<div class="st-block__editor"></div>',
 
     toolbarEnabled: true,
@@ -155,8 +151,8 @@ SirTrevor.Block = (function(){
       var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
 
       // Add any inputs to the data attr
-      if(this.$$('input[type="text"]').not('.st-paste-block').length > 0) {
-        this.$$('input[type="text"]').each(function(index,input){
+      if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
+        this.$('input[type="text"]').each(function(index,input){
           input = $(input);
           if (hasTextAndData) {
             dataObj[input.attr('name')] = input.val();
