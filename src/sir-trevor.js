@@ -175,6 +175,16 @@
     }
   };
 
+  SirTrevor.setBlockOptions = function(type, options) {
+    var block = SirTrevor.Blocks[type];
+
+    if (_.isUndefined(block)) {
+      return;
+    }
+
+    _.extend(block.prototype, options || {});
+  };
+
   SirTrevor.runOnAllInstances = function(method) {
     if (_.has(SirTrevor.Editor.prototype, method)) {
       // augment the arguments pseudo array and pass on to invoke()
