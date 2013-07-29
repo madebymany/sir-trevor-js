@@ -4,3 +4,6 @@ node_modules
 .rvmrc
 .sass-cache
 components
+bower_components
+.grunt
+_SpecRunner.html
