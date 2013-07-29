@@ -81,10 +81,10 @@ SirTrevor.Editor = (function(){
       var store = this.store("read", this);
 
       if (store.data.length > 0) {
-        _.each(store.data, _.bind(function(block){
+        _.each(store.data, function(block){
           SirTrevor.log('Creating: ', block);
           this.createBlock(block.type, block.data);
-        }, this));
+        }, this);
       } else if (this.options.defaultType !== false) {
         this.createBlock(this.options.defaultType);
       }

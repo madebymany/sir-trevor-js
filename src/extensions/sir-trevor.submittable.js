@@ -33,9 +33,9 @@ _.extend(Submittable.prototype, {
   },
 
   resetSubmitButton: function(){
-    _.each(this.submitBtn, _.bind(function(item, index){
+    _.each(this.submitBtn, function(item, index){
       $(item).attr('value', this.submitBtnTitles[index]);
-    }, this));
+    }, this);
   },
 
   onUploadStart: function(e){
