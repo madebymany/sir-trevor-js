@@ -899,7 +899,7 @@
     beforeLoadingData: function() {
       SirTrevor.log("loadData for " + this.blockID);
       SirTrevor.EventBus.trigger("editor/block/loadData");
-      _.compose(this.loadData, this.getData);
+      this.loadData(this.getData());
     },
   
     _loadData: function() {
@@ -1678,7 +1678,7 @@
   
                 // Save this data on the block
                 this.setData(obj);
-                this._loadData();
+                this.beforeLoadingData();
   
                 this.ready();
               };

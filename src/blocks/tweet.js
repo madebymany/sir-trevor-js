@@ -78,7 +78,7 @@ SirTrevor.Blocks.Tweet = (function(){
 
               // Save this data on the block
               this.setData(obj);
-              this._loadData();
+              this.beforeLoadingData();
 
               this.ready();
             };
