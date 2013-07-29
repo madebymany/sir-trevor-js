@@ -23,7 +23,7 @@ describe('Embedly block', function() {
       expect(editor.blocks.length).toBe(l + 1);
     });
 
-    it("should be able to call the correct API request", function(){
+    it("should be able to call the correct API string", function(){
 
       editor.createBlock("Embedly");
       var ebly = _.last(editor.blocks);

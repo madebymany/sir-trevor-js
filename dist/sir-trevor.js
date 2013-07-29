@@ -1576,7 +1576,6 @@
         }
   
       },
-   
       onDrop: function(transferData){
         var url = transferData.getData('text/plain');
         this.handleDropPaste(url);
