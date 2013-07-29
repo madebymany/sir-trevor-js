@@ -51,10 +51,7 @@ SirTrevor.Blocks.Video = (function(){
           }
 
           // Save the data
-          this.setData(data);
-
-          // Render
-          this._loadData();
+          this.setAndLoadData(data);
         }
       }
 

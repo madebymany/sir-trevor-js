@@ -893,6 +893,11 @@
       return this.getData();
     },
   
+    setAndLoadData: function(blockData) {
+      this.setData(blockData);
+      this.beforeLoadingData();
+    },
+  
     toData: function() {},
     loadData: function() {},
   
@@ -1806,10 +1811,7 @@
             }
   
             // Save the data
-            this.setData(data);
-  
-            // Render
-            this._loadData();
+            this.setAndLoadData(data);
           }
         }
   

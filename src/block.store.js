@@ -25,6 +25,11 @@ SirTrevor.BlockStore = {
     return this.getData();
   },
 
+  setAndLoadData: function(blockData) {
+    this.setData(blockData);
+    this.beforeLoadingData();
+  },
+
   toData: function() {},
   loadData: function() {},
 
