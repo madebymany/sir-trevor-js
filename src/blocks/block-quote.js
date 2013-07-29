@@ -6,7 +6,7 @@ SirTrevor.Blocks.Quote = (function(){
 
   var template = _.template([
     '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-    '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />'
+    '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required js-cite-input" type="text" />'
   ].join("\n"));
 
   return SirTrevor.Block.extend({
@@ -19,7 +19,7 @@ SirTrevor.Blocks.Quote = (function(){
 
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
-      this.$('input').val(data.cite);
+      this.$('.js-cite-input').val(data.cite);
     },
 
     toMarkdown: function(markdown) {

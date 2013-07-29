@@ -1498,7 +1498,7 @@
   
     var template = _.template([
       '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-      '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required" type="text" />'
+      '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required js-cite-input" type="text" />'
     ].join("\n"));
   
     return SirTrevor.Block.extend({
@@ -1511,7 +1511,7 @@
   
       loadData: function(data){
         this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
-        this.$('input').val(data.cite);
+        this.$('.js-cite-input').val(data.cite);
       },
   
       toMarkdown: function(markdown) {
@@ -1624,16 +1624,6 @@
         return 'twitter';
       },
   
-      default_data : {
-        text : "",
-        user : {
-          name : "",
-          screen_name : ""
-        },
-        status_url : "",
-        created_at : ""
-      },
-  
       loadData: function(data) {
         if (_.isUndefined(data.status_url)) { data.status_url = ''; }
         this.$inner.find('iframe').remove();
@@ -1650,55 +1640,54 @@
       },
   
       handleTwitterDropPaste: function(url){
-  
-        if(_.isURI(url))
-        {
-          if (url.indexOf("twitter") != -1 && url.indexOf("status") != -1) {
-            // Twitter status
-            var tweetID = url.match(/[^\/]+$/);
-            if (!_.isEmpty(tweetID)) {
-  
-              this.loading();
-  
-              tweetID = tweetID[0];
-  
-              var tweetCallbackSuccess = function(data) {
-                // Parse the twitter object into something a bit slimmer..
-                var obj = {
-                  user: {
-                    profile_image_url: data.user.profile_image_url,
-                    profile_image_url_https: data.user.profile_image_url_https,
-                    screen_name: data.user.screen_name,
-                    name: data.user.name
-                  },
-                  id: data.id_str,
-                  text: data.text,
-                  created_at: data.created_at,
-                  status_url: url
-                };
-  
-                // Save this data on the block
-                this.setData(obj);
-                this.beforeLoadingData();
-  
-                this.ready();
-              };
-  
-              var tweetCallbackFail = function(){
-                this.ready();
-              };
-  
-              // Make our AJAX call
-              $.ajax({
-                url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
-                dataType: "json",
-                success: _.bind(tweetCallbackSuccess, this),
-                error: _.bind(tweetCallbackFail, this)
-              });
-            }
-          }
+        if (!this.validTweetUrl(url)) {
+          SirTrevor.log("Invalid Tweet URL");
+          return;
         }
   
+        // Twitter status
+        var tweetID = url.match(/[^\/]+$/);
+        if (!_.isEmpty(tweetID)) {
+          this.loading();
+          tweetID = tweetID[0];
+  
+          // Make our AJAX call
+          $.ajax({
+            url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
+            dataType: "json",
+            success: _.bind(this.onTweetSuccess, this),
+            error: _.bind(this.onTweetFail, this)
+          });
+        }
+      },
+  
+      validTweetUrl: function(url) {
+        return (_.isURI(url) &&
+                url.indexOf("twitter") !== -1 &&
+                url.indexOf("status") !== -1);
+      },
+  
+      onTweetSuccess: function() {
+        // Parse the twitter object into something a bit slimmer..
+        var obj = {
+          user: {
+            profile_image_url: data.user.profile_image_url,
+            profile_image_url_https: data.user.profile_image_url_https,
+            screen_name: data.user.screen_name,
+            name: data.user.name
+          },
+          id: data.id_str,
+          text: data.text,
+          created_at: data.created_at,
+          status_url: url
+        };
+  
+        this.setAndLoadData(obj);
+        this.ready();
+      },
+  
+      onTweetFail: function() {
+        this.ready();
       },
   
       onDrop: function(transferData){
