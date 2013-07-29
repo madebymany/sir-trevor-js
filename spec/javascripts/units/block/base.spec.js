@@ -50,7 +50,7 @@ describe("Block", function(){
     beforeEach(function(){
       spyOn(block, 'beforeBlockRender');
       spyOn(block, 'onBlockRender');
-      spyOn(block, '_loadAndSetData');
+      spyOn(block, 'checkAndLoadData');
 
       block.render();
     });
@@ -79,8 +79,8 @@ describe("Block", function(){
       expect(block.onBlockRender).toHaveBeenCalled();
     });
 
-    it("calls loadAndSetData", function(){
-      expect(block._loadAndSetData).toHaveBeenCalled();
+    it("calls checkAndLoadData", function(){
+      expect(block.checkAndLoadData).toHaveBeenCalled();
     });
 
   });
