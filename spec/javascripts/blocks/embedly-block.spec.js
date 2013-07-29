@@ -12,7 +12,9 @@ describe('Embedly block', function() {
         { blockTypes: ["Embedly"], 
           el: element 
         });
-      SirTrevor.Blocks.Embedly.key = 'f8357aee49354b529381411d253e597d';
+      SirTrevor.setBlockOptions("Embedly", {
+        key: "f8357aee49354b529381411d253e597d"
+      });
     });
 
     it("should be able to be created", function(){
