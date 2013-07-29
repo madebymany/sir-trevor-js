@@ -902,6 +902,11 @@
       _.compose(this.loadData, this.getData);
     },
   
+    _loadData: function() {
+      SirTrevor.log("_loadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
+      this.beforeLoadingData();
+    },
+  
     checkAndLoadData: function() {
       if (!_.isEmpty(this.getData())) {
         this.beforeLoadingData();
