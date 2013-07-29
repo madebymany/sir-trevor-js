@@ -373,13 +373,14 @@
   
     SirTrevor.EventBus.trigger("onUploadStart");
   
-    var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
-  
+    var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
     var data = new FormData();
   
     data.append('attachment[name]', file.name);
     data.append('attachment[file]', file);
     data.append('attachment[uid]', uid);
+  
+    block.resetMessages();
   
     var callbackSuccess = function(data){
       if (!_.isUndefined(success) && _.isFunction(success)) {
@@ -408,6 +409,11 @@
       error: callbackError
     });
   
+    block.addQueuedItem(uid, promise);
+  
+    promise.always(function(){
+      block.removeQueuedItem(uid);
+    });
   };
   /*
     Underscore helpers
@@ -530,6 +536,37 @@
   SirTrevor.EventBus = _.extend({}, SirTrevor.Events);
 
   /* Block Mixins */
+  SirTrevor.BlockMixins.Ajaxable = {
+  
+    mixinName: "Ajaxable",
+  
+    _queued: [],
+    ajaxable: true,
+  
+    initializeAjaxable: function(){},
+  
+    addQueuedItem: function(name, deffered) {
+      SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
+      this._queued.push({ name: name, deffered: deffered });
+    },
+  
+    removeQueuedItem: function(name) {
+      SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
+      this._queued = _.filter(this._queued, function(item){
+                               return item.name != name; });
+    },
+  
+    hasItemsInQueue: function() {
+      return this._queued.length > 0;
+    },
+  
+    resolveAllInQueue: function() {
+      _.each(this._queued, function(item){
+        item.deffered.abort();
+      }, this);
+    }
+  
+  };
   /* Adds drop functionaltiy to this block */
   
   SirTrevor.BlockMixins.Droppable = {
@@ -580,6 +617,31 @@
     }
   
   };
+  SirTrevor.BlockMixins.Fetchable = {
+  
+    mixinName: "Fetchable",
+  
+    initializeFetchable: function(){
+      this.withMixin(SirTrevor.BlockMixins.Ajaxable);
+    },
+  
+    fetch: function(options, success, failure){
+      var uid  = [this.blockID, (new Date()).getTime(), 'upload'].join('-');
+      var deffered = $.ajax(options);
+  
+      this.resetMessages();
+      this.addQueuedItem(uid, deffered);
+  
+      var afterFetch = _.bind(function(){
+        this.removeQueuedItem(uid);
+      }, this);
+  
+      deffered.done(_.bind(success, this))
+              .fail(_.bind(failure, this))
+              .always(afterFetch);
+    }
+  
+  };
   SirTrevor.BlockMixins.Pastable = {
   
     mixinName: "Pastable",
@@ -605,9 +667,14 @@
   
     initializeUploadable: function() {
       SirTrevor.log("Adding uploadable to block " + this.blockID);
+      this.withMixin(SirTrevor.BlockMixins.Ajaxable);
   
       this.upload_options = _.extend({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
       this.$inputs.append(_.template(this.upload_options.html, this));
+    },
+  
+    uploader: function(file, success, failure){
+      SirTrevor.fileUploader(this, file, success, failure);
     }
   
   };
@@ -1111,6 +1178,8 @@
       droppable: false,
       pastable: false,
       uploadable: false,
+      fetchable: false,
+      ajaxable: false,
   
       drop_options: {},
       paste_options: {},
@@ -1125,8 +1194,13 @@
   
       withMixin: function(mixin) {
         if (!_.isObject(mixin)) { return; }
-        _.extend(this, mixin);
-        this["initialize" + mixin.mixinName]();
+  
+        var initializeMethod = "initialize" + mixin.mixinName;
+  
+        if (_.isUndefined(this[initializeMethod])) {
+          _.extend(this, mixin);
+          this[initializeMethod]();
+        }
       },
   
       render: function() {
@@ -1145,6 +1219,7 @@
         if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
         if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
         if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
+        if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
   
         if (this.formattable) { this._initFormatting(); }
   
@@ -1293,15 +1368,6 @@
       },
   
       onContentPasted: function(event, target){},
-  
-      /*
-        Generic Upload Attachment Function
-        Designed to handle any attachments
-      */
-  
-      uploader: function(file, callback){
-        SirTrevor.fileUploader(this, file, callback);
-      },
   
       beforeLoadingData: function() {
   
@@ -1574,13 +1640,12 @@
         this.uploader(
           file,
           function(data) {
-            // Store the data on this block
             this.setData(data);
-            // Done
             this.ready();
           },
           function(error){
-            alert('Error!');
+            this.addMessage("There was a problem with your upload");
+            this.ready();
           }
         );
       }
@@ -1615,6 +1680,7 @@
       type: "Tweet",
       droppable: true,
       pastable: true,
+      fetchable: true,
   
       drop_options: {
         re_render_on_reorder: true
@@ -1651,13 +1717,12 @@
           this.loading();
           tweetID = tweetID[0];
   
-          // Make our AJAX call
-          $.ajax({
+          var ajaxOptions = {
             url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
-            dataType: "json",
-            success: _.bind(this.onTweetSuccess, this),
-            error: _.bind(this.onTweetFail, this)
-          });
+            dataType: "json"
+          };
+  
+          this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
         }
       },
   
@@ -1687,6 +1752,7 @@
       },
   
       onTweetFail: function() {
+        this.addMessage("There was a problem fetching your tweet");
         this.ready();
       },
   
@@ -2423,6 +2489,10 @@
         this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
+  
+        if (block.ajaxable) {
+          block.resolveAllInQueue();
+        }
   
         block.remove();
   

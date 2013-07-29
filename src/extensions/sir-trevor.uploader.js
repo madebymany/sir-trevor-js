@@ -7,13 +7,14 @@ SirTrevor.fileUploader = function(block, file, success, error) {
 
   SirTrevor.EventBus.trigger("onUploadStart");
 
-  var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
-
+  var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
 
   data.append('attachment[name]', file.name);
   data.append('attachment[file]', file);
   data.append('attachment[uid]', uid);
+
+  block.resetMessages();
 
   var callbackSuccess = function(data){
     if (!_.isUndefined(success) && _.isFunction(success)) {
@@ -42,4 +43,9 @@ SirTrevor.fileUploader = function(block, file, success, error) {
     error: callbackError
   });
 
+  block.addQueuedItem(uid, promise);
+
+  promise.always(function(){
+    block.removeQueuedItem(uid);
+  });
 };
