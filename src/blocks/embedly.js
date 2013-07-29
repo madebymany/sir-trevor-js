@@ -53,7 +53,7 @@ SirTrevor.Blocks.Embedly = (function(){
       }
 
     },
-
+ 
     onDrop: function(transferData){
       var url = transferData.getData('text/plain');
       this.handleDropPaste(url);
