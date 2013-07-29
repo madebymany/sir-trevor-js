@@ -3,16 +3,18 @@ SirTrevor.Blocks.Embedly = (function(){
   return SirTrevor.Block.extend({
 
     type: 'Embedly',
+    key: '',
 
     droppable: true,
     pastable: true,
 
 
     loadData: function(data){
-      this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
-
-      if (data.html != "") {
-        this.$editor.html(data.html);
+      if (data.html) {
+       this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
+       this.$editor.html(data.html);
+      } else if (data.type == "photo") {
+       this.$editor.html("<img src=\""+data.url+"\" />");
       }
     },
 
@@ -32,7 +34,6 @@ SirTrevor.Blocks.Embedly = (function(){
         this.loading();
 
         var embedlyCallbackSuccess = function(data) {
-          console.log("success");
           this.setData(data);
           this._loadData();
           this.ready();
@@ -44,7 +45,7 @@ SirTrevor.Blocks.Embedly = (function(){
         };
 
         $.ajax({
-          url: "http://api.embed.ly/1/oembed?key=f8357aee49354b529381411d253e597d&url=" + escape(url),
+          url: "http://api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url),
           dataType: "jsonp",
           success: _.bind(embedlyCallbackSuccess, this),
           error: _.bind(embedlyCallbackFail, this)
