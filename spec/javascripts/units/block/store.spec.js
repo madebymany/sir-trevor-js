@@ -14,11 +14,11 @@ describe("Store", function(){
     });
 
     it("creates the data in the block store", function(){
-      expect(block.dataStore).toBeDefined();
+      expect(block.blockStorage).toBeDefined();
     });
 
     it("should have the data provided on intialization", function(){
-      expect(block.dataStore.data.text).toBe('Test');
+      expect(block.blockStorage.data.text).toBe('Test');
     });
 
   });

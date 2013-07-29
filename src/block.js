@@ -90,7 +90,6 @@ SirTrevor.Block = (function(){
 
     render: function() {
       this.beforeBlockRender();
-
       this._setBlockInner();
 
       this.$editor = this.$inner.children().first();
@@ -109,7 +108,6 @@ SirTrevor.Block = (function(){
       if (this.formattable) { this._initFormatting(); }
 
       this._blockPrepare();
-
       this.onBlockRender();
 
       return this;
@@ -264,9 +262,7 @@ SirTrevor.Block = (function(){
       SirTrevor.fileUploader(this, file, callback);
     },
 
-    /* Private methods */
-
-    _loadData: function() {
+    beforeLoadingData: function() {
 
       this.loading();
 
@@ -275,7 +271,7 @@ SirTrevor.Block = (function(){
         this.$inputs.hide();
       }
 
-      SirTrevor.SimpleBlock.fn._loadData.call(this);
+      SirTrevor.SimpleBlock.fn.beforeLoadingData.call(this);
 
       this.ready();
     },
