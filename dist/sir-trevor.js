@@ -383,17 +383,19 @@
     block.resetMessages();
   
     var callbackSuccess = function(data){
+      SirTrevor.log('Upload callback called');
+      SirTrevor.EventBus.trigger("onUploadStop");
+  
       if (!_.isUndefined(success) && _.isFunction(success)) {
-        SirTrevor.log('Upload callback called');
-        SirTrevor.EventBus.trigger("onUploadStop");
         _.bind(success, block)(data);
       }
     };
   
     var callbackError = function(jqXHR, status, errorThrown){
+      SirTrevor.log('Upload callback error called');
+      SirTrevor.EventBus.trigger("onUploadStop");
+  
       if (!_.isUndefined(error) && _.isFunction(error)) {
-        SirTrevor.log('Upload callback error called');
-        SirTrevor.EventBus.trigger("onUploadStop");
         _.bind(error, block)(status);
       }
     };
@@ -404,18 +406,14 @@
       cache: false,
       contentType: false,
       processData: false,
-      type: 'POST',
-      success: callbackSuccess,
-      error: callbackError
+      type: 'POST'
     });
   
     block.addQueuedItem(uid, xhr);
   
     xhr.done(callbackSuccess)
        .fail(callbackError)
-       .always(function(){
-          block.removeQueuedItem(uid);
-        });
+       .always(_.bind(block.removeQueuedItem, block, uid));
   
     return xhr;
   };
@@ -637,10 +635,6 @@
       this.resetMessages();
       this.addQueuedItem(uid, xhr);
   
-      var afterFetch = _.bind(function(){
-        this.removeQueuedItem(uid);
-      }, this);
-  
       if(!_.isUndefined(success)) {
         xhr.done(_.bind(success, this));
       }
@@ -649,7 +643,7 @@
         xhr.fail(_.bind(failure, this));
       }
   
-      xhr.always(afterFetch);
+      xhr.always(_.bind(this.removeQueuedItem, this, uid));
   
       return xhr;
     }

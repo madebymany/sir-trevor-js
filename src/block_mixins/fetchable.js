@@ -13,10 +13,6 @@ SirTrevor.BlockMixins.Fetchable = {
     this.resetMessages();
     this.addQueuedItem(uid, xhr);
 
-    var afterFetch = _.bind(function(){
-      this.removeQueuedItem(uid);
-    }, this);
-
     if(!_.isUndefined(success)) {
       xhr.done(_.bind(success, this));
     }
@@ -25,7 +21,7 @@ SirTrevor.BlockMixins.Fetchable = {
       xhr.fail(_.bind(failure, this));
     }
 
-    xhr.always(afterFetch);
+    xhr.always(_.bind(this.removeQueuedItem, this, uid));
 
     return xhr;
   }
