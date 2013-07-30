@@ -60,7 +60,7 @@
   left: 50%;
   top: 50%; }
 
-.st-block label {
+.st-input-label {
   display: block;
   margin-bottom: 0.3em; }
 
@@ -398,6 +398,7 @@ ul.st-text-block {
   border: 2px solid #34e0c2;
   border-right: 0;
   border-bottom: 0;
+  margin-bottom: 0;
   cursor: pointer; }
 
 .st-block--with-errors .st-block-ui-btn,

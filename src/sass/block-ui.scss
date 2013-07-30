@@ -12,7 +12,6 @@
 .st-block-ui-btn {
   display: block;
   float: left;
-
   width: 3em; height: 2.5em;
   line-height: 2.5em;
   font-size: 1.4em;
@@ -22,6 +21,7 @@
   border: 2px solid $accent-color;
   border-right: 0;
   border-bottom: 0;
+  margin-bottom: 0;
   cursor: pointer;
 }
 
