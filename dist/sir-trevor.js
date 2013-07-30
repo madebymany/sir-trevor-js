@@ -1603,7 +1603,7 @@
   
       droppable: true,
       pastable: true,
-  
+      fetchable: true,
   
       loadData: function(data){
         if (data.html) {
@@ -1615,44 +1615,47 @@
       },
   
       onContentPasted: function(event){
-        // Content pasted. Delegate to the drop parse method
         var input = $(event.target),
             val = input.val();
   
-        // Pass this to the same handler as onDrop
         this.handleDropPaste(val);
       },
   
       handleDropPaste: function(url){
-  
-        if(_.isURI(url))
-        {
-          this.loading();
-  
-          var embedlyCallbackSuccess = function(data) {
-            this.setData(data);
-            this._loadData();
-            this.ready();
-  
-          };
-  
-          var embedlyCallbackFail = function() {
-            this.ready();
-          };
-  
-          $.ajax({
-            url: "http://api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url),
-            dataType: "jsonp",
-            success: _.bind(embedlyCallbackSuccess, this),
-            error: _.bind(embedlyCallbackFail, this)
-          });
+        if(!_.isURI(url)) {
+          SirTrevor.log("Must be a URL");
+          return;
         }
   
+        this.loading();
+  
+        var embedlyCallbackSuccess = function(data) {
+          this.setAndLoadData(data);
+          this.ready();
+        };
+  
+        var embedlyCallbackFail = function() {
+          this.ready();
+        };
+  
+        var ajaxOptions = {
+          url: this.buildAPIUrl(url),
+          dataType: "jsonp"
+        };
+  
+        this.fetch(ajaxOptions,
+                   _.bind(embedlyCallbackSuccess, this),
+                   _.bind(embedlyCallbackFail, this));
       },
+  
+      buildAPIUrl: function(url) {
+        return "http://api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url);
+      },
+  
       onDrop: function(transferData){
-        var url = transferData.getData('text/plain');
-        this.handleDropPaste(url);
+        this.handleDropPaste(transferData.getData('text/plain'));
       }
+  
     });
   
   })();
