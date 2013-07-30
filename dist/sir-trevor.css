@@ -181,7 +181,7 @@
   padding: 0.3em 0;
   line-height: 0.9; }
 
-.st-icon--add:hover:after {
+.st-block--with-plus:after {
   background: #f3f3f3;
   color: #34e0c2; }
 
