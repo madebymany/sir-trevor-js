@@ -1,5 +1,5 @@
 /*!
- * Sir Trevor JS v0.3.0
+ * Sir Trevor JS v0.3.0-rc.1
  *
  * Created by Made by Many (http://madebymany.com)
  *
@@ -21,6 +21,7 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
+  SirTrevor.version = "0.3.0-rc.1";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
