@@ -14,6 +14,10 @@ SirTrevor.Blocks.Quote = (function(){
 
     type: 'Quote',
 
+    icon_name: function(){
+      return 'quote';
+    },
+
     editorHTML: function() {
       return template(this);
     },

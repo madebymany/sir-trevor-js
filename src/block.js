@@ -52,7 +52,7 @@ SirTrevor.Block = (function(){
     },
 
     icon_name: function() {
-      return this.type.toLowerCase();
+      return 'default';
     },
 
     validationFailMsg: function() {

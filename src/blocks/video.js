@@ -9,6 +9,10 @@ SirTrevor.Blocks.Video = (function(){
     droppable: true,
     pastable: true,
 
+    icon_name: function(){
+      return 'video';
+    },
+
     loadData: function(data){
       this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
 

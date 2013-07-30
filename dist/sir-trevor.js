@@ -1171,7 +1171,7 @@
       },
   
       icon_name: function() {
-        return this.type.toLowerCase();
+        return 'default';
       },
   
       validationFailMsg: function() {
@@ -1579,6 +1579,10 @@
   
       type: 'Quote',
   
+      icon_name: function(){
+        return 'quote';
+      },
+  
       editorHTML: function() {
         return template(this);
       },
@@ -1673,6 +1677,10 @@
   
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
+    icon_name: function(){
+      return 'heading';
+    },
+  
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
@@ -1687,6 +1695,10 @@
   
     droppable: true,
     uploadable: true,
+  
+    icon_name: function(){
+      return 'image';
+    },
   
     loadData: function(data){
       // Create our image tag
@@ -1736,6 +1748,10 @@
     type: 'Text',
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
+  
+    icon_name: function(){
+      return 'text';
+    },
   
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
@@ -1852,6 +1868,10 @@
   
       type: "List",
   
+      icon_name: function(){
+        return 'list';
+      },
+  
       editorHTML: function() {
         return _.template(template, this);
       },
@@ -1896,6 +1916,10 @@
   
       droppable: true,
       pastable: true,
+  
+      icon_name: function(){
+        return 'video';
+      },
   
       loadData: function(data){
         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
