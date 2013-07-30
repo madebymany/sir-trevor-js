@@ -66,6 +66,8 @@ SirTrevor.Block = (function(){
     droppable: false,
     pastable: false,
     uploadable: false,
+    fetchable: false,
+    ajaxable: false,
 
     drop_options: {},
     paste_options: {},
@@ -80,8 +82,13 @@ SirTrevor.Block = (function(){
 
     withMixin: function(mixin) {
       if (!_.isObject(mixin)) { return; }
-      _.extend(this, mixin);
-      this["initialize" + mixin.mixinName]();
+
+      var initializeMethod = "initialize" + mixin.mixinName;
+
+      if (_.isUndefined(this[initializeMethod])) {
+        _.extend(this, mixin);
+        this[initializeMethod]();
+      }
     },
 
     render: function() {
@@ -100,6 +107,7 @@ SirTrevor.Block = (function(){
       if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
       if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
       if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
+      if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
 
       if (this.formattable) { this._initFormatting(); }
 
@@ -248,15 +256,6 @@ SirTrevor.Block = (function(){
     },
 
     onContentPasted: function(event, target){},
-
-    /*
-      Generic Upload Attachment Function
-      Designed to handle any attachments
-    */
-
-    uploader: function(file, callback){
-      SirTrevor.fileUploader(this, file, callback);
-    },
 
     beforeLoadingData: function() {
 

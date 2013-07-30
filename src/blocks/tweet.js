@@ -14,6 +14,7 @@ SirTrevor.Blocks.Tweet = (function(){
     type: "Tweet",
     droppable: true,
     pastable: true,
+    fetchable: true,
 
     drop_options: {
       re_render_on_reorder: true
@@ -50,13 +51,12 @@ SirTrevor.Blocks.Tweet = (function(){
         this.loading();
         tweetID = tweetID[0];
 
-        // Make our AJAX call
-        $.ajax({
+        var ajaxOptions = {
           url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
-          dataType: "json",
-          success: _.bind(this.onTweetSuccess, this),
-          error: _.bind(this.onTweetFail, this)
-        });
+          dataType: "json"
+        };
+
+        this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
       }
     },
 
@@ -66,7 +66,7 @@ SirTrevor.Blocks.Tweet = (function(){
               url.indexOf("status") !== -1);
     },
 
-    onTweetSuccess: function() {
+    onTweetSuccess: function(data) {
       // Parse the twitter object into something a bit slimmer..
       var obj = {
         user: {
@@ -78,7 +78,7 @@ SirTrevor.Blocks.Tweet = (function(){
         id: data.id_str,
         text: data.text,
         created_at: data.created_at,
-        status_url: url
+        status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
       };
 
       this.setAndLoadData(obj);
@@ -86,6 +86,7 @@ SirTrevor.Blocks.Tweet = (function(){
     },
 
     onTweetFail: function() {
+      this.addMessage("There was a problem fetching your tweet");
       this.ready();
     },
 

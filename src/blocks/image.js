@@ -38,13 +38,12 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.uploader(
         file,
         function(data) {
-          // Store the data on this block
           this.setData(data);
-          // Done
           this.ready();
         },
         function(error){
-          alert('Error!');
+          this.addMessage("There was a problem with your upload");
+          this.ready();
         }
       );
     }
