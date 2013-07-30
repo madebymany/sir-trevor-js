@@ -1,3 +1,4 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600);
 /* Sir Trevor Main Sass File */
 @font-face {
   font-family: 'ST-Icons';
@@ -6,7 +7,8 @@
   font-style: normal; }
 
 .st-outer {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; }
+  font-family: "Source Sans Pro", sans-serif;
+  font-size: 16px; }
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 [data-icon]:before,
@@ -67,7 +69,7 @@
 .st-text-block,
 .st-block input[type="text"],
 .st-block textarea {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-size: inherit;
   margin: 0;
   padding: 0.3em 0; }
@@ -126,7 +128,7 @@
   background: #f3f3f3; }
 
 .st-block-controls {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   background-color: #f3f3f3;
   display: none;
   border-radius: 3px;
@@ -146,7 +148,7 @@
 
 .st-block-control .st-icon {
   font-size: 2.25em;
-  margin: 0 0 .4em 0;
+  margin: 0 0 .2em 0;
   display: block; }
 
 .st-block-control:hover {
@@ -208,7 +210,7 @@
 
 .st-text-block {
   min-height: 3em;
-  font-size: 1.375em;
+  font-size: 1.275em;
   line-height: 1.45; }
 
 .st-text-block--heading {
@@ -257,7 +259,7 @@ ul.st-text-block {
   background: #42474b;
   border-radius: 0.4em;
   padding: 0.35em 1em;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-size: 1.125em;
   cursor: pointer;
   color: #fff;

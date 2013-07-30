@@ -9,6 +9,10 @@ SirTrevor.Blocks.Embedly = (function(){
     pastable: true,
     fetchable: true,
 
+    icon_name: function() {
+      return "embed";
+    },
+
     loadData: function(data){
       if (data.html) {
        this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
