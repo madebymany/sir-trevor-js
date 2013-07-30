@@ -119,7 +119,8 @@
   text-align: center;
   font-size: 1.875em;
   padding: 0.3em 0;
-  line-height: 0.9; }
+  line-height: 0.9;
+  border-radius: 0.2em; }
 
 .st-block-controls__top:hover:before {
   color: #34e0c2;
@@ -183,7 +184,8 @@
   text-align: center;
   font-size: 1.875em;
   padding: 0.3em 0;
-  line-height: 0.9; }
+  line-height: 0.9;
+  border-radius: 0.2em; }
 
 .st-block--with-plus:after {
   background: #f3f3f3;
