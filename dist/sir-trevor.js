@@ -398,7 +398,7 @@
       }
     };
   
-    var promise = $.ajax({
+    var xhr = $.ajax({
       url: SirTrevor.DEFAULTS.uploadUrl,
       data: data,
       cache: false,
@@ -409,11 +409,15 @@
       error: callbackError
     });
   
-    block.addQueuedItem(uid, promise);
+    block.addQueuedItem(uid, xhr);
   
-    promise.always(function(){
-      block.removeQueuedItem(uid);
-    });
+    xhr.done(callbackSuccess)
+       .fail(callbackError)
+       .always(function(){
+          block.removeQueuedItem(uid);
+        });
+  
+    return xhr;
   };
   /*
     Underscore helpers
@@ -627,19 +631,27 @@
     },
   
     fetch: function(options, success, failure){
-      var uid  = [this.blockID, (new Date()).getTime(), 'upload'].join('-');
-      var deffered = $.ajax(options);
+      var uid  = [this.blockID, (new Date()).getTime(), 'upload'].join('-'),
+          xhr = $.ajax(options);
   
       this.resetMessages();
-      this.addQueuedItem(uid, deffered);
+      this.addQueuedItem(uid, xhr);
   
       var afterFetch = _.bind(function(){
         this.removeQueuedItem(uid);
       }, this);
   
-      deffered.done(_.bind(success, this))
-              .fail(_.bind(failure, this))
-              .always(afterFetch);
+      if(!_.isUndefined(success)) {
+        xhr.done(_.bind(success, this));
+      }
+  
+      if(!_.isUndefined(failure)) {
+        xhr.fail(_.bind(failure, this));
+      }
+  
+      xhr.always(afterFetch);
+  
+      return xhr;
     }
   
   };
@@ -675,7 +687,7 @@
     },
   
     uploader: function(file, success, failure){
-      SirTrevor.fileUploader(this, file, success, failure);
+      return SirTrevor.fileUploader(this, file, success, failure);
     }
   
   };

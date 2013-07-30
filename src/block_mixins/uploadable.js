@@ -13,7 +13,7 @@ SirTrevor.BlockMixins.Uploadable = {
   },
 
   uploader: function(file, success, failure){
-    SirTrevor.fileUploader(this, file, success, failure);
+    return SirTrevor.fileUploader(this, file, success, failure);
   }
 
 };

@@ -32,7 +32,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
     }
   };
 
-  var promise = $.ajax({
+  var xhr = $.ajax({
     url: SirTrevor.DEFAULTS.uploadUrl,
     data: data,
     cache: false,
@@ -43,9 +43,13 @@ SirTrevor.fileUploader = function(block, file, success, error) {
     error: callbackError
   });
 
-  block.addQueuedItem(uid, promise);
+  block.addQueuedItem(uid, xhr);
 
-  promise.always(function(){
-    block.removeQueuedItem(uid);
-  });
+  xhr.done(callbackSuccess)
+     .fail(callbackError)
+     .always(function(){
+        block.removeQueuedItem(uid);
+      });
+
+  return xhr;
 };
