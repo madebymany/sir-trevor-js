@@ -629,7 +629,7 @@
     },
   
     fetch: function(options, success, failure){
-      var uid  = [this.blockID, (new Date()).getTime(), 'upload'].join('-'),
+      var uid = _.uniqueId(this.blockID + "_fetch"),
           xhr = $.ajax(options);
   
       this.resetMessages();
