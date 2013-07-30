@@ -1,5 +1,5 @@
 describe('Embedly block', function() {
-  
+
   var element, editor;
   SirTrevor.DEBUG = true;
 
@@ -9,8 +9,8 @@ describe('Embedly block', function() {
     beforeEach(function(){
       element = $("<textarea>");
       editor = new SirTrevor.Editor(
-        { blockTypes: ["Embedly"], 
-          el: element 
+        { blockTypes: ["Embedly"],
+          el: element
         });
       SirTrevor.setBlockOptions("Embedly", {
         key: "f8357aee49354b529381411d253e597d"
@@ -24,15 +24,9 @@ describe('Embedly block', function() {
     });
 
     it("should be able to call the correct API string", function(){
-
       editor.createBlock("Embedly");
       var ebly = _.last(editor.blocks);
-
-      spyOn($, "ajax");
-
-      ebly.handleDropPaste(testUrl);
-      expect($.ajax.mostRecentCall.args[0]["url"]).toEqual("http://api.embed.ly/1/oembed?key=f8357aee49354b529381411d253e597d&url=http%3A//yfrog.com/ng41306327j");
-
+      expect(ebly.buildAPIUrl(testUrl)).toEqual("http://api.embed.ly/1/oembed?key=f8357aee49354b529381411d253e597d&url=http%3A//yfrog.com/ng41306327j");
     });
 
     it("should be able to set the data from embedly", function(){

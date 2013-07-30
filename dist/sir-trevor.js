@@ -373,41 +373,49 @@
   
     SirTrevor.EventBus.trigger("onUploadStart");
   
-    var uid  = [block.ID, (new Date()).getTime(), 'raw'].join('-');
-  
+    var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
     var data = new FormData();
   
     data.append('attachment[name]', file.name);
     data.append('attachment[file]', file);
     data.append('attachment[uid]', uid);
   
+    block.resetMessages();
+  
     var callbackSuccess = function(data){
+      SirTrevor.log('Upload callback called');
+      SirTrevor.EventBus.trigger("onUploadStop");
+  
       if (!_.isUndefined(success) && _.isFunction(success)) {
-        SirTrevor.log('Upload callback called');
-        SirTrevor.EventBus.trigger("onUploadStop");
         _.bind(success, block)(data);
       }
     };
   
     var callbackError = function(jqXHR, status, errorThrown){
+      SirTrevor.log('Upload callback error called');
+      SirTrevor.EventBus.trigger("onUploadStop");
+  
       if (!_.isUndefined(error) && _.isFunction(error)) {
-        SirTrevor.log('Upload callback error called');
-        SirTrevor.EventBus.trigger("onUploadError");
         _.bind(error, block)(status);
       }
     };
   
-    var promise = $.ajax({
+    var xhr = $.ajax({
       url: SirTrevor.DEFAULTS.uploadUrl,
       data: data,
       cache: false,
       contentType: false,
       processData: false,
-      type: 'POST',
-      success: callbackSuccess,
-      error: callbackError
+      type: 'POST'
     });
   
+    block.addQueuedItem(uid, xhr);
+  
+    xhr.done(callbackSuccess)
+       .fail(callbackError)
+       .always(_.bind(block.removeQueuedItem, block, uid));
+  
+    return xhr;
   };
   /*
     Underscore helpers
@@ -530,6 +538,38 @@
   SirTrevor.EventBus = _.extend({}, SirTrevor.Events);
 
   /* Block Mixins */
+  SirTrevor.BlockMixins.Ajaxable = {
+  
+    mixinName: "Ajaxable",
+  
+    ajaxable: true,
+  
+    initializeAjaxable: function(){
+      this._queued = [];
+    },
+  
+    addQueuedItem: function(name, deffered) {
+      SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
+      this._queued.push({ name: name, deffered: deffered });
+    },
+  
+    removeQueuedItem: function(name) {
+      SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
+      this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
+    },
+  
+    hasItemsInQueue: function() {
+      return this._queued.length > 0;
+    },
+  
+    resolveAllInQueue: function() {
+      _.each(this._queued, function(item){
+        SirTrevor.log("Aborting queued request: " + item.name);
+        item.deffered.abort();
+      }, this);
+    }
+  
+  };
   /* Adds drop functionaltiy to this block */
   
   SirTrevor.BlockMixins.Droppable = {
@@ -580,6 +620,35 @@
     }
   
   };
+  SirTrevor.BlockMixins.Fetchable = {
+  
+    mixinName: "Fetchable",
+  
+    initializeFetchable: function(){
+      this.withMixin(SirTrevor.BlockMixins.Ajaxable);
+    },
+  
+    fetch: function(options, success, failure){
+      var uid = _.uniqueId(this.blockID + "_fetch"),
+          xhr = $.ajax(options);
+  
+      this.resetMessages();
+      this.addQueuedItem(uid, xhr);
+  
+      if(!_.isUndefined(success)) {
+        xhr.done(_.bind(success, this));
+      }
+  
+      if(!_.isUndefined(failure)) {
+        xhr.fail(_.bind(failure, this));
+      }
+  
+      xhr.always(_.bind(this.removeQueuedItem, this, uid));
+  
+      return xhr;
+    }
+  
+  };
   SirTrevor.BlockMixins.Pastable = {
   
     mixinName: "Pastable",
@@ -605,9 +674,14 @@
   
     initializeUploadable: function() {
       SirTrevor.log("Adding uploadable to block " + this.blockID);
+      this.withMixin(SirTrevor.BlockMixins.Ajaxable);
   
       this.upload_options = _.extend({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
       this.$inputs.append(_.template(this.upload_options.html, this));
+    },
+  
+    uploader: function(file, success, failure){
+      return SirTrevor.fileUploader(this, file, success, failure);
     }
   
   };
@@ -1111,6 +1185,8 @@
       droppable: false,
       pastable: false,
       uploadable: false,
+      fetchable: false,
+      ajaxable: false,
   
       drop_options: {},
       paste_options: {},
@@ -1125,8 +1201,13 @@
   
       withMixin: function(mixin) {
         if (!_.isObject(mixin)) { return; }
-        _.extend(this, mixin);
-        this["initialize" + mixin.mixinName]();
+  
+        var initializeMethod = "initialize" + mixin.mixinName;
+  
+        if (_.isUndefined(this[initializeMethod])) {
+          _.extend(this, mixin);
+          this[initializeMethod]();
+        }
       },
   
       render: function() {
@@ -1145,6 +1226,7 @@
         if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
         if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
         if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
+        if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
   
         if (this.formattable) { this._initFormatting(); }
   
@@ -1293,15 +1375,6 @@
       },
   
       onContentPasted: function(event, target){},
-  
-      /*
-        Generic Upload Attachment Function
-        Designed to handle any attachments
-      */
-  
-      uploader: function(file, callback){
-        SirTrevor.fileUploader(this, file, callback);
-      },
   
       beforeLoadingData: function() {
   
@@ -1530,7 +1603,7 @@
   
       droppable: true,
       pastable: true,
-  
+      fetchable: true,
   
       loadData: function(data){
         if (data.html) {
@@ -1542,44 +1615,47 @@
       },
   
       onContentPasted: function(event){
-        // Content pasted. Delegate to the drop parse method
         var input = $(event.target),
             val = input.val();
   
-        // Pass this to the same handler as onDrop
         this.handleDropPaste(val);
       },
   
       handleDropPaste: function(url){
-  
-        if(_.isURI(url))
-        {
-          this.loading();
-  
-          var embedlyCallbackSuccess = function(data) {
-            this.setData(data);
-            this._loadData();
-            this.ready();
-  
-          };
-  
-          var embedlyCallbackFail = function() {
-            this.ready();
-          };
-  
-          $.ajax({
-            url: "http://api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url),
-            dataType: "jsonp",
-            success: _.bind(embedlyCallbackSuccess, this),
-            error: _.bind(embedlyCallbackFail, this)
-          });
+        if(!_.isURI(url)) {
+          SirTrevor.log("Must be a URL");
+          return;
         }
   
+        this.loading();
+  
+        var embedlyCallbackSuccess = function(data) {
+          this.setAndLoadData(data);
+          this.ready();
+        };
+  
+        var embedlyCallbackFail = function() {
+          this.ready();
+        };
+  
+        var ajaxOptions = {
+          url: this.buildAPIUrl(url),
+          dataType: "jsonp"
+        };
+  
+        this.fetch(ajaxOptions,
+                   _.bind(embedlyCallbackSuccess, this),
+                   _.bind(embedlyCallbackFail, this));
       },
+  
+      buildAPIUrl: function(url) {
+        return "http://api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url);
+      },
+  
       onDrop: function(transferData){
-        var url = transferData.getData('text/plain');
-        this.handleDropPaste(url);
+        this.handleDropPaste(transferData.getData('text/plain'));
       }
+  
     });
   
   })();
@@ -1636,13 +1712,12 @@
         this.uploader(
           file,
           function(data) {
-            // Store the data on this block
             this.setData(data);
-            // Done
             this.ready();
           },
           function(error){
-            alert('Error!');
+            this.addMessage("There was a problem with your upload");
+            this.ready();
           }
         );
       }
@@ -1677,6 +1752,7 @@
       type: "Tweet",
       droppable: true,
       pastable: true,
+      fetchable: true,
   
       drop_options: {
         re_render_on_reorder: true
@@ -1713,13 +1789,12 @@
           this.loading();
           tweetID = tweetID[0];
   
-          // Make our AJAX call
-          $.ajax({
+          var ajaxOptions = {
             url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
-            dataType: "json",
-            success: _.bind(this.onTweetSuccess, this),
-            error: _.bind(this.onTweetFail, this)
-          });
+            dataType: "json"
+          };
+  
+          this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
         }
       },
   
@@ -1729,7 +1804,7 @@
                 url.indexOf("status") !== -1);
       },
   
-      onTweetSuccess: function() {
+      onTweetSuccess: function(data) {
         // Parse the twitter object into something a bit slimmer..
         var obj = {
           user: {
@@ -1741,7 +1816,7 @@
           id: data.id_str,
           text: data.text,
           created_at: data.created_at,
-          status_url: url
+          status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
         };
   
         this.setAndLoadData(obj);
@@ -1749,6 +1824,7 @@
       },
   
       onTweetFail: function() {
+        this.addMessage("There was a problem fetching your tweet");
         this.ready();
       },
   
@@ -2485,6 +2561,10 @@
         this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
+  
+        if (block.ajaxable) {
+          block.resolveAllInQueue();
+        }
   
         block.remove();
   

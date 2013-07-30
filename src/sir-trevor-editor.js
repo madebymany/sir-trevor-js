@@ -269,6 +269,10 @@ SirTrevor.Editor = (function(){
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
 
+      if (block.ajaxable) {
+        block.resolveAllInQueue();
+      }
+
       block.remove();
 
       SirTrevor.EventBus.trigger("block:remove");
