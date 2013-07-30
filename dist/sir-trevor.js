@@ -1649,7 +1649,7 @@
       },
   
       buildAPIUrl: function(url) {
-        return "http://api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url);
+        return "//api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url);
       },
   
       onDrop: function(transferData){
