@@ -60,6 +60,10 @@
   left: 50%;
   top: 50%; }
 
+.st-block label {
+  display: block;
+  margin-bottom: 0.3em; }
+
 .st-text-block,
 .st-block input[type="text"],
 .st-block textarea {
