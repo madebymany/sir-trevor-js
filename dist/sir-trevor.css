@@ -130,7 +130,7 @@
   font-family: "Source Sans Pro", sans-serif;
   background-color: #f3f3f3;
   display: none;
-  border-radius: 3px;
+  border-radius: 0.2em;
   color: #42474b;
   width: 100%;
   text-align: center;
@@ -224,7 +224,7 @@ ul.st-text-block {
 
 .st-block__inputs {
   padding: 1.6em 0 1em;
-  border-radius: 0.3em;
+  border-radius: 0.2em;
   background: #f3f3f3;
   border-top: 0.125em solid transparent; }
 
@@ -257,7 +257,7 @@ ul.st-text-block {
 .st-upload-btn {
   border: 0;
   background: #42474b;
-  border-radius: 0.4em;
+  border-radius: 0.2em;
   padding: 0.35em 1em;
   font-family: "Source Sans Pro", sans-serif;
   font-size: 1.125em;
