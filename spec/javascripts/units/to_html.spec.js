@@ -43,6 +43,13 @@ describe("toHTML", function(){
     expect(html).toBe("hello!<br>hello!");
   });
 
+  it("converts strikes to HTML", function(){
+    var markdown = "~~test strike~~",
+        html = SirTrevor.toHTML(markdown, "Text");
+
+    expect(html).toBe("<strike>test strike</strike>");
+  });
+
   it("doesn't mess up on links with _ in", function(){
     var markdown = "http://google.com/_ and this is_ more text http://google.com/_",
         html = SirTrevor.toHTML(markdown, "Text");

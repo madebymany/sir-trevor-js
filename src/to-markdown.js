@@ -6,7 +6,8 @@ SirTrevor.toMarkdown = function(content, type) {
                     .replace(/<\/?b>/g,"**")
                     .replace(/<\/?STRONG>/gi,"**")                   // Bold
                     .replace(/<\/?i>/g,"_")
-                    .replace(/<\/?EM>/gi,"_");                        // Italic
+                    .replace(/<\/?EM>/gi,"_")                        // Italics
+                    .replace(/<\/?strike>/gi,"~~");                  // Strike
 
   // Use custom formatters toMarkdown functions (if any exist)
   var formatName, format;

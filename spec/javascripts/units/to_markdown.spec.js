@@ -28,6 +28,13 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("testing\n\n\n\n");
   });
 
+  it("coverts strikes to newlines", function(){
+    var html = "<strike>testing</strike>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("~~testing~~");
+  });
+
   it("coverts br's to newlines", function(){
     var html = "testing<br>",
         markdown = SirTrevor.toMarkdown(html, "Text");

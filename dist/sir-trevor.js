@@ -461,6 +461,7 @@
                .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
                .replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g, "$1<strong>$3</strong>$4")
                .replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g, "$1<em>$3</em>$4")
+               .replace(/(?:~~)([^*|_]+)(?:~~)/mg,"<strike>$1</strike>")
                .replace(/\n\n/g, "<br>");
   
     // Use custom formatters toHTML functions (if any exist)
@@ -496,7 +497,8 @@
                       .replace(/<\/?b>/g,"**")
                       .replace(/<\/?STRONG>/gi,"**")                   // Bold
                       .replace(/<\/?i>/g,"_")
-                      .replace(/<\/?EM>/gi,"_");                        // Italic
+                      .replace(/<\/?EM>/gi,"_")                        // Italics
+                      .replace(/<\/?strike>/gi,"~~");                  // Strike
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
@@ -952,7 +954,14 @@
       };
     },
   
-    save: function() { this.toData(); },
+    save: function() {
+      this.toData();
+    },
+  
+    saveAndReturnData: function() {
+      this.save();
+      return this.blockStorage;
+    },
   
     getData: function() {
       return this.blockStorage.data;
@@ -2032,6 +2041,13 @@
       text : "link"
     });
   
+    var Strikethrough = SirTrevor.Formatter.extend({
+      title: "strikethrough",
+      iconName: "strikethrough",
+      cmd: "strikeThrough",
+      text : "s"
+    });
+  
     /*
       Create our formatters and add a static reference to them
     */
@@ -2040,6 +2056,7 @@
     SirTrevor.Formatters.Underline = new Underline();
     SirTrevor.Formatters.Link = new Link();
     SirTrevor.Formatters.Unlink = new UnLink();
+    SirTrevor.Formatters.Strikethrough = new Strikethrough();
   
   })();
   /* Marker */
@@ -2619,7 +2636,7 @@
       },
   
       saveBlockStateToStore: function(block) {
-        var store = block.save();
+        var store = block.saveAndReturnData();
         if(store && !_.isEmpty(store.data)) {
           SirTrevor.log("Adding data for block " + block.blockID + " to block store");
           this.store("add", this, { data: store });

@@ -5,6 +5,7 @@ SirTrevor.toHTML = function(markdown, type) {
              .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
              .replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g, "$1<strong>$3</strong>$4")
              .replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g, "$1<em>$3</em>$4")
+             .replace(/(?:~~)([^*|_]+)(?:~~)/mg,"<strike>$1</strike>")
              .replace(/\n\n/g, "<br>");
 
   // Use custom formatters toHTML functions (if any exist)

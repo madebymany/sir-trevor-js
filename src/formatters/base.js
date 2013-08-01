@@ -52,6 +52,13 @@
     text : "link"
   });
 
+  var Strikethrough = SirTrevor.Formatter.extend({
+    title: "strikethrough",
+    iconName: "strikethrough",
+    cmd: "strikeThrough",
+    text : "s"
+  });
+
   /*
     Create our formatters and add a static reference to them
   */
@@ -60,5 +67,6 @@
   SirTrevor.Formatters.Underline = new Underline();
   SirTrevor.Formatters.Link = new Link();
   SirTrevor.Formatters.Unlink = new UnLink();
+  SirTrevor.Formatters.Strikethrough = new Strikethrough();
 
 })();
