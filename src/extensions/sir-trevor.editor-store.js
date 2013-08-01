@@ -4,8 +4,7 @@
 * We can easily extend this and store it on some server or something
 */
 
-SirTrevor.editorStore = function(method, editor, options) {
-
+SirTrevor.editorStore = function(editor, method, options) {
   var resp;
 
   options = options || {};

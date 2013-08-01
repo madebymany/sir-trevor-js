@@ -208,8 +208,7 @@
   * We can easily extend this and store it on some server or something
   */
   
-  SirTrevor.editorStore = function(method, editor, options) {
-  
+  SirTrevor.editorStore = function(editor, method, options) {
     var resp;
   
     options = options || {};
@@ -455,12 +454,13 @@
   });
   
   SirTrevor.toHTML = function(markdown, type) {
+    // MD -> HTML
     var html = markdown;
   
-    html = html.replace(/^\> (.+)$/mg,"$1")
-               .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
-               .replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g, "$1<strong>$3</strong>$4")
-               .replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g, "$1<em>$3</em>$4")
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
+               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<strong>$1</strong>")       // Bold
+               .replace(/(^|[^\\])_((\\.|[^_])+)_/g, "$1<em>$2</em>")
+               .replace(/^\> (.+)$/mg,"$1")
                .replace(/\n\n/g, "<br>");
   
     // Use custom formatters toHTML functions (if any exist)
@@ -486,12 +486,31 @@
       }
     }
   
+    // Replace escaped
+    html = html.replace(/\\\*/g, "*")
+               .replace(/\\\[/g, "[")
+               .replace(/\\\]/g, "]")
+               .replace(/\\\_/g, "_")
+               .replace(/\\\(/g, "(")
+               .replace(/\\\)/g, ")")
+               .replace(/\-/g, "-");
+  
     return html;
   };
   SirTrevor.toMarkdown = function(content, type) {
     var markdown;
   
-    markdown = content.replace(/\n/mg,"")
+    // Escape anything in here that *could* be considered as MD
+    // Markdown chars we care about: * [] _ () -
+    markdown = content.replace(/\*/g, "\\*")
+                      .replace(/\[/g, "\\[")
+                      .replace(/\]/g, "\\]")
+                      .replace(/\_/g, "\\_")
+                      .replace(/\(/g, "\\(")
+                      .replace(/\)/g, "\\)")
+                      .replace(/\-/g, "\\-");
+  
+    markdown = markdown.replace(/\n/mg,"")
                       .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
                       .replace(/<\/?b>/g,"**")
                       .replace(/<\/?STRONG>/gi,"**")                   // Bold
@@ -509,6 +528,8 @@
         }
       }
     }
+  
+    "asdadsasd _asd\_sasad_ \_adsdsa\_"
   
     // Do our generic stripping out
     markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
@@ -953,6 +974,11 @@
     },
   
     save: function() { this.toData(); },
+  
+    saveAndReturnData: function() {
+      this.save();
+      return this.blockStorage;
+    },
   
     getData: function() {
       return this.blockStorage.data;
@@ -2351,7 +2377,7 @@
       this._setBlocksTypes();
       this._bindFunctions();
   
-      this.store("create", this);
+      this.store("create");
       this.build();
   
       SirTrevor.instances.push(this);
@@ -2401,7 +2427,7 @@
   
         $(window).bind('click', this.hideAllTheThings);
   
-        var store = this.store("read", this);
+        var store = this.store("read");
   
         if (store.data.length > 0) {
           _.each(store.data, function(block){
@@ -2447,8 +2473,8 @@
         this.block_controls.current_container = container;
       },
   
-      store: function(){
-        return SirTrevor.editorStore.apply(this, arguments);
+      store: function(method, options){
+        return SirTrevor.editorStore(this, method, options || {});
       },
   
       /*
@@ -2619,10 +2645,10 @@
       },
   
       saveBlockStateToStore: function(block) {
-        var store = block.save();
+        var store = block.saveAndReturnData();
         if(store && !_.isEmpty(store.data)) {
           SirTrevor.log("Adding data for block " + block.blockID + " to block store");
-          this.store("add", this, { data: store });
+          this.store("add", { data: store });
         }
       },
   
@@ -2637,13 +2663,13 @@
         SirTrevor.log("Handling form submission for Editor " + this.ID);
   
         this.removeErrors();
-        this.store("reset", this);
+        this.store("reset");
   
         this.validateBlocks(should_validate);
         this.validateBlockTypesExist(should_validate);
   
         this.renderErrors();
-        this.store("save", this);
+        this.store("save");
   
         return this.errors.length;
       },

@@ -44,9 +44,26 @@ describe("toHTML", function(){
   });
 
   it("doesn't mess up on links with _ in", function(){
-    var markdown = "http://google.com/_ and this is_ more text http://google.com/_",
+    var markdown = SirTrevor.toMarkdown("http://google.com/_ and this is_ more text http://google.com/_", "Text"),
         html = SirTrevor.toHTML(markdown, "Text");
+
     expect(html).not.toMatch(/em/);
   });
+
+  it("converts a bold in the middle of a word", function(){
+    var md = "Da**id backfire**",
+        html = SirTrevor.toHTML(md, "Text");
+
+    expect(html).toBe("Da<strong>id backfire</strong>");
+  });
+
+  it("converts an italic in the middle of a word", function(){
+    var md = "Da_id backfire_",
+        html = SirTrevor.toHTML(md, "Text");
+
+    expect(html).toBe("Da<em>id backfire</em>");
+  });
+
+
 
 });

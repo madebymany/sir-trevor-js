@@ -1,10 +1,11 @@
 SirTrevor.toHTML = function(markdown, type) {
+  // MD -> HTML
   var html = markdown;
 
-  html = html.replace(/^\> (.+)$/mg,"$1")
-             .replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
-             .replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g, "$1<strong>$3</strong>$4")
-             .replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g, "$1<em>$3</em>$4")
+  html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
+             .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<strong>$1</strong>")       // Bold
+             .replace(/(^|[^\\])_((\\.|[^_])+)_/g, "$1<em>$2</em>")
+             .replace(/^\> (.+)$/mg,"$1")
              .replace(/\n\n/g, "<br>");
 
   // Use custom formatters toHTML functions (if any exist)
@@ -29,6 +30,15 @@ SirTrevor.toHTML = function(markdown, type) {
       html = block.prototype.toHTML(html);
     }
   }
+
+  // Replace escaped
+  html = html.replace(/\\\*/g, "*")
+             .replace(/\\\[/g, "[")
+             .replace(/\\\]/g, "]")
+             .replace(/\\\_/g, "_")
+             .replace(/\\\(/g, "(")
+             .replace(/\\\)/g, ")")
+             .replace(/\-/g, "-");
 
   return html;
 };

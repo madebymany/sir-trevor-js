@@ -28,7 +28,7 @@ SirTrevor.Editor = (function(){
     this._setBlocksTypes();
     this._bindFunctions();
 
-    this.store("create", this);
+    this.store("create");
     this.build();
 
     SirTrevor.instances.push(this);
@@ -78,7 +78,7 @@ SirTrevor.Editor = (function(){
 
       $(window).bind('click', this.hideAllTheThings);
 
-      var store = this.store("read", this);
+      var store = this.store("read");
 
       if (store.data.length > 0) {
         _.each(store.data, function(block){
@@ -124,8 +124,8 @@ SirTrevor.Editor = (function(){
       this.block_controls.current_container = container;
     },
 
-    store: function(){
-      return SirTrevor.editorStore.apply(this, arguments);
+    store: function(method, options){
+      return SirTrevor.editorStore(this, method, options || {});
     },
 
     /*
@@ -296,10 +296,10 @@ SirTrevor.Editor = (function(){
     },
 
     saveBlockStateToStore: function(block) {
-      var store = block.save();
+      var store = block.saveAndReturnData();
       if(store && !_.isEmpty(store.data)) {
         SirTrevor.log("Adding data for block " + block.blockID + " to block store");
-        this.store("add", this, { data: store });
+        this.store("add", { data: store });
       }
     },
 
@@ -314,13 +314,13 @@ SirTrevor.Editor = (function(){
       SirTrevor.log("Handling form submission for Editor " + this.ID);
 
       this.removeErrors();
-      this.store("reset", this);
+      this.store("reset");
 
       this.validateBlocks(should_validate);
       this.validateBlockTypesExist(should_validate);
 
       this.renderErrors();
-      this.store("save", this);
+      this.store("save");
 
       return this.errors.length;
     },

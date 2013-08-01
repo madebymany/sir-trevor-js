@@ -35,4 +35,25 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("testing\n\n");
   });
 
+  it("correctly encodes * characters", function(){
+    var html = "test*",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("test\\*");
+  });
+
+  it("correctly encodes _ characters", function(){
+    var html = "test_",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("test\\_");
+  });
+
+  it("correctly encodes - characters", function(){
+    var html = "test-something",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("test\\-something");
+  });
+
 });

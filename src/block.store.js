@@ -11,6 +11,11 @@ SirTrevor.BlockStore = {
 
   save: function() { this.toData(); },
 
+  saveAndReturnData: function() {
+    this.save();
+    return this.blockStorage;
+  },
+
   getData: function() {
     return this.blockStorage.data;
   },

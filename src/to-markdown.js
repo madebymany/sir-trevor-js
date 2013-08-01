@@ -1,7 +1,17 @@
 SirTrevor.toMarkdown = function(content, type) {
   var markdown;
 
-  markdown = content.replace(/\n/mg,"")
+  // Escape anything in here that *could* be considered as MD
+  // Markdown chars we care about: * [] _ () -
+  markdown = content.replace(/\*/g, "\\*")
+                    .replace(/\[/g, "\\[")
+                    .replace(/\]/g, "\\]")
+                    .replace(/\_/g, "\\_")
+                    .replace(/\(/g, "\\(")
+                    .replace(/\)/g, "\\)")
+                    .replace(/\-/g, "\\-");
+
+  markdown = markdown.replace(/\n/mg,"")
                     .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
                     .replace(/<\/?b>/g,"**")
                     .replace(/<\/?STRONG>/gi,"**")                   // Bold
@@ -19,6 +29,8 @@ SirTrevor.toMarkdown = function(content, type) {
       }
     }
   }
+
+  "asdadsasd _asd\_sasad_ \_adsdsa\_"
 
   // Do our generic stripping out
   markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
