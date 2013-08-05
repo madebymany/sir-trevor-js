@@ -1,5 +1,5 @@
 /*!
- * Sir Trevor JS v0.3.0-rc.2
+ * Sir Trevor JS v0.3.0-rc.3
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
@@ -1158,7 +1158,7 @@
   
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
-             '<span class="st-icon"><%= icon_name() %></span>',
+             '<span class="st-icon"><%= _.result(icon_name) %></span>',
              '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
@@ -2093,7 +2093,7 @@
       },
   
       render: function() {
-        this.$el.html('<span class="st-icon">'+ this.block_type.icon_name() +'</span>' + _.result(this.block_type, 'title'));
+        this.$el.html('<span class="st-icon">'+ _.result(this.block_type.icon_name) +'</span>' + _.result(this.block_type, 'title'));
         return this;
       }
     });
