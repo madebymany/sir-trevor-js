@@ -1,12 +1,10 @@
 /*!
  * Sir Trevor JS v0.3.0-rc.2
  *
- * Created by Made by Many (http://madebymany.com)
- *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * Date: 2013-07-09
+ * 2013-08-05
  */
 
 (function ($, _){
@@ -21,7 +19,7 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
-  SirTrevor.version = "0.3.0-rc.2";
+  SirTrevor.version = "0.3.0-rc.3";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);

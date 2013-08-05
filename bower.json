@@ -1,12 +1,15 @@
 {
   "name": "sir-trevor-js",
-  "version": "0.3.0-rc.2",
+  "version": "0.3.0-rc.3",
   "ignore": [
     "**/.*",
     "node_modules",
     "components",
     "src",
-    "spec"
+    "spec",
+    "examples",
+    "website",
+    "BrowserRunner.html"
   ],
   "dependencies": {
     "underscore": "~1.4.4",

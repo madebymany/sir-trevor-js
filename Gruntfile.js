@@ -1,6 +1,16 @@
 /*global module:false*/
 module.exports = function(grunt) {
 
+  var banner = ['/*!',
+                 ' * Sir Trevor JS v<%= pkg.version %>',
+                 ' *',
+                 ' * Released under the MIT license',
+                 ' * www.opensource.org/licenses/MIT',
+                 ' *',
+                 ' * <%= grunt.template.today("yyyy-mm-dd") %>',
+                 ' */\n\n'
+                ].join("\n");
+
   grunt.loadNpmTasks('grunt-rigger');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -9,9 +19,11 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
 
+    pkg: grunt.file.readJSON('package.json'),
+
     'jasmine' : {
       'sir-trevor': {
-        src : 'dist/sir-trevor.js',
+        src : 'sir-trevor.js',
         options: {
           vendor: ['components/jquery/jquery.js', 'components/underscore/underscore.js', 'components/Eventable/eventable.js'],
           specs : 'spec/javascripts/**/*.spec.js',
@@ -22,18 +34,23 @@ module.exports = function(grunt) {
 
     rig: {
       build: {
-        src: 'src/sir-trevor.js',
-        dest: 'dist/sir-trevor.js'
+        options: {
+          banner: banner
+        },
+        files: {
+          'sir-trevor.js': ['src/sir-trevor.js']
+        }
       }
     },
 
     uglify: {
       options: {
-        mangle: false
+        mangle: false,
+        banner: banner
       },
       standard: {
         files: {
-          'dist/sir-trevor.min.js': ['<banner:meta.banner>', 'dist/sir-trevor.js']
+          'sir-trevor.min.js': ['sir-trevor.js']
         }
       }
     },
@@ -46,7 +63,7 @@ module.exports = function(grunt) {
     },
 
     jshint: {
-      all: ['dist/sir-trevor.js'],
+      all: ['sir-trevor.js'],
 
       options: {
         curly: true,
@@ -71,7 +88,7 @@ module.exports = function(grunt) {
     sass: {
       dist: {
         files: {
-          'dist/sir-trevor.css': 'src/sass/main.scss'
+          'sir-trevor.css': 'src/sass/main.scss'
         }
       }
     }
