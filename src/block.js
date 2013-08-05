@@ -14,8 +14,8 @@ SirTrevor.Block = (function(){
 
   var drop_options = {
     html: ['<div class="st-block__dropzone">',
-           '<span class="st-icon"><%= _.result(this, "icon_name") %></span>',
-           '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
+           '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+           '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
     re_render_on_reorder: false
   };
 

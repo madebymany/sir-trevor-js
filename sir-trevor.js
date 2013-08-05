@@ -602,7 +602,8 @@
   
       this.drop_options = _.extend({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
   
-      var drop_html = $(_.template(this.drop_options.html, this));
+      var drop_html = $(_.template(this.drop_options.html,
+                        { block: this }));
   
       this.$editor.hide();
       this.$inputs.append(drop_html);
@@ -1158,8 +1159,8 @@
   
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
-             '<span class="st-icon"><%= _.result(this, "icon_name") %></span>',
-             '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
+             '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+             '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
   
