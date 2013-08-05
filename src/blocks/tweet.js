@@ -20,9 +20,7 @@ SirTrevor.Blocks.Tweet = (function(){
       re_render_on_reorder: true
     },
 
-    icon_name: function() {
-      return 'twitter';
-    },
+    icon_name: 'twitter',
 
     loadData: function(data) {
       if (_.isUndefined(data.status_url)) { data.status_url = ''; }
