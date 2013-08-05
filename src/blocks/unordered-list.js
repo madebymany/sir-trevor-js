@@ -10,9 +10,7 @@ SirTrevor.Blocks.List = (function() {
 
     type: "List",
 
-    icon_name: function(){
-      return 'list';
-    },
+    icon_name: 'list',
 
     editorHTML: function() {
       return _.template(template, this);

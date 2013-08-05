@@ -1158,7 +1158,7 @@
   
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
-             '<span class="st-icon"><%= _.result(icon_name) %></span>',
+             '<span class="st-icon"><%= _.result(this, "icon_name") %></span>',
              '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
@@ -1195,9 +1195,7 @@
         });
       },
   
-      icon_name: function() {
-        return 'default';
-      },
+      icon_name: 'default',
   
       validationFailMsg: function() {
         return this.type + ' block is invalid';
@@ -1604,9 +1602,7 @@
   
       type: 'Quote',
   
-      icon_name: function(){
-        return 'quote';
-      },
+      icon_name: 'quote',
   
       editorHTML: function() {
         return template(this);
@@ -1635,9 +1631,7 @@
       pastable: true,
       fetchable: true,
   
-      icon_name: function() {
-        return "embed";
-      },
+      icon_name: "embed",
   
       loadData: function(data){
         if (data.html) {
@@ -1702,9 +1696,7 @@
   
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
-    icon_name: function(){
-      return 'heading';
-    },
+    icon_name: 'heading',
   
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
@@ -1721,9 +1713,7 @@
     droppable: true,
     uploadable: true,
   
-    icon_name: function(){
-      return 'image';
-    },
+    icon_name: 'image',
   
     loadData: function(data){
       // Create our image tag
@@ -1774,9 +1764,7 @@
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
-    icon_name: function(){
-      return 'text';
-    },
+    icon_name: 'text',
   
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
@@ -1804,9 +1792,7 @@
         re_render_on_reorder: true
       },
   
-      icon_name: function() {
-        return 'twitter';
-      },
+      icon_name: 'twitter',
   
       loadData: function(data) {
         if (_.isUndefined(data.status_url)) { data.status_url = ''; }
@@ -1893,9 +1879,7 @@
   
       type: "List",
   
-      icon_name: function(){
-        return 'list';
-      },
+      icon_name: 'list',
   
       editorHTML: function() {
         return _.template(template, this);
@@ -1942,9 +1926,7 @@
       droppable: true,
       pastable: true,
   
-      icon_name: function(){
-        return 'video';
-      },
+      icon_name: 'video',
   
       loadData: function(data){
         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
@@ -2093,7 +2075,7 @@
       },
   
       render: function() {
-        this.$el.html('<span class="st-icon">'+ _.result(this.block_type.icon_name) +'</span>' + _.result(this.block_type, 'title'));
+        this.$el.html('<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>' + _.result(this.block_type, 'title'));
         return this;
       }
     });
