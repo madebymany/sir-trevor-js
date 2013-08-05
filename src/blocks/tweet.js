@@ -20,6 +20,10 @@ SirTrevor.Blocks.Tweet = (function(){
       re_render_on_reorder: true
     },
 
+    fetchUrl: function(tweetID) {
+      return "/tweets/?tweet_id=" + tweetID;
+    },
+
     icon_name: function() {
       return 'twitter';
     },
@@ -52,7 +56,7 @@ SirTrevor.Blocks.Tweet = (function(){
         tweetID = tweetID[0];
 
         var ajaxOptions = {
-          url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
+          url: this.fetchUrl(tweetID),
           dataType: "json"
         };
 
