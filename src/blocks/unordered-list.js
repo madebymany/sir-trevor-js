@@ -21,11 +21,14 @@ SirTrevor.Blocks.List = (function() {
     },
 
     onBlockRender: function() {
-      this.getTextBlock().bind('click', function(){
-        if($(this).text().length < 1) {
-          document.execCommand("insertUnorderedList",false,false);
-        }
-      });
+      this.checkForList = _.bind(this.checkForList, this);
+      this.getTextBlock().on('click keyup', this.checkForList);
+    },
+
+    checkForList: function() {
+      if (this.$('ul').length === 0) {
+        document.execCommand("insertUnorderedList",false,false);
+      }
     },
 
     toMarkdown: function(markdown) {
@@ -37,8 +40,6 @@ SirTrevor.Blocks.List = (function() {
     toHTML: function(html) {
       html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                  .replace(/\n/mg,"");
-
-      html = "<ul>" + html + "</ul>";
 
       return html;
     }
