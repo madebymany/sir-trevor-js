@@ -22,18 +22,21 @@ SirTrevor.FormatBar = (function(){
     bound: ["onFormatButtonClick", "renderBySelection", "hide"],
 
     initialize: function() {
-      var formatName, format;
+      var formatName, format, btn;
+      this.$btns = [];
 
       for (formatName in SirTrevor.Formatters) {
         if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
           format = SirTrevor.Formatters[formatName];
+          btn = $("<button>", {
+                  'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
+                  'text': format.text,
+                  'data-type': formatName,
+                  'data-cmd': format.cmd
+                });
 
-          $("<button>", {
-            'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
-            'text': format.text,
-            'data-type': formatName,
-            'data-cmd': format.cmd
-          }).appendTo(this.$el);
+          this.$btns.push(btn);
+          btn.appendTo(this.$el);
         }
       }
 
@@ -70,8 +73,19 @@ SirTrevor.FormatBar = (function(){
         };
       }
 
+      this.highlightSelectedButtons();
+
       this.show();
       this.$el.css(coords);
+    },
+
+    highlightSelectedButtons: function() {
+      var formatter;
+      _.each(this.$btns, function($btn) {
+        formatter = SirTrevor.Formatters[$btn.attr('data-type')];
+        $btn.toggleClass("st-format-btn--is-active",
+                         formatter.isActive());
+      }, this);
     },
 
     onFormatButtonClick: function(ev){
@@ -88,6 +102,7 @@ SirTrevor.FormatBar = (function(){
         document.execCommand(btn.attr('data-cmd'), false, format.param);
       }
 
+      this.highlightSelectedButtons();
       return false;
     }
 

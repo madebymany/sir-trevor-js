@@ -15,6 +15,7 @@ SirTrevor.Formatter = (function(){
     cmd: null,
     keyCode: null,
     param: null,
+
     toMarkdown: function(markdown){ return markdown; },
     toHTML: function(html){ return html; },
 
@@ -27,6 +28,10 @@ SirTrevor.Formatter = (function(){
         if (options[attr]) this[attr] = options[attr];
       }
       this.options = options;
+    },
+
+    isActive: function() {
+      return document.queryCommandState(this.cmd);
     },
 
     _bindToBlock: function(block) {
