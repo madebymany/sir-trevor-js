@@ -42,6 +42,17 @@
 
        document.execCommand(this.cmd, false, link);
       }
+    },
+
+    isActive: function() {
+      var selection = window.getSelection(),
+          node;
+
+      if (selection.rangeCount > 0) {
+        node = selection.getRangeAt(0).startContainer.parentNode;
+      }
+
+      return (node && node.nodeName == "A");
     }
   });
 

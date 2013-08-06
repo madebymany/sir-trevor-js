@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-05
+ * 2013-08-06
  */
 
 (function ($, _){
@@ -1543,6 +1543,7 @@
       cmd: null,
       keyCode: null,
       param: null,
+  
       toMarkdown: function(markdown){ return markdown; },
       toHTML: function(html){ return html; },
   
@@ -1555,6 +1556,10 @@
           if (options[attr]) this[attr] = options[attr];
         }
         this.options = options;
+      },
+  
+      isActive: function() {
+        return document.queryCommandState(this.cmd);
       },
   
       _bindToBlock: function(block) {
@@ -2029,6 +2034,17 @@
   
          document.execCommand(this.cmd, false, link);
         }
+      },
+  
+      isActive: function() {
+        var selection = window.getSelection(),
+            node;
+  
+        if (selection.rangeCount > 0) {
+          node = selection.getRangeAt(0).startContainer.parentNode;
+        }
+  
+        return (node && node.nodeName == "A");
       }
     });
   
@@ -2254,18 +2270,21 @@
       bound: ["onFormatButtonClick", "renderBySelection", "hide"],
   
       initialize: function() {
-        var formatName, format;
+        var formatName, format, btn;
+        this.$btns = [];
   
         for (formatName in SirTrevor.Formatters) {
           if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
             format = SirTrevor.Formatters[formatName];
+            btn = $("<button>", {
+                    'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
+                    'text': format.text,
+                    'data-type': formatName,
+                    'data-cmd': format.cmd
+                  });
   
-            $("<button>", {
-              'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
-              'text': format.text,
-              'data-type': formatName,
-              'data-cmd': format.cmd
-            }).appendTo(this.$el);
+            this.$btns.push(btn);
+            btn.appendTo(this.$el);
           }
         }
   
@@ -2302,8 +2321,19 @@
           };
         }
   
+        this.highlightSelectedButtons();
+  
         this.show();
         this.$el.css(coords);
+      },
+  
+      highlightSelectedButtons: function() {
+        var formatter;
+        _.each(this.$btns, function($btn) {
+          formatter = SirTrevor.Formatters[$btn.attr('data-type')];
+          $btn.toggleClass("st-format-btn--is-active",
+                           formatter.isActive());
+        }, this);
       },
   
       onFormatButtonClick: function(ev){
@@ -2320,6 +2350,7 @@
           document.execCommand(btn.attr('data-cmd'), false, format.param);
         }
   
+        this.highlightSelectedButtons();
         return false;
       }
   

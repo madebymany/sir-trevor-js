@@ -44,7 +44,8 @@
   margin-right: 0;
 }
 
-.st-format-btn:hover {
+.st-format-btn:hover,
+.st-format-btn--is-active {
   color:$accent-color;
 }
 
