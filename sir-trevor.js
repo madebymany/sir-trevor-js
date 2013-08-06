@@ -2344,6 +2344,8 @@
         var btn = $(ev.target),
             format = SirTrevor.Formatters[btn.attr('data-type')];
   
+        if (_.isUndefined(format)) return false;
+  
         // Do we have a click function defined on this formatter?
         if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
           format.onClick(); // Delegate
