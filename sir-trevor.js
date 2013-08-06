@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-05
+ * 2013-08-06
  */
 
 (function ($, _){
@@ -50,9 +50,6 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
-    twitter: {
-      fetchURL: '/tweets/fetch' // Set this to your server
-    },
     errorsContainer: undefined
   };
 
@@ -1793,6 +1790,10 @@
         re_render_on_reorder: true
       },
   
+      fetchUrl: function(tweetID) {
+        return "/tweets/?tweet_id=" + tweetID;
+      },
+  
       icon_name: 'twitter',
   
       loadData: function(data) {
@@ -1823,7 +1824,7 @@
           tweetID = tweetID[0];
   
           var ajaxOptions = {
-            url: SirTrevor.DEFAULTS.twitter.fetchURL + "?tweet_id=" + tweetID,
+            url: this.fetchUrl(tweetID),
             dataType: "json"
           };
   
