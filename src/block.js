@@ -14,8 +14,8 @@ SirTrevor.Block = (function(){
 
   var drop_options = {
     html: ['<div class="st-block__dropzone">',
-           '<span class="st-icon"><%= icon_name() %></span>',
-           '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
+           '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+           '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
     re_render_on_reorder: false
   };
 
@@ -51,9 +51,7 @@ SirTrevor.Block = (function(){
       });
     },
 
-    icon_name: function() {
-      return 'default';
-    },
+    icon_name: 'default',
 
     validationFailMsg: function() {
       return this.type + ' block is invalid';

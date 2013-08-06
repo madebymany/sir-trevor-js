@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-05
+ * 2013-08-06
  */
 
 (function ($, _){
@@ -599,7 +599,8 @@
   
       this.drop_options = _.extend({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
   
-      var drop_html = $(_.template(this.drop_options.html, this));
+      var drop_html = $(_.template(this.drop_options.html,
+                        { block: this }));
   
       this.$editor.hide();
       this.$inputs.append(drop_html);
@@ -921,7 +922,7 @@
     },
   
     // Everything in here should be a function that returns true or false
-    validators: [],
+    validations: [],
   
     validateField: function(field) {
       field = $(field);
@@ -1155,8 +1156,8 @@
   
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
-             '<span class="st-icon"><%= icon_name() %></span>',
-             '<p>Drag <span><%= type %></span> here</p></div>'].join('\n'),
+             '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+             '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
   
@@ -1192,9 +1193,7 @@
         });
       },
   
-      icon_name: function() {
-        return 'default';
-      },
+      icon_name: 'default',
   
       validationFailMsg: function() {
         return this.type + ' block is invalid';
@@ -1601,9 +1600,7 @@
   
       type: 'Quote',
   
-      icon_name: function(){
-        return 'quote';
-      },
+      icon_name: 'quote',
   
       editorHTML: function() {
         return template(this);
@@ -1632,9 +1629,7 @@
       pastable: true,
       fetchable: true,
   
-      icon_name: function() {
-        return "embed";
-      },
+      icon_name: "embed",
   
       loadData: function(data){
         if (data.html) {
@@ -1699,9 +1694,7 @@
   
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
-    icon_name: function(){
-      return 'heading';
-    },
+    icon_name: 'heading',
   
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
@@ -1718,9 +1711,7 @@
     droppable: true,
     uploadable: true,
   
-    icon_name: function(){
-      return 'image';
-    },
+    icon_name: 'image',
   
     loadData: function(data){
       // Create our image tag
@@ -1771,9 +1762,7 @@
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
-    icon_name: function(){
-      return 'text';
-    },
+    icon_name: 'text',
   
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
@@ -1805,9 +1794,7 @@
         return "/tweets/?tweet_id=" + tweetID;
       },
   
-      icon_name: function() {
-        return 'twitter';
-      },
+      icon_name: 'twitter',
   
       loadData: function(data) {
         if (_.isUndefined(data.status_url)) { data.status_url = ''; }
@@ -1894,9 +1881,7 @@
   
       type: "List",
   
-      icon_name: function(){
-        return 'list';
-      },
+      icon_name: 'list',
   
       editorHTML: function() {
         return _.template(template, this);
@@ -1943,9 +1928,7 @@
       droppable: true,
       pastable: true,
   
-      icon_name: function(){
-        return 'video';
-      },
+      icon_name: 'video',
   
       loadData: function(data){
         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
@@ -2094,7 +2077,7 @@
       },
   
       render: function() {
-        this.$el.html('<span class="st-icon">'+ this.block_type.icon_name() +'</span>' + _.result(this.block_type, 'title'));
+        this.$el.html('<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>' + _.result(this.block_type, 'title'));
         return this;
       }
     });

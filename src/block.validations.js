@@ -30,7 +30,7 @@ SirTrevor.BlockValidations = {
   },
 
   // Everything in here should be a function that returns true or false
-  validators: [],
+  validations: [],
 
   validateField: function(field) {
     field = $(field);

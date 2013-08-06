@@ -9,9 +9,7 @@ SirTrevor.Blocks.Embedly = (function(){
     pastable: true,
     fetchable: true,
 
-    icon_name: function() {
-      return "embed";
-    },
+    icon_name: "embed",
 
     loadData: function(data){
       if (data.html) {
