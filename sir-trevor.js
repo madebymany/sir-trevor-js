@@ -2575,12 +2575,19 @@
         SirTrevor.EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
       },
   
-      changeBlockPosition: function(block_el, position, where) {
-        var block = this.$wrapper.find('.st-block').eq(position - 1);
-        if(block && block.attr('id') !== block_el.attr('id')) {
+      changeBlockPosition: function($block, selectedPosition) {
+        selectedPosition = selectedPosition - 1;
+  
+        var blockPosition = this.getBlockPosition($block);
+        var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+        var blockByPosition = this.getBlockPosition($blockBy);
+  
+        var where = (blockPosition > selectedPosition) ? "Before" : "After";
+  
+        if($blockBy && $blockBy.attr('id') !== $block.attr('id')) {
           this.hideAllTheThings();
-          block[where](block_el);
-          this.scrollTo(block_el);
+          $block["insert" + where]($blockBy);
+          this.scrollTo($block);
         }
       },
   
@@ -2792,6 +2799,10 @@
   
       getBlocksByIDs: function(block_ids) {
         return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+      },
+  
+      getBlockPosition: function($block) {
+        return this.$wrapper.find('.st-block').index($block);
       },
   
       /*
