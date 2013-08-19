@@ -40,7 +40,7 @@ SirTrevor.FormatBar = (function(){
         }
       }
 
-      this.$b = $(document.body);
+      this.$b = $(document);
       this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
     },
 
@@ -72,6 +72,8 @@ SirTrevor.FormatBar = (function(){
           top: rectangles[0].top + this.$b.scrollTop()
         };
       }
+
+      coords.left = Math.max(coords.left, 0);
 
       this.highlightSelectedButtons();
 
