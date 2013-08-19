@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-06
+ * 2013-08-19
  */
 
 (function ($, _){
@@ -488,7 +488,7 @@
                .replace(/\\\_/g, "_")
                .replace(/\\\(/g, "(")
                .replace(/\\\)/g, ")")
-               .replace(/\-/g, "-");
+               .replace(/\\\-/g, "-");
   
     return html;
   };
@@ -2447,11 +2447,11 @@
   
         if (store.data.length > 0) {
           _.each(store.data, function(block){
-            SirTrevor.log('Creating: ', block);
+            SirTrevor.log('Creating: ' + block.type);
             this.createBlock(block.type, block.data);
           }, this);
         } else if (this.options.defaultType !== false) {
-          this.createBlock(this.options.defaultType);
+          this.createBlock(this.options.defaultType, {});
         }
   
         this.$wrapper.addClass('st-ready');
@@ -2528,9 +2528,7 @@
   
         block.focus();
   
-        var create_event = (data) ? "block:create:existing" : "block:create:new";
-  
-        SirTrevor.EventBus.trigger(create_event, block);
+        SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
         SirTrevor.log("Block created of type " + type);
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
@@ -2543,7 +2541,7 @@
       },
   
       scrollTo: function(element) {
-        $('html, body').animate({ scrollTop: element.position().top });
+        $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
       },
   
       blockFocus: function(block) {

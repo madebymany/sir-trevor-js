@@ -64,6 +64,10 @@ describe("toHTML", function(){
     expect(html).toBe("Da<em>id backfire</em>");
   });
 
+  it("correctly encodes dashes", function(){
+    var md = "Hand-crafted",
+        html = SirTrevor.toHTML(md, "Text");
 
-
+    expect(html).toBe("Hand\-crafted");
+  });
 });

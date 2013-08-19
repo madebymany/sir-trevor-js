@@ -38,7 +38,7 @@ SirTrevor.toHTML = function(markdown, type) {
              .replace(/\\\_/g, "_")
              .replace(/\\\(/g, "(")
              .replace(/\\\)/g, ")")
-             .replace(/\-/g, "-");
+             .replace(/\\\-/g, "-");
 
   return html;
 };
