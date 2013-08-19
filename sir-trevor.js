@@ -1388,11 +1388,14 @@
         }
   
         var pasted = after.substr(pos1, after_len - pos2 - pos1 + 1);
-  
-        var replace = SirTrevor.toHTML(SirTrevor.toMarkdown(pasted, this.type), this.type);
+        var replace = this.pastedMarkdownToHTML(pasted);
   
         // replace the HTML mess with the plain content
         target[0].innerHTML = after.substr(0, pos1) + replace + after.substr(pos1 + pasted.length);
+      },
+  
+      pastedMarkdownToHTML: function(content) {
+        return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type);
       },
   
       onContentPasted: function(event, target){},
@@ -1915,9 +1918,17 @@
   
       toHTML: function(html) {
         html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-                   .replace(/\n/mg,"");
+                   .replace(/\n/mg, "");
   
         return html;
+      },
+  
+      pastedMarkdownToHTML: function(content) {
+        // On paste, we don't want to add in an <li>
+        content = SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type));
+  
+        return content.replace(/<li>/, "")
+                      .replace(/<\/li>/, "");
       }
   
     });

@@ -39,9 +39,17 @@ SirTrevor.Blocks.List = (function() {
 
     toHTML: function(html) {
       html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-                 .replace(/\n/mg,"");
+                 .replace(/\n/mg, "");
 
       return html;
+    },
+
+    pastedMarkdownToHTML: function(content) {
+      // On paste, we don't want to add in an <li>
+      content = SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type));
+
+      return content.replace(/<li>/, "")
+                    .replace(/<\/li>/, "");
     }
 
   });
