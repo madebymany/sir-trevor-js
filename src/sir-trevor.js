@@ -10,7 +10,7 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
-  SirTrevor.version = "0.3.0-rc.3";
+  SirTrevor.version = "0.3.0-rc.4";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);

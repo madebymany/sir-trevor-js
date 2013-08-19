@@ -1,5 +1,5 @@
 /*!
- * Sir Trevor JS v0.3.0-rc.3
+ * Sir Trevor JS v0.3.0-rc.4
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
@@ -19,7 +19,7 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
-  SirTrevor.version = "0.3.0-rc.3";
+  SirTrevor.version = "0.3.0-rc.4";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
