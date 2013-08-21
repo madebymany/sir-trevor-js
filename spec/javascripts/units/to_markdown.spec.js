@@ -42,6 +42,20 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("**testing**");
   });
 
+  it("coverts underlines to markdown", function(){
+    var html = "<u>testing</u>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("~testing~");
+  });
+
+  it("coverts bold underlines to markdown", function(){
+    var html = "<strong><u>testing</u></strong>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("**~testing~**");
+  });
+
   it("coverts italic to markdown", function(){
     var html = "<em>testing</em>",
         markdown = SirTrevor.toMarkdown(html, "Text");

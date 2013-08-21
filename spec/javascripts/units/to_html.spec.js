@@ -14,7 +14,6 @@ describe("toHTML", function(){
     expect(html).toBe("Test");
   });
 
-
   it("converts italics to HTML", function(){
     var markdown = '_test_',
         html = SirTrevor.toHTML(markdown, "Text");
@@ -34,6 +33,20 @@ describe("toHTML", function(){
         html = SirTrevor.toHTML(markdown, "Text");
 
     expect(html).toBe("<strong>test</strong> and <em>testing</em>");
+  });
+
+  it("converts underlines to HTML", function(){
+    var markdown = '~test~',
+        html = SirTrevor.toHTML(markdown, "Text");
+
+    expect(html).toBe("<u>test</u>");
+  });
+
+  it("converts bold underlines to HTML", function(){
+    var markdown = '**~test~**',
+        html = SirTrevor.toHTML(markdown, "Text");
+
+    expect(html).toBe("<strong><u>test</u></strong>");
   });
 
   it("converts newlines to HTML", function(){

@@ -9,6 +9,7 @@ SirTrevor.toMarkdown = function(content, type) {
                     .replace(/\_/g, "\\_")
                     .replace(/\(/g, "\\(")
                     .replace(/\)/g, "\\)")
+                    .replace(/\~/g, "\\~")
                     .replace(/\-/g, "\\-");
 
   markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
@@ -16,8 +17,10 @@ SirTrevor.toMarkdown = function(content, type) {
                     .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
                     .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
                     .replace(/<b>(.*?)<\/b>/gim, "**$1**")
+                    .replace(/<u>(.*?)<\/u>/gim, "~$1~")
                     .replace(/<em>(.*?)<\/em>/gim, "_$1_")
                     .replace(/<i>(.*?)<\/i>/gim, "_$1_");
+
 
   // Use custom formatters toMarkdown functions (if any exist)
   var formatName, format;

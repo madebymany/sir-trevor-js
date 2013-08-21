@@ -454,6 +454,7 @@
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
+               .replace(/(?:\~)([^*|_]+)(?:\~)/gm,"<u>$1</u>")
                .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
                .replace(/^\> (.+)$/mg,"$1")
                .replace(/\n\n/g, "<br>");
@@ -491,6 +492,7 @@
                .replace(/\\\_/g, "_")
                .replace(/\\\(/g, "(")
                .replace(/\\\)/g, ")")
+               .replace(/\\\~/g, "~")
                .replace(/\\\-/g, "-");
   
     return html;
@@ -506,6 +508,7 @@
                       .replace(/\_/g, "\\_")
                       .replace(/\(/g, "\\(")
                       .replace(/\)/g, "\\)")
+                      .replace(/\~/g, "\\~")
                       .replace(/\-/g, "\\-");
   
     markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
@@ -513,8 +516,10 @@
                       .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
                       .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
                       .replace(/<b>(.*?)<\/b>/gim, "**$1**")
+                      .replace(/<u>(.*?)<\/u>/gim, "~$1~")
                       .replace(/<em>(.*?)<\/em>/gim, "_$1_")
                       .replace(/<i>(.*?)<\/i>/gim, "_$1_");
+  
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
