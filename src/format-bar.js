@@ -59,16 +59,13 @@ SirTrevor.FormatBar = (function(){
           width = this.$el.width();
 
       if (rectangles.length == 1) {
-
         coords = {
           left: rectangles[0].left + ((rectangles[0].width - width) / 2),
           top: rectangles[0].top + this.$b.scrollTop()
         };
       } else {
-        // Calculate the mid position
-        var max_width = _.max(rectangles, function(rect){ return rect.width; });
         coords = {
-          left: max_width.width / 2,
+          left: rectangles[0].left,
           top: rectangles[0].top + this.$b.scrollTop()
         };
       }
