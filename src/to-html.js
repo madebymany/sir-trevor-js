@@ -2,11 +2,14 @@ SirTrevor.toHTML = function(markdown, type) {
   // MD -> HTML
   var html = markdown;
 
-  html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
-             .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<strong>$1</strong>")       // Bold
-             .replace(/(^|[^\\])_((\\.|[^_])+)_/g, "$1<em>$2</em>")
+  html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
+             .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
+             .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
              .replace(/^\> (.+)$/mg,"$1")
              .replace(/\n\n/g, "<br>");
+
+  // Cleanup any markdown characters left
+  html = html.replace(/\*\*/, "");
 
   // Use custom formatters toHTML functions (if any exist)
   var formatName, format;

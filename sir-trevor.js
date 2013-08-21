@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-19
+ * 2013-08-21
  */
 
 (function ($, _){
@@ -452,11 +452,14 @@
     // MD -> HTML
     var html = markdown;
   
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/g,"<a href='$2'>$1</a>")
-               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/g,"<strong>$1</strong>")       // Bold
-               .replace(/(^|[^\\])_((\\.|[^_])+)_/g, "$1<em>$2</em>")
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
+               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
+               .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
                .replace(/^\> (.+)$/mg,"$1")
                .replace(/\n\n/g, "<br>");
+  
+    // Cleanup any markdown characters left
+    html = html.replace(/\*\*/, "");
   
     // Use custom formatters toHTML functions (if any exist)
     var formatName, format;
@@ -507,11 +510,11 @@
   
     markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
                       .replace(/\n/mg,"")
-                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/g,"[$2]($1)")         // Hyperlinks
-                      .replace(/<\/?b>/g,"**")
-                      .replace(/<\/?STRONG>/gi,"**")                   // Bold
-                      .replace(/<\/?i>/g,"_")
-                      .replace(/<\/?EM>/gi,"_");                        // Italic
+                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
+                      .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
+                      .replace(/<b>(.*?)<\/b>/gim, "**$1**")
+                      .replace(/<em>(.*?)<\/em>/gim, "_$1_")
+                      .replace(/<i>(.*?)<\/i>/gim, "_$1_");
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
