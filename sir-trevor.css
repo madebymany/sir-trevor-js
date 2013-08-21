@@ -479,8 +479,5 @@ ul.st-text-block {
 .st-format-btn--Italic {
   font-style: italic; }
 
-.st-format-btn--Underline {
-  text-decoration: underline; }
-
 .st-format-btn--Unlink {
   text-decoration: line-through; }

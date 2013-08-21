@@ -15,13 +15,6 @@
     text : "i"
   });
 
-  var Underline = SirTrevor.Formatter.extend({
-    title: "underline",
-    cmd: "underline",
-    keyCode: 85,
-    text : "U"
-  });
-
   var Link = SirTrevor.Formatter.extend({
 
     title: "link",
@@ -68,7 +61,6 @@
   */
   SirTrevor.Formatters.Bold = new Bold();
   SirTrevor.Formatters.Italic = new Italic();
-  SirTrevor.Formatters.Underline = new Underline();
   SirTrevor.Formatters.Link = new Link();
   SirTrevor.Formatters.Unlink = new UnLink();
 

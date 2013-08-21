@@ -4,7 +4,6 @@ SirTrevor.toHTML = function(markdown, type) {
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
              .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
-             .replace(/(?:\~)([^*|_]+)(?:\~)/gm,"<u>$1</u>")
              .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
              .replace(/^\> (.+)$/mg,"$1")
              .replace(/\n\n/g, "<br>");
@@ -42,7 +41,6 @@ SirTrevor.toHTML = function(markdown, type) {
              .replace(/\\\_/g, "_")
              .replace(/\\\(/g, "(")
              .replace(/\\\)/g, ")")
-             .replace(/\\\~/g, "~")
              .replace(/\\\-/g, "-");
 
   return html;

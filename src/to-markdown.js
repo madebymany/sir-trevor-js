@@ -1,15 +1,19 @@
 SirTrevor.toMarkdown = function(content, type) {
-  var markdown;
+  var markdown = content;
+
+  // First of all, strip any additional formatting
+  // MSWord, I'm looking at you, punk.
+  markdown = markdown.replace(/( class=(")?Mso[a-zA-Z]+(")?)/g, '')
+                     .replace(/<!--(.*?)-->/g, '');
 
   // Escape anything in here that *could* be considered as MD
   // Markdown chars we care about: * [] _ () -
-  markdown = content.replace(/\*/g, "\\*")
+  markdown = markdown.replace(/\*/g, "\\*")
                     .replace(/\[/g, "\\[")
                     .replace(/\]/g, "\\]")
                     .replace(/\_/g, "\\_")
                     .replace(/\(/g, "\\(")
                     .replace(/\)/g, "\\)")
-                    .replace(/\~/g, "\\~")
                     .replace(/\-/g, "\\-");
 
   markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
@@ -17,7 +21,6 @@ SirTrevor.toMarkdown = function(content, type) {
                     .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
                     .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
                     .replace(/<b>(.*?)<\/b>/gim, "**$1**")
-                    .replace(/<u>(.*?)<\/u>/gim, "~$1~")
                     .replace(/<em>(.*?)<\/em>/gim, "_$1_")
                     .replace(/<i>(.*?)<\/i>/gim, "_$1_");
 

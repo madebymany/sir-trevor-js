@@ -35,20 +35,6 @@ describe("toHTML", function(){
     expect(html).toBe("<strong>test</strong> and <em>testing</em>");
   });
 
-  it("converts underlines to HTML", function(){
-    var markdown = '~test~',
-        html = SirTrevor.toHTML(markdown, "Text");
-
-    expect(html).toBe("<u>test</u>");
-  });
-
-  it("converts bold underlines to HTML", function(){
-    var markdown = '**~test~**',
-        html = SirTrevor.toHTML(markdown, "Text");
-
-    expect(html).toBe("<strong><u>test</u></strong>");
-  });
-
   it("converts newlines to HTML", function(){
     var markdown = "hello!\n\nhello!",
         html = SirTrevor.toHTML(markdown, "Text");

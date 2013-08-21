@@ -454,7 +454,6 @@
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
-               .replace(/(?:\~)([^*|_]+)(?:\~)/gm,"<u>$1</u>")
                .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
                .replace(/^\> (.+)$/mg,"$1")
                .replace(/\n\n/g, "<br>");
@@ -492,23 +491,26 @@
                .replace(/\\\_/g, "_")
                .replace(/\\\(/g, "(")
                .replace(/\\\)/g, ")")
-               .replace(/\\\~/g, "~")
                .replace(/\\\-/g, "-");
   
     return html;
   };
   SirTrevor.toMarkdown = function(content, type) {
-    var markdown;
+    var markdown = content;
+  
+    // First of all, strip any additional formatting
+    // MSWord, I'm looking at you, punk.
+    markdown = markdown.replace(/( class=(")?Mso[a-zA-Z]+(")?)/g, '')
+                       .replace(/<!--(.*?)-->/g, '');
   
     // Escape anything in here that *could* be considered as MD
     // Markdown chars we care about: * [] _ () -
-    markdown = content.replace(/\*/g, "\\*")
+    markdown = markdown.replace(/\*/g, "\\*")
                       .replace(/\[/g, "\\[")
                       .replace(/\]/g, "\\]")
                       .replace(/\_/g, "\\_")
                       .replace(/\(/g, "\\(")
                       .replace(/\)/g, "\\)")
-                      .replace(/\~/g, "\\~")
                       .replace(/\-/g, "\\-");
   
     markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
@@ -516,7 +518,6 @@
                       .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
                       .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
                       .replace(/<b>(.*?)<\/b>/gim, "**$1**")
-                      .replace(/<u>(.*?)<\/u>/gim, "~$1~")
                       .replace(/<em>(.*?)<\/em>/gim, "_$1_")
                       .replace(/<i>(.*?)<\/i>/gim, "_$1_");
   
@@ -2026,13 +2027,6 @@
       text : "i"
     });
   
-    var Underline = SirTrevor.Formatter.extend({
-      title: "underline",
-      cmd: "underline",
-      keyCode: 85,
-      text : "U"
-    });
-  
     var Link = SirTrevor.Formatter.extend({
   
       title: "link",
@@ -2079,7 +2073,6 @@
     */
     SirTrevor.Formatters.Bold = new Bold();
     SirTrevor.Formatters.Italic = new Italic();
-    SirTrevor.Formatters.Underline = new Underline();
     SirTrevor.Formatters.Link = new Link();
     SirTrevor.Formatters.Unlink = new UnLink();
   
