@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-21
+ * 2013-08-22
  */
 
 (function ($, _){
@@ -501,7 +501,17 @@
     // First of all, strip any additional formatting
     // MSWord, I'm looking at you, punk.
     markdown = markdown.replace(/( class=(")?Mso[a-zA-Z]+(")?)/g, '')
-                       .replace(/<!--(.*?)-->/g, '');
+                       .replace(/<!--(.*?)-->/g, '')
+                       .replace(/\/\*(.*?)\*\//g, '')
+                       .replace(/<(\/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>/gi, '');
+  
+    var badTags = ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'],
+        tagStripper;
+  
+    for (var i = 0; i< badTags.length; i++) {
+      tagStripper = new RegExp('<'+badTags[i]+'.*?'+badTags[i]+'(.*?)>', 'gi');
+      markdown = markdown.replace(tagStripper, '');
+    }
   
     // Escape anything in here that *could* be considered as MD
     // Markdown chars we care about: * [] _ () -
@@ -514,12 +524,12 @@
                       .replace(/\-/g, "\\-");
   
     markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
-                      .replace(/\n/mg,"")
-                      .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
-                      .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
-                      .replace(/<b>(.*?)<\/b>/gim, "**$1**")
-                      .replace(/<em>(.*?)<\/em>/gim, "_$1_")
-                      .replace(/<i>(.*?)<\/i>/gim, "_$1_");
+                        .replace(/\n/mg,"")
+                        .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")         // Hyperlinks
+                        .replace(/<strong>(.*?)<\/strong>/gim, "**$1**")
+                        .replace(/<b>(.*?)<\/b>/gim, "**$1**")
+                        .replace(/<em>(.*?)<\/em>/gim, "_$1_")
+                        .replace(/<i>(.*?)<\/i>/gim, "_$1_");
   
   
     // Use custom formatters toMarkdown functions (if any exist)

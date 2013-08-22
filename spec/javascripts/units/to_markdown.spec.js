@@ -64,10 +64,31 @@ describe("toMarkdown", function(){
   });
 
   it("removes comments", function(){
-    var html = "<!--Yo!-->",
+    var html = "<!--Yo!-->/* This is a comment */",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("");
+  });
+
+  it("removes styles", function(){
+    var html = "<style>html { text-align: left; }</style>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("");
+  });
+
+  it("removes scripts", function(){
+    var html = "<script>alert('YO!');</script>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("");
+  });
+
+  it("removes font tags, but leaves content", function(){
+    var html = "<font>Yolo</font>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("Yolo");
   });
 
   it("coverts a complex piece of text correctly", function(){
