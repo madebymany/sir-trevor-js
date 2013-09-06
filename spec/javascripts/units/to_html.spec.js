@@ -36,7 +36,7 @@ describe("toHTML", function(){
   });
 
   it("converts newlines to HTML", function(){
-    var markdown = "hello!\n\nhello!",
+    var markdown = "hello!\nhello!",
         html = SirTrevor.toHTML(markdown, "Text");
 
     expect(html).toBe("hello!<br>hello!");

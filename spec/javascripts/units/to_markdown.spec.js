@@ -53,14 +53,14 @@ describe("toMarkdown", function(){
     var html = "<p>testing</p>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("testing\n\n\n\n");
+    expect(markdown).toBe("testing\n\n");
   });
 
   it("coverts br's to newlines", function(){
     var html = "testing<br>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("testing\n\n");
+    expect(markdown).toBe("testing\n");
   });
 
   it("removes comments", function(){
@@ -95,7 +95,7 @@ describe("toMarkdown", function(){
     var html = "<p><a href=\"#\">Hello</a> this is my <strong>amazing <em>piece</em></strong> <em>I think</em> that <strong>it should</strong> be able to be convereted correctly.</p>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
-    expect(markdown).toBe("[Hello](#) this is my **amazing _piece_** _I think_ that **it should** be able to be convereted correctly.\n\n\n\n");
+    expect(markdown).toBe("[Hello](#) this is my **amazing _piece_** _I think_ that **it should** be able to be convereted correctly.\n\n");
   });
 
   it("correctly encodes * characters", function(){

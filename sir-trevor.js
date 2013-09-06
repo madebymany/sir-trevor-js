@@ -1,5 +1,5 @@
 /*!
- * Sir Trevor JS v0.3.0-rc.4
+ * Sir Trevor JS v0.3.0-rc.5
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
@@ -451,12 +451,12 @@
   SirTrevor.toHTML = function(markdown, type) {
     // MD -> HTML
     var html = markdown;
-   
-    html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
-                .replace(/\n/g,"<br>")                                           // Give me some <br>s
-                .replace(/\[(.+)]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links
-                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>")                // Bold
-                .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>");                     // Italic
+  
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
+                 .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
+                 .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
+                 .replace(/^\> (.+)$/mg,"$1")
+                 .replace(/\n/g, "<br>");
   
     // Cleanup any markdown characters left
     html = html.replace(/\*\*/, "");
