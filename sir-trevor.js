@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-08-22
+ * 2013-09-06
  */
 
 (function ($, _){
@@ -451,12 +451,12 @@
   SirTrevor.toHTML = function(markdown, type) {
     // MD -> HTML
     var html = markdown;
-  
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
-               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
-               .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
-               .replace(/^\> (.+)$/mg,"$1")
-               .replace(/\n\n/g, "<br>");
+   
+    html =  html.replace(/^\> (.+)$/mg,"$1")                                       // Blockquotes
+                .replace(/\n/g,"<br>")                                           // Give me some <br>s
+                .replace(/\[(.+)]\((.+)\)/g,"<a href='$2'>$1</a>")                 // Links
+                .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/mg,"<b>$1</b>")                // Bold
+                .replace(/(?:_)([^*|_]+)(?:_)/mg,"<i>$1</i>");                     // Italic
   
     // Cleanup any markdown characters left
     html = html.replace(/\*\*/, "");
@@ -543,16 +543,16 @@
         }
       }
     }
-  
+    
     // Do our generic stripping out
-    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
-                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
-                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
-                   .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
-                   .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
+    markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n$2")                                 // Divitis style line breaks (handle the first line)
+                   .replace(/<div><div>/g,'\n<div>')                                         // ^ (double opening divs with one close from Chrome)
+                   .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n")                            // ^ (handle nested divs that start with content)
+                   .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n")        // ^ (handle content inside divs)
+                   .replace(/<\/p>/g,"\n\n")                                               // P tags as line breaks
+                   .replace(/<(.)?br(.)?>/g,"\n")                                            // Convert normal line breaks
                    .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
                    .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
-  
   
     // Use custom block toMarkdown functions (if any exist)
     var block;

@@ -46,16 +46,16 @@ SirTrevor.toMarkdown = function(content, type) {
       }
     }
   }
-
+  
   // Do our generic stripping out
-  markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n\n$2")                                 // Divitis style line breaks (handle the first line)
-                 .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n\n")                            // ^ (handle nested divs that start with content)
-                 .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n\n")        // ^ (handle content inside divs)
-                 .replace(/<\/p>/g,"\n\n\n\n")                                               // P tags as line breaks
-                 .replace(/<(.)?br(.)?>/g,"\n\n")                                            // Convert normal line breaks
+  markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n$2")                                 // Divitis style line breaks (handle the first line)
+                 .replace(/<div><div>/g,'\n<div>')                                         // ^ (double opening divs with one close from Chrome)
+                 .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n")                            // ^ (handle nested divs that start with content)
+                 .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n")        // ^ (handle content inside divs)
+                 .replace(/<\/p>/g,"\n\n")                                               // P tags as line breaks
+                 .replace(/<(.)?br(.)?>/g,"\n")                                            // Convert normal line breaks
                  .replace(/&nbsp;/g," ")                                                     // Strip white-space entities
                  .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
-
 
   // Use custom block toMarkdown functions (if any exist)
   var block;
