@@ -21,13 +21,6 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("\\[[1](http://google.com)\\]");
   });
 
-  it("converts links with images inside correctly", function(){
-    var html = '<a href="https://test.com" data-link-name="anchor image" class="link-image "><img src="http://static.guim.co.uk/sys-images/Guardian/Pix/audio/video/2013/8/20/1376989050190/models-smoking-london-001.jpg" width="140" height="84" alt="models smoking london"></a>',
-        markdown = SirTrevor.toMarkdown(html, "Text");
-
-    expect(markdown).toBe("");
-  });
-
   it("coverts bold to markdown", function(){
     var html = "<strong>testing</strong>",
         markdown = SirTrevor.toMarkdown(html, "Text");

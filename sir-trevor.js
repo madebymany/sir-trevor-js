@@ -526,14 +526,13 @@
                       .replace(/\)/g, "\\)")
                       .replace(/\-/g, "\\-");
   
-    markdown = markdown.replace(/<[^\/>][^>]*><\/[^>]+>/gim, '') //Empty elements
+    markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                         .replace(/\n/mg,"")
                         .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")     // Hyperlinks
                         .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, "**$1**")
                         .replace(/<b>(.*?)(\s+)?<\/b>/gim, "**$1**")
                         .replace(/<em>(.*?)(\s+)?<\/em>/gim, "_$1_")
                         .replace(/<i>(.*?)(\s+)?<\/i>/gim, "_$1_");
-  
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
