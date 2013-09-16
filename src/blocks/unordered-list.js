@@ -38,18 +38,17 @@ SirTrevor.Blocks.List = (function() {
     },
 
     toHTML: function(html) {
-      console.log(html);
       html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                  .replace(/\n/mg, "");
-
       return html;
     },
 
-    pastedMarkdownToHTML: function(content) {
-      // On paste, we don't want to add in an <li>
-      content = content.replace(/\n/mg, "");
-      content = SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type));
-      return content.replace(/^ -/, "");
+    onTextContentPasted: function(target, before, event) {
+      var onTextContentPasted = SirTrevor.Block.prototype.onTextContentPasted;
+
+      onTextContentPasted.apply(this, arguments);
+
+      this.$('li:empty').remove();
     }
 
   });

@@ -1,5 +1,4 @@
 SirTrevor.toHTML = function(markdown, type) {
-  console.log(markdown);
   // MD -> HTML
   var html = markdown;
 
