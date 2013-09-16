@@ -38,6 +38,7 @@ SirTrevor.Blocks.List = (function() {
     },
 
     toHTML: function(html) {
+      console.log(html);
       html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                  .replace(/\n/mg, "");
 

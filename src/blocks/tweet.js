@@ -80,6 +80,7 @@ SirTrevor.Blocks.Tweet = (function(){
         id: data.id_str,
         text: data.text,
         created_at: data.created_at,
+        entities: data.entities,
         status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
       };
 

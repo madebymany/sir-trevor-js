@@ -1,15 +1,13 @@
 SirTrevor.toHTML = function(markdown, type) {
+  console.log(markdown);
   // MD -> HTML
   var html = markdown;
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
-               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
-               .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
-               .replace(/^\> (.+)$/mg,"$1")
-               .replace(/\n/g, "<br>");
-
-  // Cleanup any markdown characters left
-  html = html.replace(/\*\*/, "");
+             .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
+             .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
+             .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold (again?)
+             .replace(/^\> (.+)$/mg,"$1");
 
   // Use custom formatters toHTML functions (if any exist)
   var formatName, format;
@@ -33,6 +31,9 @@ SirTrevor.toHTML = function(markdown, type) {
       html = block.prototype.toHTML(html);
     }
   }
+
+  html = html.replace(/\n/g, "<br>")
+             .replace(/\*\*/, "");  // Cleanup any markdown characters left
 
   // Replace escaped
   html = html.replace(/\\\*/g, "*")

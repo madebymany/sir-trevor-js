@@ -15,9 +15,9 @@ SirTrevor.toMarkdown = function(content, type) {
     tagStripper = new RegExp('<'+badTags[i]+'.*?'+badTags[i]+'(.*?)>', 'gi');
     markdown = markdown.replace(tagStripper, '');
   }
-  
+
   //Normalise whitespace
-  markdown = markdown.replace(/&nbsp;/g," ")                                
+  markdown = markdown.replace(/&nbsp;/g," ");
 
   // Escape anything in here that *could* be considered as MD
   // Markdown chars we care about: * [] _ () -
@@ -48,7 +48,7 @@ SirTrevor.toMarkdown = function(content, type) {
       }
     }
   }
-  
+
   // Do our generic stripping out
   markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n$2")                                 // Divitis style line breaks (handle the first line)
                  .replace(/<div><div>/g,'\n<div>')                                         // ^ (double opening divs with one close from Chrome)

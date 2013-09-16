@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-09-06
+ * 2013-09-16
  */
 
 (function ($, _){
@@ -449,17 +449,15 @@
   });
   
   SirTrevor.toHTML = function(markdown, type) {
+    console.log(markdown);
     // MD -> HTML
     var html = markdown;
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
-                 .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
-                 .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
-                 .replace(/^\> (.+)$/mg,"$1")
-                 .replace(/\n/g, "<br>");
-  
-    // Cleanup any markdown characters left
-    html = html.replace(/\*\*/, "");
+               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
+               .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
+               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold (again?)
+               .replace(/^\> (.+)$/mg,"$1");
   
     // Use custom formatters toHTML functions (if any exist)
     var formatName, format;
@@ -483,6 +481,9 @@
         html = block.prototype.toHTML(html);
       }
     }
+  
+    html = html.replace(/\n/g, "<br>")
+               .replace(/\*\*/, "");  // Cleanup any markdown characters left
   
     // Replace escaped
     html = html.replace(/\\\*/g, "*")
@@ -512,9 +513,9 @@
       tagStripper = new RegExp('<'+badTags[i]+'.*?'+badTags[i]+'(.*?)>', 'gi');
       markdown = markdown.replace(tagStripper, '');
     }
-    
+  
     //Normalise whitespace
-    markdown = markdown.replace(/&nbsp;/g," ")                                
+    markdown = markdown.replace(/&nbsp;/g," ");
   
     // Escape anything in here that *could* be considered as MD
     // Markdown chars we care about: * [] _ () -
@@ -545,7 +546,7 @@
         }
       }
     }
-    
+  
     // Do our generic stripping out
     markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n$2")                                 // Divitis style line breaks (handle the first line)
                    .replace(/<div><div>/g,'\n<div>')                                         // ^ (double opening divs with one close from Chrome)
@@ -1877,6 +1878,7 @@
           id: data.id_str,
           text: data.text,
           created_at: data.created_at,
+          entities: data.entities,
           status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
         };
   
@@ -1936,6 +1938,7 @@
       },
   
       toHTML: function(html) {
+        console.log(html);
         html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                    .replace(/\n/mg, "");
   
