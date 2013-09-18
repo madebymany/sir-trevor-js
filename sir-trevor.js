@@ -547,9 +547,9 @@
                        .replace(/<(\/)*(meta|link|span|\\?xml:|st1:|o:|font)(.*?)>/gi, '');
   
     var badTags = ['style', 'script', 'applet', 'embed', 'noframes', 'noscript'],
-        tagStripper;
+        tagStripper, i;
   
-    for (var i = 0; i< badTags.length; i++) {
+    for (i = 0; i< badTags.length; i++) {
       tagStripper = new RegExp('<'+badTags[i]+'.*?'+badTags[i]+'(.*?)>', 'gi');
       markdown = markdown.replace(tagStripper, '');
     }
@@ -563,6 +563,13 @@
                       .replace(/\(/g, "\\(")
                       .replace(/\)/g, "\\)")
                       .replace(/\-/g, "\\-");
+  
+    var inlineTags = ["em", "i", "strong", "b"];
+  
+    for (i = 0; i< inlineTags.length; i++) {
+      tagStripper = new RegExp('<'+inlineTags[i]+'><br></'+inlineTags[i]+'>', 'gi');
+      markdown = markdown.replace(tagStripper, '<br>');
+    }
   
     markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                         .replace(/\n/mg,"")

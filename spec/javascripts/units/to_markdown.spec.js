@@ -77,6 +77,20 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("");
   });
 
+  it("cleans up br's inside of bolds", function(){
+    var html = "<b><br></b>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("\n");
+  });
+
+  it("cleans up br's inside of italics", function(){
+    var html = "<i><br></i>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("\n");
+  });
+
   it("removes font tags, but leaves content", function(){
     var html = "<font>Yolo</font>",
         markdown = SirTrevor.toMarkdown(html, "Text");
