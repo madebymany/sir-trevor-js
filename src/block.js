@@ -227,29 +227,12 @@ SirTrevor.Block = (function(){
     onTextContentPasted: function(target, before, event){
       var after = target[0].innerHTML;
 
-      var pos1 = -1,
-          pos2 = -1,
-          after_len = after.length,
-          before_len = before.length;
-
-      for (var i = 0; i < after_len; i++) {
-        if (pos1 == -1 && before.substr(i, 1) != after.substr(i, 1)) {
-          pos1 = i - 1;
-        }
-
-        if (pos2 == -1 &&
-            before.substr(before_len - i - 1, 1) !=
-            after.substr(after_len - i - 1, 1)
-          ) {
-          pos2 = i;
-        }
-      }
-
-      var pasted = after.substr(pos1, after_len - pos2 - pos1 + 1);
-      var replace = this.pastedMarkdownToHTML(pasted);
+      var diff = diffText(before, after),
+          pasted = diff.result,
+          replace = this.pastedMarkdownToHTML(pasted);
 
       // replace the HTML mess with the plain content
-      target[0].innerHTML = after.substr(0, pos1) + replace + after.substr(pos1 + pasted.length);
+      target[0].innerHTML = after.substr(0, diff.pos1) + replace + after.substr(diff.pos1 + pasted.length);
     },
 
     pastedMarkdownToHTML: function(content) {
@@ -274,7 +257,7 @@ SirTrevor.Block = (function(){
 
     _handleContentPaste: function(ev) {
       var target = $(ev.currentTarget),
-          original_content = target.html();
+          original_content = target[0].innerHTML;
 
       if (target.hasClass('st-text-block')) {
         _.delay(_.bind(this.onTextContentPasted, this, target, original_content, ev), 0);

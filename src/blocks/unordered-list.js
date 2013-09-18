@@ -44,11 +44,10 @@ SirTrevor.Blocks.List = (function() {
     },
 
     onTextContentPasted: function(target, before, event) {
-      var onTextContentPasted = SirTrevor.Block.prototype.onTextContentPasted;
+      var replace = this.pastedMarkdownToHTML(target[0].innerHTML);
+      var list = this.$('ul').html(replace);
 
-      onTextContentPasted.apply(this, arguments);
-
-      this.$('li:empty').remove();
+      this.getTextBlock().caretToEnd();
     }
 
   });

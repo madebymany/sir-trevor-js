@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-09-16
+ * 2013-09-18
  */
 
 (function ($, _){
@@ -108,6 +108,31 @@
     }
   };
 
+  function diffText(before, after) {
+    var pos1 = -1,
+        pos2 = -1,
+        after_len = after.length,
+        before_len = before.length;
+  
+    for (var i = 0; i < after_len; i++) {
+      if (pos1 == -1 && before.substr(i, 1) != after.substr(i, 1)) {
+        pos1 = i - 1;
+      }
+  
+      if (pos2 == -1 &&
+          before.substr(before_len - i - 1, 1) !=
+          after.substr(after_len - i - 1, 1)
+        ) {
+        pos2 = i;
+      }
+    }
+  
+    return {
+      result: after.substr(pos1, after_len - pos2 - pos1 + 1),
+      pos1: pos1,
+      pos2: pos2
+    };
+  }
   /*
     Drop Area Plugin from @maccman
     http://blog.alexmaccaw.com/svbtle-image-uploading
@@ -142,6 +167,20 @@
       this.unbind("dragenter").
            unbind("dragover").
            unbind("dragleave");
+      return this;
+    };
+  
+    $.fn.caretToEnd = function(){
+      var range,selection;
+  
+      range = document.createRange();
+      range.selectNodeContents(this[0]);
+      range.collapse(false);
+  
+      selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+  
       return this;
     };
   
@@ -453,9 +492,8 @@
     var html = markdown;
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
-               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
                .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
-               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold (again?)
+               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
                .replace(/^\> (.+)$/mg,"$1");
   
     // Use custom formatters toHTML functions (if any exist)
@@ -498,6 +536,9 @@
   SirTrevor.toMarkdown = function(content, type) {
     var markdown = content;
   
+    //Normalise whitespace
+    markdown = markdown.replace(/&nbsp;/g," ");
+  
     // First of all, strip any additional formatting
     // MSWord, I'm looking at you, punk.
     markdown = markdown.replace(/( class=(")?Mso[a-zA-Z]+(")?)/g, '')
@@ -513,9 +554,6 @@
       markdown = markdown.replace(tagStripper, '');
     }
   
-    //Normalise whitespace
-    markdown = markdown.replace(/&nbsp;/g," ");
-  
     // Escape anything in here that *could* be considered as MD
     // Markdown chars we care about: * [] _ () -
     markdown = markdown.replace(/\*/g, "\\*")
@@ -529,10 +567,10 @@
     markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                         .replace(/\n/mg,"")
                         .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")     // Hyperlinks
-                        .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, "**$1**")
-                        .replace(/<b>(.*?)(\s+)?<\/b>/gim, "**$1**")
-                        .replace(/<em>(.*?)(\s+)?<\/em>/gim, "_$1_")
-                        .replace(/<i>(.*?)(\s+)?<\/i>/gim, "_$1_");
+                        .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, "**$1**$2")
+                        .replace(/<b>(.*?)(\s+)?<\/b>/gim, "**$1**$2")
+                        .replace(/<em>(.*?)(\s+)?<\/em>/gim, "_$1_$2")
+                        .replace(/<i>(.*?)(\s+)?<\/i>/gim, "_$1_$2");
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
@@ -1388,29 +1426,12 @@
       onTextContentPasted: function(target, before, event){
         var after = target[0].innerHTML;
   
-        var pos1 = -1,
-            pos2 = -1,
-            after_len = after.length,
-            before_len = before.length;
-  
-        for (var i = 0; i < after_len; i++) {
-          if (pos1 == -1 && before.substr(i, 1) != after.substr(i, 1)) {
-            pos1 = i - 1;
-          }
-  
-          if (pos2 == -1 &&
-              before.substr(before_len - i - 1, 1) !=
-              after.substr(after_len - i - 1, 1)
-            ) {
-            pos2 = i;
-          }
-        }
-  
-        var pasted = after.substr(pos1, after_len - pos2 - pos1 + 1);
-        var replace = this.pastedMarkdownToHTML(pasted);
+        var diff = diffText(before, after),
+            pasted = diff.result,
+            replace = this.pastedMarkdownToHTML(pasted);
   
         // replace the HTML mess with the plain content
-        target[0].innerHTML = after.substr(0, pos1) + replace + after.substr(pos1 + pasted.length);
+        target[0].innerHTML = after.substr(0, diff.pos1) + replace + after.substr(diff.pos1 + pasted.length);
       },
   
       pastedMarkdownToHTML: function(content) {
@@ -1435,7 +1456,7 @@
   
       _handleContentPaste: function(ev) {
         var target = $(ev.currentTarget),
-            original_content = target.html();
+            original_content = target[0].innerHTML;
   
         if (target.hasClass('st-text-block')) {
           _.delay(_.bind(this.onTextContentPasted, this, target, original_content, ev), 0);
@@ -1943,11 +1964,10 @@
       },
   
       onTextContentPasted: function(target, before, event) {
-        var onTextContentPasted = SirTrevor.Block.prototype.onTextContentPasted;
+        var replace = this.pastedMarkdownToHTML(target[0].innerHTML);
+        var list = this.$('ul').html(replace);
   
-        onTextContentPasted.apply(this, arguments);
-  
-        this.$('li:empty').remove();
+        this.getTextBlock().caretToEnd();
       }
   
     });
