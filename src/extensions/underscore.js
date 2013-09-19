@@ -17,6 +17,10 @@ _.mixin({
     return string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
   },
 
+  reverse: function(str) {
+    return str.split("").reverse().join("");
+  },
+
   flattern: function(obj) {
     var x = {};
     _.each(obj, function(a,b) {

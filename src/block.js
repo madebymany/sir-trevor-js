@@ -345,7 +345,18 @@ SirTrevor.Block = (function(){
      },
 
     clearInsertedStyles: function(e) {
-      e.target.removeAttribute('style'); // Hacky fix for Chrome.
+      var target = e.target,
+          parent = e.target.parentNode,
+          inlineTags = ["EM", "I", "B", "STRONG"];
+
+      target.removeAttribute('style'); // Hacky fix for Chrome.
+
+      if (target.tagName == "BR") {
+        if (parent && _.contains(inlineTags, parent.tagName)) {
+          if (parent.parentNode.tagName == "DIV")
+            parent.parentNode.appendChild(target);
+        }
+      }
     },
 
     hasTextBlock: function() {

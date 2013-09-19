@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-09-18
+ * 2013-09-19
  */
 
 (function ($, _){
@@ -470,6 +470,10 @@
       return string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     },
   
+    reverse: function(str) {
+      return str.split("").reverse().join("");
+    },
+  
     flattern: function(obj) {
       var x = {};
       _.each(obj, function(a,b) {
@@ -491,10 +495,19 @@
     // MD -> HTML
     var html = markdown;
   
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>")
-               .replace(/(^|[^\\])_((\\.|[^_])+)_/gm, "$1<em>$2</em>")
-               .replace(/(?:\*\*)([^*|_]+)(?:\*\*)/gm,"<strong>$1</strong>")       // Bold
-               .replace(/^\> (.+)$/mg,"$1");
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>");
+  
+    // This may seem crazy, but because JS doesn't have a look behind,
+    // we reverse the string to regex out the italic items (and bold)
+    // and look for something that doesn't start (or end in the reversed strings case)
+    // with a slash.
+    html = _.reverse(
+             _.reverse(html)
+             .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, ">i/<$1>i<")
+             .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm,">b/<$1>b<")
+           );
+  
+    html =  html.replace(/^\> (.+)$/mg,"$1");
   
     // Use custom formatters toHTML functions (if any exist)
     var formatName, format;
@@ -520,7 +533,8 @@
     }
   
     html = html.replace(/\n/g, "<br>")
-               .replace(/\*\*/, "");  // Cleanup any markdown characters left
+               .replace(/\*\*/, "")
+               .replace(/__/, "");  // Cleanup any markdown characters left
   
     // Replace escaped
     html = html.replace(/\\\*/g, "*")
@@ -564,11 +578,13 @@
                       .replace(/\)/g, "\\)")
                       .replace(/\-/g, "\\-");
   
-    var inlineTags = ["em", "i", "strong", "b"];
+    var brRegex = /(?:<br><\/(b|strong|em|i)>)/gi;
   
-    for (i = 0; i< inlineTags.length; i++) {
-      tagStripper = new RegExp('<'+inlineTags[i]+'><br></'+inlineTags[i]+'>', 'gi');
-      markdown = markdown.replace(tagStripper, '<br>');
+    while (markdown.match(brRegex)) {
+      // While there's a br inside of this tag, we need to extract it
+      // and put it *outside* of the current tag
+      // this prevents some nasty formatting issues
+      markdown = markdown.replace(brRegex, '</$1><br>');
     }
   
     markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
@@ -1551,7 +1567,18 @@
        },
   
       clearInsertedStyles: function(e) {
-        e.target.removeAttribute('style'); // Hacky fix for Chrome.
+        var target = e.target,
+            parent = e.target.parentNode,
+            inlineTags = ["EM", "I", "B", "STRONG"];
+  
+        target.removeAttribute('style'); // Hacky fix for Chrome.
+  
+        if (target.tagName == "BR") {
+          if (parent && _.contains(inlineTags, parent.tagName)) {
+            if (parent.parentNode.tagName == "DIV")
+              parent.parentNode.appendChild(target);
+          }
+        }
       },
   
       hasTextBlock: function() {
