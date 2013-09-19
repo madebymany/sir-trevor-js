@@ -1,6 +1,14 @@
-SirTrevor.toHTML = function(markdown, type) {
+SirTrevor.toHTML = function(markdown, type, onRender) {
   // MD -> HTML
   var html = markdown;
+
+  if(_.isUndefined(onRender)) { onRender = true; }
+
+  if (onRender) {
+    html = "<div>" + html;
+    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+    html = html.replace(/\n/gm, "</div><div>");
+  }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>");
 
@@ -51,6 +59,10 @@ SirTrevor.toHTML = function(markdown, type) {
              .replace(/\\\(/g, "(")
              .replace(/\\\)/g, ")")
              .replace(/\\\-/g, "-");
+
+  if (onRender) {
+    html += "</div>";
+  }
 
   return html;
 };

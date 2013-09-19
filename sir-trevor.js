@@ -491,9 +491,17 @@
   
   });
   
-  SirTrevor.toHTML = function(markdown, type) {
+  SirTrevor.toHTML = function(markdown, type, onRender) {
     // MD -> HTML
     var html = markdown;
+  
+    if(_.isUndefined(onRender)) { onRender = true; }
+  
+    if (onRender) {
+      html = "<div>" + html;
+      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+      html = html.replace(/\n/gm, "</div><div>");
+    }
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>");
   
@@ -544,6 +552,10 @@
                .replace(/\\\(/g, "(")
                .replace(/\\\)/g, ")")
                .replace(/\\\-/g, "-");
+  
+    if (onRender) {
+      html += "</div>";
+    }
   
     return html;
   };
@@ -1456,7 +1468,7 @@
       },
   
       pastedMarkdownToHTML: function(content) {
-        return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type);
+        return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type, false);
       },
   
       onContentPasted: function(event, target){},
@@ -1551,8 +1563,6 @@
           }, this))
           .bind('mouseup', this.getSelectionForFormatter)
           .on('DOMNodeInserted', this.clearInsertedStyles);
-  
-          document.execCommand("insertBrOnReturn", false, "true");
       },
   
       getSelectionForFormatter: function() {
@@ -1567,18 +1577,8 @@
        },
   
       clearInsertedStyles: function(e) {
-        var target = e.target,
-            parent = e.target.parentNode,
-            inlineTags = ["EM", "I", "B", "STRONG"];
-  
+        var target = e.target;
         target.removeAttribute('style'); // Hacky fix for Chrome.
-  
-        // if (target.tagName == "BR") {
-        //   if (parent && _.contains(inlineTags, parent.tagName)) {
-        //     if (parent.parentNode.tagName == "DIV")
-        //       parent.parentNode.appendChild(target);
-        //   }
-        // }
       },
   
       hasTextBlock: function() {

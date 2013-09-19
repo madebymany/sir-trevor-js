@@ -236,7 +236,7 @@ SirTrevor.Block = (function(){
     },
 
     pastedMarkdownToHTML: function(content) {
-      return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type);
+      return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type, false);
     },
 
     onContentPasted: function(event, target){},
@@ -331,8 +331,6 @@ SirTrevor.Block = (function(){
         }, this))
         .bind('mouseup', this.getSelectionForFormatter)
         .on('DOMNodeInserted', this.clearInsertedStyles);
-
-        document.execCommand("insertBrOnReturn", false, "true");
     },
 
     getSelectionForFormatter: function() {
@@ -347,18 +345,8 @@ SirTrevor.Block = (function(){
      },
 
     clearInsertedStyles: function(e) {
-      var target = e.target,
-          parent = e.target.parentNode,
-          inlineTags = ["EM", "I", "B", "STRONG"];
-
+      var target = e.target;
       target.removeAttribute('style'); // Hacky fix for Chrome.
-
-      // if (target.tagName == "BR") {
-      //   if (parent && _.contains(inlineTags, parent.tagName)) {
-      //     if (parent.parentNode.tagName == "DIV")
-      //       parent.parentNode.appendChild(target);
-      //   }
-      // }
     },
 
     hasTextBlock: function() {

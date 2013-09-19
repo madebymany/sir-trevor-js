@@ -69,7 +69,7 @@ describe("Store", function(){
     it("has the correct data on the $el", function(){
       var json = JSON.parse(editor.$el.val());
 
-      expect(json.data[0].data.text).toBe("Blah");
+      expect(json.data[0].data.text).toBe("Blah\n");
     });
 
   });
