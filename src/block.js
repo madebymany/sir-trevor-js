@@ -331,6 +331,8 @@ SirTrevor.Block = (function(){
         }, this))
         .bind('mouseup', this.getSelectionForFormatter)
         .on('DOMNodeInserted', this.clearInsertedStyles);
+
+        document.execCommand("insertBrOnReturn", false, "true");
     },
 
     getSelectionForFormatter: function() {

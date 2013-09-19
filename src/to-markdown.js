@@ -29,13 +29,11 @@ SirTrevor.toMarkdown = function(content, type) {
                     .replace(/\)/g, "\\)")
                     .replace(/\-/g, "\\-");
 
-  var brRegex = /(?:<br><\/(b|strong|em|i)>)/gi;
+  var inlineTags = ["em", "i", "strong", "b"];
 
-  while (markdown.match(brRegex)) {
-    // While there's a br inside of this tag, we need to extract it
-    // and put it *outside* of the current tag
-    // this prevents some nasty formatting issues
-    markdown = markdown.replace(brRegex, '</$1><br>');
+  for (i = 0; i< inlineTags.length; i++) {
+    tagStripper = new RegExp('<'+inlineTags[i]+'><br></'+inlineTags[i]+'>', 'gi');
+    markdown = markdown.replace(tagStripper, '<br>');
   }
 
   markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
