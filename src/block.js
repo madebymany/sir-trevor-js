@@ -351,12 +351,12 @@ SirTrevor.Block = (function(){
 
       target.removeAttribute('style'); // Hacky fix for Chrome.
 
-      if (target.tagName == "BR") {
-        if (parent && _.contains(inlineTags, parent.tagName)) {
-          if (parent.parentNode.tagName == "DIV")
-            parent.parentNode.appendChild(target);
-        }
-      }
+      // if (target.tagName == "BR") {
+      //   if (parent && _.contains(inlineTags, parent.tagName)) {
+      //     if (parent.parentNode.tagName == "DIV")
+      //       parent.parentNode.appendChild(target);
+      //   }
+      // }
     },
 
     hasTextBlock: function() {
