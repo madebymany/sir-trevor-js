@@ -17,7 +17,7 @@ SirTrevor.Blocks.List = (function() {
     },
 
     loadData: function(data){
-      this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+      this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type, false) + "</ul>");
     },
 
     onBlockRender: function() {

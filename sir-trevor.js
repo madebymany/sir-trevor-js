@@ -495,7 +495,7 @@
     // MD -> HTML
     var html = markdown;
   
-    if(_.isUndefined(onRender)) { onRender = true; }
+    if(_.isUndefined(onRender)) { onRender = false; }
   
     if (onRender) {
       html = "<div>" + html;
@@ -1689,7 +1689,7 @@
       },
   
       loadData: function(data){
-        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type, false));
         this.$('.js-cite-input').val(data.cite);
       },
   
@@ -1847,7 +1847,7 @@
     icon_name: 'text',
   
     loadData: function(data){
-      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type, true));
     }
   });
   SirTrevor.Blocks.Tweet = (function(){
@@ -1971,7 +1971,7 @@
       },
   
       loadData: function(data){
-        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type, false) + "</ul>");
       },
   
       onBlockRender: function() {

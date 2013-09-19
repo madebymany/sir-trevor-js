@@ -2,7 +2,7 @@ SirTrevor.toHTML = function(markdown, type, onRender) {
   // MD -> HTML
   var html = markdown;
 
-  if(_.isUndefined(onRender)) { onRender = true; }
+  if(_.isUndefined(onRender)) { onRender = false; }
 
   if (onRender) {
     html = "<div>" + html;

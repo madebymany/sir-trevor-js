@@ -21,7 +21,7 @@ SirTrevor.Blocks.Quote = (function(){
     },
 
     loadData: function(data){
-      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type, false));
       this.$('.js-cite-input').val(data.cite);
     },
 
