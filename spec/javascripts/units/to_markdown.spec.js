@@ -126,4 +126,18 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("test\\-something");
   });
 
+  it("strips whitepace from bolds", function(){
+    var html = "<b> Test</b>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("**Test**");
+  });
+
+  it("strips whitepace from italics", function(){
+    var html = "<i> Test</i>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("_Test_");
+  });
+
 });

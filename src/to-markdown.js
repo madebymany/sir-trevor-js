@@ -36,13 +36,21 @@ SirTrevor.toMarkdown = function(content, type) {
     markdown = markdown.replace(tagStripper, '<br>');
   }
 
+  function replaceBolds(match, p1, p2){
+    return "**" + p1.trim() + "**";
+  }
+
+  function replaceItalics(match, p1, p2){
+    return "_" + p1.trim() + "_";
+  }
+
   markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                       .replace(/\n/mg,"")
                       .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")     // Hyperlinks
-                      .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, "**$1**$2")
-                      .replace(/<b>(.*?)(\s+)?<\/b>/gim, "**$1**$2")
-                      .replace(/<em>(.*?)(\s+)?<\/em>/gim, "_$1_$2")
-                      .replace(/<i>(.*?)(\s+)?<\/i>/gim, "_$1_$2");
+                      .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, replaceBolds)
+                      .replace(/<b>(.*?)(\s+)?<\/b>/gim, replaceBolds)
+                      .replace(/<em>(.*?)(\s+)?<\/em>/gim, replaceItalics)
+                      .replace(/<i>(.*?)(\s+)?<\/i>/gim, replaceItalics);
 
   // Use custom formatters toMarkdown functions (if any exist)
   var formatName, format;
