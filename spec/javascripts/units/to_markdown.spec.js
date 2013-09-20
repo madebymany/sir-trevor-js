@@ -140,4 +140,32 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("_Test_");
   });
 
+  it("strips whitepace from links", function(){
+    var html = "<a href='test'> test</a>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("[test](test)");
+  });
+
+  it("removes newlines from bolds", function(){
+    var html = "<b>test<br><br></b>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("**test**");
+  });
+
+  it("removes newlines from italics", function(){
+    var html = "<i>test<br><br></i>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("_test_");
+  });
+
+  it("removes newlines from links", function(){
+    var html = "<a href='test'>test<br></a>",
+        markdown = SirTrevor.toMarkdown(html, "Text");
+
+    expect(markdown).toBe("[test](test)");
+  });
+
 });

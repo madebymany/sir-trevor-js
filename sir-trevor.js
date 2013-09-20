@@ -602,26 +602,31 @@
   
     var inlineTags = ["em", "i", "strong", "b"];
   
+  
+  
     for (i = 0; i< inlineTags.length; i++) {
       tagStripper = new RegExp('<'+inlineTags[i]+'><br></'+inlineTags[i]+'>', 'gi');
       markdown = markdown.replace(tagStripper, '<br>');
     }
   
     function replaceBolds(match, p1, p2){
-      return "**" + p1.trim() + "**";
+      return "**" + p1.trim().replace(/<(.)?br(.)?>/g, '') + "**";
     }
   
     function replaceItalics(match, p1, p2){
-      return "_" + p1.trim() + "_";
+      return "_" + p1.trim().replace(/<(.)?br(.)?>/g, '') + "_";
     }
   
     markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                         .replace(/\n/mg,"")
-                        .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim,"[$2]($1)")     // Hyperlinks
+                        .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim, function(match, p1, p2){
+                          return "[" + p2.trim().replace(/<(.)?br(.)?>/g, '') + "]("+ p1 +")";
+                        }) // Hyperlinks
                         .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, replaceBolds)
                         .replace(/<b>(.*?)(\s+)?<\/b>/gim, replaceBolds)
                         .replace(/<em>(.*?)(\s+)?<\/em>/gim, replaceItalics)
                         .replace(/<i>(.*?)(\s+)?<\/i>/gim, replaceItalics);
+  
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
@@ -642,6 +647,7 @@
                    .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n")        // ^ (handle content inside divs)
                    .replace(/<\/p>/g,"\n\n")                                               // P tags as line breaks
                    .replace(/<(.)?br(.)?>/g,"\n")                                            // Convert normal line breaks
+                   .replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                    .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
   
     // Use custom block toMarkdown functions (if any exist)
