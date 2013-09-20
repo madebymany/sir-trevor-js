@@ -104,4 +104,18 @@ describe("toHTML", function(){
 
     expect(html).toBe("<div><a href='http://google.com'>Test</a></div>");
   });
+
+  it("strips preceding spaces in italic tags", function(){
+    var md = "_ Test_",
+        html = SirTrevor.toHTML(md, "Text");
+
+    expect(html).toBe("<div><i>Test</i></div>");
+  });
+
+  it("strips preceding spaces in bold tags", function(){
+    var md = "** Test**",
+        html = SirTrevor.toHTML(md, "Text");
+
+    expect(html).toBe("<div><b>Test</b></div>");
+  });
 });

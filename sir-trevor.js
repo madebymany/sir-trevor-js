@@ -513,10 +513,10 @@
     html = _.reverse(
              _.reverse(html)
              .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1){
-                return ">i/<"+ p1.replace(/\n/g, '') +">i<";
+                return ">i/<"+ p1.replace(/\n/g, '').trim() +">i<";
              })
              .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-                return ">b/<"+ p1.replace(/\n/g, '') +">b<";
+                return ">b/<"+ p1.replace(/\n/g, '').trim() +">b<";
              })
             );
   
