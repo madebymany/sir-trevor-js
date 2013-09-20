@@ -55,26 +55,18 @@ SirTrevor.FormatBar = (function(){
     remove: function(){ this.$el.remove(); },
 
     renderBySelection: function(rectangles) {
-      var coords = {},
-          width = this.$el.width();
 
-      if (rectangles.length == 1) {
-        coords = {
-          left: rectangles[0].left + ((rectangles[0].width - width) / 2),
-          top: rectangles[0].top + this.$b.scrollTop()
-        };
-      } else {
-        coords = {
-          left: rectangles[0].left,
-          top: rectangles[0].top + this.$b.scrollTop()
-        };
-      }
+      var selection = window.getSelection(),
+          range = selection.getRangeAt(0),
+          boundary = range.getBoundingClientRect(),
+          coords = {};
 
-      coords.left = Math.max(coords.left, 0);
+      coords.top = boundary.top + 20 + window.pageYOffset - this.$el.height() + 'px';
+      coords.left = ((boundary.left + boundary.right) / 2) - (this.$el.width() / 2) + 'px';
 
       this.highlightSelectedButtons();
-
       this.show();
+
       this.$el.css(coords);
     },
 

@@ -17,7 +17,7 @@ SirTrevor.Blocks.List = (function() {
     },
 
     loadData: function(data){
-      this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type, false) + "</ul>");
+      this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
     },
 
     onBlockRender: function() {
@@ -27,7 +27,7 @@ SirTrevor.Blocks.List = (function() {
 
     checkForList: function() {
       if (this.$('ul').length === 0) {
-        document.execCommand("insertUnorderedList",false,false);
+        document.execCommand("insertUnorderedList", false, false);
       }
     },
 
@@ -40,12 +40,13 @@ SirTrevor.Blocks.List = (function() {
     toHTML: function(html) {
       html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                  .replace(/\n/mg, "");
+
       return html;
     },
 
-    onTextContentPasted: function(target, before, event) {
-      var replace = this.pastedMarkdownToHTML(target[0].innerHTML);
-      var list = this.$('ul').html(replace);
+    onContentPasted: function(event, target) {
+      var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
+          list = this.$('ul').html(replace);
 
       this.getTextBlock().caretToEnd();
     }

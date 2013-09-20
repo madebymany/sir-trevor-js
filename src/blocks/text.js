@@ -10,6 +10,6 @@ SirTrevor.Blocks.Text = SirTrevor.Block.extend({
   icon_name: 'text',
 
   loadData: function(data){
-    this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type, true));
+    this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
   }
 });

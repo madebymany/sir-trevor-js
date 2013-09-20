@@ -1,16 +1,17 @@
-SirTrevor.toHTML = function(markdown, type, onRender) {
+SirTrevor.toHTML = function(markdown, type) {
   // MD -> HTML
-  var html = markdown;
+  var html = markdown,
+      shouldWrap = type === "Text";
 
-  if(_.isUndefined(onRender)) { onRender = false; }
+  if(_.isUndefined(shouldWrap)) { shouldWrap = false; }
 
-  if (onRender) {
+  if (shouldWrap) {
     html = "<div>" + html;
-    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\n/gm, "</div><div>");
   }
 
-  html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>");
+  html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
+    return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+  });
 
   // This may seem crazy, but because JS doesn't have a look behind,
   // we reverse the string to regex out the italic items (and bold)
@@ -18,9 +19,13 @@ SirTrevor.toHTML = function(markdown, type, onRender) {
   // with a slash.
   html = _.reverse(
            _.reverse(html)
-           .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, ">i/<$1>i<")
-           .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm,">b/<$1>b<")
-         );
+           .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1){
+              return ">i/<"+ p1.replace(/\n/g, '') +">i<";
+           })
+           .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
+              return ">b/<"+ p1.replace(/\n/g, '') +">b<";
+           })
+          );
 
   html =  html.replace(/^\> (.+)$/mg,"$1");
 
@@ -47,6 +52,11 @@ SirTrevor.toHTML = function(markdown, type, onRender) {
     }
   }
 
+  if (shouldWrap) {
+    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+    html = html.replace(/\n/gm, "</div><div>");
+  }
+
   html = html.replace(/\n/g, "<br>")
              .replace(/\*\*/, "")
              .replace(/__/, "");  // Cleanup any markdown characters left
@@ -60,7 +70,7 @@ SirTrevor.toHTML = function(markdown, type, onRender) {
              .replace(/\\\)/g, ")")
              .replace(/\\\-/g, "-");
 
-  if (onRender) {
+  if (shouldWrap) {
     html += "</div>";
   }
 

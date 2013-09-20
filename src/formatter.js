@@ -52,6 +52,7 @@ SirTrevor.Formatter = (function(){
           if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
             document.execCommand(ev.data.formatter.cmd, false, true);
             ev.preventDefault();
+            ctrlDown = false;
           }
         });
     }

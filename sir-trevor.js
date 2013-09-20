@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-09-19
+ * 2013-09-20
  */
 
 (function ($, _){
@@ -491,19 +491,20 @@
   
   });
   
-  SirTrevor.toHTML = function(markdown, type, onRender) {
+  SirTrevor.toHTML = function(markdown, type) {
     // MD -> HTML
-    var html = markdown;
+    var html = markdown,
+        shouldWrap = type === "Text";
   
-    if(_.isUndefined(onRender)) { onRender = false; }
+    if(_.isUndefined(shouldWrap)) { shouldWrap = false; }
   
-    if (onRender) {
+    if (shouldWrap) {
       html = "<div>" + html;
-      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-      html = html.replace(/\n/gm, "</div><div>");
     }
   
-    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,"<a href='$2'>$1</a>");
+    html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
+      return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+    });
   
     // This may seem crazy, but because JS doesn't have a look behind,
     // we reverse the string to regex out the italic items (and bold)
@@ -511,9 +512,13 @@
     // with a slash.
     html = _.reverse(
              _.reverse(html)
-             .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, ">i/<$1>i<")
-             .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm,">b/<$1>b<")
-           );
+             .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1){
+                return ">i/<"+ p1.replace(/\n/g, '') +">i<";
+             })
+             .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
+                return ">b/<"+ p1.replace(/\n/g, '') +">b<";
+             })
+            );
   
     html =  html.replace(/^\> (.+)$/mg,"$1");
   
@@ -540,6 +545,11 @@
       }
     }
   
+    if (shouldWrap) {
+      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+      html = html.replace(/\n/gm, "</div><div>");
+    }
+  
     html = html.replace(/\n/g, "<br>")
                .replace(/\*\*/, "")
                .replace(/__/, "");  // Cleanup any markdown characters left
@@ -553,7 +563,7 @@
                .replace(/\\\)/g, ")")
                .replace(/\\\-/g, "-");
   
-    if (onRender) {
+    if (shouldWrap) {
       html += "</div>";
     }
   
@@ -1456,25 +1466,16 @@
                    .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
       },
   
-      onTextContentPasted: function(target, before, event){
-        var after = target[0].innerHTML;
-  
-        var diff = diffText(before, after),
-            pasted = diff.result,
-            replace = this.pastedMarkdownToHTML(pasted);
-  
-        // replace the HTML mess with the plain content
-        target[0].innerHTML = after.substr(0, diff.pos1) + replace + after.substr(diff.pos1 + pasted.length);
-      },
-  
       pastedMarkdownToHTML: function(content) {
-        return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type, false);
+        return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type);
       },
   
-      onContentPasted: function(event, target){},
+      onContentPasted: function(event, target){
+        target.html(this.pastedMarkdownToHTML(target[0].innerHTML));
+        this.getTextBlock().caretToEnd();
+      },
   
       beforeLoadingData: function() {
-  
         this.loading();
   
         if(this.droppable || this.uploadable || this.pastable) {
@@ -1488,14 +1489,9 @@
       },
   
       _handleContentPaste: function(ev) {
-        var target = $(ev.currentTarget),
-            original_content = target[0].innerHTML;
+        var target = $(ev.currentTarget);
   
-        if (target.hasClass('st-text-block')) {
-          _.delay(_.bind(this.onTextContentPasted, this, target, original_content, ev), 0);
-        } else {
-          _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
-        }
+        _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
       },
   
       _getBlockClass: function() {
@@ -1540,40 +1536,21 @@
       },
   
       _initTextBlocks: function() {
-        var shift_down = false;
-  
         this.getTextBlock()
           .bind('paste', this._handleContentPaste)
-          .bind('keydown', function(e){
-            var code = (e.keyCode ? e.keyCode : e.which);
-            if (code == 16) shift_down = true;
-          })
-          .bind('keyup', _.bind(function(e){
-  
-            var code = (e.keyCode ? e.keyCode : e.which);
-  
-            if (shift_down && (code == 37 || code == 39 || code == 40 || code == 38)) {
-              this.getSelectionForFormatter();
-            }
-  
-            if (code == 16) {
-              shift_down = false;
-            }
-  
-          }, this))
+          .bind('keyup', this.getSelectionForFormatter)
           .bind('mouseup', this.getSelectionForFormatter)
-          .on('DOMNodeInserted', this.clearInsertedStyles);
+          .bind('DOMNodeInserted', this.clearInsertedStyles);
       },
   
       getSelectionForFormatter: function() {
-         var range = window.getSelection().getRangeAt(0),
-             rects = range.getClientRects();
+         var selection = window.getSelection();
   
-         if (!range.collapsed && rects.length) {
-           SirTrevor.EventBus.trigger('formatter:positon', rects);
-         } else {
-           SirTrevor.EventBus.trigger('formatter:hide');
-         }
+          if (selection.toString().trim() === '') {
+            SirTrevor.EventBus.trigger('formatter:hide');
+          } else {
+            SirTrevor.EventBus.trigger('formatter:positon');
+          }
        },
   
       clearInsertedStyles: function(e) {
@@ -1654,6 +1631,7 @@
             if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
               document.execCommand(ev.data.formatter.cmd, false, true);
               ev.preventDefault();
+              ctrlDown = false;
             }
           });
       }
@@ -1689,7 +1667,7 @@
       },
   
       loadData: function(data){
-        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type, false));
+        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
         this.$('.js-cite-input').val(data.cite);
       },
   
@@ -1847,7 +1825,7 @@
     icon_name: 'text',
   
     loadData: function(data){
-      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type, true));
+      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
   });
   SirTrevor.Blocks.Tweet = (function(){
@@ -1971,7 +1949,7 @@
       },
   
       loadData: function(data){
-        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type, false) + "</ul>");
+        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
       },
   
       onBlockRender: function() {
@@ -1981,7 +1959,7 @@
   
       checkForList: function() {
         if (this.$('ul').length === 0) {
-          document.execCommand("insertUnorderedList",false,false);
+          document.execCommand("insertUnorderedList", false, false);
         }
       },
   
@@ -1994,12 +1972,13 @@
       toHTML: function(html) {
         html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                    .replace(/\n/mg, "");
+  
         return html;
       },
   
-      onTextContentPasted: function(target, before, event) {
-        var replace = this.pastedMarkdownToHTML(target[0].innerHTML);
-        var list = this.$('ul').html(replace);
+      onContentPasted: function(event, target) {
+        var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
+            list = this.$('ul').html(replace);
   
         this.getTextBlock().caretToEnd();
       }
@@ -2120,7 +2099,9 @@
             node;
   
         if (selection.rangeCount > 0) {
-          node = selection.getRangeAt(0).startContainer.parentNode;
+          node = selection.getRangeAt(0)
+                          .startContainer
+                          .parentNode;
         }
   
         return (node && node.nodeName == "A");
@@ -2381,26 +2362,18 @@
       remove: function(){ this.$el.remove(); },
   
       renderBySelection: function(rectangles) {
-        var coords = {},
-            width = this.$el.width();
   
-        if (rectangles.length == 1) {
-          coords = {
-            left: rectangles[0].left + ((rectangles[0].width - width) / 2),
-            top: rectangles[0].top + this.$b.scrollTop()
-          };
-        } else {
-          coords = {
-            left: rectangles[0].left,
-            top: rectangles[0].top + this.$b.scrollTop()
-          };
-        }
+        var selection = window.getSelection(),
+            range = selection.getRangeAt(0),
+            boundary = range.getBoundingClientRect(),
+            coords = {};
   
-        coords.left = Math.max(coords.left, 0);
+        coords.top = boundary.top + 20 + window.pageYOffset - this.$el.height() + 'px';
+        coords.left = ((boundary.left + boundary.right) / 2) - (this.$el.width() / 2) + 'px';
   
         this.highlightSelectedButtons();
-  
         this.show();
+  
         this.$el.css(coords);
       },
   

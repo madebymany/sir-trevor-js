@@ -42,7 +42,9 @@
           node;
 
       if (selection.rangeCount > 0) {
-        node = selection.getRangeAt(0).startContainer.parentNode;
+        node = selection.getRangeAt(0)
+                        .startContainer
+                        .parentNode;
       }
 
       return (node && node.nodeName == "A");

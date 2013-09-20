@@ -224,25 +224,16 @@ SirTrevor.Block = (function(){
                  .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
     },
 
-    onTextContentPasted: function(target, before, event){
-      var after = target[0].innerHTML;
-
-      var diff = diffText(before, after),
-          pasted = diff.result,
-          replace = this.pastedMarkdownToHTML(pasted);
-
-      // replace the HTML mess with the plain content
-      target[0].innerHTML = after.substr(0, diff.pos1) + replace + after.substr(diff.pos1 + pasted.length);
-    },
-
     pastedMarkdownToHTML: function(content) {
-      return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type, false);
+      return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type);
     },
 
-    onContentPasted: function(event, target){},
+    onContentPasted: function(event, target){
+      target.html(this.pastedMarkdownToHTML(target[0].innerHTML));
+      this.getTextBlock().caretToEnd();
+    },
 
     beforeLoadingData: function() {
-
       this.loading();
 
       if(this.droppable || this.uploadable || this.pastable) {
@@ -256,14 +247,9 @@ SirTrevor.Block = (function(){
     },
 
     _handleContentPaste: function(ev) {
-      var target = $(ev.currentTarget),
-          original_content = target[0].innerHTML;
+      var target = $(ev.currentTarget);
 
-      if (target.hasClass('st-text-block')) {
-        _.delay(_.bind(this.onTextContentPasted, this, target, original_content, ev), 0);
-      } else {
-        _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
-      }
+      _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
     },
 
     _getBlockClass: function() {
@@ -308,40 +294,21 @@ SirTrevor.Block = (function(){
     },
 
     _initTextBlocks: function() {
-      var shift_down = false;
-
       this.getTextBlock()
         .bind('paste', this._handleContentPaste)
-        .bind('keydown', function(e){
-          var code = (e.keyCode ? e.keyCode : e.which);
-          if (code == 16) shift_down = true;
-        })
-        .bind('keyup', _.bind(function(e){
-
-          var code = (e.keyCode ? e.keyCode : e.which);
-
-          if (shift_down && (code == 37 || code == 39 || code == 40 || code == 38)) {
-            this.getSelectionForFormatter();
-          }
-
-          if (code == 16) {
-            shift_down = false;
-          }
-
-        }, this))
+        .bind('keyup', this.getSelectionForFormatter)
         .bind('mouseup', this.getSelectionForFormatter)
-        .on('DOMNodeInserted', this.clearInsertedStyles);
+        .bind('DOMNodeInserted', this.clearInsertedStyles);
     },
 
     getSelectionForFormatter: function() {
-       var range = window.getSelection().getRangeAt(0),
-           rects = range.getClientRects();
+       var selection = window.getSelection();
 
-       if (!range.collapsed && rects.length) {
-         SirTrevor.EventBus.trigger('formatter:positon', rects);
-       } else {
-         SirTrevor.EventBus.trigger('formatter:hide');
-       }
+        if (selection.toString().trim() === '') {
+          SirTrevor.EventBus.trigger('formatter:hide');
+        } else {
+          SirTrevor.EventBus.trigger('formatter:positon');
+        }
      },
 
     clearInsertedStyles: function(e) {
