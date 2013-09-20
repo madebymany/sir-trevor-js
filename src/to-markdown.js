@@ -76,7 +76,6 @@ SirTrevor.toMarkdown = function(content, type) {
                  .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n")        // ^ (handle content inside divs)
                  .replace(/<\/p>/g,"\n\n")                                               // P tags as line breaks
                  .replace(/<(.)?br(.)?>/g,"\n")                                            // Convert normal line breaks
-                 .replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
                  .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
 
   // Use custom block toMarkdown functions (if any exist)
