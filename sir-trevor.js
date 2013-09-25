@@ -550,7 +550,8 @@
       html = html.replace(/\n/gm, "</div><div>");
     }
   
-    html = html.replace(/\n/g, "<br>")
+    html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+               .replace(/\n/g, "<br>")
                .replace(/\*\*/, "")
                .replace(/__/, "");  // Cleanup any markdown characters left
   
@@ -601,8 +602,6 @@
                       .replace(/\-/g, "\\-");
   
     var inlineTags = ["em", "i", "strong", "b"];
-  
-  
   
     for (i = 0; i< inlineTags.length; i++) {
       tagStripper = new RegExp('<'+inlineTags[i]+'><br></'+inlineTags[i]+'>', 'gi');

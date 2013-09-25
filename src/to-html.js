@@ -57,7 +57,8 @@ SirTrevor.toHTML = function(markdown, type) {
     html = html.replace(/\n/gm, "</div><div>");
   }
 
-  html = html.replace(/\n/g, "<br>")
+  html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+             .replace(/\n/g, "<br>")
              .replace(/\*\*/, "")
              .replace(/__/, "");  // Cleanup any markdown characters left
 

@@ -31,8 +31,6 @@ SirTrevor.toMarkdown = function(content, type) {
 
   var inlineTags = ["em", "i", "strong", "b"];
 
-
-
   for (i = 0; i< inlineTags.length; i++) {
     tagStripper = new RegExp('<'+inlineTags[i]+'><br></'+inlineTags[i]+'>', 'gi');
     markdown = markdown.replace(tagStripper, '<br>');

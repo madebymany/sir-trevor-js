@@ -118,4 +118,11 @@ describe("toHTML", function(){
 
     expect(html).toBe("<div><b>Test</b></div>");
   });
+
+  it("cleans up tabs", function(){
+    var md = "\t",
+        html = SirTrevor.toHTML(md, "Text");
+
+        expect(html).toBe("<div>&nbsp;&nbsp;&nbsp;&nbsp;</div>");
+  });
 });
