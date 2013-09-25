@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-09-20
+ * 2013-09-25
  */
 
 (function ($, _){
@@ -512,11 +512,11 @@
     // with a slash.
     html = _.reverse(
              _.reverse(html)
-             .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1){
-                return ">i/<"+ p1.replace(/\n/g, '').trim() +">i<";
+             .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
+                return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
              })
              .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-                return ">b/<"+ p1.replace(/\n/g, '').trim() +">b<";
+                return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
              })
             );
   
@@ -610,11 +610,13 @@
     }
   
     function replaceBolds(match, p1, p2){
-      return "**" + p1.trim().replace(/<(.)?br(.)?>/g, '') + "**";
+      if(_.isUndefined(p2)) { p2 = ''; }
+      return "**" + p1.replace(/<(.)?br(.)?>/g, '') + p2 + "**";
     }
   
     function replaceItalics(match, p1, p2){
-      return "_" + p1.trim().replace(/<(.)?br(.)?>/g, '') + "_";
+      if(_.isUndefined(p2)) { p2 = ''; }
+      return "_" + p1.replace(/<(.)?br(.)?>/g, '') + p2 + "_";
     }
   
     markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
@@ -622,10 +624,10 @@
                         .replace(/<a.*?href=[""'](.*?)[""'].*?>(.*?)<\/a>/gim, function(match, p1, p2){
                           return "[" + p2.trim().replace(/<(.)?br(.)?>/g, '') + "]("+ p1 +")";
                         }) // Hyperlinks
-                        .replace(/<strong>(.*?)(\s+)?<\/strong>/gim, replaceBolds)
-                        .replace(/<b>(.*?)(\s+)?<\/b>/gim, replaceBolds)
-                        .replace(/<em>(.*?)(\s+)?<\/em>/gim, replaceItalics)
-                        .replace(/<i>(.*?)(\s+)?<\/i>/gim, replaceItalics);
+                        .replace(/<strong>(?:\s*)(.*?)(\s)*?<\/strong>/gim, replaceBolds)
+                        .replace(/<b>(?:\s*)(.*?)(\s*)?<\/b>/gim, replaceBolds)
+                        .replace(/<em>(?:\s*)(.*?)(\s*)?<\/em>/gim, replaceItalics)
+                        .replace(/<i>(?:\s*)(.*?)(\s*)?<\/i>/gim, replaceItalics);
   
   
     // Use custom formatters toMarkdown functions (if any exist)

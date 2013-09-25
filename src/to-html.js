@@ -19,11 +19,11 @@ SirTrevor.toHTML = function(markdown, type) {
   // with a slash.
   html = _.reverse(
            _.reverse(html)
-           .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1){
-              return ">i/<"+ p1.replace(/\n/g, '').trim() +">i<";
+           .replace(/_((\\.|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
+              return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
            })
            .replace(/\*\*((\\.|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-              return ">b/<"+ p1.replace(/\n/g, '').trim() +">b<";
+              return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
            })
           );
 
