@@ -112,6 +112,13 @@ describe("toHTML", function(){
     expect(html).toBe("<div><i>Test</i></div>");
   });
 
+  it("will ignore encoded italic tags", function(){
+    var md = "_Test\\_",
+        html = SirTrevor.toHTML(md, "Text");
+
+    expect(html).toBe("<div>_Test\_</div>");
+  });
+
   it("strips preceding spaces in bold tags", function(){
     var md = "** Test**",
         html = SirTrevor.toHTML(md, "Text");
