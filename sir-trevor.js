@@ -610,12 +610,12 @@
   
     function replaceBolds(match, p1, p2){
       if(_.isUndefined(p2)) { p2 = ''; }
-      return "**" + p1.replace(/<(.)?br(.)?>/g, '') + p2 + "**";
+      return "**" + p1.replace(/<(.)?br(.)?>/g, '') + "**" + p2;
     }
   
     function replaceItalics(match, p1, p2){
       if(_.isUndefined(p2)) { p2 = ''; }
-      return "_" + p1.replace(/<(.)?br(.)?>/g, '') + p2 + "_";
+      return "_" + p1.replace(/<(.)?br(.)?>/g, '') + "_" + p2;
     }
   
     markdown = markdown.replace(/<(\w+)(?:\s+\w+="[^"]+(?:"\$[^"]+"[^"]+)?")*>\s*<\/\1>/gim, '') //Empty elements
