@@ -5,18 +5,15 @@ title: Docs | Sir Trevor JS | Made by Many
 <header class="site-header dark-bg">
   <div class="site-header__inner site-width">
 
-    <a href="index.html" class="site-logo">
-      <span class="st-icon">add</span>
-      Sir Trevor
-    </a>
+    <%= link_to "<span class=\"st-icon\">add</span>Sir Trevor", "/index.html", class: "site-logo" %>
 
     <nav class="site-nav">
       <ul class="site-nav__items">
         <li class="site-nav__item">
-          <%= link_to "Docs", "docs.html" %>
+          <%= link_to "Docs", "/docs.html" %>
         </li>
         <li class="site-nav__item">
-          <%= link_to "Example", "example.html" %>
+          <%= link_to "Example", "/example.html" %>
         </li>
       </ul>
     </nav>
