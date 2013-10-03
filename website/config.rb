@@ -50,6 +50,7 @@ set :css_dir, 'stylesheets'
 set :js_dir, 'javascripts'
 
 set :images_dir, 'images'
+set :relative_links, true
 
 after_configuration do
   @bower_config = JSON.parse(IO.read("#{root}/.bowerrc"))
@@ -62,6 +63,7 @@ configure :build do
   activate :minify_javascript
   activate :asset_hash
   activate :relative_assets
+
 
   # Or use a different image path
   # set :http_path, "/Content/images/"
