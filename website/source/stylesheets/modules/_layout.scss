@@ -1,0 +1,14 @@
+.site-width {
+  width: $large-break;
+  margin: 0pt auto;
+  overflow: hidden;
+
+  @include breakpoint($large-break + 20) {
+    margin: 0 5%;
+    width: auto;
+  }
+}
+
+.example-container {
+  padding: 50px 0;
+}

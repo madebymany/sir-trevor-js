@@ -1,0 +1,60 @@
+$base-font-size: 20px;
+
+@function px-to-em($px, $base: $base-font-size) {
+  @return ($px / $base) * 1em;
+}
+
+$large-break: px-to-em(960px);
+$medium-break: px-to-em(760px);
+$small-break: px-to-em(480px);
+
+$accent-color: #34E0C2;
+$dark-grey: #42474B;
+
+@mixin breakpoint($point) {
+  @media (max-width: $point) { @content; }
+}
+
+%grid {
+  float: left;
+}
+
+%grid-half {
+  @extend %grid;
+  width: 50%;
+
+  @include breakpoint($medium-break) {
+    float: none;
+    width: auto;
+  }
+}
+
+%grid-six {
+  @extend %grid;
+  width: 16.666666666666668%;
+
+  @include breakpoint($medium-break) {
+    width: 33.333333333%;
+  }
+}
+
+%grid-one-third {
+  @extend %grid;
+  width: 33.333333333%;
+
+  @include breakpoint($medium-break) {
+    float: none;
+    width: auto;
+  }
+}
+
+%grid-two-thirds {
+  @extend %grid;
+  width: 66.666666666%;
+
+  @include breakpoint($medium-break) {
+    float: none;
+    width: auto;
+  }
+
+}

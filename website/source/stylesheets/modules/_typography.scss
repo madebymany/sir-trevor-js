@@ -1,0 +1,17 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600);
+
+html {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-size: 100%;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-size: $base-font-size;
+  color: #707477;
+
+  @include breakpoint($medium-break) {
+    font-size: 16px;
+  }
+}
