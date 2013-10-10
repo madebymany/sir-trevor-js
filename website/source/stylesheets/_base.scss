@@ -40,7 +40,6 @@
   display: block;
   border-radius: 0.2em;
   border: 1px solid #fff;
-  max-width: px-to-em(300px);
   text-align: center;
   padding: px-to-em(8px) 0;
   margin: 0 0 px-to-em(10px) 0;
@@ -132,7 +131,7 @@ img { margin:0;padding:0;float:left; }
 
 .block-type {
   display: block;
-  @extend %grid-six;
+  @extend %grid-five;
   text-align: center;
   margin-bottom: px-to-em(5px);
 

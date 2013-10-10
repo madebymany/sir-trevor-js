@@ -15,6 +15,17 @@ $dark-grey: #42474B;
   @media (max-width: $point) { @content; }
 }
 
+@function grid-calc($n, $g: 12) {
+  @return ($n / $g) * 100%;
+}
+
+@for $i from 1 through 12 {
+  %grid-#{$i}-of-12 {
+    @extend %grid;
+    width: grid-calc($i);
+  }
+}
+
 %grid {
   float: left;
 }
@@ -29,18 +40,18 @@ $dark-grey: #42474B;
   }
 }
 
-%grid-six {
+%grid-five {
   @extend %grid;
-  width: 16.666666666666668%;
+  width: grid-calc(3,15);
 
   @include breakpoint($medium-break) {
-    width: 33.333333333%;
+    width: grid-calc(4);
   }
 }
 
 %grid-one-third {
   @extend %grid;
-  width: 33.333333333%;
+  width: grid-calc(4);
 
   @include breakpoint($medium-break) {
     float: none;
@@ -50,11 +61,14 @@ $dark-grey: #42474B;
 
 %grid-two-thirds {
   @extend %grid;
-  width: 66.666666666%;
+  width: grid-calc(8);
 
   @include breakpoint($medium-break) {
     float: none;
     width: auto;
   }
+}
 
+p a {
+  color: $accent-color;
 }

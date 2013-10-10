@@ -19,21 +19,6 @@
   }
 }
 
-.site-header__intro {
-  @include breakpoint(px-to-em(1400px)) {
-    width: 75%;
-  }
-
-  @include breakpoint($medium-break) {
-    width: auto;
-  }
-}
-
-.site-header__intro,
-.site-header__video {
-  @extend %grid-half;
-}
-
 .site-header__info-container {
   padding: px-to-em(20px) 0;
   position: relative;

@@ -47,7 +47,7 @@ SirTrevor.BlockControls = (function(){
     handleControlButtonClick: function(e) {
       e.stopPropagation();
 
-      this.trigger('createBlock', e.currentTarget.dataset.type);
+      this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
     }
 
   });

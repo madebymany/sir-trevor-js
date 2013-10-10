@@ -77,6 +77,7 @@ GEM
       ffi (>= 0.5.0)
     rb-kqueue (0.2.0)
       ffi (>= 0.5.0)
+    redcarpet (3.0.0)
     ruby18_source_location (0.2)
     sass (3.2.9)
     sprockets (2.10.0)
@@ -102,4 +103,5 @@ DEPENDENCIES
   middleman (~> 3.1.2)
   middleman-gh-pages
   middleman-livereload (~> 3.1.0)
+  redcarpet
   ruby18_source_location
