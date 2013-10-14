@@ -1,0 +1,44 @@
+# What is Sir Trevor?
+
+Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as markdown inside a JSON object, with the structure and the contents of the post serliazed inside of it.
+
+# Get Started
+
+## Installation
+
+The easiest way to install Sir Trevor is with [Bower](), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
+
+    {
+      name: "your-project",
+      dependencies: {
+        "sir-trevor-js": "0.3.0"
+      }
+    }
+
+Then run `bower install` on your project to install the necessary dependencies.
+
+Alternatively, grab the following files and include them in your project:
+
+  * jQuery
+  * Underscore.js
+  * Eventable
+  * Sir Trevor JS
+
+And you'll need the following CSS files too:
+
+  * Sir Trevor
+  * Sir Trevor Icons
+
+## Initialising
+
+A Sir Trevor element must be contained inside a form like follows:
+
+    <form>
+      <textarea class="js-st-instance"></textarea>
+    </form>
+
+Then to transform this element to a Sir Trevor instance:
+
+    <script>
+      new SirTrevor.Editor({ el: $('.js-st-instance') });
+    </script>
