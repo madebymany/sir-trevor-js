@@ -131,15 +131,19 @@ img { margin:0;padding:0;float:left; }
 
 .block-type {
   display: block;
-  @extend %grid-five;
+  @extend %grid-2-of-12;
   text-align: center;
-  margin-bottom: px-to-em(5px);
+  margin-bottom: px-to-em(25px);
 
   .st-icon {
     display: block;
     line-height: 1;
     margin-bottom: px-to-em(5px);
     font-size: px-to-em(76px);
+  }
+
+  @include breakpoint($medium-break) {
+    width: grid-calc(4,12);
   }
 }
 

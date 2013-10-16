@@ -20,9 +20,9 @@ title: Sir Trevor JS | Made by Many
 
     <%
       lines =
-        ["I'm a content agnostic editor built on the principle of blocks of content",
-         "I'm used on the ITV News website and soon to be powering ITV.com",
-         "And finally... I'm easy to extend and customise."]
+        ["I'm a rich content editor re-imagined for the web",
+         "I have a beautiful, intuitive interface for creating content",
+         "And finally... I'm easy to extend and customise"]
     %>
 
     <div class="typer">
@@ -42,12 +42,12 @@ title: Sir Trevor JS | Made by Many
     <div class="site-header__info-container cf">
 
       <div class="more-info__copy">
-        <p class="intro-copy">Sir Trevor is rich content editing entirely re-imagined for the web: an <strong>intuitive editor</strong> for web content which does not presuppose anything about how it will be rendered.</p>
+        <p class="intro-copy">Sir Trevor is rich content editing entirely re-imagined for the web: an <strong>intuitive editor for web content</strong> which does not presuppose anything about how it will be rendered.</p>
       </div>
 
       <nav class="more-info__ctas">
         <a href="https://github.com/madebymany/sir-trevor-js/archive/master.zip" class="btn btn--primary">Download</a>
-        <a href="https://github.com/madebymany/sir-trevor-js" class="btn">Fork it</a>
+        <%= link_to "See an example", "/example.html", class: "btn" %>
       </nav>
 
     </div>
@@ -63,7 +63,7 @@ title: Sir Trevor JS | Made by Many
     <li class="feature" data-icon="add">No HTML is stored, only clean Markdown</li>
     <li class="feature" data-icon="add">Trivial to extend and create your own block types</li>
     <li class="feature" data-icon="add">Intuitive interface for creating rich content</li>
-    <li class="feature" data-icon="add">Easy integration</li>
+    <li class="feature" data-icon="add">Used on a national broadcast news site serving millions of users</li>
   </ul>
 
 </section>
@@ -71,7 +71,7 @@ title: Sir Trevor JS | Made by Many
 <section class="block block--block-types">
 
   <h2 class="with-divider">Block types</h2>
-  <p>A default Sir Trevor instance ships with the following block types</p>
+  <p>Sir trevor content is made up of <strong>blocks</strong>. By default Sir Trevor ships with the following block types, but you can easily add your own</p>
 
   <ul class="block-types">
 
@@ -98,6 +98,11 @@ title: Sir Trevor JS | Made by Many
     <li class="block-type">
       <span class="st-icon">twitter</span>
       Tweet
+    </li>
+
+    <li class="block-type">
+      <span class="st-icon">video</span>
+      Video
     </li>
 
   </ul>
