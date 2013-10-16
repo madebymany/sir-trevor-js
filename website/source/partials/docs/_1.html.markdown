@@ -21,15 +21,15 @@ Then run `bower install` on your project to install the necessary dependencies.
 
 Alternatively, grab the following files and include them in your project:
 
-  * jQuery
-  * Underscore.js
-  * Eventable
-  * Sir Trevor JS
+  * [jQuery](http://jquery.com/download)
+  * [Underscore.js](https://github.com/jashkenas/underscore/blob/master/underscore.js)
+  * [Eventable](https://github.com/madebymany/eventable/blob/master/eventable.js)
+  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.js)
 
 And you'll need the following CSS files too:
 
-  * Sir Trevor
-  * Sir Trevor Icons
+  * [Sir Trevor](https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.css)
+  * [Sir Trevor Icons](https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor-icons.css)
 
 <a name="1-2"></a>
 ## Initialising
