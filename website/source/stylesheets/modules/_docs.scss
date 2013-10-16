@@ -18,6 +18,7 @@ pre {
   font-size: 18px;
   width: 75%;
   float: left;
+  padding-bottom: 30px;
 
   h1, h2, h3 {
     color: lighten(#000, 20%);
@@ -26,9 +27,6 @@ pre {
   h1 {
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
-  }
-
-  p {
   }
 }
 
@@ -60,5 +58,15 @@ pre {
     &:focus {
       background-color: #f2f2f2;
     }
+  }
+}
+
+@include breakpoint($medium-break) {
+  .docs__navigation {
+    display: none;
+  }
+
+  .docs__content {
+    width: auto;
   }
 }

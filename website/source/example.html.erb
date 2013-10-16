@@ -3,24 +3,7 @@ title: Example | Sir Trevor JS | Made by Many
 layout: example
 ---
 
-<header class="site-header dark-bg">
-  <div class="site-header__inner site-width">
-
-    <%= link_to "<span class=\"st-icon\">add</span>Sir Trevor", "/index.html", class: "site-logo" %>
-
-    <nav class="site-nav">
-      <ul class="site-nav__items">
-        <li class="site-nav__item">
-          <%= link_to "Docs", "/docs.html" %>
-        </li>
-        <li class="site-nav__item">
-          <%= link_to "Example", "/example.html" %>
-        </li>
-      </ul>
-    </nav>
-
-  </div>
-</header>
+<%= partial "partials/header" %>
 
 <section class="site-width example-container">
   <form>
@@ -28,16 +11,4 @@ layout: example
   </form>
 </section>
 
-<footer class="site-footer dark-bg">
-  <div class="site-footer__inner site-width">
-
-    <span class="footer_intro">Brought to you by:</span>
-
-    <ul class="footer__meta-items">
-      <li class="footer__meta-item"><a href="http://itv.com" class="logo logo--itv">ITV</a></li>
-      <li class="footer__meta-item"><a href="http://madebymany.com" class="logo logo--mxm">Made by Many</a></li>
-    </ul>
-
-    <span class="footer_license">Sir Trevor JS is released under the MIT license</span>
-  </div>
-</footer>
+<%= partial "partials/footer" %>

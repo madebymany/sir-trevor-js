@@ -53,8 +53,6 @@ There are two types of validations with Sir Trevor, required fields and custom v
 
 If you want to create custom validators, just define the method on your block and add it to the `validations` array on the block. To trigger an error on the block, you add an error to the `errors` array using the `this.setError` method.
 
-Eg:
-
     {
       ...
 
