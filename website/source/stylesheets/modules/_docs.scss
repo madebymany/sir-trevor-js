@@ -1,0 +1,72 @@
+code, pre {
+  background-color: darken(#fff, 5%);
+  color: lighten(#000, 20%);
+  font-size: 16px;
+}
+
+pre {
+  padding: .5em;
+  border-left: 3px solid darken(#f2f2f2, 5%);
+  margin-bottom: 20px;
+}
+
+.docs {
+  overflow: hidden;
+}
+
+.docs__content {
+  font-size: 18px;
+  width: 75%;
+  float: left;
+  padding-bottom: 30px;
+
+  h1, h2, h3 {
+    color: lighten(#000, 20%);
+  }
+
+  h1 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+}
+
+.docs__navigation {
+  width: 20%;
+  margin: 40px 5% 0 0;
+  float: left;
+
+  ul {
+    margin: 0; padding: 0;
+    list-style: none;
+  }
+
+  ul ul a {
+    padding-left: 20px;
+    font-weight: normal;
+  }
+
+  a {
+    display: block;
+    padding: .3em .5em;
+    font-size: 18px;
+    border-bottom: 1px solid #ccc;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+
+    &:hover,
+    &:focus {
+      background-color: #f2f2f2;
+    }
+  }
+}
+
+@include breakpoint($medium-break) {
+  .docs__navigation {
+    display: none;
+  }
+
+  .docs__content {
+    width: auto;
+  }
+}

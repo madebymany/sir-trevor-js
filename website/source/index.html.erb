@@ -20,9 +20,9 @@ title: Sir Trevor JS | Made by Many
 
     <%
       lines =
-        ["I'm a content agnostic editor built on the principle of blocks of content",
-         "I'm used on the ITV News website and soon to be powering ITV.com",
-         "And finally... I'm easy to extend and customise."]
+        ["I'm a rich content editor re-imagined for the web",
+         "I have a beautiful, intuitive interface for creating content",
+         "And finally... I'm easy to extend and customise"]
     %>
 
     <div class="typer">
@@ -41,16 +41,14 @@ title: Sir Trevor JS | Made by Many
 
     <div class="site-header__info-container cf">
 
-      <div class="site-header__intro">
-        <p class="intro-copy">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+      <div class="more-info__copy">
+        <p class="intro-copy">Sir Trevor is rich content editing entirely re-imagined for the web: an <strong>intuitive editor for web content</strong> which does not presuppose anything about how it will be rendered.</p>
+      </div>
 
+      <nav class="more-info__ctas">
         <a href="https://github.com/madebymany/sir-trevor-js/archive/master.zip" class="btn btn--primary">Download</a>
-        <a href="https://github.com/madebymany/sir-trevor-js" class="btn">Fork it</a>
-      </div>
-
-      <div class="site-header__video">
-        <div class="example-video"></div>
-      </div>
+        <%= link_to "See an example", "/example.html", class: "btn" %>
+      </nav>
 
     </div>
 
@@ -62,10 +60,10 @@ title: Sir Trevor JS | Made by Many
   <h2>Features</h2>
 
   <ul class="features cf">
-    <li class="feature" data-icon="add">Feature #1</li>
-    <li class="feature" data-icon="add">Feature #2</li>
-    <li class="feature" data-icon="add">Feature #3</li>
-    <li class="feature" data-icon="add">Feature #4</li>
+    <li class="feature" data-icon="add">No HTML is stored, only clean Markdown</li>
+    <li class="feature" data-icon="add">Trivial to extend and create your own block types</li>
+    <li class="feature" data-icon="add">Intuitive interface for creating rich content</li>
+    <li class="feature" data-icon="add">Used on a national broadcast news site serving millions of users</li>
   </ul>
 
 </section>
@@ -73,7 +71,7 @@ title: Sir Trevor JS | Made by Many
 <section class="block block--block-types">
 
   <h2 class="with-divider">Block types</h2>
-  <p>The editor itself is made up of Blocks. The default ones are:</p>
+  <p>Sir trevor content is made up of <strong>blocks</strong>. By default Sir Trevor ships with the following block types, but you can easily add your own</p>
 
   <ul class="block-types">
 
@@ -103,8 +101,8 @@ title: Sir Trevor JS | Made by Many
     </li>
 
     <li class="block-type">
-      <span class="st-icon">add</span>
-      Many more
+      <span class="st-icon">video</span>
+      Video
     </li>
 
   </ul>
@@ -127,16 +125,4 @@ title: Sir Trevor JS | Made by Many
 
 </section>
 
-<footer class="site-footer dark-bg">
-  <div class="site-footer__inner site-width">
-
-    <span class="footer_intro">Brought to you by:</span>
-
-    <ul class="footer__meta-items">
-      <li class="footer__meta-item"><a href="http://itv.com" class="logo logo--itv">ITV</a></li>
-      <li class="footer__meta-item"><a href="http://madebymany.com" class="logo logo--mxm">Made by Many</a></li>
-    </ul>
-
-    <span class="footer_license">Sir Trevor JS is released under the MIT license</span>
-  </div>
-</footer>
+<%= partial "partials/footer" %>

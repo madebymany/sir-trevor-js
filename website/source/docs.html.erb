@@ -2,21 +2,62 @@
 title: Docs | Sir Trevor JS | Made by Many
 ---
 
-<header class="site-header dark-bg">
-  <div class="site-header__inner site-width">
+<%= partial "partials/header" %>
 
-    <%= link_to "<span class=\"st-icon\">add</span>Sir Trevor", "/index.html", class: "site-logo" %>
+<div class="site-width docs">
+  <aside class="docs__sidebar">
+    <nav class="docs__navigation">
 
-    <nav class="site-nav">
-      <ul class="site-nav__items">
-        <li class="site-nav__item">
-          <%= link_to "Docs", "/docs.html" %>
+      <ul>
+        <li>
+          <a href="#1">Getting Started</a>
+
+          <ul>
+            <li><a href="#1-1">Installation</a></li>
+            <li><a href="#1-2">Initialising</a></li>
+          </ul>
         </li>
-        <li class="site-nav__item">
-          <%= link_to "Example", "/example.html" %>
+
+        <li>
+          <a href="#2">Options</a>
+
+          <ul>
+            <li><a href="#2-1">Block options</a></li>
+            <li><a href="#2-2">Global options</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#3">Blocks</a>
+
+          <ul>
+            <li><a href="#3-1">Tweet Block</a></li>
+            <li><a href="#3-2">Image Block</a></li>
+            <li><a href="#3-3">Hooks</a></li>
+            <li><a href="#3-4">Events</a></li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#4">Custom Blocks</a>
+
+          <ul>
+            <li><a href="#4-1">Concepts</a></li>
+            <li><a href="#4-2">Mixins</a></li>
+            <li><a href="#4-3">Validations</a></li>
+          </ul>
         </li>
       </ul>
     </nav>
+  </aside>
 
-  </div>
-</header>
+  <section class="docs__content">
+
+    <%= partial "partials/docs/1" %>
+    <%= partial "partials/docs/2" %>
+    <%= partial "partials/docs/3" %>
+    <%= partial "partials/docs/4" %>
+  </section>
+</div>
+
+<%= partial "partials/footer" %>

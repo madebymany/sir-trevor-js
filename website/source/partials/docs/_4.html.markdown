@@ -1,0 +1,72 @@
+<a name="4"></a>
+# Custom Blocks
+
+A founding principle of Sir Trevor is to have an extensible editor that you can create your own block types on top of. We've made it really simple for you to get started and build your own block types.
+
+A good place to start is to read through one of the [blocks that comes bundled with Sir Trevor](https://github.com/madebymany/sir-trevor-js/tree/master/src/blocks).
+
+<a name="4-1"></a>
+## Concepts
+
+A `SirTrevor.Block` essentially takes some data, provides and interface for that data and knows how to serialize itself into JSON.
+
+Generally the flow for a block goes like this:
+
+1. Create block
+2. Render block UI
+3. Edit some data
+4. Submit form
+5. Block validates
+6. Block data is serialized to the block store
+
+The methods associated with doing this are:
+
+**`loadData`**
+Takes the stored block data and presents it to the user.
+
+**`setData`**
+Takes a JSON object and stores it against the block.
+
+<a name="4-2"></a>
+## Mixins
+
+We've abstracted all of the interface components for creating a Sir Trevor block. The following mixins are available to all blocks:
+
+**`droppable`**
+Provides a drop zone support for the block. Exposes the `onDrop` event which must be overwritten.
+
+**`pastable`**
+Provides the UI support for a pastable component (like the video block). You can override the default paste handler by re-implementing the `onContentPasted` method.
+
+**`uploadable`**
+Provides support for uploadable content and mixins in the uploader into the block.
+
+**`ajaxable`**
+Gives a way to fetch content remotely through a editor managed queue.
+
+The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `uploadable_options.html`, `droppable_options.html` or `pastable_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
+
+<a name="4-3"></a>
+## Validations
+
+There are two types of validations with Sir Trevor, required fields and custom validators. To add a field in your block as required, simply add the `st-required` class to it.
+
+If you want to create custom validators, just define the method on your block and add it to the `validations` array on the block. To trigger an error on the block, you add an error to the `errors` array using the `this.setError` method.
+
+    {
+      ...
+
+      validations: ['myCustomValidator'],
+
+      myCustomValidator: function() {
+        var someField = this.$('.field');
+
+        if (someField.val() === "BEER!") {
+          this.setError(someField, "must not contain beer");
+        }
+      }
+
+      ...
+    }
+
+

@@ -1,0 +1,81 @@
+<a name="3"></a>
+# Blocks
+
+<a name="3-1"></a>
+## Tweet Block
+
+To use the Tweet block you'll need some **server side** code. This will need to lookup a Tweet ID and return the tweet in JSON via the Twitter API. Unfortunaetly, the only way to do this via the API is with an authenticated call.
+
+You can change the Tweet fetch URL as follows:
+
+    SirTrevor.setBlockOptions("Tweet", {
+      fetchUrl: function(tweetID) {
+        return "/tweets/?tweet_id=" + tweetID;
+      }
+    });
+
+<a name="3-2"></a>
+## Image Block
+
+The image block relies on a server side component to **store images on the server**. By default Sir Trevor will do an AJAX file upload in the background to a `/attachments` endpoint. You can change this as follows:
+
+    SirTrevor.setDefaults({
+      uploadUrl: "/images"
+    });
+
+The uploader posts an `attachments` hash that has three properties:
+
+  * `attachments[name]` – the files name
+  * `attachments[file]` – the file
+  * `attachments[uid]` – a unique identifier for this file
+
+<a name="3-3"></a>
+## Hooks
+
+There are a few hook in points per block that you can use:
+
+**`beforeBlockRender`**
+Called immediately when render is called.
+
+    SirTrevor.Blocks.Text.beforeBlockRender = function() {
+      alert('Do something');
+    };
+
+**`onBlockRender`**
+Called once a block has been rendered.
+
+    SirTrevor.Blocks.Text.onBlockRender = function() {
+      alert('Do something');
+    };
+
+<a name="3-4"></a>
+## Events
+
+We use an event model to trigger actions, which can be hooked into if necessary. The events given off are as follows:
+
+<a name="3-4-1"></a>
+### Block Events
+
+* `block:create:new`
+* `block:create:existing`
+* `block:remove`
+* `block:reorder:dropped`
+
+<a name="3-4-2"></a>
+### Formatter
+
+* `formatter:hide`
+* `formatter:position`
+
+<a name="3-4-3"></a>
+### Upload Events
+
+* `onUploadStart`
+* `onUploadStop`
+* `onError`
+
+You can use these events using the `SirTrevor.EventBus` as follows:
+
+    SirTrevor.EventBus.on('block:create:new', function(){
+      console.log(arguments);
+    });

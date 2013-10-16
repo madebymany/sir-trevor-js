@@ -57,6 +57,13 @@ after_configuration do
   sprockets.append_path File.join "#{root}", @bower_config["directory"]
 end
 
+set :markdown_engine, :redcarpet
+set :markdown,
+    :hard_wrap => true,
+    :fenced_code_blocks => true,
+    :smartypants => true,
+    :layout_engine => :erb
+
 # Build-specific configuration
 configure :build do
   activate :minify_css

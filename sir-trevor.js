@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-10
+ * 2013-10-16
  */
 
 (function ($, _){
@@ -2222,7 +2222,7 @@
       handleControlButtonClick: function(e) {
         e.stopPropagation();
   
-        this.trigger('createBlock', e.currentTarget.getAttribute('data-type'));
+        this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
       }
   
     });
