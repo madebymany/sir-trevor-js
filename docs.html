@@ -47,6 +47,7 @@
           <ul>
             <li><a href="#1-1">Installation</a></li>
             <li><a href="#1-2">Initialising</a></li>
+            <li><a href="#1-3">The Output</a></li>
           </ul>
         </li>
 
@@ -143,6 +144,30 @@
 &lt;/script&gt;
 </code></pre>
 
+<p><a name="1-3"></a></p>
+
+<h2>The Output</h2>
+
+<p>Sir Trevor stores structured JSON that describes your document.</p>
+
+<p>A typical piece of Sir Trevor JSON looks like this:</p>
+
+<pre><code>{
+  &quot;data&quot;: [{
+    &quot;type&quot;: &quot;text&quot;,
+    &quot;data&quot;: {
+      &quot;text&quot;: &quot;Hello, my name is **Sir Trevor**&quot;
+    }
+  }]
+}
+</code></pre>
+
+<p>Each piece of JSON is made up of an object that contains the <em>type</em> and <em>data</em> for the block.</p>
+
+<p>Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You&rsquo;ll need to remember to transform the markdown to HTML using a library too.</p>
+
+<p>For a server-side example, please see our <a href="http://github.com/madebymany/sir-trevor-rails">Sir Trevor Rails gem</a>. The ideas within this could easily be extrapolated for other languages.</p>
+
     <p><a name="2"></a></p>
 
 <h1>Options</h1>
@@ -163,7 +188,7 @@ Specify a default block to start the editor with.<br>
 <em>Defaults to no block</em>.</p>
 
 <pre><code>{
-  defaultBlock: &quot;Text&quot;
+  defaultType: &quot;Text&quot;
 }
 </code></pre>
 
