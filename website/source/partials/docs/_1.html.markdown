@@ -45,3 +45,25 @@ Then to transform this element to a Sir Trevor instance:
     <script>
       new SirTrevor.Editor({ el: $('.js-st-instance') });
     </script>
+
+<a name="1-3"></a>
+## The Output
+
+Sir Trevor stores structured JSON that describes your document.
+
+A typical piece of Sir Trevor JSON looks like this:
+
+    {
+      "data": [{
+        "type": "text",
+        "data": {
+          "text": "Hello, my name is **Sir Trevor**"
+        }
+      }]
+    }
+
+Each piece of JSON is made up of an object that contains the *type* and *data* for the block.
+
+Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You'll need to remember to transform the markdown to HTML using a library too.
+
+For a server-side example, please see our [Sir Trevor Rails gem](http://github.com/madebymany/sir-trevor-rails). The ideas within this could easily be extrapolated for other languages.
