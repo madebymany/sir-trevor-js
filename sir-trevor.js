@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-16
+ * 2013-10-17
  */
 
 (function ($, _){
@@ -1203,9 +1203,10 @@
       },
   
       _blockPrepare : function() {
-        this.checkAndLoadData();
         this._initUI();
         this._initMessages();
+  
+        this.checkAndLoadData();
   
         this.$el.addClass('st-item-ready');
         this.save();

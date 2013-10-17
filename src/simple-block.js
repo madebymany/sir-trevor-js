@@ -71,9 +71,10 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     _blockPrepare : function() {
-      this.checkAndLoadData();
       this._initUI();
       this._initMessages();
+
+      this.checkAndLoadData();
 
       this.$el.addClass('st-item-ready');
       this.save();

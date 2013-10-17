@@ -16,7 +16,7 @@ Specify a default block to start the editor with.
 *Defaults to no block*.
 
     {
-      defaultBlock: "Text"
+      defaultType: "Text"
     }
 
 **`blockLimit`**
