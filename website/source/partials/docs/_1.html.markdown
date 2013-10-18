@@ -8,7 +8,7 @@ Sir Trevor provides a means to transform a text input into a rich content editor
 <a name="1-1"></a>
 ## Installation
 
-The easiest way to install Sir Trevor is with [Bower](), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
+The easiest way to install Sir Trevor is with [Bower](https://github.com/bower/bower), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
 
     {
       name: "your-project",
