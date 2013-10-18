@@ -133,11 +133,5 @@ describe("Editor", function(){
         editor.validateBlockTypesExist(true);
         expect(editor.errors).toEqual([{text: "You must have a block of type Text"}]);
     });
-
-    it("correctly applies another locale", function(){
-        i18n.setLng('de-DE', function(t){});
-        editor.validateBlockTypesExist(true);
-        expect(editor.errors).toEqual([{text: "Blöcke mit Typ Text sind hier nicht zulässig"}]);
-    });
   });
 });

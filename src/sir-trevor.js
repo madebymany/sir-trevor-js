@@ -10,13 +10,11 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
+  SirTrevor.LANGUAGE = "en";
+
   SirTrevor.version = "0.3.0-rc.4";
 
   //= locales.js
-  i18n.init({ resStore: SirTrevor.Locales, fallbackLng: 'en',
-              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
-  });
-
 
   function $element(el) {
     return el instanceof $ ? el : $(el);

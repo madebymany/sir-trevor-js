@@ -59,3 +59,29 @@ SirTrevor.Locales = {
     }
   }
 }
+
+if (window.i18n === undefined) {
+  // Minimal i18n stub that only reads the English strings
+  console.log("Using i18n stub");
+  window.i18n = {
+    t: function(key, options) {
+      var parts, ns, key, str;
+      parts = key.split(':');
+      ns = parts[0];
+      key = parts[1]
+      str = SirTrevor.Locales[SirTrevor.LANGUAGE][ns][key];
+      if (str.indexOf('__') > 0) {
+        _.each(options, function(value, opt) {
+          str = str.replace('__' + opt + '__', value);
+        });
+      }
+      return str;
+    }
+  }
+} else {
+  // Only use i18next when the library has been loaded by the user, keeps
+  // dependencies slim
+  i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
+              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
+  });
+}

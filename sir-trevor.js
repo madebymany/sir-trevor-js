@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-18
+ * 2013-10-19
  */
 
 (function ($, _){
@@ -19,6 +19,8 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
+  SirTrevor.LANGUAGE = "en";
+
   SirTrevor.version = "0.3.0-rc.4";
 
   SirTrevor.Locales = {
@@ -82,11 +84,32 @@
       }
     }
   }
-  i18n.init({ resStore: SirTrevor.Locales, fallbackLng: 'en',
-              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' },
-              debug: true
-  });
-
+  
+  if (window.i18n === undefined) {
+    // Minimal i18n stub that only reads the English strings
+    console.log("Using i18n stub");
+    window.i18n = {
+      t: function(key, options) {
+        var parts, ns, key, str;
+        parts = key.split(':');
+        ns = parts[0];
+        key = parts[1]
+        str = SirTrevor.Locales[SirTrevor.LANGUAGE][ns][key];
+        if (str.indexOf('__') > 0) {
+          _.each(options, function(value, opt) {
+            str = str.replace('__' + opt + '__', value);
+          });
+        }
+        return str;
+      }
+    }
+  } else {
+    // Only use i18next when the library has been loaded by the user, keeps
+    // dependencies slim
+    i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
+                ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
+    });
+  }
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
