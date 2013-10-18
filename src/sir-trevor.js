@@ -14,8 +14,7 @@
 
   //= locales.js
   i18n.init({ resStore: SirTrevor.Locales, fallbackLng: 'en',
-              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' },
-              debug: true
+              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
   });
 
 
