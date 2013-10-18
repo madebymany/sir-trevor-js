@@ -1,13 +1,17 @@
 .site-logo {
   display: inline-block;
   margin: px-to-em(20px) 0;
+  padding-left: 1.25em;
   font-size: px-to-em(28px);
   color: #fff;
   text-decoration: none;
   font-weight: 600;
+  position: relative;
 
-  .st-icon {
+  &:before {
     color: $accent-color;
+    position: absolute;
+    left: 0; top: .15em;
   }
 
   &:hover {
