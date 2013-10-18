@@ -12,6 +12,13 @@
   SirTrevor.SKIP_VALIDATION = false;
   SirTrevor.version = "0.3.0-rc.4";
 
+  //= locales.js
+  i18n.init({ resStore: SirTrevor.Locales, fallbackLng: 'en',
+              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' },
+              debug: true
+  });
+
+
   function $element(el) {
     return el instanceof $ ? el : $(el);
   }

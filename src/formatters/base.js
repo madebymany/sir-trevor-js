@@ -24,7 +24,7 @@
 
     onClick: function() {
 
-      var link = prompt("Enter a link"),
+      var link = prompt(i18n.t("general:link")),
           link_regex = /(ftp|http|https):\/\/./;
 
       if(link && link.length > 0) {

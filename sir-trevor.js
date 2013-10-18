@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-17
+ * 2013-10-18
  */
 
 (function ($, _){
@@ -20,6 +20,73 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
   SirTrevor.version = "0.3.0-rc.4";
+
+  SirTrevor.Locales = {
+    en: {
+      general: {
+        'delete':           'Delete?',
+        'drop':             'Drag __block__ here',
+        'paste':            'Or paste URL here',
+        'upload':           '...or choose a file',
+        'validation_fail':  '__type__ block is invalid',
+        'close':            'close',
+        'position':         'Position',
+        'empty_error':      '__name__ must not be empty',
+        'type_error':       'You must have a block of type __type__',
+        'empty_error':      'A required block type __type__ is empty',
+        'error_heading':    'You have the following errors:',
+        'load_error':       'There was a problem loading the contents of the document',
+        'wait':             'Please wait...',
+        'link':             'Enter a link',
+      },
+      blocks: {
+        "text_type":                "Text",
+        "unorderedlist_type":       "List",
+        "blockquote_type":          "Quote",
+        "blockquote_credit":        "Credit",
+        "image_type":               "Image",
+        "video_type":               "Video",
+        "tweet_type":               "Tweet",
+        "tweet_fail":               "There was a problem fetching your tweet",
+        "embedly_type":             "Embedly"
+      }
+    },
+  
+    de: {
+      general: {
+        'delete':           'Löschen?',
+        'drop':             '__block__ hier ablegen',
+        'paste':            'Oder Adresse hier einfügen',
+        'upload':           '...oder Datei auswählen',
+        'validation_fail':  'Block __type__ ist ungültig',
+        'close':            'Schließen',
+        'position':         'Position',
+        'empty_error':      '__name__ darf nicht leer sein',
+        'type_error':       'Blöcke mit Typ __type__ sind hier nicht zulässig',
+        'empty_error':      'Angeforderter Block-Typ __type__ ist leer',
+        'error_heading':    'Die folgenden Fehler sind aufgetreten:',
+        'load_error':       'Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt',
+        'wait':             'Bitte warten...',
+        'link':             'Link eintragen'
+      },
+      blocks: {
+        "text_type":                "Text",
+        "unorderedlist_type":       "Liste (unsortiert)",
+        "blockquote_type":          "Zitat",
+        "blockquote_credit":        "Quelle",
+        "image_type":               "Bild",
+        "video_type":               "Video",
+        "tweet_type":               "Tweet",
+        "tweet_fail":               "Es wurde ein Problem beim Laden des Tweets festgestellt",
+        "embedly_type":             "Embedly"
+      }
+    }
+  }
+  i18n.init({ resStore: SirTrevor.Locales, fallbackLng: 'en',
+              ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' },
+              debug: true
+  });
+
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
@@ -263,7 +330,7 @@
               editor.dataStore = str;
             }
           } catch(e) {
-            editor.errors.push({ text: "There was a problem loading the contents of the document" });
+            editor.errors.push({ text: i18n.t("general:load_error") });
             editor.renderErrors();
   
             console.log('Sorry there has been a problem with parsing the JSON');
@@ -364,7 +431,7 @@
     },
   
     _disableSubmitButton: function(message){
-      this.setSubmitButton(null, message || "Please wait...");
+      this.setSubmitButton(null, message || i18n.t("general:wait"));
       this.submitBtn
         .attr('disabled', 'disabled')
         .addClass('disabled');
@@ -870,7 +937,7 @@
       },
   
       renderPositionList: function() {
-        var inner = "<option value='0'>Position</option>";
+        var inner = "<option value='0'>" + i18n.t("general:position") + "Position</option>";
         for(var i = 1; i <= this.total_blocks; i++) {
           inner += "<option value="+i+">"+i+"</option>";
         }
@@ -1044,7 +1111,8 @@
       var content = field.attr('contenteditable') ? field.text() : field.val();
   
       if (content.length === 0) {
-        this.setError(field, bestNameFromField(field) + " must not be empty");
+        this.setError(field, i18n.t("general:empty_error",
+                                   { name: bestNameFromField(field) }));
       }
     },
   
@@ -1263,7 +1331,9 @@
   
     var delete_template = [
       "<div class='st-block__ui-delete-controls'>",
-        "<label class='st-block__delete-label'>Delete?</label>",
+        "<label class='st-block__delete-label'>",
+          i18n.t("general:delete"),
+        "</label>",
         "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
         "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
       "</div>"
@@ -1272,19 +1342,22 @@
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
              '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-             '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
+             '<p>',
+               i18n.t('general:drop', { block: '<span><%= block.type %></span>' }),
+             '</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
   
     var paste_options = {
-      html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+      html: ['<input type="text" placeholder="', i18n.t('general:paste'),
+             '" class="st-block__paste-input st-paste-block">'].join('')
     };
   
     var upload_options = {
       html: [
         '<div class="st-block__upload-container">',
         '<input type="file" type="st-file-upload">',
-        '<button class="st-upload-btn">...or choose a file</button>',
+        '<button class="st-upload-btn">', i18n.t('general:upload'), '</button>',
         '</div>'
       ].join('\n')
     };
@@ -1311,7 +1384,7 @@
       icon_name: 'default',
   
       validationFailMsg: function() {
-        return this.type + ' block is invalid';
+        return i18n.t('general:validation_fail', { type: this.type });
       },
   
       editorHTML: '<div class="st-block__editor"></div>',
@@ -1667,13 +1740,15 @@
   
     var template = _.template([
       '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-      '<label class="st-input-label">Credit</label>',
-      '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required js-cite-input" type="text" />'
+      '<label class="st-input-label">',
+      i18n.t('blocks:blockquote_credit'),
+      '</label>',
+      '<input maxlength="140" name="cite" placeholder="' + i18n.t('blocks:blockquote_credit') + '" class="st-input-string st-required js-cite-input" type="text" />'
     ].join("\n"));
   
     return SirTrevor.Block.extend({
   
-      type: 'Quote',
+      type: i18n.t('blocks:blockquote_type'),
   
       icon_name: 'quote',
   
@@ -1697,7 +1772,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: 'Embedly',
+      type: i18n.t("blocks:embedly_type"),
       key: '',
   
       droppable: true,
@@ -1781,7 +1856,7 @@
   
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   
-    type: "Image",
+    type: i18n.t("blocks:image_type"),
   
     droppable: true,
     uploadable: true,
@@ -1833,7 +1908,7 @@
   */
   SirTrevor.Blocks.Text = SirTrevor.Block.extend({
   
-    type: 'Text',
+    type: i18n.t('blocks:text_type'),
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
@@ -1856,7 +1931,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: "Tweet",
+      type: i18n.t("blocks:tweet_type"),
       droppable: true,
       pastable: true,
       fetchable: true,
@@ -1934,7 +2009,7 @@
       },
   
       onTweetFail: function() {
-        this.addMessage("There was a problem fetching your tweet");
+        this.addMessage(i18n.t("blocks:tweet_fail"));
         this.ready();
       },
   
@@ -1955,7 +2030,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: "List",
+      type: i18n.t("blocks:unorderedlist_type"),
   
       icon_name: 'list',
   
@@ -2007,7 +2082,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: 'Video',
+      type: i18n.t("blocks:video_type"),
   
       droppable: true,
       pastable: true,
@@ -2096,7 +2171,7 @@
   
       onClick: function() {
   
-        var link = prompt("Enter a link"),
+        var link = prompt(i18n.t("general:link")),
             link_regex = /(ftp|http|https):\/\/./;
   
         if(link && link.length > 0) {
@@ -2197,7 +2272,7 @@
   
       className: "st-block-controls",
   
-      html: "<a class='st-icon st-icon--close'>close</a>",
+      html: "<a class='st-icon st-icon--close'>" + i18n.t("general:close") + "</a>",
   
       initialize: function() {
         for(var block_type in this.available_types) {
@@ -2786,12 +2861,12 @@
           if (this._isBlockTypeAvailable(type)) {
             if (this._getBlockTypeCount(type) === 0) {
               SirTrevor.log("Failed validation on required block type " + type);
-              this.errors.push({ text: "You must have a block of type " + type });
+              this.errors.push({ text: i18n.t("general:type_error", { type: type }) });
             } else {
               var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
               if (blocks.length > 0) { return false; }
   
-              this.errors.push({ text: "A required block type " + type + " is empty" });
+              this.errors.push({ text: i18n.t("general:empty_error", { type: type }) });
               SirTrevor.log("A required block type " + type + " is empty");
             }
           }
@@ -2823,7 +2898,7 @@
         if (_.isUndefined(this.options.errorsContainer)) {
           var $container = $("<div>", {
             'class': 'st-errors',
-            html: "<p>You have the following errors: </p>"
+            html: "<p>" + i18n.t("general:error_heading") + " </p>"
           });
   
           this.$outer.prepend($container);

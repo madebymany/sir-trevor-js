@@ -358,12 +358,12 @@ SirTrevor.Editor = (function(){
         if (this._isBlockTypeAvailable(type)) {
           if (this._getBlockTypeCount(type) === 0) {
             SirTrevor.log("Failed validation on required block type " + type);
-            this.errors.push({ text: "You must have a block of type " + type });
+            this.errors.push({ text: i18n.t("general:type_error", { type: type }) });
           } else {
             var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
             if (blocks.length > 0) { return false; }
 
-            this.errors.push({ text: "A required block type " + type + " is empty" });
+            this.errors.push({ text: i18n.t("general:empty_error", { type: type }) });
             SirTrevor.log("A required block type " + type + " is empty");
           }
         }
@@ -395,7 +395,7 @@ SirTrevor.Editor = (function(){
       if (_.isUndefined(this.options.errorsContainer)) {
         var $container = $("<div>", {
           'class': 'st-errors',
-          html: "<p>You have the following errors: </p>"
+          html: "<p>" + i18n.t("general:error_heading") + " </p>"
         });
 
         this.$outer.prepend($container);

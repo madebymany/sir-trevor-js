@@ -8,7 +8,7 @@ SirTrevor.Blocks.List = (function() {
 
   return SirTrevor.Block.extend({
 
-    type: "List",
+    type: i18n.t("blocks:unorderedlist_type"),
 
     icon_name: 'list',
 
