@@ -1,6 +1,6 @@
 # What is Sir Trevor?
 
-Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as markdown inside a JSON object, with the structure and the contents of the post serliazed inside of it.
+Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as markdown inside a JSON object, with the structure and the contents of the post serialized inside of it.
 
 <a name="1"></a>
 # Get Started
