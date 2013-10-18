@@ -21,7 +21,7 @@ SirTrevor.BlockControls = (function(){
 
     className: "st-block-controls",
 
-    html: "<a class='st-icon st-icon--close'>close</a>",
+    html: "<a class='st-icon st-icon--close'>" + i18n.t("general:close") + "</a>",
 
     initialize: function() {
       for(var block_type in this.available_types) {

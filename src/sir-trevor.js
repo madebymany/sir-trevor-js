@@ -10,7 +10,11 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
+  SirTrevor.LANGUAGE = "en";
+
   SirTrevor.version = "0.3.0-rc.4";
+
+  //= locales.js
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
