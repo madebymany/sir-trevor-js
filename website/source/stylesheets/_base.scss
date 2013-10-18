@@ -160,12 +160,13 @@ img { margin:0;padding:0;float:left; }
 .feature {
   @extend %grid-half;
   display: block;
-  margin: 0 0 px-to-em(10px) 0; padding: 0;
+  margin: 0 0 px-to-em(10px) 0; padding: 0 0 0 1.25em;
 }
 
 .feature:before {
   color: $accent-color;
-  margin-right: px-to-em(5px);
+  margin: .15em 0 0 -1.25em;
+  position: absolute;
 }
 
 .example-gif {

@@ -52,4 +52,8 @@
     color: $accent-color;
     text-decoration: none;
   }
+
+  @include breakpoint($small-break) {
+    margin-left: .5em;
+  }
 }
