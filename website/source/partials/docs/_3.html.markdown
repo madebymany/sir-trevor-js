@@ -4,7 +4,7 @@
 <a name="3-1"></a>
 ## Tweet Block
 
-To use the Tweet block you'll need some **server side** code. This will need to lookup a Tweet ID and return the tweet in JSON via the Twitter API. Unfortunaetly, the only way to do this via the API is with an authenticated call.
+To use the Tweet block you'll need some **server side** code. This will need to lookup a Tweet ID and return the tweet in JSON via the Twitter API. Unfortunately, the only way to do this via the API is with an authenticated call.
 
 You can change the Tweet fetch URL as follows:
 
