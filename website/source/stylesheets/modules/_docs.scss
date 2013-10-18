@@ -67,6 +67,9 @@ pre {
   }
 
   .docs__content {
+    float: none;
     width: auto;
+
+    h1 { font-size: 1.5em; }
   }
 }

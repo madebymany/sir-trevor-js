@@ -16,10 +16,10 @@
 
   &:hover {
     color: $accent-color;
+  }
 
-   .st-icon {
-      color: #fff;
-    }
+  @include breakpoint($small-break) {
+    padding-left: 1.1em;
   }
 }
 
