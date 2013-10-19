@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-17
+ * 2013-10-19
  */
 
 (function ($, _){
@@ -65,7 +65,9 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      _.bindAll.apply(null, _.union(this, this.bound));
+      if (this.bound.length > 0) {
+        _.bindAll.apply(null, _.union(this, this.bound));
+      }
     }
   };
 
