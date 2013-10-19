@@ -23,93 +23,6 @@
 
   SirTrevor.version = "0.3.0-rc.4";
 
-  SirTrevor.Locales = {
-    en: {
-      general: {
-        'delete':           'Delete?',
-        'drop':             'Drag __block__ here',
-        'paste':            'Or paste URL here',
-        'upload':           '...or choose a file',
-        'validation_fail':  '__type__ block is invalid',
-        'close':            'close',
-        'position':         'Position',
-        'empty_error':      '__name__ must not be empty',
-        'type_error':       'You must have a block of type __type__',
-        'empty_error':      'A required block type __type__ is empty',
-        'error_heading':    'You have the following errors:',
-        'load_error':       'There was a problem loading the contents of the document',
-        'wait':             'Please wait...',
-        'link':             'Enter a link',
-      },
-      blocks: {
-        "text_type":                "Text",
-        "unorderedlist_type":       "List",
-        "blockquote_type":          "Quote",
-        "blockquote_credit":        "Credit",
-        "image_type":               "Image",
-        "video_type":               "Video",
-        "tweet_type":               "Tweet",
-        "tweet_fail":               "There was a problem fetching your tweet",
-        "embedly_type":             "Embedly"
-      }
-    },
-  
-    de: {
-      general: {
-        'delete':           'Löschen?',
-        'drop':             '__block__ hier ablegen',
-        'paste':            'Oder Adresse hier einfügen',
-        'upload':           '...oder Datei auswählen',
-        'validation_fail':  'Block __type__ ist ungültig',
-        'close':            'Schließen',
-        'position':         'Position',
-        'empty_error':      '__name__ darf nicht leer sein',
-        'type_error':       'Blöcke mit Typ __type__ sind hier nicht zulässig',
-        'empty_error':      'Angeforderter Block-Typ __type__ ist leer',
-        'error_heading':    'Die folgenden Fehler sind aufgetreten:',
-        'load_error':       'Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt',
-        'wait':             'Bitte warten...',
-        'link':             'Link eintragen'
-      },
-      blocks: {
-        "text_type":                "Text",
-        "unorderedlist_type":       "Liste (unsortiert)",
-        "blockquote_type":          "Zitat",
-        "blockquote_credit":        "Quelle",
-        "image_type":               "Bild",
-        "video_type":               "Video",
-        "tweet_type":               "Tweet",
-        "tweet_fail":               "Es wurde ein Problem beim Laden des Tweets festgestellt",
-        "embedly_type":             "Embedly"
-      }
-    }
-  }
-  
-  if (window.i18n === undefined) {
-    // Minimal i18n stub that only reads the English strings
-    console.log("Using i18n stub");
-    window.i18n = {
-      t: function(key, options) {
-        var parts, ns, key, str;
-        parts = key.split(':');
-        ns = parts[0];
-        key = parts[1]
-        str = SirTrevor.Locales[SirTrevor.LANGUAGE][ns][key];
-        if (str.indexOf('__') > 0) {
-          _.each(options, function(value, opt) {
-            str = str.replace('__' + opt + '__', value);
-          });
-        }
-        return str;
-      }
-    }
-  } else {
-    // Only use i18next when the library has been loaded by the user, keeps
-    // dependencies slim
-    i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
-                ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
-    });
-  }
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
@@ -324,6 +237,94 @@
       console.log(message);
     }
   };
+  SirTrevor.Locales = {
+    en: {
+      general: {
+        'delete':           'Delete?',
+        'drop':             'Drag __block__ here',
+        'paste':            'Or paste URL here',
+        'upload':           '...or choose a file',
+        'validation_fail':  '__type__ block is invalid',
+        'close':            'close',
+        'position':         'Position',
+        'empty_error':      '__name__ must not be empty',
+        'type_error':       'You must have a block of type __type__',
+        'empty_error':      'A required block type __type__ is empty',
+        'error_heading':    'You have the following errors:',
+        'load_error':       'There was a problem loading the contents of the document',
+        'wait':             'Please wait...',
+        'link':             'Enter a link',
+      },
+      blocks: {
+        "text_type":                "Text",
+        "unorderedlist_type":       "List",
+        "blockquote_type":          "Quote",
+        "blockquote_credit":        "Credit",
+        "image_type":               "Image",
+        "video_type":               "Video",
+        "tweet_type":               "Tweet",
+        "tweet_fail":               "There was a problem fetching your tweet",
+        "embedly_type":             "Embedly"
+      }
+    },
+  
+    de: {
+      general: {
+        'delete':           'Löschen?',
+        'drop':             '__block__ hier ablegen',
+        'paste':            'Oder Adresse hier einfügen',
+        'upload':           '...oder Datei auswählen',
+        'validation_fail':  'Block __type__ ist ungültig',
+        'close':            'Schließen',
+        'position':         'Position',
+        'empty_error':      '__name__ darf nicht leer sein',
+        'type_error':       'Blöcke mit Typ __type__ sind hier nicht zulässig',
+        'empty_error':      'Angeforderter Block-Typ __type__ ist leer',
+        'error_heading':    'Die folgenden Fehler sind aufgetreten:',
+        'load_error':       'Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt',
+        'wait':             'Bitte warten...',
+        'link':             'Link eintragen'
+      },
+      blocks: {
+        "text_type":                "Text",
+        "unorderedlist_type":       "Liste (unsortiert)",
+        "blockquote_type":          "Zitat",
+        "blockquote_credit":        "Quelle",
+        "image_type":               "Bild",
+        "video_type":               "Video",
+        "tweet_type":               "Tweet",
+        "tweet_fail":               "Es wurde ein Problem beim Laden des Tweets festgestellt",
+        "embedly_type":             "Embedly"
+      }
+    }
+  }
+  
+  if (window.i18n === undefined) {
+    // Minimal i18n stub that only reads the English strings
+    SirTrevor.log("Using i18n stub");
+    window.i18n = {
+      t: function(key, options) {
+        var parts, ns, key, str;
+        parts = key.split(':');
+        ns = parts[0];
+        key = parts[1]
+        str = SirTrevor.Locales[SirTrevor.LANGUAGE][ns][key];
+        if (str.indexOf('__') > 0) {
+          _.each(options, function(value, opt) {
+            str = str.replace('__' + opt + '__', value);
+          });
+        }
+        return str;
+      }
+    }
+  } else {
+    SirTrevor.log("Using i18next");
+    // Only use i18next when the library has been loaded by the user, keeps
+    // dependencies slim
+    i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
+                ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
+    });
+  }
   //fgnass.github.com/spin.js#v1.2.5
   (function(a,b,c){function g(a,c){var d=b.createElement(a||"div"),e;for(e in c)d[e]=c[e];return d}function h(a){for(var b=1,c=arguments.length;b<c;b++)a.appendChild(arguments[b]);return a}function j(a,b,c,d){var g=["opacity",b,~~(a*100),c,d].join("-"),h=.01+c/d*100,j=Math.max(1-(1-a)/b*(100-h),a),k=f.substring(0,f.indexOf("Animation")).toLowerCase(),l=k&&"-"+k+"-"||"";return e[g]||(i.insertRule("@"+l+"keyframes "+g+"{"+"0%{opacity:"+j+"}"+h+"%{opacity:"+a+"}"+(h+.01)+"%{opacity:1}"+(h+b)%100+"%{opacity:"+a+"}"+"100%{opacity:"+j+"}"+"}",0),e[g]=1),g}function k(a,b){var e=a.style,f,g;if(e[b]!==c)return b;b=b.charAt(0).toUpperCase()+b.slice(1);for(g=0;g<d.length;g++){f=d[g]+b;if(e[f]!==c)return f}}function l(a,b){for(var c in b)a.style[k(a,c)||c]=b[c];return a}function m(a){for(var b=1;b<arguments.length;b++){var d=arguments[b];for(var e in d)a[e]===c&&(a[e]=d[e])}return a}function n(a){var b={x:a.offsetLeft,y:a.offsetTop};while(a=a.offsetParent)b.x+=a.offsetLeft,b.y+=a.offsetTop;return b}var d=["webkit","Moz","ms","O"],e={},f,i=function(){var a=g("style");return h(b.getElementsByTagName("head")[0],a),a.sheet||a.styleSheet}(),o={lines:12,length:7,width:5,radius:10,rotate:0,color:"#000",speed:1,trail:100,opacity:.25,fps:20,zIndex:2e9,className:"spinner",top:"auto",left:"auto"},p=function q(a){if(!this.spin)return new q(a);this.opts=m(a||{},q.defaults,o)};p.defaults={},m(p.prototype,{spin:function(a){this.stop();var b=this,c=b.opts,d=b.el=l(g(0,{className:c.className}),{position:"relative",zIndex:c.zIndex}),e=c.radius+c.length+c.width,h,i;a&&(a.insertBefore(d,a.firstChild||null),i=n(a),h=n(d),l(d,{left:(c.left=="auto"?i.x-h.x+(a.offsetWidth>>1):c.left+e)+"px",top:(c.top=="auto"?i.y-h.y+(a.offsetHeight>>1):c.top+e)+"px"})),d.setAttribute("aria-role","progressbar"),b.lines(d,b.opts);if(!f){var j=0,k=c.fps,m=k/c.speed,o=(1-c.opacity)/(m*c.trail/100),p=m/c.lines;!function q(){j++;for(var a=c.lines;a;a--){var e=Math.max(1-(j+a*p)%m*o,c.opacity);b.opacity(d,c.lines-a,e,c)}b.timeout=b.el&&setTimeout(q,~~(1e3/k))}()}return b},stop:function(){var a=this.el;return a&&(clearTimeout(this.timeout),a.parentNode&&a.parentNode.removeChild(a),this.el=c),this},lines:function(a,b){function e(a,d){return l(g(),{position:"absolute",width:b.length+b.width+"px",height:b.width+"px",background:a,boxShadow:d,transformOrigin:"left",transform:"rotate("+~~(360/b.lines*c+b.rotate)+"deg) translate("+b.radius+"px"+",0)",borderRadius:(b.width>>1)+"px"})}var c=0,d;for(;c<b.lines;c++)d=l(g(),{position:"absolute",top:1+~(b.width/2)+"px",transform:b.hwaccel?"translate3d(0,0,0)":"",opacity:b.opacity,animation:f&&j(b.opacity,b.trail,c,b.lines)+" "+1/b.speed+"s linear infinite"}),b.shadow&&h(d,l(e("#000","0 0 4px #000"),{top:"2px"})),h(a,h(d,e(b.color,"0 0 1px rgba(0,0,0,.1)")));return a},opacity:function(a,b,c){b<a.childNodes.length&&(a.childNodes[b].style.opacity=c)}}),!function(){function a(a,b){return g("<"+a+' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">',b)}var b=l(g("group"),{behavior:"url(#default#VML)"});!k(b,"transform")&&b.adj?(i.addRule(".spin-vml","behavior:url(#default#VML)"),p.prototype.lines=function(b,c){function f(){return l(a("group",{coordsize:e+" "+e,coordorigin:-d+" "+ -d}),{width:e,height:e})}function k(b,e,g){h(i,h(l(f(),{rotation:360/c.lines*b+"deg",left:~~e}),h(l(a("roundrect",{arcsize:1}),{width:d,height:c.width,left:c.radius,top:-c.width>>1,filter:g}),a("fill",{color:c.color,opacity:c.opacity}),a("stroke",{opacity:0}))))}var d=c.length+c.width,e=2*d,g=-(c.width+c.length)*2+"px",i=l(f(),{position:"absolute",top:g,left:g}),j;if(c.shadow)for(j=1;j<=c.lines;j++)k(j,-2,"progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)");for(j=1;j<=c.lines;j++)k(j);return h(b,i)},p.prototype.opacity=function(a,b,c,d){var e=a.firstChild;d=d.shadow&&d.lines||0,e&&b+d<e.childNodes.length&&(e=e.childNodes[b+d],e=e&&e.firstChild,e=e&&e.firstChild,e&&(e.opacity=c))}):f=k(b,"animation")}(),a.Spinner=p})(window,document);
   /*

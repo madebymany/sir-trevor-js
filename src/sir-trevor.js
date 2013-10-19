@@ -14,7 +14,6 @@
 
   SirTrevor.version = "0.3.0-rc.4";
 
-  //= locales.js
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
@@ -104,6 +103,7 @@
   };
 
   //= helpers
+  //= locales.js
   //= vendor
   //= extensions
   //= to-html.js

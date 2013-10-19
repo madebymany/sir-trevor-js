@@ -62,7 +62,7 @@ SirTrevor.Locales = {
 
 if (window.i18n === undefined) {
   // Minimal i18n stub that only reads the English strings
-  console.log("Using i18n stub");
+  SirTrevor.log("Using i18n stub");
   window.i18n = {
     t: function(key, options) {
       var parts, ns, key, str;
@@ -79,6 +79,7 @@ if (window.i18n === undefined) {
     }
   }
 } else {
+  SirTrevor.log("Using i18next");
   // Only use i18next when the library has been loaded by the user, keeps
   // dependencies slim
   i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
