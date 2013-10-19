@@ -12,14 +12,10 @@
   var root = this,
       SirTrevor;
 
-  var push = [].push;
-  var slice = [].slice;
-  var splice = [].splice;
-
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
-  SirTrevor.version = "0.3.0-rc.4";
+  SirTrevor.version = "0.3.0-rc.5";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
