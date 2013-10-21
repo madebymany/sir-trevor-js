@@ -369,7 +369,9 @@ SirTrevor.Editor = (function(){
         }
       };
 
-      _.each(this.required, blockTypeIterator, this);
+      if (_.isArray(this.required)) {
+        _.each(this.required, blockTypeIterator, this);
+      }
     },
 
     renderErrors: function() {

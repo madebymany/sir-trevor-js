@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-19
+ * 2013-10-21
  */
 
 (function ($, _){
@@ -2795,7 +2795,9 @@
           }
         };
   
-        _.each(this.required, blockTypeIterator, this);
+        if (_.isArray(this.required)) {
+          _.each(this.required, blockTypeIterator, this);
+        }
       },
   
       renderErrors: function() {
