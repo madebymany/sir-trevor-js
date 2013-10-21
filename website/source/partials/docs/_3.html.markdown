@@ -29,6 +29,8 @@ The uploader posts an `attachments` hash that has three properties:
   * `attachments[file]` – the file
   * `attachments[uid]` – a unique identifier for this file
 
+For an uploader example, using Rails + Carrierwave [please see here](https://gist.github.com/cjbell88/7091537).
+
 <a name="3-3"></a>
 ## Hooks
 
