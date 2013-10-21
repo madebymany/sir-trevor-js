@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-09-25
+ * 2013-10-21
  */
 
 (function ($, _){
@@ -12,14 +12,10 @@
   var root = this,
       SirTrevor;
 
-  var push = [].push;
-  var slice = [].slice;
-  var splice = [].splice;
-
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
-  SirTrevor.version = "0.3.0-rc.4";
+  SirTrevor.version = "0.3.0-rc.5";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
@@ -65,7 +61,9 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      _.bindAll.apply(null, _.union(this, this.bound));
+      if (this.bound.length > 0) {
+        _.bindAll.apply(null, _.union(this, this.bound));
+      }
     }
   };
 
@@ -1203,9 +1201,10 @@
       },
   
       _blockPrepare : function() {
-        this.checkAndLoadData();
         this._initUI();
         this._initMessages();
+  
+        this.checkAndLoadData();
   
         this.$el.addClass('st-item-ready');
         this.save();
@@ -2222,7 +2221,7 @@
       handleControlButtonClick: function(e) {
         e.stopPropagation();
   
-        this.trigger('createBlock', e.currentTarget.dataset.type);
+        this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
       }
   
     });
@@ -2796,7 +2795,9 @@
           }
         };
   
-        _.each(this.required, blockTypeIterator, this);
+        if (_.isArray(this.required)) {
+          _.each(this.required, blockTypeIterator, this);
+        }
       },
   
       renderErrors: function() {

@@ -41,6 +41,10 @@ Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can
 
 Sir Trevor requires [Underscore](http://underscorejs.org/) (or LoDash), [jQuery](http://jquery.com) (or Zepto) and [Eventable](https://github.com/madebymany/eventable).
 
+### Building the website
+
+Please see the README in the website folder for more information.
+
 ## Compiling
 
 We use the awesome [Grunt](http://gruntjs.com/) for our build process. Before getting started please be sure to install the necessary dependencies via npm:
