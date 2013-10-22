@@ -52,7 +52,6 @@ SirTrevor.Blocks.Video = (function(){
         _.each(video_regexes, function(element, index) {
           var match = element.exec(url);
           if(match !== null && match[2] !== undefined) {
-            console.log(match);
             var data = {};
             data.source = index;
             data.remote_id = match[2];
