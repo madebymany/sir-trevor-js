@@ -18,7 +18,7 @@ describe("Creating blocks on the Editor", function(){
       spyOn(SirTrevor.EventBus, 'trigger');
       spyOn(editor, 'listenTo');
 
-      editor.createBlock('Text');
+      editor.createBlock('text');
     });
 
     it("instantiates a block of the type specified", function(){

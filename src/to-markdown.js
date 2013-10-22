@@ -1,4 +1,6 @@
 SirTrevor.toMarkdown = function(content, type) {
+  type = _.classify(type);
+
   var markdown = content;
 
   //Normalise whitespace

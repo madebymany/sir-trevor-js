@@ -135,7 +135,7 @@ SirTrevor.Editor = (function(){
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
     createBlock: function(type, data, render_at) {
-      type = _.capitalize(type); // Proper case
+      type = _.classify(type);
 
       if(this._blockLimitReached()) {
         SirTrevor.log("Cannot add any more blocks. Limit reached.");

@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-21
+ * 2013-10-22
  */
 
 (function ($, _){
@@ -460,6 +460,16 @@
       return (url_regex.test(string));
     },
   
+    titleize: function(str){
+      if (str === null) return '';
+      str  = String(str).toLowerCase();
+      return str.replace(/(?:^|\s|-)\S/g, function(c){ return c.toUpperCase(); });
+    },
+  
+    classify: function(str){
+      return _.titleize(String(str).replace(/[\W_]/g, ' ')).replace(/\s/g, '');
+    },
+  
     capitalize : function(string) {
       return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
     },
@@ -491,6 +501,8 @@
   
   SirTrevor.toHTML = function(markdown, type) {
     // MD -> HTML
+    type = _.classify(type);
+  
     var html = markdown,
         shouldWrap = type === "Text";
   
@@ -535,7 +547,6 @@
     // Use custom block toHTML functions (if any exist)
     var block;
     if (SirTrevor.Blocks.hasOwnProperty(type)) {
-  
       block = SirTrevor.Blocks[type];
       // Do we have a toHTML function?
       if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
@@ -569,6 +580,8 @@
     return html;
   };
   SirTrevor.toMarkdown = function(content, type) {
+    type = _.classify(type);
+  
     var markdown = content;
   
     //Normalise whitespace
@@ -1162,7 +1175,7 @@
       },
   
       title: function() {
-        return _.capitalize(this.type);
+        return _.titleize(this.type.replace(/[\W_]/g, ' '));
       },
   
       blockCSSClass: function() {
@@ -2143,8 +2156,10 @@
     var BlockControl = function(type, instance_scope) {
       this.type = type;
       this.instance_scope = instance_scope;
+      this.block_type = SirTrevor.Blocks[this.type].prototype;
+      this.can_be_rendered = this.block_type.toolbarEnabled;
+  
       this._ensureElement();
-      this.initialize();
     };
   
     _.extend(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
@@ -2154,13 +2169,8 @@
   
       attributes: function() {
         return {
-          'data-type': this.type
+          'data-type': this.block_type.type
         };
-      },
-  
-      initialize: function() {
-        this.block_type = SirTrevor.Blocks[this.type].prototype;
-        this.can_be_rendered = this.block_type.toolbarEnabled;
       },
   
       render: function() {
@@ -2561,7 +2571,7 @@
         We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
       */
       createBlock: function(type, data, render_at) {
-        type = _.capitalize(type); // Proper case
+        type = _.classify(type);
   
         if(this._blockLimitReached()) {
           SirTrevor.log("Cannot add any more blocks. Limit reached.");

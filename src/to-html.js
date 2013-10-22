@@ -1,5 +1,7 @@
 SirTrevor.toHTML = function(markdown, type) {
   // MD -> HTML
+  type = _.classify(type);
+
   var html = markdown,
       shouldWrap = type === "Text";
 
@@ -44,7 +46,6 @@ SirTrevor.toHTML = function(markdown, type) {
   // Use custom block toHTML functions (if any exist)
   var block;
   if (SirTrevor.Blocks.hasOwnProperty(type)) {
-
     block = SirTrevor.Blocks[type];
     // Do we have a toHTML function?
     if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
