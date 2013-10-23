@@ -1335,7 +1335,7 @@
   
       type: '',
   
-      _type: function() {
+      class: function() {
         return _.classify(this.type);
       },
   
