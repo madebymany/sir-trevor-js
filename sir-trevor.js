@@ -16,7 +16,7 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
-  SirTrevor.version = "0.3.0-rc.5";
+  SirTrevor.version = "0.3.0";
   SirTrevor.LANGUAGE = "en";
 
   function $element(el) {
