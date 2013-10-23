@@ -4,7 +4,7 @@
 
 SirTrevor.Blocks.Image = SirTrevor.Block.extend({
 
-  type: "Image",
+  type: i18n.t("blocks:image_type"),
 
   droppable: true,
   uploadable: true,

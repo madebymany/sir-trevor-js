@@ -3,7 +3,7 @@
 */
 SirTrevor.Blocks.Text = SirTrevor.Block.extend({
 
-  type: 'Text',
+  type: i18n.t('blocks:text_type'),
 
   editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
 

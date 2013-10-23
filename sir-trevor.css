@@ -241,7 +241,6 @@ ul.st-text-block {
   margin: 0; }
 
 .st-block__dropzone p span {
-  text-transform: lowercase;
   font-weight: 700; }
 
 .st-drag-over .st-block__inputs {

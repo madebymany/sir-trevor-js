@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-22
+ * 2013-10-23
  */
 
 (function ($, _){
@@ -15,7 +15,9 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
+
   SirTrevor.version = "0.3.0-rc.5";
+  SirTrevor.LANGUAGE = "en";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
@@ -232,6 +234,94 @@
       console.log(message);
     }
   };
+  SirTrevor.Locales = {
+    en: {
+      general: {
+        'delete':           'Delete?',
+        'drop':             'Drag __block__ here',
+        'paste':            'Or paste URL here',
+        'upload':           '...or choose a file',
+        'validation_fail':  '__type__ block is invalid',
+        'close':            'close',
+        'position':         'Position',
+        'empty_error':      '__name__ must not be empty',
+        'type_error':       'You must have a block of type __type__',
+        'empty_error':      'A required block type __type__ is empty',
+        'error_heading':    'You have the following errors:',
+        'load_error':       'There was a problem loading the contents of the document',
+        'wait':             'Please wait...',
+        'link':             'Enter a link',
+      },
+      blocks: {
+        "text_type":                "Text",
+        "unorderedlist_type":       "List",
+        "blockquote_type":          "Quote",
+        "blockquote_credit":        "Credit",
+        "image_type":               "Image",
+        "video_type":               "Video",
+        "tweet_type":               "Tweet",
+        "tweet_fail":               "There was a problem fetching your tweet",
+        "embedly_type":             "Embedly"
+      }
+    },
+  
+    de: {
+      general: {
+        'delete':           'Löschen?',
+        'drop':             '__block__ hier ablegen',
+        'paste':            'Oder Adresse hier einfügen',
+        'upload':           '...oder Datei auswählen',
+        'validation_fail':  'Block __type__ ist ungültig',
+        'close':            'Schließen',
+        'position':         'Position',
+        'empty_error':      '__name__ darf nicht leer sein',
+        'type_error':       'Blöcke mit Typ __type__ sind hier nicht zulässig',
+        'empty_error':      'Angeforderter Block-Typ __type__ ist leer',
+        'error_heading':    'Die folgenden Fehler sind aufgetreten:',
+        'load_error':       'Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt',
+        'wait':             'Bitte warten...',
+        'link':             'Link eintragen'
+      },
+      blocks: {
+        "text_type":                "Text",
+        "unorderedlist_type":       "Liste (unsortiert)",
+        "blockquote_type":          "Zitat",
+        "blockquote_credit":        "Quelle",
+        "image_type":               "Bild",
+        "video_type":               "Video",
+        "tweet_type":               "Tweet",
+        "tweet_fail":               "Es wurde ein Problem beim Laden des Tweets festgestellt",
+        "embedly_type":             "Embedly"
+      }
+    }
+  }
+  
+  if (window.i18n === undefined) {
+    // Minimal i18n stub that only reads the English strings
+    SirTrevor.log("Using i18n stub");
+    window.i18n = {
+      t: function(key, options) {
+        var parts, ns, key, str;
+        parts = key.split(':');
+        ns = parts[0];
+        key = parts[1]
+        str = SirTrevor.Locales[SirTrevor.LANGUAGE][ns][key];
+        if (str.indexOf('__') > 0) {
+          _.each(options, function(value, opt) {
+            str = str.replace('__' + opt + '__', value);
+          });
+        }
+        return str;
+      }
+    }
+  } else {
+    SirTrevor.log("Using i18next");
+    // Only use i18next when the library has been loaded by the user, keeps
+    // dependencies slim
+    i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
+                ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
+    });
+  }
   //fgnass.github.com/spin.js#v1.2.5
   (function(a,b,c){function g(a,c){var d=b.createElement(a||"div"),e;for(e in c)d[e]=c[e];return d}function h(a){for(var b=1,c=arguments.length;b<c;b++)a.appendChild(arguments[b]);return a}function j(a,b,c,d){var g=["opacity",b,~~(a*100),c,d].join("-"),h=.01+c/d*100,j=Math.max(1-(1-a)/b*(100-h),a),k=f.substring(0,f.indexOf("Animation")).toLowerCase(),l=k&&"-"+k+"-"||"";return e[g]||(i.insertRule("@"+l+"keyframes "+g+"{"+"0%{opacity:"+j+"}"+h+"%{opacity:"+a+"}"+(h+.01)+"%{opacity:1}"+(h+b)%100+"%{opacity:"+a+"}"+"100%{opacity:"+j+"}"+"}",0),e[g]=1),g}function k(a,b){var e=a.style,f,g;if(e[b]!==c)return b;b=b.charAt(0).toUpperCase()+b.slice(1);for(g=0;g<d.length;g++){f=d[g]+b;if(e[f]!==c)return f}}function l(a,b){for(var c in b)a.style[k(a,c)||c]=b[c];return a}function m(a){for(var b=1;b<arguments.length;b++){var d=arguments[b];for(var e in d)a[e]===c&&(a[e]=d[e])}return a}function n(a){var b={x:a.offsetLeft,y:a.offsetTop};while(a=a.offsetParent)b.x+=a.offsetLeft,b.y+=a.offsetTop;return b}var d=["webkit","Moz","ms","O"],e={},f,i=function(){var a=g("style");return h(b.getElementsByTagName("head")[0],a),a.sheet||a.styleSheet}(),o={lines:12,length:7,width:5,radius:10,rotate:0,color:"#000",speed:1,trail:100,opacity:.25,fps:20,zIndex:2e9,className:"spinner",top:"auto",left:"auto"},p=function q(a){if(!this.spin)return new q(a);this.opts=m(a||{},q.defaults,o)};p.defaults={},m(p.prototype,{spin:function(a){this.stop();var b=this,c=b.opts,d=b.el=l(g(0,{className:c.className}),{position:"relative",zIndex:c.zIndex}),e=c.radius+c.length+c.width,h,i;a&&(a.insertBefore(d,a.firstChild||null),i=n(a),h=n(d),l(d,{left:(c.left=="auto"?i.x-h.x+(a.offsetWidth>>1):c.left+e)+"px",top:(c.top=="auto"?i.y-h.y+(a.offsetHeight>>1):c.top+e)+"px"})),d.setAttribute("aria-role","progressbar"),b.lines(d,b.opts);if(!f){var j=0,k=c.fps,m=k/c.speed,o=(1-c.opacity)/(m*c.trail/100),p=m/c.lines;!function q(){j++;for(var a=c.lines;a;a--){var e=Math.max(1-(j+a*p)%m*o,c.opacity);b.opacity(d,c.lines-a,e,c)}b.timeout=b.el&&setTimeout(q,~~(1e3/k))}()}return b},stop:function(){var a=this.el;return a&&(clearTimeout(this.timeout),a.parentNode&&a.parentNode.removeChild(a),this.el=c),this},lines:function(a,b){function e(a,d){return l(g(),{position:"absolute",width:b.length+b.width+"px",height:b.width+"px",background:a,boxShadow:d,transformOrigin:"left",transform:"rotate("+~~(360/b.lines*c+b.rotate)+"deg) translate("+b.radius+"px"+",0)",borderRadius:(b.width>>1)+"px"})}var c=0,d;for(;c<b.lines;c++)d=l(g(),{position:"absolute",top:1+~(b.width/2)+"px",transform:b.hwaccel?"translate3d(0,0,0)":"",opacity:b.opacity,animation:f&&j(b.opacity,b.trail,c,b.lines)+" "+1/b.speed+"s linear infinite"}),b.shadow&&h(d,l(e("#000","0 0 4px #000"),{top:"2px"})),h(a,h(d,e(b.color,"0 0 1px rgba(0,0,0,.1)")));return a},opacity:function(a,b,c){b<a.childNodes.length&&(a.childNodes[b].style.opacity=c)}}),!function(){function a(a,b){return g("<"+a+' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">',b)}var b=l(g("group"),{behavior:"url(#default#VML)"});!k(b,"transform")&&b.adj?(i.addRule(".spin-vml","behavior:url(#default#VML)"),p.prototype.lines=function(b,c){function f(){return l(a("group",{coordsize:e+" "+e,coordorigin:-d+" "+ -d}),{width:e,height:e})}function k(b,e,g){h(i,h(l(f(),{rotation:360/c.lines*b+"deg",left:~~e}),h(l(a("roundrect",{arcsize:1}),{width:d,height:c.width,left:c.radius,top:-c.width>>1,filter:g}),a("fill",{color:c.color,opacity:c.opacity}),a("stroke",{opacity:0}))))}var d=c.length+c.width,e=2*d,g=-(c.width+c.length)*2+"px",i=l(f(),{position:"absolute",top:g,left:g}),j;if(c.shadow)for(j=1;j<=c.lines;j++)k(j,-2,"progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)");for(j=1;j<=c.lines;j++)k(j);return h(b,i)},p.prototype.opacity=function(a,b,c,d){var e=a.firstChild;d=d.shadow&&d.lines||0,e&&b+d<e.childNodes.length&&(e=e.childNodes[b+d],e=e&&e.firstChild,e=e&&e.firstChild,e&&(e.opacity=c))}):f=k(b,"animation")}(),a.Spinner=p})(window,document);
   /*
@@ -261,7 +351,7 @@
               editor.dataStore = str;
             }
           } catch(e) {
-            editor.errors.push({ text: "There was a problem loading the contents of the document" });
+            editor.errors.push({ text: i18n.t("general:load_error") });
             editor.renderErrors();
   
             console.log('Sorry there has been a problem with parsing the JSON');
@@ -362,7 +452,7 @@
     },
   
     _disableSubmitButton: function(message){
-      this.setSubmitButton(null, message || "Please wait...");
+      this.setSubmitButton(null, message || i18n.t("general:wait"));
       this.submitBtn
         .attr('disabled', 'disabled')
         .addClass('disabled');
@@ -881,7 +971,7 @@
       },
   
       renderPositionList: function() {
-        var inner = "<option value='0'>Position</option>";
+        var inner = "<option value='0'>" + i18n.t("general:position") + "Position</option>";
         for(var i = 1; i <= this.total_blocks; i++) {
           inner += "<option value="+i+">"+i+"</option>";
         }
@@ -1055,7 +1145,8 @@
       var content = field.attr('contenteditable') ? field.text() : field.val();
   
       if (content.length === 0) {
-        this.setError(field, bestNameFromField(field) + " must not be empty");
+        this.setError(field, i18n.t("general:empty_error",
+                                   { name: bestNameFromField(field) }));
       }
     },
   
@@ -1274,7 +1365,9 @@
   
     var delete_template = [
       "<div class='st-block__ui-delete-controls'>",
-        "<label class='st-block__delete-label'>Delete?</label>",
+        "<label class='st-block__delete-label'>",
+          i18n.t("general:delete"),
+        "</label>",
         "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
         "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
       "</div>"
@@ -1283,19 +1376,22 @@
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
              '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-             '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
+             '<p>',
+               i18n.t('general:drop', { block: '<span><%= block.type %></span>' }),
+             '</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
   
     var paste_options = {
-      html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+      html: ['<input type="text" placeholder="', i18n.t('general:paste'),
+             '" class="st-block__paste-input st-paste-block">'].join('')
     };
   
     var upload_options = {
       html: [
         '<div class="st-block__upload-container">',
         '<input type="file" type="st-file-upload">',
-        '<button class="st-upload-btn">...or choose a file</button>',
+        '<button class="st-upload-btn">', i18n.t('general:upload'), '</button>',
         '</div>'
       ].join('\n')
     };
@@ -1322,7 +1418,7 @@
       icon_name: 'default',
   
       validationFailMsg: function() {
-        return this.type + ' block is invalid';
+        return i18n.t('general:validation_fail', { type: this.type });
       },
   
       editorHTML: '<div class="st-block__editor"></div>',
@@ -1678,13 +1774,15 @@
   
     var template = _.template([
       '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-      '<label class="st-input-label">Credit</label>',
-      '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required js-cite-input" type="text" />'
+      '<label class="st-input-label">',
+      i18n.t('blocks:blockquote_credit'),
+      '</label>',
+      '<input maxlength="140" name="cite" placeholder="' + i18n.t('blocks:blockquote_credit') + '" class="st-input-string st-required js-cite-input" type="text" />'
     ].join("\n"));
   
     return SirTrevor.Block.extend({
   
-      type: 'Quote',
+      type: i18n.t('blocks:blockquote_type'),
   
       icon_name: 'quote',
   
@@ -1708,7 +1806,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: 'Embedly',
+      type: i18n.t("blocks:embedly_type"),
       key: '',
   
       droppable: true,
@@ -1792,7 +1890,7 @@
   
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   
-    type: "Image",
+    type: i18n.t("blocks:image_type"),
   
     droppable: true,
     uploadable: true,
@@ -1844,7 +1942,7 @@
   */
   SirTrevor.Blocks.Text = SirTrevor.Block.extend({
   
-    type: 'Text',
+    type: i18n.t('blocks:text_type'),
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
@@ -1867,7 +1965,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: "Tweet",
+      type: i18n.t("blocks:tweet_type"),
       droppable: true,
       pastable: true,
       fetchable: true,
@@ -1945,7 +2043,7 @@
       },
   
       onTweetFail: function() {
-        this.addMessage("There was a problem fetching your tweet");
+        this.addMessage(i18n.t("blocks:tweet_fail"));
         this.ready();
       },
   
@@ -1966,7 +2064,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: "List",
+      type: i18n.t("blocks:unorderedlist_type"),
   
       icon_name: 'list',
   
@@ -2018,7 +2116,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: 'Video',
+      type: i18n.t("blocks:video_type"),
   
       droppable: true,
       pastable: true,
@@ -2107,7 +2205,7 @@
   
       onClick: function() {
   
-        var link = prompt("Enter a link"),
+        var link = prompt(i18n.t("general:link")),
             link_regex = /(ftp|http|https):\/\/./;
   
         if(link && link.length > 0) {
@@ -2205,7 +2303,7 @@
   
       className: "st-block-controls",
   
-      html: "<a class='st-icon st-icon--close'>close</a>",
+      html: "<a class='st-icon st-icon--close'>" + i18n.t("general:close") + "</a>",
   
       initialize: function() {
         for(var block_type in this.available_types) {
@@ -2794,12 +2892,12 @@
           if (this._isBlockTypeAvailable(type)) {
             if (this._getBlockTypeCount(type) === 0) {
               SirTrevor.log("Failed validation on required block type " + type);
-              this.errors.push({ text: "You must have a block of type " + type });
+              this.errors.push({ text: i18n.t("general:type_error", { type: type }) });
             } else {
               var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
               if (blocks.length > 0) { return false; }
   
-              this.errors.push({ text: "A required block type " + type + " is empty" });
+              this.errors.push({ text: i18n.t("general:empty_error", { type: type }) });
               SirTrevor.log("A required block type " + type + " is empty");
             }
           }
@@ -2833,7 +2931,7 @@
         if (_.isUndefined(this.options.errorsContainer)) {
           var $container = $("<div>", {
             'class': 'st-errors',
-            html: "<p>You have the following errors: </p>"
+            html: "<p>" + i18n.t("general:error_heading") + " </p>"
           });
   
           this.$outer.prepend($container);

@@ -6,7 +6,9 @@
   SirTrevor = root.SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
+
   SirTrevor.version = "0.3.0-rc.5";
+  SirTrevor.LANGUAGE = "en";
 
   function $element(el) {
     return el instanceof $ ? el : $(el);
@@ -98,6 +100,7 @@
   };
 
   //= helpers
+  //= locales.js
   //= vendor
   //= extensions
   //= to-html.js

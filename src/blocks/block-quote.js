@@ -6,13 +6,15 @@ SirTrevor.Blocks.Quote = (function(){
 
   var template = _.template([
     '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-    '<label class="st-input-label">Credit</label>',
-    '<input maxlength="140" name="cite" placeholder="Credit" class="st-input-string st-required js-cite-input" type="text" />'
+    '<label class="st-input-label">',
+    i18n.t('blocks:blockquote_credit'),
+    '</label>',
+    '<input maxlength="140" name="cite" placeholder="' + i18n.t('blocks:blockquote_credit') + '" class="st-input-string st-required js-cite-input" type="text" />'
   ].join("\n"));
 
   return SirTrevor.Block.extend({
 
-    type: 'Quote',
+    type: i18n.t('blocks:blockquote_type'),
 
     icon_name: 'quote',
 

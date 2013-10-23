@@ -2,7 +2,7 @@ SirTrevor.Blocks.Embedly = (function(){
 
   return SirTrevor.Block.extend({
 
-    type: 'Embedly',
+    type: i18n.t("blocks:embedly_type"),
     key: '',
 
     droppable: true,
