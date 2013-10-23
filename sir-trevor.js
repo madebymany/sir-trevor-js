@@ -2964,8 +2964,6 @@
         }
   
         var blockTypeIterator = function(type, index) {
-          type = _.classify(type);
-  
           if (this._isBlockTypeAvailable(type)) {
             if (this._getBlockTypeCount(type) === 0) {
               SirTrevor.log("Failed validation on required block type " + type);
@@ -3031,7 +3029,6 @@
       },
   
       getBlocksByType: function(block_type) {
-        block_type = _.classify(block_type);
         return _.filter(this.blocks, function(b){ return b.type == block_type; });
       },
   
@@ -3049,8 +3046,6 @@
         returns the limit for this block, which can be set on a per Editor instance, or on a global blockType scope.
       */
       _getBlockTypeLimit: function(t) {
-        t = _.classify(t);
-  
         if (!this._isBlockTypeAvailable(t)) { return 0; }
   
         return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
@@ -3062,8 +3057,6 @@
         Checks if the object exists within the instance of the Editor.
       */
       _isBlockTypeAvailable: function(t) {
-        t = _.classify(t);
-  
         return !_.isUndefined(this.blockTypes[t]);
       },
   
@@ -3094,13 +3087,13 @@
         These will either be set on a per Editor instance, or set on a global scope.
       */
       _setBlocksTypes: function() {
-        this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : _.classifyList(this.options.blockTypes));
+        this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
       },
   
       /* Get our required blocks (if any) */
       _setRequired: function() {
         if (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
-          this.required = _.classifyList(this.options.required);
+          this.required = this.options.required;
         } else {
           this.required = false;
         }
