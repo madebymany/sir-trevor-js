@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/madebymany/sir-trevor-js.png?branch=master)](https://travis-ci.org/madebymany/sir-trevor-js/)
 
-![Sir Trevor in action](https://raw.github.com/madebymany/sir-trevor-js/v3/examples/sir-trevor.gif)
+![Sir Trevor in action](https://raw.github.com/madebymany/sir-trevor-js/master/examples/sir-trevor.gif)
 
 Existing WYSIWYG content editors were designed for immutable display media. In contrast, Sir Trevor is rich content editing entirely re-imagined for the web: an intuitive editor for web content which does not presuppose anything about how it will be rendered.
 
