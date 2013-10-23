@@ -18,7 +18,7 @@ SirTrevor.Block = (function(){
     html: ['<div class="st-block__dropzone">',
            '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
            '<p>',
-             i18n.t('general:drop', { block: '<span><%= block.type %></span>' }),
+             i18n.t('general:drop', { block: '<span><%= block.title() %></span>' }),
            '</p></div>'].join('\n'),
     re_render_on_reorder: false
   };
@@ -59,7 +59,7 @@ SirTrevor.Block = (function(){
     icon_name: 'default',
 
     validationFailMsg: function() {
-      return i18n.t('general:validation_fail', { type: this.type });
+      return i18n.t('errors:validation_fail', { type: this.type });
     },
 
     editorHTML: '<div class="st-block__editor"></div>',

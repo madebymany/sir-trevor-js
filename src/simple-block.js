@@ -41,6 +41,11 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     type: '',
+
+    class: function() {
+      return _.classify(this.type);
+    },
+
     editorHTML: '',
 
     initialize: function() {},

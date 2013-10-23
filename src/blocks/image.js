@@ -4,7 +4,8 @@
 
 SirTrevor.Blocks.Image = SirTrevor.Block.extend({
 
-  type: i18n.t("blocks:image_type"),
+  type: "image",
+  title: function() { return i18n.t('blocks:image:title'); },
 
   droppable: true,
   uploadable: true,
@@ -44,7 +45,7 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
           this.ready();
         },
         function(error){
-          this.addMessage("There was a problem with your upload");
+          this.addMessage(i18n.t('blocks:image:upload_error'));
           this.ready();
         }
       );

@@ -51,7 +51,7 @@ SirTrevor.BlockPositioner = (function(){
     },
 
     renderPositionList: function() {
-      var inner = "<option value='0'>" + i18n.t("general:position") + "Position</option>";
+      var inner = "<option value='0'>" + i18n.t("general:position") + "</option>";
       for(var i = 1; i <= this.total_blocks; i++) {
         inner += "<option value="+i+">"+i+"</option>";
       }

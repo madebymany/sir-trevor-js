@@ -8,7 +8,9 @@ SirTrevor.Blocks.List = (function() {
 
   return SirTrevor.Block.extend({
 
-    type: i18n.t("blocks:unorderedlist_type"),
+    type: 'list',
+
+    title: function() { return i18n.t('blocks:list:title'); },
 
     icon_name: 'list',
 

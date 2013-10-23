@@ -3,7 +3,9 @@
 */
 SirTrevor.Blocks.Text = SirTrevor.Block.extend({
 
-  type: i18n.t('blocks:text_type'),
+  type: "text",
+
+  title: function() { return i18n.t('blocks:text:title'); },
 
   editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
 

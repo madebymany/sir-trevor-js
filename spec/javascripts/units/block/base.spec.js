@@ -23,7 +23,7 @@ describe("Block", function(){
   });
 
   it("has a type set", function(){
-    expect(block.type).toBe("Text");
+    expect(block.type.toLowerCase()).toBe("text");
   });
 
   it("has a unique identifier", function(){

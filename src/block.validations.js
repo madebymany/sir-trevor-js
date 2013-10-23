@@ -38,7 +38,7 @@ SirTrevor.BlockValidations = {
     var content = field.attr('contenteditable') ? field.text() : field.val();
 
     if (content.length === 0) {
-      this.setError(field, i18n.t("general:empty_error",
+      this.setError(field, i18n.t("errors:block_empty",
                                  { name: bestNameFromField(field) }));
     }
   },

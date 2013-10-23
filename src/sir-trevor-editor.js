@@ -154,6 +154,7 @@ SirTrevor.Editor = (function(){
       }
 
       var block = new SirTrevor.Blocks[type](data, this.ID);
+
       this._renderInPosition(block.render().$el);
 
       this.listenTo(block, 'removeBlock', this.removeBlock);
@@ -263,6 +264,7 @@ SirTrevor.Editor = (function(){
 
     removeBlock: function(block_id) {
       var block = this.findBlockById(block_id),
+          type = _.classify(block.type),
           controls = block.$el.find('.st-block-controls');
 
       if (controls.length) {
@@ -270,7 +272,7 @@ SirTrevor.Editor = (function(){
         this.$wrapper.prepend(controls);
       }
 
-      this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
+      this.blockCounts[type] = this.blockCounts[type] - 1;
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
 
@@ -355,15 +357,17 @@ SirTrevor.Editor = (function(){
       }
 
       var blockTypeIterator = function(type, index) {
+        type = _.classify(type);
+
         if (this._isBlockTypeAvailable(type)) {
           if (this._getBlockTypeCount(type) === 0) {
             SirTrevor.log("Failed validation on required block type " + type);
-            this.errors.push({ text: i18n.t("general:type_error", { type: type }) });
+            this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
           } else {
             var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
             if (blocks.length > 0) { return false; }
 
-            this.errors.push({ text: i18n.t("general:empty_error", { type: type }) });
+            this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
             SirTrevor.log("A required block type " + type + " is empty");
           }
         }
@@ -397,7 +401,7 @@ SirTrevor.Editor = (function(){
       if (_.isUndefined(this.options.errorsContainer)) {
         var $container = $("<div>", {
           'class': 'st-errors',
-          html: "<p>" + i18n.t("general:error_heading") + " </p>"
+          html: "<p>" + i18n.t("errors:title") + " </p>"
         });
 
         this.$outer.prepend($container);
@@ -420,6 +424,7 @@ SirTrevor.Editor = (function(){
     },
 
     getBlocksByType: function(block_type) {
+      block_type = _.classify(block_type);
       return _.filter(this.blocks, function(b){ return b.type == block_type; });
     },
 
@@ -437,6 +442,8 @@ SirTrevor.Editor = (function(){
       returns the limit for this block, which can be set on a per Editor instance, or on a global blockType scope.
     */
     _getBlockTypeLimit: function(t) {
+      t = _.classify(t);
+
       if (!this._isBlockTypeAvailable(t)) { return 0; }
 
       return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
@@ -448,6 +455,8 @@ SirTrevor.Editor = (function(){
       Checks if the object exists within the instance of the Editor.
     */
     _isBlockTypeAvailable: function(t) {
+      t = _.classify(t);
+
       return !_.isUndefined(this.blockTypes[t]);
     },
 
@@ -478,12 +487,16 @@ SirTrevor.Editor = (function(){
       These will either be set on a per Editor instance, or set on a global scope.
     */
     _setBlocksTypes: function() {
-      this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
+      this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : _.classifyList(this.options.blockTypes));
     },
 
     /* Get our required blocks (if any) */
     _setRequired: function() {
-      this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
+      if (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+        this.required = _.classifyList(this.options.required);
+      } else {
+        this.required = false;
+      }
     }
   });
 

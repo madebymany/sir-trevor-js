@@ -241,27 +241,46 @@
         'drop':             'Drag __block__ here',
         'paste':            'Or paste URL here',
         'upload':           '...or choose a file',
-        'validation_fail':  '__type__ block is invalid',
         'close':            'close',
         'position':         'Position',
-        'empty_error':      '__name__ must not be empty',
-        'type_error':       'You must have a block of type __type__',
-        'empty_error':      'A required block type __type__ is empty',
-        'error_heading':    'You have the following errors:',
-        'load_error':       'There was a problem loading the contents of the document',
         'wait':             'Please wait...',
         'link':             'Enter a link',
       },
+      errors: {
+        'title': "You have the following errors:",
+        'validation_fail': "__type__ block is invalid",
+        'block_empty': "__name__ must not be empty",
+        'type_missing': "You must have a block of type __type__",
+        'required_type_empty': "A required block type __type__ is empty",
+        'load_fail': "There was a problem loading the contents of the document"
+      },
       blocks: {
-        "text_type":                "Text",
-        "unorderedlist_type":       "List",
-        "blockquote_type":          "Quote",
-        "blockquote_credit":        "Credit",
-        "image_type":               "Image",
-        "video_type":               "Video",
-        "tweet_type":               "Tweet",
-        "tweet_fail":               "There was a problem fetching your tweet",
-        "embedly_type":             "Embedly"
+        text: {
+          'title': "Text"
+        },
+        list: {
+          'title': "List"
+        },
+        quote: {
+          'title': "Quote",
+          'credit_field': "Credit"
+        },
+        image: {
+          'title': "Image",
+          'upload_error': "There was a problem with your upload"
+        },
+        video: {
+          'title': "Video"
+        },
+        tweet: {
+          'title': "Tweet",
+          'fetch_error': "There was a problem fetching your tweet"
+        },
+        embedly: {
+          'title': "Embedly",
+          'fetch_error': "There was a problem fetching your embed",
+          'key_missing': "An Embedly API key must be present"
+        }
       }
     },
   
@@ -271,49 +290,80 @@
         'drop':             '__block__ hier ablegen',
         'paste':            'Oder Adresse hier einfügen',
         'upload':           '...oder Datei auswählen',
-        'validation_fail':  'Block __type__ ist ungültig',
         'close':            'Schließen',
         'position':         'Position',
-        'empty_error':      '__name__ darf nicht leer sein',
-        'type_error':       'Blöcke mit Typ __type__ sind hier nicht zulässig',
-        'empty_error':      'Angeforderter Block-Typ __type__ ist leer',
-        'error_heading':    'Die folgenden Fehler sind aufgetreten:',
-        'load_error':       'Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt',
         'wait':             'Bitte warten...',
         'link':             'Link eintragen'
       },
+      errors: {
+        'title': "Die folgenden Fehler sind aufgetreten:",
+        'validation_fail': "Block __type__ ist ungültig",
+        'block_empty': "__name__ darf nicht leer sein",
+        'type_missing': "Blöcke mit Typ __type__ sind hier nicht zulässig",
+        'required_type_empty': "Angeforderter Block-Typ __type__ ist leer",
+        'load_fail': "Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt"
+      },
       blocks: {
-        "text_type":                "Text",
-        "unorderedlist_type":       "Liste (unsortiert)",
-        "blockquote_type":          "Zitat",
-        "blockquote_credit":        "Quelle",
-        "image_type":               "Bild",
-        "video_type":               "Video",
-        "tweet_type":               "Tweet",
-        "tweet_fail":               "Es wurde ein Problem beim Laden des Tweets festgestellt",
-        "embedly_type":             "Embedly"
+        text: {
+          'title': "Text"
+        },
+        list: {
+          'title': "Liste (unsortiert)"
+        },
+        quote: {
+          'title': "Zitat",
+          'credit_field': "Quelle"
+        },
+        image: {
+          'title': "Bild",
+          'upload_error': "There was a problem with your upload"
+        },
+        video: {
+          'title': "Video"
+        },
+        tweet: {
+          'title': "Tweet",
+          'fetch_error': "Es wurde ein Problem beim Laden des Tweets festgestellt"
+        },
+        embedly: {
+          'title': "Embedly",
+          'fetch_error': "There was a problem fetching your embed",
+          'key_missing': "An Embedly API key must be present"
+        }
       }
     }
-  }
+  };
   
   if (window.i18n === undefined) {
     // Minimal i18n stub that only reads the English strings
     SirTrevor.log("Using i18n stub");
     window.i18n = {
       t: function(key, options) {
-        var parts, ns, key, str;
-        parts = key.split(':');
-        ns = parts[0];
-        key = parts[1]
-        str = SirTrevor.Locales[SirTrevor.LANGUAGE][ns][key];
-        if (str.indexOf('__') > 0) {
+        var parts = key.split(':'), str, obj, part, i;
+  
+        obj = SirTrevor.Locales[SirTrevor.LANGUAGE];
+  
+        for(i = 0; i < parts.length; i++) {
+          part = parts[i];
+  
+          if(!_.isUndefined(obj[part])) {
+            obj = obj[part];
+          }
+        }
+  
+        str = obj;
+  
+        if (!_.isString(str)) { return ""; }
+  
+        if (str.indexOf('__') >= 0) {
           _.each(options, function(value, opt) {
             str = str.replace('__' + opt + '__', value);
           });
         }
+  
         return str;
       }
-    }
+    };
   } else {
     SirTrevor.log("Using i18next");
     // Only use i18next when the library has been loaded by the user, keeps
@@ -351,7 +401,7 @@
               editor.dataStore = str;
             }
           } catch(e) {
-            editor.errors.push({ text: i18n.t("general:load_error") });
+            editor.errors.push({ text: i18n.t("errors:load_fail") });
             editor.renderErrors();
   
             console.log('Sorry there has been a problem with parsing the JSON');
@@ -560,8 +610,17 @@
       return _.titleize(String(str).replace(/[\W_]/g, ' ')).replace(/\s/g, '');
     },
   
+    classifyList: function(a){
+      return _.map(a, function(i){ return _.classify(i); });
+    },
+  
     capitalize : function(string) {
       return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
+    },
+  
+    underscored: function(str){
+      return _.trim(str).replace(/([a-z\d])([A-Z]+)/g, '$1_$2')
+                        .replace(/[-\s]+/g, '_').toLowerCase();
     },
   
     trim : function(string) {
@@ -971,7 +1030,7 @@
       },
   
       renderPositionList: function() {
-        var inner = "<option value='0'>" + i18n.t("general:position") + "Position</option>";
+        var inner = "<option value='0'>" + i18n.t("general:position") + "</option>";
         for(var i = 1; i <= this.total_blocks; i++) {
           inner += "<option value="+i+">"+i+"</option>";
         }
@@ -1145,7 +1204,7 @@
       var content = field.attr('contenteditable') ? field.text() : field.val();
   
       if (content.length === 0) {
-        this.setError(field, i18n.t("general:empty_error",
+        this.setError(field, i18n.t("errors:block_empty",
                                    { name: bestNameFromField(field) }));
       }
     },
@@ -1275,6 +1334,11 @@
       },
   
       type: '',
+  
+      _type: function() {
+        return _.classify(this.type);
+      },
+  
       editorHTML: '',
   
       initialize: function() {},
@@ -1377,7 +1441,7 @@
       html: ['<div class="st-block__dropzone">',
              '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
              '<p>',
-               i18n.t('general:drop', { block: '<span><%= block.type %></span>' }),
+               i18n.t('general:drop', { block: '<span><%= block.title() %></span>' }),
              '</p></div>'].join('\n'),
       re_render_on_reorder: false
     };
@@ -1418,7 +1482,7 @@
       icon_name: 'default',
   
       validationFailMsg: function() {
-        return i18n.t('general:validation_fail', { type: this.type });
+        return i18n.t('errors:validation_fail', { type: this.type });
       },
   
       editorHTML: '<div class="st-block__editor"></div>',
@@ -1775,14 +1839,16 @@
     var template = _.template([
       '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
       '<label class="st-input-label">',
-      i18n.t('blocks:blockquote_credit'),
+      i18n.t('blocks:quote:credit_field'),
       '</label>',
-      '<input maxlength="140" name="cite" placeholder="' + i18n.t('blocks:blockquote_credit') + '" class="st-input-string st-required js-cite-input" type="text" />'
+      '<input maxlength="140" name="cite" placeholder="' + i18n.t('blocks:quote:credit_field') + '" class="st-input-string st-required js-cite-input" type="text" />'
     ].join("\n"));
   
     return SirTrevor.Block.extend({
   
-      type: i18n.t('blocks:blockquote_type'),
+      type: "quote",
+  
+      title: function(){ return i18n.t('blocks:quote:title'); },
   
       icon_name: 'quote',
   
@@ -1806,7 +1872,8 @@
   
     return SirTrevor.Block.extend({
   
-      type: i18n.t("blocks:embedly_type"),
+      type: "embedly",
+  
       key: '',
   
       droppable: true,
@@ -1890,7 +1957,8 @@
   
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   
-    type: i18n.t("blocks:image_type"),
+    type: "image",
+    title: function() { return i18n.t('blocks:image:title'); },
   
     droppable: true,
     uploadable: true,
@@ -1930,7 +1998,7 @@
             this.ready();
           },
           function(error){
-            this.addMessage("There was a problem with your upload");
+            this.addMessage(i18n.t('blocks:image:upload_error'));
             this.ready();
           }
         );
@@ -1942,7 +2010,9 @@
   */
   SirTrevor.Blocks.Text = SirTrevor.Block.extend({
   
-    type: i18n.t('blocks:text_type'),
+    type: "text",
+  
+    title: function() { return i18n.t('blocks:text:title'); },
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
@@ -1965,7 +2035,7 @@
   
     return SirTrevor.Block.extend({
   
-      type: i18n.t("blocks:tweet_type"),
+      type: "tweet",
       droppable: true,
       pastable: true,
       fetchable: true,
@@ -2043,7 +2113,7 @@
       },
   
       onTweetFail: function() {
-        this.addMessage(i18n.t("blocks:tweet_fail"));
+        this.addMessage(i18n.t("blocks:tweet:fetch_error"));
         this.ready();
       },
   
@@ -2064,7 +2134,9 @@
   
     return SirTrevor.Block.extend({
   
-      type: i18n.t("blocks:unorderedlist_type"),
+      type: 'list',
+  
+      title: function() { return i18n.t('blocks:list:title'); },
   
       icon_name: 'list',
   
@@ -2116,7 +2188,8 @@
   
     return SirTrevor.Block.extend({
   
-      type: i18n.t("blocks:video_type"),
+      type: 'video',
+      title: function() { return i18n.t('blocks:video:title'); },
   
       droppable: true,
       pastable: true,
@@ -2688,6 +2761,7 @@
         }
   
         var block = new SirTrevor.Blocks[type](data, this.ID);
+  
         this._renderInPosition(block.render().$el);
   
         this.listenTo(block, 'removeBlock', this.removeBlock);
@@ -2797,6 +2871,7 @@
   
       removeBlock: function(block_id) {
         var block = this.findBlockById(block_id),
+            type = _.classify(block.type),
             controls = block.$el.find('.st-block-controls');
   
         if (controls.length) {
@@ -2804,7 +2879,7 @@
           this.$wrapper.prepend(controls);
         }
   
-        this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
+        this.blockCounts[type] = this.blockCounts[type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
   
@@ -2889,15 +2964,17 @@
         }
   
         var blockTypeIterator = function(type, index) {
+          type = _.classify(type);
+  
           if (this._isBlockTypeAvailable(type)) {
             if (this._getBlockTypeCount(type) === 0) {
               SirTrevor.log("Failed validation on required block type " + type);
-              this.errors.push({ text: i18n.t("general:type_error", { type: type }) });
+              this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
             } else {
               var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
               if (blocks.length > 0) { return false; }
   
-              this.errors.push({ text: i18n.t("general:empty_error", { type: type }) });
+              this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
               SirTrevor.log("A required block type " + type + " is empty");
             }
           }
@@ -2931,7 +3008,7 @@
         if (_.isUndefined(this.options.errorsContainer)) {
           var $container = $("<div>", {
             'class': 'st-errors',
-            html: "<p>" + i18n.t("general:error_heading") + " </p>"
+            html: "<p>" + i18n.t("errors:title") + " </p>"
           });
   
           this.$outer.prepend($container);
@@ -2954,6 +3031,7 @@
       },
   
       getBlocksByType: function(block_type) {
+        block_type = _.classify(block_type);
         return _.filter(this.blocks, function(b){ return b.type == block_type; });
       },
   
@@ -2971,6 +3049,8 @@
         returns the limit for this block, which can be set on a per Editor instance, or on a global blockType scope.
       */
       _getBlockTypeLimit: function(t) {
+        t = _.classify(t);
+  
         if (!this._isBlockTypeAvailable(t)) { return 0; }
   
         return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
@@ -2982,6 +3062,8 @@
         Checks if the object exists within the instance of the Editor.
       */
       _isBlockTypeAvailable: function(t) {
+        t = _.classify(t);
+  
         return !_.isUndefined(this.blockTypes[t]);
       },
   
@@ -3012,12 +3094,16 @@
         These will either be set on a per Editor instance, or set on a global scope.
       */
       _setBlocksTypes: function() {
-        this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
+        this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : _.classifyList(this.options.blockTypes));
       },
   
       /* Get our required blocks (if any) */
       _setRequired: function() {
-        this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
+        if (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+          this.required = _.classifyList(this.options.required);
+        } else {
+          this.required = false;
+        }
       }
     });
   

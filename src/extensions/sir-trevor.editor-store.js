@@ -25,7 +25,7 @@ SirTrevor.editorStore = function(editor, method, options) {
             editor.dataStore = str;
           }
         } catch(e) {
-          editor.errors.push({ text: i18n.t("general:load_error") });
+          editor.errors.push({ text: i18n.t("errors:load_fail") });
           editor.renderErrors();
 
           console.log('Sorry there has been a problem with parsing the JSON');
