@@ -4,7 +4,7 @@ SirTrevor.BlockStore = {
 
   createStore: function(blockData) {
     this.blockStorage = {
-      type: this.type.toLowerCase(),
+      type: _.underscored(this.type),
       data: blockData || {}
     };
   },

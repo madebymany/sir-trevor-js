@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-23
+ * 2013-10-24
  */
 
 (function ($, _){
@@ -1190,7 +1190,7 @@
   
     createStore: function(blockData) {
       this.blockStorage = {
-        type: this.type.toLowerCase(),
+        type: _.underscored(this.type),
         data: blockData || {}
       };
     },
