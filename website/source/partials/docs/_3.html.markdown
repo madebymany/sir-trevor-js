@@ -23,11 +23,11 @@ The image block relies on a server side component to **store images on the serve
       uploadUrl: "/images"
     });
 
-The uploader posts an `attachments` hash that has three properties:
+The uploader posts an `attachment` hash that has three properties:
 
-  * `attachments[name]` – the files name
-  * `attachments[file]` – the file
-  * `attachments[uid]` – a unique identifier for this file
+  * `attachment[name]` – the files name
+  * `attachment[file]` – the file
+  * `attachment[uid]` – a unique identifier for this file
 
 For an uploader example, using Rails + Carrierwave [please see here](https://gist.github.com/cjbell88/7091537).
 
