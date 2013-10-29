@@ -364,7 +364,7 @@ SirTrevor.Editor = (function(){
           this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
         } else {
           var blocks = _.filter(this.getBlocksByType(type), function(b) {
-            return !_.isEmpty(b.getData());
+            return !b.isEmpty();
           });
 
           if (blocks.length > 0) { return false; }

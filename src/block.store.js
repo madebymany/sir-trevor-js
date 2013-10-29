@@ -16,6 +16,11 @@ SirTrevor.BlockStore = {
     return this.blockStorage;
   },
 
+  saveAndGetData: function() {
+    var store = this.saveAndReturnData();
+    return store.data || store;
+  },
+
   getData: function() {
     return this.blockStorage.data;
   },
