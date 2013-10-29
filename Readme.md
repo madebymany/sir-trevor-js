@@ -8,27 +8,27 @@ Conceived by [Andrew Sprinz](http://github.com/andrewsprinz‎). Maintained by [
 
 ## Quick start
 
-Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js/docs.html), or read more about [how the editor works](https://github.com/madebymany/sir-trevor-js/wiki/How-the-editor-works).
+Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js/docs.html).
 
-### Vanilla JS
+### Plain JS
 
-1. [Download the latest release](https://github.com/madebymany/sir-trevor-js/zipball/master)
-2. Clone the repo: `git clone git://github.com/madebymany/sir-trevor-js.git`
-3. Install with [Bower](http://bower.io/) ``bower install sir-trevor-js``
+- [Download the latest release](https://github.com/madebymany/sir-trevor-js/zipball/master)
+- ...or clone the repo: `git clone git://github.com/madebymany/sir-trevor-js.git`
+- ...or install with [Bower](http://bower.io/) ``bower install sir-trevor-js``
 
 ### Implementations
 
 1. [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails)
-2. [Umbraco]()
+2. [Umbraco](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
 
 ## Browser support
 
 Sir Trevor is only tested on the following modern browsers:
 
-1. IE10+
-2. Chrome 25+
-3. Safari 5+
-4. Firefox 16+
+- IE10+
+- Chrome 25+
+- Safari 5+
+- Firefox 16+
 
 ## Dependencies
 
@@ -36,15 +36,15 @@ Sir Trevor requires [Underscore](http://underscorejs.org/) (or LoDash), [jQuery]
 
 ## Contributing
 
-See the [roadmap]() and read a little about [what ST is, and is not]().
+See the [roadmap](https://github.com/madebymany/sir-trevor-js/wiki/Roadmap) and read a little about [the philosophy](https://github.com/madebymany/sir-trevor-js/wiki/Philosophy) guiding development.
 
-### Customising
+### Customising the way it looks
 
-We use [Sass](http://sass-lang.com/) for our styles, if you'd like to change the default styling please fork the repository and [make changes to the Sass](https://github.com/madebymany/sir-trevor-js/wiki/Customising-the-default-styling) before recompiling.
+We use [Sass](http://sass-lang.com/) for our styles, if you'd like to change the default styling please fork the repository and make changes to the Sass before recompiling.
 
-### Custom blocks
+### Customising blocks
 
-Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can also override the defaulty block types (Text, Image, Tweet, Video, Quote, Heading & List) at any time. Please see the Wiki article about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4) for more information.
+Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can also override the default block types (Text, Image, Tweet, Video, Quote, Heading & List) at any time. Please see the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
 
 ### Compiling
 
