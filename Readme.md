@@ -21,6 +21,10 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 1. [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails)
 2. [Umbraco](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
 
+## Custom blocks
+
+We are keeping a list of [custom block repos here](https://github.com/madebymany/sir-trevor-js/wiki/Custom-blocks). See the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
+
 ## Browser support
 
 Sir Trevor is only tested on the following modern browsers:
@@ -44,7 +48,7 @@ We use [Sass](http://sass-lang.com/) for our styles, if you'd like to change the
 
 ### Customising blocks
 
-Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can also override the default block types (Text, Image, Tweet, Video, Quote, Heading & List) at any time. Please see the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
+Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can also override the default block types (Text, Image, Tweet, Video, Quote, Heading & List) at any time. See the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
 
 ### Compiling
 
