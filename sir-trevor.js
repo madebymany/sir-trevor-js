@@ -1501,6 +1501,8 @@
   
       formattable: true,
   
+      _previousSelection: '',
+  
       initialize: function() {},
   
       toMarkdown: function(markdown){ return markdown; },
@@ -1730,13 +1732,16 @@
       },
   
       getSelectionForFormatter: function() {
-         var selection = window.getSelection();
+        _.defer(function(){
+          var selection = window.getSelection(),
+             selectionStr = selection.toString().trim();
   
-          if (selection.toString().trim() === '') {
+          if (selectionStr === '') {
             SirTrevor.EventBus.trigger('formatter:hide');
           } else {
             SirTrevor.EventBus.trigger('formatter:positon');
           }
+        });
        },
   
       clearInsertedStyles: function(e) {
