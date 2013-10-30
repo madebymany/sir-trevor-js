@@ -4,7 +4,7 @@
 
 SirTrevor.Blocks.List = (function() {
 
-  var template = '<div class="st-text-block" contenteditable="true"><ul><li></li></ul></div>';
+  var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
 
   return SirTrevor.Block.extend({
 
@@ -51,6 +51,10 @@ SirTrevor.Blocks.List = (function() {
           list = this.$('ul').html(replace);
 
       this.getTextBlock().caretToEnd();
+    },
+
+    isEmpty: function() {
+      return _.isEmpty(this.saveAndGetData().text);
     }
 
   });

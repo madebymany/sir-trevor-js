@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-29
+ * 2013-10-30
  */
 
 (function ($, _){
@@ -1251,6 +1251,11 @@
       return this.blockStorage;
     },
   
+    saveAndGetData: function() {
+      var store = this.saveAndReturnData();
+      return store.data || store;
+    },
+  
     getData: function() {
       return this.blockStorage.data;
     },
@@ -1584,15 +1589,10 @@
           }
         }
   
-        var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
-  
         // Add any inputs to the data attr
         if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
           this.$('input[type="text"]').each(function(index,input){
-            input = $(input);
-            if (hasTextAndData) {
-              dataObj[input.attr('name')] = input.val();
-            }
+            dataObj[input.getAttribute('name')] = input.value;
           });
         }
   
@@ -1634,11 +1634,6 @@
       onDeleteClick: function(ev) {
         ev.preventDefault();
   
-        this.$inner.append(delete_template);
-        this.$el.addClass('st-block--delete-active');
-  
-        var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
-  
         var onDeleteConfirm = function(e) {
           e.preventDefault();
           this.trigger('removeBlock', this.blockID);
@@ -1650,8 +1645,20 @@
           $delete_el.remove();
         };
   
-        this.$inner.on('click', '.st-block-ui-btn--confirm-delete', _.bind(onDeleteConfirm, this))
-                   .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
+        if (this.isEmpty()) {
+          onDeleteConfirm.call(this, new Event('click'));
+          return;
+        }
+  
+        this.$inner.append(delete_template);
+        this.$el.addClass('st-block--delete-active');
+  
+        var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
+  
+        this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
+                        _.bind(onDeleteConfirm, this))
+                   .on('click', '.st-block-ui-btn--deny-delete',
+                        _.bind(onDeleteDeny, this));
       },
   
       pastedMarkdownToHTML: function(content) {
@@ -1759,6 +1766,10 @@
         }
   
         return this.text_block;
+      },
+  
+      isEmpty: function() {
+        return _.isEmpty(this.saveAndGetData());
       }
   
     });
@@ -2135,7 +2146,7 @@
   
   SirTrevor.Blocks.List = (function() {
   
-    var template = '<div class="st-text-block" contenteditable="true"><ul><li></li></ul></div>';
+    var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
   
     return SirTrevor.Block.extend({
   
@@ -2182,6 +2193,10 @@
             list = this.$('ul').html(replace);
   
         this.getTextBlock().caretToEnd();
+      },
+  
+      isEmpty: function() {
+        return _.isEmpty(this.saveAndGetData().text);
       }
   
     });
@@ -2976,7 +2991,7 @@
             this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
           } else {
             var blocks = _.filter(this.getBlocksByType(type), function(b) {
-              return !_.isEmpty(b.getData());
+              return !b.isEmpty();
             });
   
             if (blocks.length > 0) { return false; }
