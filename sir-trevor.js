@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-29
+ * 2013-10-30
  */
 
 (function ($, _){
@@ -1506,6 +1506,8 @@
   
       formattable: true,
   
+      _previousSelection: '',
+  
       initialize: function() {},
   
       toMarkdown: function(markdown){ return markdown; },
@@ -1737,13 +1739,16 @@
       },
   
       getSelectionForFormatter: function() {
-         var selection = window.getSelection();
+        _.defer(function(){
+          var selection = window.getSelection(),
+             selectionStr = selection.toString().trim();
   
-          if (selection.toString().trim() === '') {
+          if (selectionStr === '') {
             SirTrevor.EventBus.trigger('formatter:hide');
           } else {
             SirTrevor.EventBus.trigger('formatter:positon');
           }
+        });
        },
   
       clearInsertedStyles: function(e) {
