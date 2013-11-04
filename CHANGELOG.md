@@ -11,3 +11,4 @@
 * Improved the format bar positioning
 * Moved the Eventable block into it's own repository
 * Fix the formatters not being called in `to-html.js` and `to-markdown.js`
+* Use all inputs in `toData` not just `text` inputs. Note inputs must have a `name` attribute to be included in the serialized content.
