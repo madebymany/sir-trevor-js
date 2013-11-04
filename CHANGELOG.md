@@ -9,3 +9,5 @@
 * Better markdown support for italics and bolds, fixes issue with markdown hating on spaces.
 * Improved paste support, stripping out comments and other nasties
 * Improved the format bar positioning
+* Moved the Eventable block into it's own repository
+* Fix the formatters not being called in `to-html.js` and `to-markdown.js`

@@ -162,9 +162,11 @@ SirTrevor.Block = (function(){
       }
 
       // Add any inputs to the data attr
-      if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
-        this.$('input[type="text"]').each(function(index,input){
-          dataObj[input.getAttribute('name')] = input.value;
+      if(this.$(':input').not('.st-paste-block').length > 0) {
+        this.$(':input').each(function(index,input){
+          if (input.getAttribute('name')) {
+            dataObj[input.getAttribute('name')] = input.value;
+          }
         });
       }
 
