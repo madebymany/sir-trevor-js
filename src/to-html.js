@@ -33,7 +33,7 @@ SirTrevor.toHTML = function(markdown, type) {
 
   // Use custom formatters toHTML functions (if any exist)
   var formatName, format;
-  for(formatName in this.formatters) {
+  for(formatName in SirTrevor.Formatters) {
     if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
       format = SirTrevor.Formatters[formatName];
       // Do we have a toHTML function?

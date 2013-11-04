@@ -357,17 +357,20 @@ SirTrevor.Editor = (function(){
       }
 
       var blockTypeIterator = function(type, index) {
-        if (this._isBlockTypeAvailable(type)) {
-          if (this._getBlockTypeCount(type) === 0) {
-            SirTrevor.log("Failed validation on required block type " + type);
-            this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
-          } else {
-            var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
-            if (blocks.length > 0) { return false; }
+        if (!this._isBlockTypeAvailable(type)) { return; }
 
-            this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
-            SirTrevor.log("A required block type " + type + " is empty");
-          }
+        if (this._getBlockTypeCount(type) === 0) {
+          SirTrevor.log("Failed validation on required block type " + type);
+          this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
+        } else {
+          var blocks = _.filter(this.getBlocksByType(type), function(b) {
+            return !b.isEmpty();
+          });
+
+          if (blocks.length > 0) { return false; }
+
+          this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
+          SirTrevor.log("A required block type " + type + " is empty");
         }
       };
 
@@ -422,7 +425,7 @@ SirTrevor.Editor = (function(){
     },
 
     getBlocksByType: function(block_type) {
-      return _.filter(this.blocks, function(b){ return b.type == block_type; });
+      return _.filter(this.blocks, function(b){ return _.classify(b.type) == block_type; });
     },
 
     getBlocksByIDs: function(block_ids) {

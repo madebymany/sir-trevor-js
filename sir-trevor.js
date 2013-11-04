@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-10-24
+ * 2013-11-04
  */
 
 (function ($, _){
@@ -634,7 +634,7 @@
   
     // Use custom formatters toHTML functions (if any exist)
     var formatName, format;
-    for(formatName in this.formatters) {
+    for(formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         // Do we have a toHTML function?
@@ -742,7 +742,7 @@
   
     // Use custom formatters toMarkdown functions (if any exist)
     var formatName, format;
-    for(formatName in this.formatters) {
+    for(formatName in SirTrevor.Formatters) {
       if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
         format = SirTrevor.Formatters[formatName];
         // Do we have a toMarkdown function?
@@ -1202,6 +1202,11 @@
       return this.blockStorage;
     },
   
+    saveAndGetData: function() {
+      var store = this.saveAndReturnData();
+      return store.data || store;
+    },
+  
     getData: function() {
       return this.blockStorage.data;
     },
@@ -1433,7 +1438,7 @@
       icon_name: 'default',
   
       validationFailMsg: function() {
-        return i18n.t('errors:validation_fail', { type: this.type });
+        return i18n.t('errors:validation_fail', { type: this.title() });
       },
   
       editorHTML: '<div class="st-block__editor"></div>',
@@ -1451,6 +1456,8 @@
       upload_options: {},
   
       formattable: true,
+  
+      _previousSelection: '',
   
       initialize: function() {},
   
@@ -1533,15 +1540,10 @@
           }
         }
   
-        var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
-  
         // Add any inputs to the data attr
         if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
           this.$('input[type="text"]').each(function(index,input){
-            input = $(input);
-            if (hasTextAndData) {
-              dataObj[input.attr('name')] = input.val();
-            }
+            dataObj[input.getAttribute('name')] = input.value;
           });
         }
   
@@ -1583,11 +1585,6 @@
       onDeleteClick: function(ev) {
         ev.preventDefault();
   
-        this.$inner.append(delete_template);
-        this.$el.addClass('st-block--delete-active');
-  
-        var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
-  
         var onDeleteConfirm = function(e) {
           e.preventDefault();
           this.trigger('removeBlock', this.blockID);
@@ -1599,8 +1596,20 @@
           $delete_el.remove();
         };
   
-        this.$inner.on('click', '.st-block-ui-btn--confirm-delete', _.bind(onDeleteConfirm, this))
-                   .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
+        if (this.isEmpty()) {
+          onDeleteConfirm.call(this, new Event('click'));
+          return;
+        }
+  
+        this.$inner.append(delete_template);
+        this.$el.addClass('st-block--delete-active');
+  
+        var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
+  
+        this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
+                        _.bind(onDeleteConfirm, this))
+                   .on('click', '.st-block-ui-btn--deny-delete',
+                        _.bind(onDeleteDeny, this));
       },
   
       pastedMarkdownToHTML: function(content) {
@@ -1681,13 +1690,16 @@
       },
   
       getSelectionForFormatter: function() {
-         var selection = window.getSelection();
+        _.defer(function(){
+          var selection = window.getSelection(),
+             selectionStr = selection.toString().trim();
   
-          if (selection.toString().trim() === '') {
+          if (selectionStr === '') {
             SirTrevor.EventBus.trigger('formatter:hide');
           } else {
             SirTrevor.EventBus.trigger('formatter:positon');
           }
+        });
        },
   
       clearInsertedStyles: function(e) {
@@ -1705,6 +1717,10 @@
         }
   
         return this.text_block;
+      },
+  
+      isEmpty: function() {
+        return _.isEmpty(this.saveAndGetData());
       }
   
     });
@@ -1814,74 +1830,6 @@
   
       toMarkdown: function(markdown) {
         return markdown.replace(/^(.+)$/mg,"> $1");
-      }
-  
-    });
-  
-  })();
-  SirTrevor.Blocks.Embedly = (function(){
-  
-    return SirTrevor.Block.extend({
-  
-      type: "embedly",
-  
-      key: '',
-  
-      droppable: true,
-      pastable: true,
-      fetchable: true,
-  
-      icon_name: "embed",
-  
-      loadData: function(data){
-        if (data.html) {
-         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
-         this.$editor.html(data.html);
-        } else if (data.type == "photo") {
-         this.$editor.html("<img src=\""+data.url+"\" />");
-        }
-      },
-  
-      onContentPasted: function(event){
-        var input = $(event.target),
-            val = input.val();
-  
-        this.handleDropPaste(val);
-      },
-  
-      handleDropPaste: function(url){
-        if(!_.isURI(url)) {
-          SirTrevor.log("Must be a URL");
-          return;
-        }
-  
-        this.loading();
-  
-        var embedlyCallbackSuccess = function(data) {
-          this.setAndLoadData(data);
-          this.ready();
-        };
-  
-        var embedlyCallbackFail = function() {
-          this.ready();
-        };
-  
-        var ajaxOptions = {
-          url: this.buildAPIUrl(url),
-          dataType: "jsonp"
-        };
-  
-        this.fetch(ajaxOptions,
-                   _.bind(embedlyCallbackSuccess, this),
-                   _.bind(embedlyCallbackFail, this));
-      },
-  
-      buildAPIUrl: function(url) {
-        return "//api.embed.ly/1/oembed?key=" + this.key + "&url=" + escape(url);
-      },
-  
-      onDrop: function(transferData){
-        this.handleDropPaste(transferData.getData('text/plain'));
       }
   
     });
@@ -2081,7 +2029,7 @@
   
   SirTrevor.Blocks.List = (function() {
   
-    var template = '<div class="st-text-block" contenteditable="true"><ul><li></li></ul></div>';
+    var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
   
     return SirTrevor.Block.extend({
   
@@ -2128,6 +2076,10 @@
             list = this.$('ul').html(replace);
   
         this.getTextBlock().caretToEnd();
+      },
+  
+      isEmpty: function() {
+        return _.isEmpty(this.saveAndGetData().text);
       }
   
     });
@@ -2915,17 +2867,20 @@
         }
   
         var blockTypeIterator = function(type, index) {
-          if (this._isBlockTypeAvailable(type)) {
-            if (this._getBlockTypeCount(type) === 0) {
-              SirTrevor.log("Failed validation on required block type " + type);
-              this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
-            } else {
-              var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
-              if (blocks.length > 0) { return false; }
+          if (!this._isBlockTypeAvailable(type)) { return; }
   
-              this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
-              SirTrevor.log("A required block type " + type + " is empty");
-            }
+          if (this._getBlockTypeCount(type) === 0) {
+            SirTrevor.log("Failed validation on required block type " + type);
+            this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
+          } else {
+            var blocks = _.filter(this.getBlocksByType(type), function(b) {
+              return !b.isEmpty();
+            });
+  
+            if (blocks.length > 0) { return false; }
+  
+            this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
+            SirTrevor.log("A required block type " + type + " is empty");
           }
         };
   
@@ -2980,7 +2935,7 @@
       },
   
       getBlocksByType: function(block_type) {
-        return _.filter(this.blocks, function(b){ return b.type == block_type; });
+        return _.filter(this.blocks, function(b){ return _.classify(b.type) == block_type; });
       },
   
       getBlocksByIDs: function(block_ids) {
