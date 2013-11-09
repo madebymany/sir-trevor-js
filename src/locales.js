@@ -8,7 +8,7 @@ SirTrevor.Locales = {
       'close':            'close',
       'position':         'Position',
       'wait':             'Please wait...',
-      'link':             'Enter a link',
+      'link':             'Enter a link'
     },
     errors: {
       'title': "You have the following errors:",
