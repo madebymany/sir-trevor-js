@@ -20,6 +20,8 @@ SirTrevor.Blocks.Tweet = (function(){
       re_render_on_reorder: true
     },
 
+    title: function(){ return i18n.t('blocks:tweet:title'); },
+
     fetchUrl: function(tweetID) {
       return "/tweets/?tweet_id=" + tweetID;
     },

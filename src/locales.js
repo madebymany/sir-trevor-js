@@ -8,7 +8,7 @@ SirTrevor.Locales = {
       'close':            'close',
       'position':         'Position',
       'wait':             'Please wait...',
-      'link':             'Enter a link',
+      'link':             'Enter a link'
     },
     errors: {
       'title': "You have the following errors:",
@@ -44,6 +44,9 @@ SirTrevor.Locales = {
         'title': "Embedly",
         'fetch_error': "There was a problem fetching your embed",
         'key_missing': "An Embedly API key must be present"
+      },
+      heading: {
+        'title': "Heading"
       }
     }
   }
