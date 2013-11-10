@@ -43,6 +43,9 @@ SirTrevor.Locales.de = {
       'title': "Embedly",
       'fetch_error': "There was a problem fetching your embed",
       'key_missing': "An Embedly API key must be present"
+    },
+    heading: {
+      'title': 'Heading'
     }
   }
 };

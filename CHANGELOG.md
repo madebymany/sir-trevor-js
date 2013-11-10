@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1
+
+* Localise titles of the tweet & heading blocks
+* Defer the execution of internationalising the delete text, drop text, upload text and list block cite text until Sir Trevor has intialised.
+* Add the heading title to the locales files
+
 ## 0.3.0
 
 * I18n support (in EN / DE) using the new `i18n.t` helper
