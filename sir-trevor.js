@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-04
+ * 2013-11-10
  */
 
 (function ($, _){
@@ -244,7 +244,7 @@
         'close':            'close',
         'position':         'Position',
         'wait':             'Please wait...',
-        'link':             'Enter a link',
+        'link':             'Enter a link'
       },
       errors: {
         'title': "You have the following errors:",
@@ -280,6 +280,9 @@
           'title': "Embedly",
           'fetch_error': "There was a problem fetching your embed",
           'key_missing': "An Embedly API key must be present"
+        },
+        heading: {
+          'title': "Heading"
         }
       }
     }
@@ -1844,6 +1847,8 @@
   
     type: 'Heading',
   
+    title: function(){ return i18n.t('blocks:heading:title'); },
+  
     editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
   
     icon_name: 'heading',
@@ -1944,6 +1949,8 @@
       drop_options: {
         re_render_on_reorder: true
       },
+  
+      title: function(){ return i18n.t('blocks:tweet:title'); },
   
       fetchUrl: function(tweetID) {
         return "/tweets/?tweet_id=" + tweetID;
