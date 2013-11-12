@@ -32,7 +32,7 @@ SirTrevor.Blocks.Video = (function(){
       } 
 
       var embed_string = embed_strings[data.source]
-        .replace('{{protocol}}', 'http:')//window.location.protocol)
+        .replace('{{protocol}}', window.location.protocol)
         .replace('{{remote_id}}', data.remote_id)
         .replace('{{width}}', this.$editor.width()); // for videos that can't resize automatically like vine
 
