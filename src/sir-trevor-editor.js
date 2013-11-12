@@ -125,7 +125,11 @@ SirTrevor.Editor = (function(){
     },
 
     store: function(method, options){
-      return SirTrevor.editorStore(this, method, options || {});
+      if (_.isFunction(this.options.editorStore)) {
+        return this.options.editorStore(this, method, options || {});
+      } else {
+        return SirTrevor.editorStore(this, method, options || {});
+      }
     },
 
     /*
