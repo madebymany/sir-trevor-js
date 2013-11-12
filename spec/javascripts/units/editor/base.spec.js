@@ -124,4 +124,14 @@ describe("Editor", function(){
     });
   });
 
+  describe("Internationalization", function(){
+    beforeEach(function(){
+      editor = new SirTrevor.Editor({ el: element, required: ['Text'] });
+    });
+
+    it("correctly sets the English text as default", function(){
+        editor.validateBlockTypesExist(true);
+        expect(editor.errors).toEqual([{text: "You must have a block of type Text"}]);
+    });
+  });
 });

@@ -11,7 +11,7 @@ SirTrevor.Blocks.Tweet = (function(){
 
   return SirTrevor.Block.extend({
 
-    type: "Tweet",
+    type: "tweet",
     droppable: true,
     pastable: true,
     fetchable: true,
@@ -19,6 +19,8 @@ SirTrevor.Blocks.Tweet = (function(){
     drop_options: {
       re_render_on_reorder: true
     },
+
+    title: function(){ return i18n.t('blocks:tweet:title'); },
 
     fetchUrl: function(tweetID) {
       return "/tweets/?tweet_id=" + tweetID;
@@ -89,7 +91,7 @@ SirTrevor.Blocks.Tweet = (function(){
     },
 
     onTweetFail: function() {
-      this.addMessage("There was a problem fetching your tweet");
+      this.addMessage(i18n.t("blocks:tweet:fetch_error"));
       this.ready();
     },
 

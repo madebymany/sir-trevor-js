@@ -6,7 +6,9 @@ SirTrevor.Block = (function(){
 
   var delete_template = [
     "<div class='st-block__ui-delete-controls'>",
-      "<label class='st-block__delete-label'>Delete?</label>",
+      "<label class='st-block__delete-label'>",
+      "<%= i18n.t('general:delete') %>",
+      "</label>",
       "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
       "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
     "</div>"
@@ -15,19 +17,21 @@ SirTrevor.Block = (function(){
   var drop_options = {
     html: ['<div class="st-block__dropzone">',
            '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-           '<p>Drag <span><%= block.type %></span> here</p></div>'].join('\n'),
+           '<p><%= i18n.t("general:drop", { block: "<span>" + block.title() + "</span>" }) %>',
+           '</p></div>'].join('\n'),
     re_render_on_reorder: false
   };
 
   var paste_options = {
-    html: '<input type="text" placeholder="Or paste URL here" class="st-block__paste-input st-paste-block">'
+    html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
+           ' class="st-block__paste-input st-paste-block">'].join('')
   };
 
   var upload_options = {
     html: [
       '<div class="st-block__upload-container">',
       '<input type="file" type="st-file-upload">',
-      '<button class="st-upload-btn">...or choose a file</button>',
+      '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
       '</div>'
     ].join('\n')
   };
@@ -54,7 +58,7 @@ SirTrevor.Block = (function(){
     icon_name: 'default',
 
     validationFailMsg: function() {
-      return this.type + ' block is invalid';
+      return i18n.t('errors:validation_fail', { type: this.title() });
     },
 
     editorHTML: '<div class="st-block__editor"></div>',
@@ -72,6 +76,8 @@ SirTrevor.Block = (function(){
     upload_options: {},
 
     formattable: true,
+
+    _previousSelection: '',
 
     initialize: function() {},
 
@@ -154,14 +160,11 @@ SirTrevor.Block = (function(){
         }
       }
 
-      var hasTextAndData = (!_.isUndefined(dataObj.text) || !this.hasTextBlock());
-
       // Add any inputs to the data attr
-      if(this.$('input[type="text"]').not('.st-paste-block').length > 0) {
-        this.$('input[type="text"]').each(function(index,input){
-          input = $(input);
-          if (hasTextAndData) {
-            dataObj[input.attr('name')] = input.val();
+      if(this.$(':input').not('.st-paste-block').length > 0) {
+        this.$(':input').each(function(index,input){
+          if (input.getAttribute('name')) {
+            dataObj[input.getAttribute('name')] = input.value;
           }
         });
       }
@@ -204,11 +207,6 @@ SirTrevor.Block = (function(){
     onDeleteClick: function(ev) {
       ev.preventDefault();
 
-      this.$inner.append(delete_template);
-      this.$el.addClass('st-block--delete-active');
-
-      var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
-
       var onDeleteConfirm = function(e) {
         e.preventDefault();
         this.trigger('removeBlock', this.blockID);
@@ -220,8 +218,20 @@ SirTrevor.Block = (function(){
         $delete_el.remove();
       };
 
-      this.$inner.on('click', '.st-block-ui-btn--confirm-delete', _.bind(onDeleteConfirm, this))
-                 .on('click', '.st-block-ui-btn--deny-delete', _.bind(onDeleteDeny, this));
+      if (this.isEmpty()) {
+        onDeleteConfirm.call(this, new Event('click'));
+        return;
+      }
+
+      this.$inner.append(_.template(delete_template));
+      this.$el.addClass('st-block--delete-active');
+
+      var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
+
+      this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
+                      _.bind(onDeleteConfirm, this))
+                 .on('click', '.st-block-ui-btn--deny-delete',
+                      _.bind(onDeleteDeny, this));
     },
 
     pastedMarkdownToHTML: function(content) {
@@ -302,13 +312,16 @@ SirTrevor.Block = (function(){
     },
 
     getSelectionForFormatter: function() {
-       var selection = window.getSelection();
+      _.defer(function(){
+        var selection = window.getSelection(),
+           selectionStr = selection.toString().trim();
 
-        if (selection.toString().trim() === '') {
+        if (selectionStr === '') {
           SirTrevor.EventBus.trigger('formatter:hide');
         } else {
           SirTrevor.EventBus.trigger('formatter:positon');
         }
+      });
      },
 
     clearInsertedStyles: function(e) {
@@ -326,6 +339,10 @@ SirTrevor.Block = (function(){
       }
 
       return this.text_block;
+    },
+
+    isEmpty: function() {
+      return _.isEmpty(this.saveAndGetData());
     }
 
   });

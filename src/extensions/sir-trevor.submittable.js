@@ -63,7 +63,7 @@ _.extend(Submittable.prototype, {
   },
 
   _disableSubmitButton: function(message){
-    this.setSubmitButton(null, message || "Please wait...");
+    this.setSubmitButton(null, message || i18n.t("general:wait"));
     this.submitBtn
       .attr('disabled', 'disabled')
       .addClass('disabled');

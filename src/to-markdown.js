@@ -1,4 +1,6 @@
 SirTrevor.toMarkdown = function(content, type) {
+  type = _.classify(type);
+
   var markdown = content;
 
   //Normalise whitespace
@@ -59,7 +61,7 @@ SirTrevor.toMarkdown = function(content, type) {
 
   // Use custom formatters toMarkdown functions (if any exist)
   var formatName, format;
-  for(formatName in this.formatters) {
+  for(formatName in SirTrevor.Formatters) {
     if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
       format = SirTrevor.Formatters[formatName];
       // Do we have a toMarkdown function?

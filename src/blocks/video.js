@@ -14,7 +14,8 @@ SirTrevor.Blocks.Video = (function(){
 
   return SirTrevor.Block.extend({
 
-    type: 'Video',
+    type: 'video',
+    title: function() { return i18n.t('blocks:video:title'); },
 
     droppable: true,
     pastable: true,

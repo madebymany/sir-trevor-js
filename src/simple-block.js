@@ -32,7 +32,7 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     title: function() {
-      return _.capitalize(this.type);
+      return _.titleize(this.type.replace(/[\W_]/g, ' '));
     },
 
     blockCSSClass: function() {
@@ -41,6 +41,11 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     type: '',
+
+    class: function() {
+      return _.classify(this.type);
+    },
+
     editorHTML: '',
 
     initialize: function() {},

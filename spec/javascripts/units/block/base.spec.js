@@ -1,12 +1,17 @@
 describe("Block", function(){
 
-  var element, editor, block, block_two;
+  var element, editor, block, block_two, block_three;
+
+  SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
+    type: "complex_type"
+  });
 
   beforeEach(function(){
     element = $("<textarea>");
     editor = new SirTrevor.Editor({ el: element });
     block = new SirTrevor.Blocks.Text({}, editor.ID);
     block_two = new SirTrevor.Blocks.Text({}, editor.ID);
+    block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID);
   });
 
   it("block is instance of ST.Block", function(){
@@ -18,7 +23,7 @@ describe("Block", function(){
   });
 
   it("has a type set", function(){
-    expect(block.type).toBe("Text");
+    expect(block.type.toLowerCase()).toBe("text");
   });
 
   it("has a unique identifier", function(){
@@ -27,6 +32,10 @@ describe("Block", function(){
 
   it("has a title", function(){
     expect(block.title()).toBe("Text");
+  });
+
+  it("correctly titleizes underscored types", function(){
+    expect(block_three.title()).toBe("Complex Type");
   });
 
   describe("dom functions", function(){

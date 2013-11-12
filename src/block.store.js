@@ -4,7 +4,7 @@ SirTrevor.BlockStore = {
 
   createStore: function(blockData) {
     this.blockStorage = {
-      type: this.type.toLowerCase(),
+      type: _.underscored(this.type),
       data: blockData || {}
     };
   },
@@ -14,6 +14,11 @@ SirTrevor.BlockStore = {
   saveAndReturnData: function() {
     this.save();
     return this.blockStorage;
+  },
+
+  saveAndGetData: function() {
+    var store = this.saveAndReturnData();
+    return store.data || store;
   },
 
   getData: function() {

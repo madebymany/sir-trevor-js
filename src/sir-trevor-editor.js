@@ -135,7 +135,7 @@ SirTrevor.Editor = (function(){
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
     createBlock: function(type, data, render_at) {
-      type = _.capitalize(type); // Proper case
+      type = _.classify(type);
 
       if(this._blockLimitReached()) {
         SirTrevor.log("Cannot add any more blocks. Limit reached.");
@@ -154,6 +154,7 @@ SirTrevor.Editor = (function(){
       }
 
       var block = new SirTrevor.Blocks[type](data, this.ID);
+
       this._renderInPosition(block.render().$el);
 
       this.listenTo(block, 'removeBlock', this.removeBlock);
@@ -263,6 +264,7 @@ SirTrevor.Editor = (function(){
 
     removeBlock: function(block_id) {
       var block = this.findBlockById(block_id),
+          type = _.classify(block.type),
           controls = block.$el.find('.st-block-controls');
 
       if (controls.length) {
@@ -270,7 +272,7 @@ SirTrevor.Editor = (function(){
         this.$wrapper.prepend(controls);
       }
 
-      this.blockCounts[block.type] = this.blockCounts[block.type] - 1;
+      this.blockCounts[type] = this.blockCounts[type] - 1;
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
 
@@ -355,17 +357,20 @@ SirTrevor.Editor = (function(){
       }
 
       var blockTypeIterator = function(type, index) {
-        if (this._isBlockTypeAvailable(type)) {
-          if (this._getBlockTypeCount(type) === 0) {
-            SirTrevor.log("Failed validation on required block type " + type);
-            this.errors.push({ text: "You must have a block of type " + type });
-          } else {
-            var blocks = _.filter(this.blocks, function(b){ return (b.type == type && !_.isEmpty(b.getData())); });
-            if (blocks.length > 0) { return false; }
+        if (!this._isBlockTypeAvailable(type)) { return; }
 
-            this.errors.push({ text: "A required block type " + type + " is empty" });
-            SirTrevor.log("A required block type " + type + " is empty");
-          }
+        if (this._getBlockTypeCount(type) === 0) {
+          SirTrevor.log("Failed validation on required block type " + type);
+          this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
+        } else {
+          var blocks = _.filter(this.getBlocksByType(type), function(b) {
+            return !b.isEmpty();
+          });
+
+          if (blocks.length > 0) { return false; }
+
+          this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
+          SirTrevor.log("A required block type " + type + " is empty");
         }
       };
 
@@ -397,7 +402,7 @@ SirTrevor.Editor = (function(){
       if (_.isUndefined(this.options.errorsContainer)) {
         var $container = $("<div>", {
           'class': 'st-errors',
-          html: "<p>You have the following errors: </p>"
+          html: "<p>" + i18n.t("errors:title") + " </p>"
         });
 
         this.$outer.prepend($container);
@@ -420,7 +425,7 @@ SirTrevor.Editor = (function(){
     },
 
     getBlocksByType: function(block_type) {
-      return _.filter(this.blocks, function(b){ return b.type == block_type; });
+      return _.filter(this.blocks, function(b){ return _.classify(b.type) == block_type; });
     },
 
     getBlocksByIDs: function(block_ids) {
@@ -483,7 +488,11 @@ SirTrevor.Editor = (function(){
 
     /* Get our required blocks (if any) */
     _setRequired: function() {
-      this.required = (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) ? this.options.required : false;
+      if (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+        this.required = this.options.required;
+      } else {
+        this.required = false;
+      }
     }
   });
 

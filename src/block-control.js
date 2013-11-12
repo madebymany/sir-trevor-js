@@ -3,8 +3,10 @@ SirTrevor.BlockControl = (function(){
   var BlockControl = function(type, instance_scope) {
     this.type = type;
     this.instance_scope = instance_scope;
+    this.block_type = SirTrevor.Blocks[this.type].prototype;
+    this.can_be_rendered = this.block_type.toolbarEnabled;
+
     this._ensureElement();
-    this.initialize();
   };
 
   _.extend(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
@@ -14,13 +16,8 @@ SirTrevor.BlockControl = (function(){
 
     attributes: function() {
       return {
-        'data-type': this.type
+        'data-type': this.block_type.type
       };
-    },
-
-    initialize: function() {
-      this.block_type = SirTrevor.Blocks[this.type].prototype;
-      this.can_be_rendered = this.block_type.toolbarEnabled;
     },
 
     render: function() {
