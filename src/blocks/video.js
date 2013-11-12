@@ -1,15 +1,17 @@
 SirTrevor.Blocks.Video = (function(){
 
   var video_regexes = {
-    'vimeo': /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))/,
-    'youtube': /http[s]?:\/\/(?:www.)?(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/,
-    'vine': /http[s]?:\/\/(?:www.)?(?:(vine.co\/v\/)([^\/]*))/
+    'vimeo': /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.*)/,
+    'youtube': /(?:http[s]?:\/\/)?(?:www.)?(?:youtu(?:be)?.(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/,
+    'vine': /(?:http[s]?:\/\/)?(?:www.)?vine.co\/v\/([^\W]*)/,
+    'dailymotion': /(?:http[s]?:\/\/)?(?:www.)?dai(?:.ly|lymotion.com\/video)\/([^\W_]*)/
   };
 
   var embed_strings = {
     'youtube': "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>",
     'vimeo': "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>",
-    'vine': "<iframe class=\"vine-embed\" src=\"{{protocol}}//vine.co/v/{{remote_id}}/embed/simple\" width=\"{{width}}\" height=\"{{width}}\" frameborder=\"0\"></iframe><script async src=\"http://platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>"
+    'vine': "<iframe class=\"vine-embed\" src=\"{{protocol}}//vine.co/v/{{remote_id}}/embed/simple\" width=\"{{width}}\" height=\"{{width}}\" frameborder=\"0\"></iframe><script async src=\"http://platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>",
+    'dailymotion': "<iframe src=\"{{protocol}}//www.dailymotion.com/embed/video/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
   };
 
   return SirTrevor.Block.extend({
@@ -30,7 +32,7 @@ SirTrevor.Blocks.Video = (function(){
       } 
 
       var embed_string = embed_strings[data.source]
-        .replace('{{protocol}}', window.location.protocol)
+        .replace('{{protocol}}', 'http:')//window.location.protocol)
         .replace('{{remote_id}}', data.remote_id)
         .replace('{{width}}', this.$editor.width()); // for videos that can't resize automatically like vine
 
@@ -52,10 +54,11 @@ SirTrevor.Blocks.Video = (function(){
       {
         _.each(video_regexes, function(element, index) {
           var match = element.exec(url);
-          if(match !== null && match[2] !== undefined) {
+
+          if(match !== null && match[1] !== undefined) {
             var data = {};
             data.source = index;
-            data.remote_id = match[2];
+            data.remote_id = match[1];
             // save the data 
             this.setAndLoadData(data);
           }  
