@@ -45,7 +45,7 @@ SirTrevor.Block = (function(){
   _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
 
     bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
-            "clearInsertedStyles", "getSelectionForFormatter"],
+            "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
 
     className: 'st-block st-icon--add',
 
@@ -116,12 +116,15 @@ SirTrevor.Block = (function(){
       if (this.formattable) { this._initFormatting(); }
 
       this._blockPrepare();
-      this.onBlockRender();
 
       return this;
     },
 
     remove: function() {
+      if (this.ajaxable) {
+        this.resolveAllInQueue();
+      }
+
       this.$el.remove();
     },
 

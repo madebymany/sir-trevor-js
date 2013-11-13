@@ -70,8 +70,6 @@ SirTrevor.SimpleBlock = (function(){
       this._setBlockInner();
       this._blockPrepare();
 
-      this.onBlockRender();
-
       return this;
     },
 
@@ -82,6 +80,7 @@ SirTrevor.SimpleBlock = (function(){
       this.checkAndLoadData();
 
       this.$el.addClass('st-item-ready');
+      this.on("onRender", this.onBlockRender);
       this.save();
     },
 

@@ -54,7 +54,6 @@ describe("Block", function(){
 
     beforeEach(function(){
       spyOn(block, 'beforeBlockRender');
-      spyOn(block, 'onBlockRender');
       spyOn(block, 'checkAndLoadData');
 
       block.render();
@@ -78,10 +77,6 @@ describe("Block", function(){
 
     it("calls beforeBlockRender", function(){
       expect(block.beforeBlockRender).toHaveBeenCalled();
-    });
-
-    it("calls onBlockRender", function(){
-      expect(block.onBlockRender).toHaveBeenCalled();
     });
 
     it("calls checkAndLoadData", function(){

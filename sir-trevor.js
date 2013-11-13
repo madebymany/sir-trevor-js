@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-10
+ * 2013-11-13
  */
 
 (function ($, _){
@@ -1322,8 +1322,6 @@
         this._setBlockInner();
         this._blockPrepare();
   
-        this.onBlockRender();
-  
         return this;
       },
   
@@ -1334,6 +1332,7 @@
         this.checkAndLoadData();
   
         this.$el.addClass('st-item-ready');
+        this.on("onRender", this.onBlockRender);
         this.save();
       },
   
@@ -1427,7 +1426,7 @@
     _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
   
       bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
-              "clearInsertedStyles", "getSelectionForFormatter"],
+              "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
   
       className: 'st-block st-icon--add',
   
@@ -1498,12 +1497,15 @@
         if (this.formattable) { this._initFormatting(); }
   
         this._blockPrepare();
-        this.onBlockRender();
   
         return this;
       },
   
       remove: function() {
+        if (this.ajaxable) {
+          this.resolveAllInQueue();
+        }
+  
         this.$el.remove();
       },
   
@@ -2683,6 +2685,7 @@
   
         SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
         SirTrevor.log("Block created of type " + type);
+        block.trigger("onRender");
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
         this.triggerBlockCountUpdate();
@@ -2792,10 +2795,6 @@
         this.blockCounts[type] = this.blockCounts[type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
-  
-        if (block.ajaxable) {
-          block.resolveAllInQueue();
-        }
   
         block.remove();
   

@@ -166,6 +166,7 @@ SirTrevor.Editor = (function(){
 
       SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
       SirTrevor.log("Block created of type " + type);
+      block.trigger("onRender");
 
       this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
       this.triggerBlockCountUpdate();
@@ -275,10 +276,6 @@ SirTrevor.Editor = (function(){
       this.blockCounts[type] = this.blockCounts[type] - 1;
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
-
-      if (block.ajaxable) {
-        block.resolveAllInQueue();
-      }
 
       block.remove();
 
