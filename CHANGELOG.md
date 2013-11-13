@@ -6,6 +6,8 @@
 * Defer the execution of internationalising the delete text, drop text, upload text and list block cite text until Sir Trevor has intialised.
 * Add the heading title to the locales files
 * Swap the onBlockRender method to be executed *after* the block $el is appended onto the DOM by emitting an event
+* Added a `destroy` method for all Renderable views
+* Added a `destroy` and `reinitialize` method for a `SirTrevor.Editor` instance
 
 ## 0.3.0
 
