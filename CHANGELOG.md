@@ -5,6 +5,7 @@
 * Localise titles of the tweet & heading blocks
 * Defer the execution of internationalising the delete text, drop text, upload text and list block cite text until Sir Trevor has intialised.
 * Add the heading title to the locales files
+* Swap the onBlockRender method to be executed *after* the block $el is appended onto the DOM by emitting an event
 
 ## 0.3.0
 
