@@ -5,6 +5,8 @@
 * Localise titles of the tweet & heading blocks
 * Defer the execution of internationalising the delete text, drop text, upload text and list block cite text until Sir Trevor has intialised.
 * Add the heading title to the locales files
+* Added a `destroy` method for all Renderable views
+* Added a `destroy` and `reinitialize` method for a `SirTrevor.Editor` instance
 
 ## 0.3.0
 
