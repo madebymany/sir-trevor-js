@@ -1294,7 +1294,7 @@
   
       type: '',
   
-      class: function() {
+      'class': function() {
         return _.classify(this.type);
       },
   
@@ -1356,7 +1356,7 @@
       },
   
       addMessage: function(msg, additionalClass) {
-        var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
+        var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
         this.$messages.append($msg)
                       .addClass('st-block__messages--is-visible');
         return $msg;
