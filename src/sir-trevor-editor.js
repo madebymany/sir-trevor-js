@@ -111,8 +111,6 @@ SirTrevor.Editor = (function(){
       }, this);
 
       // Stop listening to events
-      this.stopListening(this.block_controls);
-      this.stopListening(this.fl_block_controls);
       this.stopListening();
 
       // Cleanup element
@@ -130,9 +128,9 @@ SirTrevor.Editor = (function(){
       this.$form.append(el);
     },
 
-    reinitialize: function() {
+    reinitialize: function(options) {
       this.destroy();
-      this.initialize(this.options);
+      this.initialize(options || this.options);
     },
 
     _setEvents: function() {

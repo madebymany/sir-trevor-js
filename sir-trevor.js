@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-12
+ * 2013-11-13
  */
 
 (function ($, _){
@@ -2633,8 +2633,6 @@
         }, this);
   
         // Stop listening to events
-        this.stopListening(this.block_controls);
-        this.stopListening(this.fl_block_controls);
         this.stopListening();
   
         // Cleanup element
@@ -2652,9 +2650,9 @@
         this.$form.append(el);
       },
   
-      reinitialize: function() {
+      reinitialize: function(options) {
         this.destroy();
-        this.initialize(this.options);
+        this.initialize(options || this.options);
       },
   
       _setEvents: function() {
