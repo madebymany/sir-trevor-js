@@ -1034,7 +1034,6 @@
   
       attributes: function() {
         return {
-          'html': 'reorder',
           'draggable': 'true',
           'data-icon': 'move'
         };
@@ -1114,7 +1113,6 @@
       className: 'st-block-ui-btn st-block-ui-btn--delete st-icon',
   
       attributes: {
-        html: 'delete',
         'data-icon': 'bin'
       }
   
