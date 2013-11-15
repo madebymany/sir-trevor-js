@@ -26,7 +26,7 @@ SirTrevor.Blocks.Tweet = (function(){
       return "/tweets/?tweet_id=" + tweetID;
     },
 
-    icon_name: 'twitter',
+    icon_name: 'tweet',
 
     loadData: function(data) {
       if (_.isUndefined(data.status_url)) { data.status_url = ''; }
