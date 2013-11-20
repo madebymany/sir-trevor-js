@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-13
+ * 2013-11-15
  */
 
 (function ($, _){
@@ -1034,7 +1034,6 @@
   
       attributes: function() {
         return {
-          'html': 'reorder',
           'draggable': 'true',
           'data-icon': 'move'
         };
@@ -1114,7 +1113,6 @@
       className: 'st-block-ui-btn st-block-ui-btn--delete st-icon',
   
       attributes: {
-        html: 'delete',
         'data-icon': 'bin'
       }
   
@@ -1961,7 +1959,7 @@
         return "/tweets/?tweet_id=" + tweetID;
       },
   
-      icon_name: 'twitter',
+      icon_name: 'tweet',
   
       loadData: function(data) {
         if (_.isUndefined(data.status_url)) { data.status_url = ''; }

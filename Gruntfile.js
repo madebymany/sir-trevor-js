@@ -16,6 +16,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-webfont');
 
   grunt.initConfig({
 
@@ -93,6 +94,22 @@ module.exports = function(grunt) {
           'sir-trevor.css': 'src/sass/main.scss'
         }
       }
+    },
+
+    webfont: {
+      icons: {
+        src: './public/images/icons/src/*.svg',
+        dest: './',
+        options: {
+          font: 'ST-Icons',
+          styles: 'font',
+          stylesheet: 'css',
+          types: 'woff',
+          embed: true,
+          htmlDemo: false,
+          ligatures: true
+        }
+      }
     }
 
   });
@@ -102,7 +119,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('travis', ['rig', 'jasmine']);
 
-  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine']);
+  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine', 'webfont']);
 
   grunt.registerTask('jasmine-browser', ['server','watch']);
 
