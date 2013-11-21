@@ -64,7 +64,7 @@
     bound: [],
     _bindFunctions: function(){
       if (this.bound.length > 0) {
-        _.bindAll.apply(null, _.union(this, this.bound));
+        _.bindAll.apply(null, _.union([this], this.bound));
       }
     }
   };
