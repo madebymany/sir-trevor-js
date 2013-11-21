@@ -115,7 +115,6 @@ SirTrevor.Editor = (function(){
 
       // Cleanup element
       var el = this.$el.detach();
-      this.$outer.remove();
 
       // Remove instance
       SirTrevor.instances = _.reject(SirTrevor.instances, _.bind(function(instance) {
@@ -125,7 +124,7 @@ SirTrevor.Editor = (function(){
       // Clear the store
       this.store("reset");
 
-      this.$form.append(el);
+      this.$outer.replaceWith(el);
     },
 
     reinitialize: function(options) {
