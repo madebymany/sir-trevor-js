@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-20
+ * 2013-11-21
  */
 
 (function ($, _){
@@ -2278,11 +2278,14 @@
   
   SirTrevor.BlockControls = (function(){
   
-    var BlockControls = function(available_types, instance_scope) {
+    var BlockControls = function(available_types, instance_scope, mediator) {
       this.instance_scope = instance_scope;
       this.available_types = available_types || [];
+      this.mediator = mediator;
+  
       this._ensureElement();
       this._bindFunctions();
+  
       this.initialize();
     };
   
@@ -2319,7 +2322,7 @@
       handleControlButtonClick: function(e) {
         e.stopPropagation();
   
-        this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
+        this.mediator.trigger('createBlock', $(e.currentTarget).attr('data-type'));
       }
   
     });
@@ -2522,6 +2525,54 @@
     return FormatBar;
   
   })();
+  SirTrevor.BlockManager = (function(){
+  
+    var BlockManager = function(editorInstance, mediator) {
+      this.instance_scope = editorInstance;
+      this.mediator = mediator;
+  
+      this.initialize();
+    };
+  
+    _.extend(BlockManager.prototype, FunctionBind, SirTrevor.Events, {
+  
+      blocks: [],
+  
+      events: {
+        'createBlock': 'createBlock'
+      },
+  
+      initialize: function() {
+        this._subscribeToEvents();
+      },
+  
+      createBlock: function(type, data) {
+        type = _.classify(type);
+  
+        // Run validations
+  
+        var block = new SirTrevor.Blocks[type](data, this.instance_scope);
+        this.blocks.push(block);
+  
+        // Render the block
+        this.mediator.trigger('renderBlock', block);
+      },
+  
+      removeBlock: function() {
+  
+      },
+  
+      _subscribeToEvents: function() {
+        _.each(this.events, function(eventKey, callbackFunction) {
+          this.listenTo(this.mediator, eventKey, this[callbackFunction]);
+        }, this);
+      }
+  
+    });
+  
+    return BlockManager;
+  
+  })();
   /*
     Sir Trevor Editor
     --
@@ -2540,7 +2591,7 @@
   
       bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
               'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
-              'removeBlockDragOver', 'onBlockDropped', 'createBlock'],
+              'removeBlockDragOver', 'onBlockDropped', 'createBlock', 'renderBlock'],
   
       events: {
         'block:reorder:down':       'hideBlockControls',
@@ -2567,6 +2618,8 @@
           this.onEditorRender = this.options.onEditorRender;
         }
   
+        this.mediator = _.extend({}, SirTrevor.Events);
+  
         this._setRequired();
         this._setBlocksTypes();
         this._bindFunctions();
@@ -2586,12 +2639,15 @@
       build: function() {
         this.$el.hide();
   
-        this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+        this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID, this.mediator);
         this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
         this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
+        this.block_manager = new SirTrevor.BlockManager(this.ID, this.mediator);
   
-        this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+        //this.listenTo(this.block_controls, 'createBlock', this.createBlock);
         this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
+  
+        this.listenTo(this.mediator, 'renderBlock', this.renderBlock);
   
         this._setEvents();
   
@@ -2694,7 +2750,7 @@
         A block will have a reference to an Editor instance & the parent BlockType.
         We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
       */
-      createBlock: function(type, data, render_at) {
+      createBlock: function(type, data) {
         type = _.classify(type);
   
         if(this._blockLimitReached()) {
@@ -2730,6 +2786,11 @@
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
         this.triggerBlockCountUpdate();
+      },
+  
+      renderBlock: function(block) {
+        this._renderInPosition(block.render().$el);
+        block.trigger("onRender");
       },
   
       onNewBlockCreated: function(block) {

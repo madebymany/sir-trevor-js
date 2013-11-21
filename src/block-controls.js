@@ -6,11 +6,14 @@
 
 SirTrevor.BlockControls = (function(){
 
-  var BlockControls = function(available_types, instance_scope) {
+  var BlockControls = function(available_types, instance_scope, mediator) {
     this.instance_scope = instance_scope;
     this.available_types = available_types || [];
+    this.mediator = mediator;
+
     this._ensureElement();
     this._bindFunctions();
+
     this.initialize();
   };
 
@@ -47,7 +50,7 @@ SirTrevor.BlockControls = (function(){
     handleControlButtonClick: function(e) {
       e.stopPropagation();
 
-      this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
+      this.mediator.trigger('createBlock', $(e.currentTarget).attr('data-type'));
     }
 
   });

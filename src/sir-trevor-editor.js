@@ -16,7 +16,7 @@ SirTrevor.Editor = (function(){
 
     bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
             'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
-            'removeBlockDragOver', 'onBlockDropped', 'createBlock'],
+            'removeBlockDragOver', 'onBlockDropped', 'createBlock', 'renderBlock'],
 
     events: {
       'block:reorder:down':       'hideBlockControls',
@@ -43,6 +43,8 @@ SirTrevor.Editor = (function(){
         this.onEditorRender = this.options.onEditorRender;
       }
 
+      this.mediator = _.extend({}, SirTrevor.Events);
+
       this._setRequired();
       this._setBlocksTypes();
       this._bindFunctions();
@@ -62,12 +64,15 @@ SirTrevor.Editor = (function(){
     build: function() {
       this.$el.hide();
 
-      this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
+      this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID, this.mediator);
       this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
       this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
+      this.block_manager = new SirTrevor.BlockManager(this.ID, this.mediator);
 
-      this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+      //this.listenTo(this.block_controls, 'createBlock', this.createBlock);
       this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
+
+      this.listenTo(this.mediator, 'renderBlock', this.renderBlock);
 
       this._setEvents();
 
@@ -170,7 +175,7 @@ SirTrevor.Editor = (function(){
       A block will have a reference to an Editor instance & the parent BlockType.
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
-    createBlock: function(type, data, render_at) {
+    createBlock: function(type, data) {
       type = _.classify(type);
 
       if(this._blockLimitReached()) {
@@ -206,6 +211,11 @@ SirTrevor.Editor = (function(){
 
       this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
       this.triggerBlockCountUpdate();
+    },
+
+    renderBlock: function(block) {
+      this._renderInPosition(block.render().$el);
+      block.trigger("onRender");
     },
 
     onNewBlockCreated: function(block) {
