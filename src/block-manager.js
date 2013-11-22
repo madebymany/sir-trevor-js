@@ -85,6 +85,14 @@ SirTrevor.BlockManager = (function(){
       return _.find(this.blocks, function(b){ return b.blockID == blockID; });
     },
 
+    getBlocksByType: function(type) {
+      return _.filter(this.blocks, function(b){ return _.classify(b.type) == type; });
+    },
+
+    getBlocksByIDs: function(block_ids) {
+      return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+    },
+
     blockLimitReached: function() {
       return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
     },

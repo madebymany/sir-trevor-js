@@ -2618,6 +2618,14 @@
         return _.find(this.blocks, function(b){ return b.blockID == blockID; });
       },
   
+      getBlocksByType: function(type) {
+        return _.filter(this.blocks, function(b){ return _.classify(b.type) == type; });
+      },
+  
+      getBlocksByIDs: function(block_ids) {
+        return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+      },
+  
       blockLimitReached: function() {
         return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
       },
@@ -2675,6 +2683,81 @@
     return BlockManager;
   
   })();
+  SirTrevor.ErrorHandler = (function(){
+  
+    var ErrorHandler = function($wrapper, mediator, container) {
+      this.$wrapper = $wrapper;
+      this.mediator = mediator;
+      this.$el = container;
+  
+      if (_.isUndefined(this.$el)) {
+        this._ensureElement();
+        this.$wrapper.prepend(this.$el);
+      }
+  
+      this.$el.hide();
+      this._bindFunctions();
+      this._bindMediatedEvents();
+  
+      this.initialize();
+    };
+  
+    _.extend(ErrorHandler.prototype, FunctionBind, Renderable, {
+  
+      errors: [],
+      className: "st-errors",
+      eventNamespace: 'errors',
+  
+      bound: ['reset', 'addMessage', 'render'],
+  
+      events: {
+        'reset': 'reset',
+        'add': 'addMessage',
+        'render': 'render'
+      },
+  
+      initialize: function() {
+        var $list = $("<ul>");
+        this.$el.append("<p>" + i18n.t("errors:title") + "</p>")
+                .append($list);
+        this.$list = $list;
+      },
+  
+      render: function() {
+        if (this.errors.length === 0) { return false; }
+        _.each(this.errors, this.createErrorItem, this);
+        this.$el.show();
+      },
+  
+      createErrorItem: function(error) {
+        var $error = $("<li>", { class: "st-errors__msg", html: error.text });
+        this.$list.append($error);
+      },
+  
+      addMessage: function(error) {
+        this.errors.push(error);
+      },
+  
+      reset: function() {
+        if (this.errors.length === 0) { return false; }
+        this.errors = [];
+        this.$list.html('');
+        this.$el.hide();
+      },
+  
+      _bindMediatedEvents: function() {
+        _.each(this.events, function(callbackFunction, eventName){
+          console.log(eventName, callbackFunction);
+          this.mediator.on(this.eventNamespace + ":" + eventName,
+                           this[callbackFunction]);
+        }, this);
+      }
+  
+    });
+  
+    return ErrorHandler;
+  
+  })();
   /*
     Sir Trevor Editor
     --
@@ -2707,7 +2790,6 @@
       initialize: function(options) {
         SirTrevor.log("Init SirTrevor.Editor");
   
-        this.errors = [];
         this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
         this.ID = _.uniqueId('st-editor-');
   
@@ -2737,12 +2819,16 @@
       build: function() {
         this.$el.hide();
   
-        this.block_manager = new SirTrevor.BlockManager(this.options, this.ID, this.mediator);
-        this.block_controls = new SirTrevor.BlockControls(this.block_manager.blockTypes, this.ID, this.mediator);
+        this.block_manager = new SirTrevor.BlockManager(this.options,
+          this.ID, this.mediator);
+        this.block_controls = new SirTrevor.BlockControls(this.block_manager.blockTypes,
+          this.ID, this.mediator);
         this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
         this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
   
-        //this.listenTo(this.block_controls, 'createBlock', this.createBlock);
+        this.errorHandler = new SirTrevor.ErrorHandler(this.$outer,
+          this.mediator, this.options.errorsContainer);
+  
         this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
         this.listenTo(this.mediator, 'renderBlock', this.renderBlock);
   
@@ -2758,6 +2844,15 @@
   
         $(window).bind('click', this.hideAllTheThings);
   
+        this.createBlocks();
+        this.$wrapper.addClass('st-ready');
+  
+        if(!_.isUndefined(this.onEditorRender)) {
+          this.onEditorRender();
+        }
+      },
+  
+      createBlocks: function() {
         var store = this.store("read");
   
         if (store.data.length > 0) {
@@ -2766,12 +2861,6 @@
           }, this);
         } else if (this.options.defaultType !== false) {
           this.mediator.trigger('createBlock', this.options.defaultType, {});
-        }
-  
-        this.$wrapper.addClass('st-ready');
-  
-        if(!_.isUndefined(this.onEditorRender)) {
-          this.onEditorRender();
         }
       },
   
@@ -2787,6 +2876,7 @@
         }, this);
   
         // Stop listening to events
+        this.mediator.stopListening();
         this.stopListening();
   
         // Cleanup element
@@ -2799,7 +2889,6 @@
   
         // Clear the store
         this.store("reset");
-  
         this.$outer.replaceWith(el);
       },
   
@@ -2879,7 +2968,6 @@
   
         var blockPosition = this.getBlockPosition($block);
         var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
-        var blockByPosition = this.getBlockPosition($blockBy);
   
         var where = (blockPosition > selectedPosition) ? "Before" : "After";
   
@@ -2923,7 +3011,7 @@
   
         if (!SirTrevor.SKIP_VALIDATION && should_validate) {
           if(!block.valid()){
-            this.errors.push({ text: _.result(block, 'validationFailMsg') });
+            this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
             SirTrevor.log("Block " + block.blockID + " failed validation");
             ++errors;
           }
@@ -2950,116 +3038,74 @@
   
         SirTrevor.log("Handling form submission for Editor " + this.ID);
   
-        this.removeErrors();
+        this.mediator.trigger('errors:reset');
         this.store("reset");
   
         this.validateBlocks(should_validate);
         this.validateBlockTypesExist(should_validate);
   
-        this.renderErrors();
+        this.mediator.trigger('errors:render');
         this.store("save");
   
-        return this.errors.length;
+        return this.errorHandler.errors.length;
       },
   
       validateBlocks: function(should_validate) {
-        // if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-        //   return false;
-        // }
+        if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
+          return false;
+        }
   
-        // var blockIterator = function(block,index) {
-        //   var _block = _.find(this.blocks, function(b) {
-        //     return (b.blockID == $(block).attr('id')); });
+        var blockIterator = function(block,index) {
+          var _block = this.block_manager.findBlockById($(block).attr('id'));
+          if (_.isUndefined(_block)) { return false; }
   
-        //   if (_.isUndefined(_block)) { return false; }
+          // Find our block
+          this.performValidations(_block, should_validate);
+          this.saveBlockStateToStore(_block);
+        };
   
-        //   // Find our block
-        //   this.performValidations(_block, should_validate);
-        //   this.saveBlockStateToStore(_block);
-        // };
-  
-        // _.each(this.$wrapper.find('.st-block'), blockIterator, this);
+        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
       },
   
       validateBlockTypesExist: function(should_validate) {
-        // if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-        //   return false;
-        // }
-  
-        // var blockTypeIterator = function(type, index) {
-        //   if (!this._isBlockTypeAvailable(type)) { return; }
-  
-        //   if (this._getBlockTypeCount(type) === 0) {
-        //     SirTrevor.log("Failed validation on required block type " + type);
-        //     this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
-        //   } else {
-        //     var blocks = _.filter(this.getBlocksByType(type), function(b) {
-        //       return !b.isEmpty();
-        //     });
-  
-        //     if (blocks.length > 0) { return false; }
-  
-        //     this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
-        //     SirTrevor.log("A required block type " + type + " is empty");
-        //   }
-        // };
-  
-        // if (_.isArray(this.required)) {
-        //   _.each(this.required, blockTypeIterator, this);
-        // }
-      },
-  
-      renderErrors: function() {
-        if (this.errors.length === 0) { return false; }
-  
-        if (_.isUndefined(this.$errors)) {
-          this.$errors = this._errorsContainer();
+        if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
+          return false;
         }
   
-        var str = "<ul>";
+        var blockTypeIterator = function(type, index) {
+          if (!this.block_manager.isBlockTypeAvailable(type)) { return; }
   
-        _.each(this.errors, function(error) {
-          str += '<li class="st-errors__msg">'+ error.text +'</li>';
-        });
+          if (this.block_manager._getBlockTypeCount(type) === 0) {
+            SirTrevor.log("Failed validation on required block type " + type);
+            this.mediator.trigger('errors:add',
+                { text: i18n.t("errors:type_missing", { type: type }) });
+          } else {
+            var blocks = _.filter(this.getBlocksByType(type),
+                                  function(b) { return !b.isEmpty(); });
   
-        str += "</ul>";
+            if (blocks.length > 0) { return false; }
   
-        this.$errors.append(str);
-        this.$errors.show();
-      },
+            this.mediator.trigger('errors:add',
+                { text: i18n.t("errors:required_type_empty", { type: type }) });
+            SirTrevor.log("A required block type " + type + " is empty");
+          }
+        };
   
-      _errorsContainer: function() {
-        if (_.isUndefined(this.options.errorsContainer)) {
-          var $container = $("<div>", {
-            'class': 'st-errors',
-            html: "<p>" + i18n.t("errors:title") + " </p>"
-          });
-  
-          this.$outer.prepend($container);
-          return $container;
+        if (_.isArray(this.block_manager.required)) {
+          _.each(this.block_manager.required, blockTypeIterator, this);
         }
-  
-        return $element(this.options.errorsContainer);
-      },
-  
-      removeErrors: function() {
-        if (this.errors.length === 0) { return false; }
-  
-        this.$errors.hide().find('ul').html('');
-  
-        this.errors = [];
       },
   
       findBlockById: function(block_id) {
-        return _.find(this.blocks, function(b){ return b.blockID == block_id; });
+        return this.block_manager.findBlockById(block_id);
       },
   
       getBlocksByType: function(block_type) {
-        return _.filter(this.blocks, function(b){ return _.classify(b.type) == block_type; });
+        return this.block_manager.getBlocksByType(block_type);
       },
   
       getBlocksByIDs: function(block_ids) {
-        return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+        return this.block_manager.getBlocksByIDs(block_ids);
       },
   
       getBlockPosition: function($block) {

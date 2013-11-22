@@ -135,6 +135,7 @@
   /* FormatBar */
   //= format-bar.js
   //= block-manager.js
+  //= error-handler.js
   //= sir-trevor-editor.js
 
   /* We need a form handler here to handle all the form submits */
