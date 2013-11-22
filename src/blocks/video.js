@@ -1,20 +1,18 @@
 SirTrevor.Blocks.Video = (function(){
 
-  var video_regexes = {
-    'vimeo': /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.*)/,
-    'youtube': /(?:http[s]?:\/\/)?(?:www.)?(?:youtu(?:be)?.(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/,
-    'vine': /(?:http[s]?:\/\/)?(?:www.)?vine.co\/v\/([^\W]*)/,
-    'dailymotion': /(?:http[s]?:\/\/)?(?:www.)?dai(?:.ly|lymotion.com\/video)\/([^\W_]*)/
-  };
-
-  var embed_strings = {
-    'youtube': "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>",
-    'vimeo': "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>",
-    'vine': "<iframe class=\"vine-embed\" src=\"{{protocol}}//vine.co/v/{{remote_id}}/embed/simple\" width=\"{{width}}\" height=\"{{width}}\" frameborder=\"0\"></iframe><script async src=\"http://platform.vine.co/static/scripts/embed.js\" charset=\"utf-8\"></script>",
-    'dailymotion': "<iframe src=\"{{protocol}}//www.dailymotion.com/embed/video/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
-  };
-
   return SirTrevor.Block.extend({
+
+    // more providers at https://gist.github.com/jeffling/a9629ae28e076785a14f
+    providers: {
+      vimeo: {
+        regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.*)/,
+        html: "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
+      },
+      youtube: {
+        regex: /(?:http[s]?:\/\/)?(?:www.)?(?:youtu(?:be)?.(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/,
+        html: "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
+      }
+    },
 
     type: 'video',
     title: function() { return i18n.t('blocks:video:title'); },
@@ -25,13 +23,13 @@ SirTrevor.Blocks.Video = (function(){
     icon_name: 'video',
 
     loadData: function(data){
-      if (data.source === 'vine') {
+      if (this.providers[data.source].square) {
         this.$editor.addClass('st-block__editor--with-square-media');
       } else {
         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
       } 
 
-      var embed_string = embed_strings[data.source]
+      var embed_string = this.providers[data.source].html
         .replace('{{protocol}}', window.location.protocol)
         .replace('{{remote_id}}', data.remote_id)
         .replace('{{width}}', this.$editor.width()); // for videos that can't resize automatically like vine
@@ -49,11 +47,10 @@ SirTrevor.Blocks.Video = (function(){
     },
 
     handleDropPaste: function(url){
-
       if(_.isURI(url))
       {
-        _.each(video_regexes, function(element, index) {
-          var match = element.exec(url);
+        _.each(this.providers, function(provider, index) {
+          var match = provider.regex.exec(url);
 
           if(match !== null && match[1] !== undefined) {
             var data = {};
