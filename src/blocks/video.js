@@ -5,11 +5,11 @@ SirTrevor.Blocks.Video = (function(){
     // more providers at https://gist.github.com/jeffling/a9629ae28e076785a14f
     providers: {
       vimeo: {
-        regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.*)/,
+        regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.+)/,
         html: "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
       },
       youtube: {
-        regex: /(?:http[s]?:\/\/)?(?:www.)?(?:youtu(?:be)?.(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/,
+        regex: /(?:http[s]?:\/\/)?(?:www.)?(?:(?:youtube.com\/watch\?(?:.*)(?:v=))|(?:youtu.be\/))([^&].+)/,
         html: "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
       }
     },
