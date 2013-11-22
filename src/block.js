@@ -1,6 +1,6 @@
 SirTrevor.Block = (function(){
 
-  var Block = function(data, instance_id) {
+  var Block = function(data, instance_id, mediator) {
     SirTrevor.SimpleBlock.apply(this, arguments);
   };
 
@@ -205,6 +205,10 @@ SirTrevor.Block = (function(){
 
     _onBlur: function() {},
 
+    onBlockRender: function() {
+      this.focus();
+    },
+
     onDrop: function(dataTransferObj) {},
 
     onDeleteClick: function(ev) {
@@ -212,7 +216,8 @@ SirTrevor.Block = (function(){
 
       var onDeleteConfirm = function(e) {
         e.preventDefault();
-        this.trigger('removeBlock', this.blockID);
+        this.remove();
+        this.mediator.trigger('removeBlock', this.blockID);
       };
 
       var onDeleteDeny = function(e) {
