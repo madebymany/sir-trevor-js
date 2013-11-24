@@ -1,5 +1,5 @@
 /*
-  Text Block
+  Heading Block
 */
 SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
 
