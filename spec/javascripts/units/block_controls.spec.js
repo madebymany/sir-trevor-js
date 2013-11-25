@@ -2,10 +2,11 @@ describe("BlockControls", function(){
 
   describe("creating a new instance", function(){
 
-    var block_control;
+    var block_control, mediator;
 
     beforeEach(function(){
-      block_control = new SirTrevor.BlockControls([],'');
+      mediator = _.extend({}, SirTrevor.Events);
+      block_control = new SirTrevor.BlockControls([], mediator);
     });
 
     it("can be created", function(){
@@ -28,13 +29,14 @@ describe("BlockControls", function(){
 
   describe("setting available_types", function(){
 
-    var block_control;
+    var block_control, mediator;
 
     beforeEach(function(){
+      mediator = _.extend({}, SirTrevor.Events);
       block_control = new SirTrevor.BlockControls({
         'Text' : true,
         'Image' : true
-      }, '');
+      }, mediator);
     });
 
     it("creates a control element for every type given", function(){

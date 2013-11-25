@@ -4,7 +4,7 @@ describe("Validation", function(){
   beforeEach(function(){
     element = $("<textarea>");
     editor = new SirTrevor.Editor({ el: element });
-    block = new SirTrevor.Blocks.Text({}, editor.ID);
+    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
   });
 
   describe("valid", function(){

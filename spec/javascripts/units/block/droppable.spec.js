@@ -10,7 +10,7 @@ describe("Droppable Block", function(){
       droppable: true
     });
 
-    block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID);
+    block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID, editor.mediator);
   });
 
   describe("render", function(){
