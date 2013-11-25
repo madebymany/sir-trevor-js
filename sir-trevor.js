@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-20
+ * 2013-11-24
  */
 
 (function ($, _){
@@ -2310,10 +2310,14 @@
   
       show: function() {
         this.$el.addClass('st-block-controls--active');
+  
+        SirTrevor.EventBus.trigger('block:controls:shown');
       },
   
       hide: function() {
         this.$el.removeClass('st-block-controls--active');
+  
+        SirTrevor.EventBus.trigger('block:controls:hidden');
       },
   
       handleControlButtonClick: function(e) {
