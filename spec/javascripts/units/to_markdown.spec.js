@@ -170,22 +170,4 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("[test](test)");
   });
 
-  it("strips all tags if aggresiveHTMLStrip is true", function() {
-    SirTrevor.config.defaults.toMarkdown.aggresiveHTMLStrip = true;
-
-    var html = "x < 4. y > 5.",
-        markdown = SirTrevor.toMarkdown(html, "Text");
-
-    expect(markdown).toBe("x  5.");
-  });
-
-  it("leaves < & > alone if aggresiveHTMLStrip is false", function(){
-    SirTrevor.config.defaults.toMarkdown.aggresiveHTMLStrip = false;
-
-    var html = "x < 4. y > 5.",
-        markdown = SirTrevor.toMarkdown(html, "Text");
-
-    expect(markdown).toBe("x < 4. y > 5.");
-  });
-
 });

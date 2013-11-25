@@ -10,9 +10,10 @@ var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
 
-var FloatingBlockControls = function(wrapper, instance_id) {
+var FloatingBlockControls = function(wrapper, instance_id, mediator) {
   this.$wrapper = wrapper;
   this.instance_id = instance_id;
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -78,9 +79,7 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
   handleBlockClick: function(e) {
     e.stopPropagation();
-
-    var block = $(e.currentTarget);
-    this.trigger('showBlockControls', block);
+    this.mediator.trigger('block-controls:render', $(e.currentTarget));
   }
 
 });

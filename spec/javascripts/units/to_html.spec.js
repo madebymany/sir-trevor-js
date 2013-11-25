@@ -37,34 +37,6 @@ describe("toHTML", function(){
     expect(html).toBe("<div><b>test</b> and <i>testing</i></div>");
   });
 
-  it("converts newlines to HTML", function(){
-    var markdown = "hello!\nhello!",
-        html = SirTrevor.toHTML(markdown, "Text");
-
-    expect(html).toBe("<div>hello!</div><div>hello!</div>");
-  });
-
-  it("converts newlines with \r to HTML", function(){
-    var markdown = "hello!\r\nhello!",
-        html = SirTrevor.toHTML(markdown, "Text");
-
-    expect(html).toBe("<div>hello!</div><div>hello!</div>");
-  });
-
-  it("converts double newlines to paragraphs", function(){
-    var markdown = "hello!\r\n\r\nhello!",
-        html = SirTrevor.toHTML(markdown, "Text");
-
-    expect(html).toBe("<div>hello!</div><div><br></div><div>hello!</div>");
-  });
-
-  it("converts double newlines with \r to paragraphs", function(){
-    var markdown = "hello!\r\n\r\nhello!",
-        html = SirTrevor.toHTML(markdown, "Text");
-
-    expect(html).toBe("<div>hello!</div><div><br></div><div>hello!</div>");
-  });
-
   it("doesn't mess up on links with _ in", function(){
     var markdown = SirTrevor.toMarkdown("http://google.com/_ and this is_ more text http://google.com/_", "Text"),
         html = SirTrevor.toHTML(markdown, "Text");

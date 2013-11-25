@@ -1,12 +1,12 @@
 "use strict";
 
-describe("Validation", function(){
+describe("Block:Validation", function(){
   var element, editor, block;
 
   beforeEach(function(){
     element = $("<textarea>");
     editor = new SirTrevor.Editor({ el: element });
-    block = new SirTrevor.Blocks.Text({}, editor.ID);
+    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
   });
 
   describe("valid", function(){

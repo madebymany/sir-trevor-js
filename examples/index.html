@@ -56,8 +56,8 @@
         ]
       });
 
-      $('form').bind('submit', function(){
-        $('#st-json-debug').text(JSON.stringify(window.editor.store('read')));
+      $('form').bind('submit', function () {
+        $('#st-json-debug').text(window.editor.store.toString(true));
         return false;
       });
 

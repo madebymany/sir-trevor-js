@@ -1,77 +1,95 @@
 "use strict";
 
-describe("Store", function(){
+describe("EditorStore", function(){
 
-  var element, editor, block;
+  var mediator, store;
 
   beforeEach(function(){
-    SirTrevor.instances = [];
-    element = $("<textarea>");
-    editor = new SirTrevor.Editor({ el: element });
-
-    editor.createBlock('Text', { text: "Blah" });
-    block = _.last(editor.blocks);
+    mediator = _.extend({}, SirTrevor.Events);
   });
 
   describe("creating the store", function(){
 
     it("creates an empty store on initialization", function(){
-      expect(editor.dataStore).toBeDefined();
+      store = new SirTrevor.EditorStore('', mediator);
+      expect(store.store).toBeDefined();
     });
 
     it("uses the value of the textarea if there is data in it", function(){
-      editor.$el.val('{ "data": [{ "type": "Text", "data": { "text": "test" }}]}');
-      editor.store("create");
+      var data = '{ "data": [{ "type": "Text", "data": { "text": "test" }}]}';
 
-      expect(editor.dataStore.data.length).toBe(1);
+      store = new SirTrevor.EditorStore(data, mediator);
+
+      expect(store.store).toBeDefined();
+      expect(store.retrieve().data.length).toBe(1);
     });
 
   });
 
-  describe("saveBlockStateToStore", function(){
+  describe("addData", function(){
 
     beforeEach(function(){
-      editor.saveBlockStateToStore(block);
+      store = new SirTrevor.EditorStore('', mediator);
+      store.addData({ type: 'Text', data: 'OHHAI' });
     });
 
-    it("saves the blocks state to the store", function(){
-      expect(editor.dataStore.data.length).not.toBe(0);
+    it("appends the data", function(){
+      expect(store.retrieve().data.length).not.toBe(0);
     });
 
-    it("contains the data for the block saved", function(){
-      var block_storage = block.blockStorage;
-      expect(editor.dataStore.data[0]).toBe(block_storage);
+    it("contains the data given", function(){
+      var data = store.retrieve(),
+          item = data.data[0];
+
+      expect(item.data).toBe('OHHAI');
+      expect(item.type).toBe('Text');
     });
 
   });
 
-  describe("reading from the store", function(){
+  describe("retrieve", function(){
 
     beforeEach(function(){
-      editor.saveBlockStateToStore(block);
+      store = new SirTrevor.EditorStore('', mediator);
+      store.addData({ type: 'Text', data: 'OHHAI' });
     });
 
     it("returns the correct data", function(){
-      expect(editor.store("read").data.length).toBe(1);
+      expect(store.retrieve().data.length).toBe(1);
     });
 
   });
 
-  describe("saving the dataStore to the $el", function(){
+  describe("reset", function(){
 
     beforeEach(function(){
-      editor.saveBlockStateToStore(block);
-      editor.store("save");
+      store = new SirTrevor.EditorStore('', mediator);
+      store.addData({ type: 'Text', data: 'OHHAI' });
+
+      store.reset();
     });
 
-    it("has the state stored on the $el", function(){
-      expect(editor.$el.val().length).not.toBe(0);
+    it("clears the data", function(){
+      expect(store.retrieve().data.length).toBe(0);
     });
 
-    it("has the correct data on the $el", function(){
-      var json = JSON.parse(editor.$el.val());
+  });
 
-      expect(json.data[0].data.text).toBe("Blah\n");
+  describe("toString", function(){
+
+    beforeEach(function(){
+      store = new SirTrevor.EditorStore('', mediator);
+      store.addData({ type: 'Text', data: 'OHHAI' });
+    });
+
+    it("produces a string of the data", function(){
+      var str = store.toString();
+      expect(typeof str === "string").toBe(true);
+    });
+
+    it("has the correct data", function(){
+      var json = JSON.parse(store.toString());
+      expect(json.data[0].data).toBe("OHHAI");
     });
 
   });

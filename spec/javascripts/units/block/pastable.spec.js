@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Pastable Block", function(){
+describe("Block:Pastable Block", function(){
 
   var element, editor, block;
 
@@ -12,7 +12,7 @@ describe("Pastable Block", function(){
       pastable: true
     });
 
-    block = new SirTrevor.Blocks.PastableBlock({}, editor.ID);
+    block = new SirTrevor.Blocks.PastableBlock({}, editor.ID, editor.mediator);
   });
 
   describe("render", function(){

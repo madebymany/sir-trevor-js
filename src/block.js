@@ -17,7 +17,7 @@ var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
 
-var Block = function(data, instance_id) {
+var Block = function(data, instance_id, mediator) {
   SimpleBlock.apply(this, arguments);
 };
 
@@ -85,6 +85,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     toolbarEnabled: true,
 
+    availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
+      'ajaxable', 'controllable'],
+
     droppable: false,
     pastable: false,
     uploadable: false,
@@ -128,11 +131,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(BlockMixins.Fetchable); }
-      if (this.controllable) { this.withMixin(BlockMixins.Controllable); }
+
+      this.availableMixins.forEach(function(mixin) {
+        if (this[mixin]) {
+          this.withMixin(BlockMixins[utils.classify(mixin)]);
+        }
+      }, this);
 
       if (this.formattable) { this._initFormatting(); }
 
@@ -224,6 +228,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     _onBlur: function() {},
 
+    onBlockRender: function() {
+      this.focus();
+    },
+
     onDrop: function(dataTransferObj) {},
 
     onDeleteClick: function(ev) {
@@ -231,7 +239,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
       var onDeleteConfirm = function(e) {
         e.preventDefault();
-        this.trigger('removeBlock', this.blockID);
+        this.mediator.trigger('block:remove', this.blockID);
+        this.remove();
       };
 
       var onDeleteDeny = function(e) {
@@ -292,19 +301,15 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     _initUIComponents: function() {
 
-      var positioner = new BlockPositioner(this.$el, this.instanceID);
+      var positioner = new BlockPositioner(this.$el, this.mediator);
 
-      this._withUIComponent(
-        positioner, '.st-block-ui-btn--reorder', positioner.toggle
-      );
+      this._withUIComponent(positioner, '.st-block-ui-btn--reorder',
+                            positioner.toggle);
 
-      this._withUIComponent(
-        new BlockReorder(this.$el)
-      );
+      this._withUIComponent(new BlockReorder(this.$el, this.mediator));
 
-      this._withUIComponent(
-        new BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
-      );
+      this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn--delete',
+                            this.onDeleteClick);
 
       this.onFocus();
       this.onBlur();
@@ -335,10 +340,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       var block = this;
       setTimeout(function() {
         var selection = window.getSelection(),
-        selectionStr = selection.toString().trim(),
-        eventType = (selectionStr === '') ? 'hide' : 'position';
+            selectionStr = selection.toString().trim(),
+            en = 'formatter:' + ((selectionStr === '') ? 'hide' : 'position');
 
-        EventBus.trigger('formatter:' + eventType, block);
+        block.mediator.trigger(en, block);
+        EventBus.trigger(en, block);
       }, 1);
     },
 

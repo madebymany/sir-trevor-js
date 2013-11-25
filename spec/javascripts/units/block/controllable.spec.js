@@ -17,14 +17,14 @@ describe("Controllable Block", function(){
       }
     });
 
-    block = new SirTrevor.Blocks.ControllableBlock({}, editor.ID);
+    block = new SirTrevor.Blocks.ControllableBlock({}, editor.ID, editor.mediator);
   });
 
   describe("render", function(){
 
     beforeEach(function(){
       spyOn(block, 'withMixin').and.callThrough();
-      block = block.render();
+      block.render();
     });
 
     it("gets the controllable mixin", function(){

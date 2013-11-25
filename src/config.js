@@ -29,8 +29,5 @@ module.exports = {
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
-    toMarkdown: {
-      aggresiveHTMLStrip: false
-    }
   }
 };

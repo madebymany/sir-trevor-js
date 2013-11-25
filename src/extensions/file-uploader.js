@@ -9,7 +9,11 @@ var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
+var EventBus = require('../event-bus');
+
 module.exports = function(block, file, success, error) {
+
+  EventBus.trigger('onUploadStart');
 
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
@@ -20,19 +24,21 @@ module.exports = function(block, file, success, error) {
 
   block.resetMessages();
 
-  var callbackSuccess = function(){
+  var callbackSuccess = function(data) {
     utils.log('Upload callback called');
+    EventBus.trigger('onUploadStop');
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
       success.apply(block, arguments);
     }
   };
 
-  var callbackError = function(){
+  var callbackError = function(jqXHR, status, errorThrown) {
     utils.log('Upload callback error called');
+    EventBus.trigger('onUploadStop');
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
-      error.apply(block, arguments);
+      error.call(block, status);
     }
   };
 

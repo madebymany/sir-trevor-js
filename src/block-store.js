@@ -52,7 +52,7 @@ module.exports = {
 
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);
-    EventBus.trigger("block:loadData", this.blockID);
+    EventBus.trigger("editor/block/loadData");
     this.loadData(this.getData());
   },
 

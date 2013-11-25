@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Store", function(){
+describe("Block:Store", function(){
 
   var element, editor, block;
 
@@ -12,7 +12,7 @@ describe("Store", function(){
   describe("create", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
     });
 
     it("creates the data in the block store", function(){
@@ -28,7 +28,7 @@ describe("Store", function(){
   describe("getData", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
     });
 
     it("should retrieve the data", function(){
@@ -40,7 +40,7 @@ describe("Store", function(){
   describe("setData", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
     });
 
     it("should set the data on the block", function(){
@@ -58,7 +58,7 @@ describe("Store", function(){
   describe("save", function(){
 
     beforeEach(function() {
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
       spyOn(block, 'toData');
     });
 

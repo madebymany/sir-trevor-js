@@ -12,6 +12,7 @@ var SirTrevor = {
   log: require('./utils').log,
   Locales: require('./locales'),
 
+  Events: require('./events'),
   EventBus: require('./event-bus'),
 
   EditorStore: require('./extensions/editor-store'),
@@ -24,6 +25,7 @@ var SirTrevor = {
   BlockDeletion: require('./block-deletion'),
   BlockValidations: require('./block-validations'),
   BlockStore: require('./block-store'),
+  BlockManager: require('./block-manager'),
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),

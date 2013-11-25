@@ -4,14 +4,14 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-11-28
+ * 2014-12-02
  */
 
 
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.SirTrevor=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = require('./src/');
 
-},{"./src/":89}],2:[function(require,module,exports){
+},{"./src/":91}],2:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as a module.
@@ -2227,9 +2227,8 @@ module.exports = uniqueId;
 var _ = require('./lodash');
 var Blocks = require('./blocks');
 
-var BlockControl = function(type, instance_scope) {
+var BlockControl = function(type) {
   this.type = type;
-  this.instance_scope = instance_scope;
   this.block_type = Blocks[this.type].prototype;
   this.can_be_rendered = this.block_type.toolbarEnabled;
 
@@ -2255,7 +2254,7 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
 
 module.exports = BlockControl;
 
-},{"./blocks":68,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],52:[function(require,module,exports){
+},{"./blocks":69,"./events":79,"./function-bind":88,"./lodash":93,"./renderable":95}],52:[function(require,module,exports){
 "use strict";
 
 /*
@@ -2264,32 +2263,41 @@ module.exports = BlockControl;
  * Gives an interface for adding new Sir Trevor blocks.
  */
 
+var _ = require('./lodash');
 
 var Blocks = require('./blocks');
 var BlockControl = require('./block-control');
 var EventBus = require('./event-bus');
 
-var BlockControls = function(available_types, instance_scope) {
-  this.instance_scope = instance_scope;
+var BlockControls = function(available_types, mediator) {
   this.available_types = available_types || [];
+  this.mediator = mediator;
+
   this._ensureElement();
   this._bindFunctions();
+  this._bindMediatedEvents();
+
   this.initialize();
 };
 
-Object.assign(BlockControls.prototype, require('./function-bind'), require('./renderable'), require('./events'), {
+Object.assign(BlockControls.prototype, require('./function-bind'), require('./mediated-events'), require('./renderable'), require('./events'), {
 
   bound: ['handleControlButtonClick'],
   block_controls: null,
 
   className: "st-block-controls",
+  eventNamespace: 'block-controls',
 
-  html: "<a class='st-icon st-icon--close'>" + i18n.t("general:close") + "</a>",
+  mediatedEvents: {
+    'render': 'renderInContainer',
+    'show': 'show',
+    'hide': 'hide'
+  },
 
   initialize: function() {
     for(var block_type in this.available_types) {
       if (Blocks.hasOwnProperty(block_type)) {
-        var block_control = new BlockControl(block_type, this.instance_scope);
+        var block_control = new BlockControl(block_type);
         if (block_control.can_be_rendered) {
           this.$el.append(block_control.render().$el);
         }
@@ -2297,6 +2305,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
     }
 
     this.$el.delegate('.st-block-control', 'click', this.handleControlButtonClick);
+    this.mediator.on('block-controls:show', this.renderInContainer);
   },
 
   show: function() {
@@ -2306,6 +2315,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
   },
 
   hide: function() {
+    this.removeCurrentContainer();
     this.$el.removeClass('st-block-controls--active');
 
     EventBus.trigger('block:controls:hidden');
@@ -2314,14 +2324,30 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
   handleControlButtonClick: function(e) {
     e.stopPropagation();
 
-    this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
-  }
+    this.mediator.trigger('createBlock', $(e.currentTarget).attr('data-type'));
+  },
 
+  renderInContainer: function(container) {
+    this.removeCurrentContainer();
+
+    container.append(this.$el.detach());
+    container.addClass('with-st-controls');
+
+    this.currentContainer = container;
+    this.show();
+  },
+
+  removeCurrentContainer: function() {
+    if (!_.isUndefined(this.currentContainer)) {
+      this.currentContainer.removeClass("with-st-controls");
+      this.currentContainer = undefined;
+    }
+  }
 });
 
 module.exports = BlockControls;
 
-},{"./block-control":51,"./blocks":68,"./event-bus":76,"./events":77,"./function-bind":86,"./renderable":92}],53:[function(require,module,exports){
+},{"./block-control":51,"./blocks":69,"./event-bus":78,"./events":79,"./function-bind":88,"./lodash":93,"./mediated-events":94,"./renderable":95}],53:[function(require,module,exports){
 "use strict";
 
 var BlockDeletion = function() {
@@ -2343,11 +2369,210 @@ Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./re
 
 module.exports = BlockDeletion;
 
-},{"./function-bind":86,"./renderable":92}],54:[function(require,module,exports){
+},{"./function-bind":88,"./renderable":95}],54:[function(require,module,exports){
 "use strict";
 
+var _ = require('./lodash');
+var utils = require('./utils');
+var config = require('./config');
 
 var EventBus = require('./event-bus');
+var Blocks = require('./blocks');
+
+var BlockManager = function(options, editorInstance, mediator) {
+  this.options = options;
+  this.instance_scope = editorInstance;
+  this.mediator = mediator;
+
+  this.blocks = [];
+  this.blockCounts = {};
+  this.blockTypes = {};
+
+  this._setBlocksTypes();
+  this._setRequired();
+  this._bindMediatedEvents();
+
+  this.initialize();
+};
+
+Object.assign(BlockManager.prototype, require('./function-bind'), require('./mediated-events'), require('./events'), {
+
+  eventNamespace: 'block',
+
+  mediatedEvents: {
+    'create': 'createBlock',
+    'remove': 'removeBlock',
+    'rerender': 'rerenderBlock'
+  },
+
+  initialize: function() {},
+
+  createBlock: function(type, data) {
+    type = utils.classify(type);
+
+    // Run validations
+    if (!this.canCreateBlock(type)) { return; }
+
+    var block = new Blocks[type](data, this.instance_scope, this.mediator);
+    this.blocks.push(block);
+
+    this._incrementBlockTypeCount(type);
+    this.mediator.trigger('block:render', block);
+
+    this.triggerBlockCountUpdate();
+    this.mediator.trigger('block:limitReached', this.blockLimitReached());
+
+    utils.log("Block created of type " + type);
+  },
+
+  removeBlock: function(blockID) {
+    var block = this.findBlockById(blockID),
+    type = utils.classify(block.type);
+
+    this.mediator.trigger('block-controls:reset');
+    this.blocks = this.blocks.filter(function(item) {
+      return (item.blockID !== block.blockID);
+    });
+
+    this._decrementBlockTypeCount(type);
+    this.triggerBlockCountUpdate();
+    this.mediator.trigger('block:limitReached', this.blockLimitReached());
+
+    EventBus.trigger("block:remove");
+  },
+
+  rerenderBlock: function(blockID) {
+    var block = this.findBlockById(blockID);
+    if (!_.isUndefined(block) && !block.isEmpty() &&
+        block.drop_options.re_render_on_reorder) {
+      block.beforeLoadingData();
+    }
+  },
+
+  triggerBlockCountUpdate: function() {
+    this.mediator.trigger('block:countUpdate', this.blocks.length);
+  },
+
+  canCreateBlock: function(type) {
+    if(this.blockLimitReached()) {
+      utils.log("Cannot add any more blocks. Limit reached.");
+      return false;
+    }
+
+    if (!this.isBlockTypeAvailable(type)) {
+      utils.log("Block type not available " + type);
+      return false;
+    }
+
+    // Can we have another one of these blocks?
+    if (!this.canAddBlockType(type)) {
+      utils.log("Block Limit reached for type " + type);
+      return false;
+    }
+
+    return true;
+  },
+
+  validateBlockTypesExist: function(shouldValidate) {
+    if (config.skipValidation || !shouldValidate) { return false; }
+
+    (this.required || []).forEach(function(type, index) {
+      if (!this.isBlockTypeAvailable(type)) { return; }
+
+      if (this._getBlockTypeCount(type) === 0) {
+        utils.log("Failed validation on required block type " + type);
+        this.mediator.trigger('errors:add',
+                              { text: i18n.t("errors:type_missing", { type: type }) });
+
+      } else {
+        var blocks = this.getBlocksByType(type).filter(function(b) {
+          return !b.isEmpty();
+        });
+
+        if (blocks.length > 0) { return false; }
+
+        this.mediator.trigger('errors:add', {
+          text: i18n.t("errors:required_type_empty", {type: type})
+        });
+
+        utils.log("A required block type " + type + " is empty");
+      }
+    }, this);
+  },
+
+  findBlockById: function(blockID) {
+    return this.blocks.find(function(b) {
+      return b.blockID === blockID;
+    });
+  },
+
+  getBlocksByType: function(type) {
+    return this.blocks.filter(function(b) {
+      return utils.classify(b.type) === type;
+    });
+  },
+
+  getBlocksByIDs: function(block_ids) {
+    return this.blocks.filter(function(b) {
+      return block_ids.includes(b.blockID);
+    });
+  },
+
+  blockLimitReached: function() {
+    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
+  },
+
+  isBlockTypeAvailable: function(t) {
+    return !_.isUndefined(this.blockTypes[t]);
+  },
+
+  canAddBlockType: function(type) {
+    var block_type_limit = this._getBlockTypeLimit(type);
+    return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
+  },
+
+  _setBlocksTypes: function() {
+    this.blockTypes = utils.flatten(
+      _.isUndefined(this.options.blockTypes) ?
+      Blocks : this.options.blockTypes);
+  },
+
+  _setRequired: function() {
+    this.required = false;
+
+    if (Array.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+      this.required = this.options.required;
+    }
+  },
+
+  _incrementBlockTypeCount: function(type) {
+    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] + 1;
+  },
+
+  _decrementBlockTypeCount: function(type) {
+    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] - 1;
+  },
+
+  _getBlockTypeCount: function(type) {
+    return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
+  },
+
+  _blockLimitReached: function() {
+    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
+  },
+
+  _getBlockTypeLimit: function(t) {
+    if (!this.isBlockTypeAvailable(t)) { return 0; }
+    return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
+  }
+
+});
+
+module.exports = BlockManager;
+
+
+},{"./blocks":69,"./config":75,"./event-bus":78,"./events":79,"./function-bind":88,"./lodash":93,"./mediated-events":94,"./utils":99}],55:[function(require,module,exports){
+"use strict";
 
 var template = [
   "<div class='st-block-positioner__inner'>",
@@ -2356,10 +2581,9 @@ var template = [
   "</div>"
 ].join("\n");
 
-var BlockPositioner = function(block_element, instance_id) {
+var BlockPositioner = function(block_element, mediator) {
+  this.mediator = mediator;
   this.$block = block_element;
-  this.instanceID = instance_id;
-  this.total_blocks = 0;
 
   this._ensureElement();
   this._bindFunctions();
@@ -2368,6 +2592,8 @@ var BlockPositioner = function(block_element, instance_id) {
 };
 
 Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./renderable'), {
+
+  total_blocks: 0,
 
   bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
@@ -2380,7 +2606,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 
     this.$select.on('change', this.onSelectChange);
 
-    EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
+    this.mediator.on("blocks:countUpdate", this.onBlockCountChange);
   },
 
   onBlockCountChange: function(new_count) {
@@ -2393,9 +2619,10 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   onSelectChange: function() {
     var val = this.$select.val();
     if (val !== 0) {
-      EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val === 1 ? 'before' : 'after'));
-                       this.toggle();
+      this.mediator.trigger(
+        "blocks:changePosition", this.$block, val,
+        (val === 1 ? 'before' : 'after'));
+      this.toggle();
     }
   },
 
@@ -2424,16 +2651,17 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 
 module.exports = BlockPositioner;
 
-},{"./event-bus":76,"./function-bind":86,"./renderable":92}],55:[function(require,module,exports){
+},{"./function-bind":88,"./renderable":95}],56:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
 
-var BlockReorder = function(block_element) {
+var BlockReorder = function(block_element, mediator) {
   this.$block = block_element;
   this.blockID = this.$block.attr('id');
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -2443,7 +2671,7 @@ var BlockReorder = function(block_element) {
 
 Object.assign(BlockReorder.prototype, require('./function-bind'), require('./renderable'), {
 
-  bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+  bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrop'],
 
   className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
   tagName: 'a',
@@ -2458,17 +2686,20 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
   initialize: function() {
     this.$el.bind('mousedown touchstart', this.onMouseDown)
-    .bind('click', this.onClick)
-    .bind('dragstart', this.onDragStart)
-    .bind('dragend touchend', this.onDragEnd)
-    .bind('drag touchmove', this.onDrag);
+      .bind('dragstart', this.onDragStart)
+      .bind('dragend touchend', this.onDragEnd);
 
     this.$block.dropArea()
-    .bind('drop', this.onDrop);
+      .bind('drop', this.onDrop);
+  },
+
+  blockId: function() {
+    return this.$block.attr('id');
   },
 
   onMouseDown: function() {
-    EventBus.trigger("block:reorder:down", this.blockID);
+    this.mediator.trigger("block-controls:hide");
+    EventBus.trigger("block:reorder:down");
   },
 
   onDrop: function(ev) {
@@ -2478,34 +2709,29 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
     item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
     block = $('#' + item_id);
 
-    if (!_.isUndefined(item_id) &&
-        !_.isEmpty(block) &&
-          dropped_on.attr('id') !== item_id &&
-            dropped_on.attr('data-instance') === block.attr('data-instance')
+    if (!_.isUndefined(item_id) && !_.isEmpty(block) &&
+        dropped_on.attr('id') !== item_id &&
+          dropped_on.attr('data-instance') === block.attr('data-instance')
        ) {
-         dropped_on.after(block);
-       }
-       EventBus.trigger("block:reorder:dropped", item_id);
+       dropped_on.after(block);
+     }
+     this.mediator.trigger("block:rerender", item_id);
+     EventBus.trigger("block:reorder:dropped", item_id);
   },
 
   onDragStart: function(ev) {
     var btn = $(ev.currentTarget).parent();
 
     ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-    ev.originalEvent.dataTransfer.setData('Text', this.blockID);
+    ev.originalEvent.dataTransfer.setData('Text', this.blockId());
 
-    EventBus.trigger("block:reorder:dragstart", this.blockID);
+    EventBus.trigger("block:reorder:dragstart");
     this.$block.addClass('st-block--dragging');
   },
 
   onDragEnd: function(ev) {
-    EventBus.trigger("block:reorder:dragend", this.blockID);
+    EventBus.trigger("block:reorder:dragend");
     this.$block.removeClass('st-block--dragging');
-  },
-
-  onDrag: function(ev){},
-
-  onClick: function() {
   },
 
   render: function() {
@@ -2516,7 +2742,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
 module.exports = BlockReorder;
 
-},{"./event-bus":76,"./function-bind":86,"./lodash":91,"./renderable":92}],56:[function(require,module,exports){
+},{"./event-bus":78,"./function-bind":88,"./lodash":93,"./renderable":95}],57:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -2571,7 +2797,7 @@ module.exports = {
 
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);
-    EventBus.trigger("block:loadData", this.blockID);
+    EventBus.trigger("editor/block/loadData");
     this.loadData(this.getData());
   },
 
@@ -2588,7 +2814,7 @@ module.exports = {
 
 };
 
-},{"./event-bus":76,"./lodash":91,"./utils":96}],57:[function(require,module,exports){
+},{"./event-bus":78,"./lodash":93,"./utils":99}],58:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -2666,7 +2892,7 @@ module.exports = {
 
 };
 
-},{"./lodash":91,"./utils":96}],58:[function(require,module,exports){
+},{"./lodash":93,"./utils":99}],59:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -2686,7 +2912,7 @@ var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
 
-var Block = function(data, instance_id) {
+var Block = function(data, instance_id, mediator) {
   SimpleBlock.apply(this, arguments);
 };
 
@@ -2754,6 +2980,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     toolbarEnabled: true,
 
+    availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
+      'ajaxable', 'controllable'],
+
     droppable: false,
     pastable: false,
     uploadable: false,
@@ -2797,11 +3026,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(BlockMixins.Fetchable); }
-      if (this.controllable) { this.withMixin(BlockMixins.Controllable); }
+
+      this.availableMixins.forEach(function(mixin) {
+        if (this[mixin]) {
+          this.withMixin(BlockMixins[utils.classify(mixin)]);
+        }
+      }, this);
 
       if (this.formattable) { this._initFormatting(); }
 
@@ -2893,6 +3123,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     _onBlur: function() {},
 
+    onBlockRender: function() {
+      this.focus();
+    },
+
     onDrop: function(dataTransferObj) {},
 
     onDeleteClick: function(ev) {
@@ -2900,7 +3134,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
       var onDeleteConfirm = function(e) {
         e.preventDefault();
-        this.trigger('removeBlock', this.blockID);
+        this.mediator.trigger('block:remove', this.blockID);
+        this.remove();
       };
 
       var onDeleteDeny = function(e) {
@@ -2961,19 +3196,15 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     _initUIComponents: function() {
 
-      var positioner = new BlockPositioner(this.$el, this.instanceID);
+      var positioner = new BlockPositioner(this.$el, this.mediator);
 
-      this._withUIComponent(
-        positioner, '.st-block-ui-btn--reorder', positioner.toggle
-      );
+      this._withUIComponent(positioner, '.st-block-ui-btn--reorder',
+                            positioner.toggle);
 
-      this._withUIComponent(
-        new BlockReorder(this.$el)
-      );
+      this._withUIComponent(new BlockReorder(this.$el, this.mediator));
 
-      this._withUIComponent(
-        new BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
-      );
+      this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn--delete',
+                            this.onDeleteClick);
 
       this.onFocus();
       this.onBlur();
@@ -3004,10 +3235,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       var block = this;
       setTimeout(function() {
         var selection = window.getSelection(),
-        selectionStr = selection.toString().trim(),
-        eventType = (selectionStr === '') ? 'hide' : 'position';
+            selectionStr = selection.toString().trim(),
+            en = 'formatter:' + ((selectionStr === '') ? 'hide' : 'position');
 
-        EventBus.trigger('formatter:' + eventType, block);
+        block.mediator.trigger(en, block);
+        EventBus.trigger(en, block);
       }, 1);
     },
 
@@ -3038,12 +3270,10 @@ Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 
 module.exports = Block;
 
-},{"./block-deletion":53,"./block-positioner":54,"./block-reorder":55,"./block-validations":57,"./block_mixins":63,"./config":74,"./event-bus":76,"./formatters":85,"./helpers/extend":88,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"spin.js":50}],59:[function(require,module,exports){
+},{"./block-deletion":53,"./block-positioner":55,"./block-reorder":56,"./block-validations":58,"./block_mixins":64,"./config":75,"./event-bus":78,"./formatters":87,"./helpers/extend":90,"./lodash":93,"./simple-block":96,"./to-html":97,"./to-markdown":98,"./utils":99,"spin.js":50}],60:[function(require,module,exports){
 "use strict";
 
 var utils = require('../utils');
-
-var EventBus = require('../event-bus');
 
 module.exports = {
 
@@ -3057,14 +3287,12 @@ module.exports = {
 
   addQueuedItem: function(name, deferred) {
     utils.log("Adding queued item for " + this.blockID + " called " + name);
-    EventBus.trigger("onUploadStart", this.blockID);
 
     this._queued.push({ name: name, deferred: deferred });
   },
 
   removeQueuedItem: function(name) {
     utils.log("Removing queued item for " + this.blockID + " called " + name);
-    EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
       return queued.name !== name;
@@ -3084,7 +3312,7 @@ module.exports = {
 
 };
 
-},{"../event-bus":76,"../utils":96}],60:[function(require,module,exports){
+},{"../utils":99}],61:[function(require,module,exports){
 "use strict";
 
 var utils = require('../utils');
@@ -3119,7 +3347,7 @@ module.exports = {
   }
 };
 
-},{"../utils":96}],61:[function(require,module,exports){
+},{"../utils":99}],62:[function(require,module,exports){
 "use strict";
 
 /* Adds drop functionaltiy to this block */
@@ -3140,7 +3368,8 @@ module.exports = {
 
     this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
-    var drop_html = $(_.template(this.drop_options.html)({ block: this, _: _ }));
+    var drop_html = $(_.template(this.drop_options.html,
+                                 { block: this, _: _ }));
 
     this.$editor.hide();
     this.$inputs.append(drop_html);
@@ -3180,7 +3409,7 @@ module.exports = {
 
 };
 
-},{"../config":74,"../event-bus":76,"../lodash":91,"../utils":96}],62:[function(require,module,exports){
+},{"../config":75,"../event-bus":78,"../lodash":93,"../utils":99}],63:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3215,7 +3444,7 @@ module.exports = {
 
 };
 
-},{"../lodash":91,"./ajaxable":59}],63:[function(require,module,exports){
+},{"../lodash":93,"./ajaxable":60}],64:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3227,7 +3456,7 @@ module.exports = {
   Uploadable: require('./uploadable.js'),
 };
 
-},{"./ajaxable.js":59,"./controllable.js":60,"./droppable.js":61,"./fetchable.js":62,"./pastable.js":64,"./uploadable.js":65}],64:[function(require,module,exports){
+},{"./ajaxable.js":60,"./controllable.js":61,"./droppable.js":62,"./fetchable.js":63,"./pastable.js":65,"./uploadable.js":66}],65:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3252,7 +3481,7 @@ module.exports = {
 
 };
 
-},{"../config":74,"../lodash":91,"../utils":96}],65:[function(require,module,exports){
+},{"../config":75,"../lodash":93,"../utils":99}],66:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3281,7 +3510,7 @@ module.exports = {
 
 };
 
-},{"../config":74,"../extensions/file-uploader":79,"../lodash":91,"../utils":96,"./ajaxable":59}],66:[function(require,module,exports){
+},{"../config":75,"../extensions/file-uploader":81,"../lodash":93,"../utils":99,"./ajaxable":60}],67:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3293,7 +3522,7 @@ var stToHTML = require('../to-html');
 
 module.exports = Block.extend({
 
-  type: 'heading',
+  type: 'Heading',
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
@@ -3306,13 +3535,8 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":58,"../to-html":94}],67:[function(require,module,exports){
+},{"../block":59,"../to-html":97}],68:[function(require,module,exports){
 "use strict";
-
-/*
-  Simple Image Block
-*/
-
 
 var Block = require('../block');
 
@@ -3339,16 +3563,6 @@ module.exports = Block.extend({
     }).bind(this));
   },
 
-  onUploadSuccess : function(data) {
-    this.setData(data);
-    this.ready();
-  },
-
-  onUploadError : function(jqXHR, status, errorThrown){
-    this.addMessage(i18n.t('blocks:image:upload_error'));
-    this.ready();
-  },
-
   onDrop: function(transferData){
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
@@ -3360,12 +3574,22 @@ module.exports = Block.extend({
       this.$inputs.hide();
       this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
-      this.uploader(file, this.onUploadSuccess, this.onUploadError);
+      this.uploader(
+        file,
+        function(data) {
+          this.setData(data);
+          this.ready();
+        },
+        function(error) {
+          this.addMessage(i18n.t('blocks:image:upload_error'));
+          this.ready();
+        }
+      );
     }
   }
 });
 
-},{"../block":58}],68:[function(require,module,exports){
+},{"../block":59}],69:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3378,12 +3602,8 @@ module.exports = {
   Video: require('./video'),
 };
 
-},{"./heading":66,"./image":67,"./list":69,"./quote":70,"./text":71,"./tweet":72,"./video":73}],69:[function(require,module,exports){
+},{"./heading":67,"./image":68,"./list":70,"./quote":71,"./text":72,"./tweet":73,"./video":74}],70:[function(require,module,exports){
 "use strict";
-
-/*
-   Unordered List
-   */
 
 var _ = require('../lodash');
 
@@ -3411,6 +3631,7 @@ module.exports = Block.extend({
   onBlockRender: function() {
     this.checkForList = this.checkForList.bind(this);
     this.getTextBlock().on('click keyup', this.checkForList);
+    this.focus();
   },
 
   checkForList: function() {
@@ -3421,13 +3642,13 @@ module.exports = Block.extend({
 
   toMarkdown: function(markdown) {
     return markdown.replace(/<\/li>/mg,"\n")
-    .replace(/<\/?[^>]+(>|$)/g, "")
-    .replace(/^(.+)$/mg," - $1");
+                   .replace(/<\/?[^>]+(>|$)/g, "")
+                   .replace(/^(.+)$/mg," - $1");
   },
 
   toHTML: function(html) {
     html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-    .replace(/\n/mg, "");
+               .replace(/\n/mg, "");
 
     return html;
   },
@@ -3444,7 +3665,7 @@ module.exports = Block.extend({
 
 });
 
-},{"../block":58,"../lodash":91,"../to-html":94}],70:[function(require,module,exports){
+},{"../block":59,"../lodash":93,"../to-html":97}],71:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3467,7 +3688,7 @@ module.exports = Block.extend({
 
   type: "quote",
 
-  title: function(){ return i18n.t('blocks:quote:title'); },
+  title: function() { return i18n.t('blocks:quote:title'); },
 
   icon_name: 'quote',
 
@@ -3486,7 +3707,7 @@ module.exports = Block.extend({
 
 });
 
-},{"../block":58,"../lodash":91,"../to-html":94}],71:[function(require,module,exports){
+},{"../block":59,"../lodash":93,"../to-html":97}],72:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3511,7 +3732,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":58,"../to-html":94}],72:[function(require,module,exports){
+},{"../block":59,"../to-html":97}],73:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3620,7 +3841,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":58,"../lodash":91,"../utils":96}],73:[function(require,module,exports){
+},{"../block":59,"../lodash":93,"../utils":99}],74:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3699,7 +3920,7 @@ module.exports = Block.extend({
 });
 
 
-},{"../block":58,"../lodash":91,"../utils":96}],74:[function(require,module,exports){
+},{"../block":59,"../lodash":93,"../utils":99}],75:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3731,13 +3952,10 @@ module.exports = {
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
-    toMarkdown: {
-      aggresiveHTMLStrip: false
-    }
   }
 };
 
-},{}],75:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3752,13 +3970,15 @@ var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
 
+var Events = require('./events');
 var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
-var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
+var BlockManager = require('./block-manager');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var editorStore = require('./extensions/editor-store');
+var EditorStore = require('./extensions/editor-store');
+var ErrorHandler = require('./error-handler');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -3766,41 +3986,32 @@ var Editor = function(options) {
 
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
-  bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
-    'hideBlockControls', 'onNewBlockCreated', 'changeBlockPosition',
-    'onBlockDragStart', 'onBlockDragEnd', 'removeBlockDragOver',
-    'onBlockDropped', 'createBlock'], 
+  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
+    'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
+    'blockLimitReached'], 
 
   events: {
-    'block:reorder:down':       'hideBlockControls',
-    'block:reorder:dragstart':  'onBlockDragStart',
-    'block:reorder:dragend':    'onBlockDragEnd',
-    'block:content:dropped':    'removeBlockDragOver',
-    'block:reorder:dropped':    'onBlockDropped',
-    'block:create:new':         'onNewBlockCreated'
+    'block:reorder:dragend': 'removeBlockDragOver',
+    'block:content:dropped': 'removeBlockDragOver'
   },
 
   initialize: function(options) {
     utils.log("Init SirTrevor.Editor");
 
-    this.blockTypes = {};
-    this.blockCounts = {}; // Cached block type counts
-    this.blocks = []; // Block references
-    this.errors = [];
     this.options = Object.assign({}, config.defaults, options || {});
     this.ID = _.uniqueId('st-editor-');
 
     if (!this._ensureAndSetElements()) { return false; }
 
-    if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+    if(!_.isUndefined(this.options.onEditorRender) &&
+       _.isFunction(this.options.onEditorRender)) {
       this.onEditorRender = this.options.onEditorRender;
     }
 
-    this._setRequired();
-    this._setBlocksTypes();
-    this._bindFunctions();
+    // Mediated events for *this* Editor instance
+    this.mediator = Object.assign({}, Events);
 
-    this.store("create");
+    this._bindFunctions();
 
     config.instances.push(this);
 
@@ -3809,48 +4020,54 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     FormEvents.bindFormSubmit(this.$form);
   },
 
-  /* Build the Editor instance.
-   * Check to see if we've been passed JSON already, and if not try and create
-   * a default block. If we have JSON then we need to build all of our blocks
-   * from this.
+  /*
+   * Build the Editor instance.
+   * Check to see if we've been passed JSON already, and if not try and
+   * create a default block.
+   * If we have JSON then we need to build all of our blocks from this.
    */
   build: function() {
     this.$el.hide();
 
-    this.block_controls = new BlockControls(this.blockTypes, this.ID);
-    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID);
-    this.formatBar = new FormatBar(this.options.formatBar);
+    this.errorHandler = new ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
+    this.store = new EditorStore(this.$el.val(), this.mediator);
+    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
+    this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
+    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
 
-    this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-    this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
+    this.mediator.on('block:changePosition', this.changeBlockPosition);
+    this.mediator.on('block-controls:reset', this.resetBlockControls);
+    this.mediator.on('block:limitReached', this.blockLimitReached);
+    this.mediator.on('block:render', this.renderBlock);
+
+    this.dataStore = "Please use store.retrieve();";
 
     this._setEvents();
-
-    EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-    EventBus.on("formatter:position", this.formatBar.renderBySelection);
-    EventBus.on("formatter:hide", this.formatBar.hide);
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
     $(document.body).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
-    $(window).bind('click.sirtrevor', this.hideAllTheThings);
+    $(window).bind('click', this.hideAllTheThings);
 
-    var store = this.store("read");
-
-    if (store.data.length > 0) {
-      store.data.forEach(function(block){
-        utils.log('Creating: ' + block.type);
-        this.createBlock(block.type, block.data);
-      }, this);
-    } else if (this.options.defaultType !== false) {
-      this.createBlock(this.options.defaultType, {});
-    }
-
+    this.createBlocks();
     this.$wrapper.addClass('st-ready');
 
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
+    }
+  },
+
+  createBlocks: function() {
+    var store = this.store.retrieve();
+
+    if (store.data.length > 0) {
+      store.data.forEach(function(block) {
+        this.mediator.trigger('block:create', block.type, block.data);
+      }, this);
+    } else if (this.options.defaultType !== false) {
+      this.mediator.trigger('block:create', this.options.defaultType, {});
     }
   },
 
@@ -3862,14 +4079,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Destroy all blocks
     this.blocks.forEach(function(block) {
-      this.removeBlock(block.blockID);
+      this.mediator.trigger('block:remove', this.block.blockID);
     }, this);
 
     // Stop listening to events
+    this.mediator.stopListening();
     this.stopListening();
-
-    // Cleanup element
-    var el = this.$el.detach();
 
     // Remove instance
     config.instances = config.instances.filter(function(instance) {
@@ -3877,14 +4092,22 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }, this);
 
     // Clear the store
-    this.store("reset");
-
-    this.$outer.replaceWith(el);
+    this.store.reset();
+    this.$outer.replaceWith(this.$el.detach());
   },
 
   reinitialize: function(options) {
     this.destroy();
     this.initialize(options || this.options);
+  },
+
+  resetBlockControls: function() {
+    this.block_controls.renderInContainer(this.$wrapper);
+    this.block_controls.hide();
+  },
+
+  blockLimitReached: function(toggle) {
+    this.$wrapper.toggleClass('st--block-limit-reached', toggle);
   },
 
   _setEvents: function() {
@@ -3896,112 +4119,34 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   hideAllTheThings: function(e) {
     this.block_controls.hide();
     this.formatBar.hide();
-
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-  },
-
-  showBlockControls: function(container) {
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-
-    this.block_controls.show();
-
-    container.append(this.block_controls.$el.detach());
-    container.addClass('with-st-controls');
-
-    this.block_controls.current_container = container;
   },
 
   store: function(method, options){
-    return editorStore(this, method, options || {});
+    utils.log("The store method has been removed, please call store[methodName]");
+    return this.store[method].call(this, options || {});
   },
 
-  /* Create an instance of a block from an available type.  We have to check
-   * the number of blocks we're allowed to create before adding one and handle
-   * fails accordingly.  A block will have a reference to an Editor instance &
-   * the parent BlockType.  We also have to remember to store static counts for
-   * how many blocks we have, and keep a nice array of all the blocks
-   * available.
-   */
-  createBlock: function(type, data, render_at) {
-    type = utils.classify(type);
-
-    if(this._blockLimitReached()) {
-      utils.log("Cannot add any more blocks. Limit reached.");
-      return false;
-    }
-
-    if (!this._isBlockTypeAvailable(type)) {
-      utils.log("Block type not available " + type);
-      return false;
-    }
-
-    // Can we have another one of these blocks?
-    if (!this._canAddBlockType(type)) {
-      utils.log("Block Limit reached for type " + type);
-      return false;
-    }
-
-    var block = new Blocks[type](data, this.ID);
-
+  renderBlock: function(block) {
     this._renderInPosition(block.render().$el);
+    this.hideAllTheThings();
+    this.scrollTo(block.$el);
 
-    this.listenTo(block, 'removeBlock', this.removeBlock);
-
-    this.blocks.push(block);
-    this._incrementBlockTypeCount(type);
-
-    if(!data) {
-      block.focus();
-    }
-
-    EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
-    utils.log("Block created of type " + type);
     block.trigger("onRender");
-
-    this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
-    this.triggerBlockCountUpdate();
-  },
-
-  onNewBlockCreated: function(block) {
-    if (block.instanceID === this.ID) {
-      this.hideBlockControls();
-      this.scrollTo(block.$el);
-    }
   },
 
   scrollTo: function(element) {
     $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
   },
 
-  blockFocus: function(block) {
-    this.block_controls.current_container = null;
-  },
-
-  hideBlockControls: function() {
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-
-    this.block_controls.hide();
-  },
-
   removeBlockDragOver: function() {
     this.$outer.find('.st-drag-over').removeClass('st-drag-over');
-  },
-
-  triggerBlockCountUpdate: function() {
-    EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
   },
 
   changeBlockPosition: function($block, selectedPosition) {
     selectedPosition = selectedPosition - 1;
 
-    var blockPosition = this.getBlockPosition($block);
-    var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+    var blockPosition = this.getBlockPosition($block),
+    $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -4012,242 +4157,70 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
   },
 
-  onBlockDropped: function(block_id) {
-    this.hideAllTheThings();
-    var block = this.findBlockById(block_id);
-    if (!_.isUndefined(block) &&
-        !_.isEmpty(block.getData()) &&
-          block.drop_options.re_render_on_reorder) {
-      block.beforeLoadingData();
-    }
-  },
-
-  onBlockDragStart: function() {
-    this.hideBlockControls();
-    this.$wrapper.addClass("st-outer--is-reordering");
-  },
-
-  onBlockDragEnd: function() {
-    this.removeBlockDragOver();
-    this.$wrapper.removeClass("st-outer--is-reordering");
-  },
-
   _renderInPosition: function(block) {
-    if (this.block_controls.current_container) {
-      this.block_controls.current_container.after(block);
+    if (this.block_controls.currentContainer) {
+      this.block_controls.currentContainer.after(block);
     } else {
       this.$wrapper.append(block);
     }
   },
 
-  _incrementBlockTypeCount: function(type) {
-    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
-  },
-
-  _getBlockTypeCount: function(type) {
-    return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
-  },
-
-  _canAddBlockType: function(type) {
-    var block_type_limit = this._getBlockTypeLimit(type);
-
-    return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
-  },
-
-  _blockLimitReached: function() {
-    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
-  },
-
-  removeBlock: function(block_id) {
-    var block = this.findBlockById(block_id),
-    type = utils.classify(block.type),
-    controls = block.$el.find('.st-block-controls');
-
-    if (controls.length) {
-      this.block_controls.hide();
-      this.$wrapper.prepend(controls);
+  validateAndSaveBlock: function(block, shouldValidate) {
+    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+      utils.log("Block " + block.blockID + " failed validation");
+      return;
     }
 
-    this.blockCounts[type] = this.blockCounts[type] - 1;
-    this.blocks = this.blocks.filter(function(item) {
-      return item.blockID !== block.blockID;
-    });
-    this.stopListening(block);
-
-    block.remove();
-
-    EventBus.trigger("block:remove", block);
-    this.triggerBlockCountUpdate();
-
-    this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
+    utils.log("Adding data for block " + block.blockID + " to block store");
+    this.store.addData(block.getData());
   },
 
-  performValidations : function(block, should_validate) {
-    var errors = 0;
-
-    if (!config.skipValidation && should_validate) {
-      if(!block.valid()){
-        this.errors.push({ text: _.result(block, 'validationFailMsg') });
-        utils.log("Block " + block.blockID + " failed validation");
-        ++errors;
-      }
-    }
-
-    return errors;
-  },
-
-  saveBlockStateToStore: function(block) {
-    var store = block.saveAndReturnData();
-    if(store && !_.isEmpty(store.data)) {
-      utils.log("Adding data for block " + block.blockID + " to block store");
-      this.store("add", { data: store });
-    }
-  },
-
-  /* Handle a form submission of this Editor instance. Validate all of our
-   * blocks, and serialise all data onto the JSON objects
+  /*
+   * Handle a form submission of this Editor instance.
+   * Validate all of our blocks, and serialise all data onto the JSON objects
    */
-  onFormSubmit: function(should_validate) {
+  onFormSubmit: function(shouldValidate) {
     // if undefined or null or anything other than false - treat as true
-    should_validate = (should_validate === false) ? false : true;
+    shouldValidate = (shouldValidate === false) ? false : true;
 
     utils.log("Handling form submission for Editor " + this.ID);
 
-    this.removeErrors();
-    this.store("reset");
+    this.mediator.trigger('errors:reset');
+    this.store.reset();
 
-    this.validateBlocks(should_validate);
-    this.validateBlockTypesExist(should_validate);
+    this.validateBlocks(shouldValidate);
+    this.block_manager.validateBlockTypesExist(shouldValidate);
 
-    this.renderErrors();
-    this.store("save");
+    this.mediator.trigger('errors:render');
+    this.$el.val(this.store.toString());
 
-    return this.errors.length;
+    return this.errorHandler.errors.length;
   },
 
-  validateBlocks: function(should_validate) {
-    if (!this.required && (config.skipValidation && !should_validate)) {
-      return false;
-    }
-
-    this.$wrapper.find('.st-block').each(function(index, block) {
-      var _block = this.blocks.find(function(b) {
-        return (b.blockID === $(block).attr('id'));
-      });
-
-      if (_.isUndefined(_block)) { return false; }
-
-      // Find our block
-      this.performValidations(_block, should_validate);
-      this.saveBlockStateToStore(_block);
-    }.bind(this));
-  },
-
-  validateBlockTypesExist: function(should_validate) {
-    if (!this.required && (config.skipValidation && !should_validate)) {
-      return false;
-    }
-
-    var blockTypeIterator = function(type, index) {
-      if (!this._isBlockTypeAvailable(type)) { return; }
-
-      if (this._getBlockTypeCount(type) === 0) {
-        utils.log("Failed validation on required block type " + type);
-        this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
-      } else {
-        var blocks = this.getBlocksByType(type).filter(function(b) {
-          return !b.isEmpty();
-        });
-
-        if (blocks.length > 0) { return false; }
-
-        this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
-        utils.log("A required block type " + type + " is empty");
+  validateBlocks: function(shouldValidate) {
+    this.$wrapper.find('.st-block').each(function(block) {
+      var _block = this.block_manager.findBlockById($(block).attr('id'));
+      if (!_.isUndefined(_block)) {
+        this.validateAndSaveBlock(_block, shouldValidate);
       }
-    };
-
-    if (Array.isArray(this.required)) {
-      this.required.forEach(blockTypeIterator, this);
-    }
-  },
-
-  renderErrors: function() {
-    if (this.errors.length === 0) { return false; }
-
-    if (_.isUndefined(this.$errors)) {
-      this.$errors = this._errorsContainer();
-    }
-
-    var str = "<ul>";
-
-    this.errors.forEach(function(error) {
-      str += '<li class="st-errors__msg">'+ error.text +'</li>';
-    });
-
-    str += "</ul>";
-
-    this.$errors.append(str);
-    this.$errors.show();
-  },
-
-  _errorsContainer: function() {
-    if (_.isUndefined(this.options.errorsContainer)) {
-      var $container = $("<div>", {
-        'class': 'st-errors',
-        html: "<p>" + i18n.t("errors:title") + " </p>"
-      });
-
-      this.$outer.prepend($container);
-      return $container;
-    }
-
-    return $(this.options.errorsContainer);
-  },
-
-  removeErrors: function() {
-    if (this.errors.length === 0) { return false; }
-
-    this.$errors.hide().find('ul').html('');
-
-    this.errors = [];
+    }, this);
   },
 
   findBlockById: function(block_id) {
-    return this.blocks.find(function(b) { return b.blockID === block_id; });
+    return this.block_manager.findBlockById(block_id);
   },
 
   getBlocksByType: function(block_type) {
-    return this.blocks.filter(function(b) {
-      return utils.classify(b.type) === block_type;
-    });
+    return this.block_manager.getBlocksByType(block_type);
   },
 
   getBlocksByIDs: function(block_ids) {
-    return this.blocks.filter(function(b) {
-      return block_ids.includes(b.blockID);
-    });
+    return this.block_manager.getBlocksByIDs(block_ids);
   },
 
   getBlockPosition: function($block) {
     return this.$wrapper.find('.st-block').index($block);
-  },
-
-  /* Get Block Type Limit
-   * --
-   * returns the limit for this block, which can be set on a per Editor
-   * instance, or on a global blockType scope. */
-  _getBlockTypeLimit: function(t) {
-    if (!this._isBlockTypeAvailable(t)) { return 0; }
-
-    return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
-  },
-
-  /* Availability helper methods
-   * --
-   * Checks if the object exists within the instance of the Editor. */
-
-  _isBlockTypeAvailable: function(t) {
-    return !_.isUndefined(this.blockTypes[t]);
   },
 
   _ensureAndSetElements: function() {
@@ -4270,43 +4243,93 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.$wrapper = this.$outer.find('.st-blocks');
 
     return true;
-  },
-
-  /* Set our blockTypes
-   * These will either be set on a per Editor instance, or set on a global scope.
-   */
-  _setBlocksTypes: function() {
-    this.blockTypes = {};
-    var keys = this.options.blockTypes || Object.keys(Blocks);
-    keys.forEach(function (k) {
-      this.blockTypes[k] = true;
-    }, this);
-  },
-
-  /* Get our required blocks (if any) */
-  _setRequired: function() {
-    if (Array.isArray(this.options.required) &&
-        !_.isEmpty(this.options.required)) {
-      this.required = this.options.required;
-    } else {
-      this.required = false;
-    }
   }
+
 });
 
 module.exports = Editor;
 
-},{"./block-controls":52,"./blocks":68,"./config":74,"./event-bus":76,"./events":77,"./extensions/editor-store":78,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./function-bind":86,"./lodash":91,"./utils":96}],76:[function(require,module,exports){
+
+
+},{"./block-controls":52,"./block-manager":54,"./config":75,"./error-handler":77,"./event-bus":78,"./events":79,"./extensions/editor-store":80,"./floating-block-controls":83,"./form-events":84,"./format-bar":85,"./function-bind":88,"./lodash":93,"./utils":99}],77:[function(require,module,exports){
+"use strict";
+
+var _ = require('./lodash');
+
+var ErrorHandler = function($wrapper, mediator, container) {
+  this.$wrapper = $wrapper;
+  this.mediator = mediator;
+  this.$el = container;
+
+  if (_.isUndefined(this.$el)) {
+    this._ensureElement();
+    this.$wrapper.prepend(this.$el);
+  }
+
+  this.$el.hide();
+  this._bindFunctions();
+  this._bindMediatedEvents();
+
+  this.initialize();
+};
+
+Object.assign(ErrorHandler.prototype, require('./function-bind'), require('./mediated-events'), require('./renderable'), {
+
+  errors: [],
+  className: "st-errors",
+  eventNamespace: 'errors',
+
+  mediatedEvents: {
+    'reset': 'reset',
+    'add': 'addMessage',
+    'render': 'render'
+  },
+
+  initialize: function() {
+    var $list = $("<ul>");
+    this.$el.append("<p>" + i18n.t("errors:title") + "</p>")
+    .append($list);
+    this.$list = $list;
+  },
+
+  render: function() {
+    if (this.errors.length === 0) { return false; }
+    this.errors.forEach(this.createErrorItem, this);
+    this.$el.show();
+  },
+
+  createErrorItem: function(error) {
+    var $error = $("<li>", { class: "st-errors__msg", html: error.text });
+    this.$list.append($error);
+  },
+
+  addMessage: function(error) {
+    this.errors.push(error);
+  },
+
+  reset: function() {
+    if (this.errors.length === 0) { return false; }
+    this.errors = [];
+    this.$list.html('');
+    this.$el.hide();
+  }
+
+});
+
+module.exports = ErrorHandler;
+
+
+},{"./function-bind":88,"./lodash":93,"./mediated-events":94,"./renderable":95}],78:[function(require,module,exports){
 "use strict";
 
 module.exports = Object.assign({}, require('./events'));
 
-},{"./events":77}],77:[function(require,module,exports){
+},{"./events":79}],79:[function(require,module,exports){
 "use strict";
 
 module.exports = require('eventablejs');
 
-},{"eventablejs":2}],78:[function(require,module,exports){
+},{"eventablejs":2}],80:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4318,66 +4341,66 @@ module.exports = require('eventablejs');
 var _ = require('../lodash');
 var utils = require('../utils');
 
-module.exports = function(editor, method, options) {
-  var resp;
 
-  options = options || {};
-
-  switch(method) {
-
-    case "create":
-      // Grab our JSON from the textarea and clean any whitespace in case
-      // there is a line wrap between the opening and closing textarea tags
-      var content = editor.$el.val().trim();
-      editor.dataStore = { data: [] };
-
-      if (content.length > 0) {
-        try {
-          // Ensure the JSON string has a data element that's an array
-          var str = JSON.parse(content);
-          if (!_.isUndefined(str.data)) {
-            // Set it
-            editor.dataStore = str;
-          }
-        } catch(e) {
-          editor.errors.push({ text: i18n.t("errors:load_fail") });
-          editor.renderErrors();
-
-          utils.log('Sorry there has been a problem with parsing the JSON');
-          utils.log(e);
-        }
-      }
-      break;
-
-    case "reset":
-      editor.dataStore = { data: [] };
-      break;
-
-    case "add":
-      if (options.data) {
-        editor.dataStore.data.push(options.data);
-        resp = editor.dataStore;
-      }
-      break;
-
-    case "save":
-      // Store to our element
-      editor.$el.val((editor.dataStore.data.length > 0) ? JSON.stringify(editor.dataStore) : '');
-      break;
-
-    case "read":
-      resp = editor.dataStore;
-      break;
-
-  }
-
-  if(resp) {
-    return resp;
-  }
-
+var EditorStore = function(data, mediator) {
+  this.mediator = mediator;
+  this.initialize(data ? data.trim() : '');
 };
 
-},{"../lodash":91,"../utils":96}],79:[function(require,module,exports){
+Object.assign(EditorStore.prototype, {
+
+  initialize: function(data) {
+    this.store = this._parseData(data) || { data: [] };
+  },
+
+  retrieve: function() {
+    return this.store;
+  },
+
+  toString: function() {
+    return JSON.stringify(this.store);
+  },
+
+  reset: function() {
+    utils.log("Resetting the EditorStore");
+    this.store = { data: [] };
+  },
+
+  addData: function(data) {
+    this.store.data.push(data);
+    return this.store;
+  },
+
+  _parseData: function(data) {
+    var result;
+
+    if (data.length === 0) { return result; }
+
+    try {
+      // Ensure the JSON string has a data element that's an array
+      var jsonStr = JSON.parse(data);
+      if (!_.isUndefined(jsonStr.data)) {
+        result = jsonStr;
+      }
+    } catch(e) {
+      this.mediator.trigger(
+        'errors:add',
+        { text: i18n.t("errors:load_fail") });
+
+      this.mediator.trigger('errors:render');
+
+      console.log('Sorry there has been a problem with parsing the JSON');
+      console.log(e);
+    }
+
+    return result;
+  }
+
+});
+
+module.exports = EditorStore;
+
+},{"../lodash":93,"../utils":99}],81:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4389,7 +4412,11 @@ var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
+var EventBus = require('../event-bus');
+
 module.exports = function(block, file, success, error) {
+
+  EventBus.trigger('onUploadStart');
 
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
@@ -4400,19 +4427,21 @@ module.exports = function(block, file, success, error) {
 
   block.resetMessages();
 
-  var callbackSuccess = function(){
+  var callbackSuccess = function(data) {
     utils.log('Upload callback called');
+    EventBus.trigger('onUploadStop');
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
       success.apply(block, arguments);
     }
   };
 
-  var callbackError = function(){
+  var callbackError = function(jqXHR, status, errorThrown) {
     utils.log('Upload callback error called');
+    EventBus.trigger('onUploadStop');
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
-      error.apply(block, arguments);
+      error.call(block, status);
     }
   };
 
@@ -4435,7 +4464,7 @@ module.exports = function(block, file, success, error) {
   return xhr;
 };
 
-},{"../config":74,"../lodash":91,"../utils":96}],80:[function(require,module,exports){
+},{"../config":75,"../event-bus":78,"../lodash":93,"../utils":99}],82:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4452,19 +4481,19 @@ var utils = require('../utils');
 
 var EventBus = require('../event-bus');
 
-var submittable = function($form) {
+var Submittable = function($form) {
   this.$form = $form;
   this.intialize();
 };
 
-Object.assign(submittable.prototype, {
+Object.assign(Submittable.prototype, {
 
   intialize: function(){
-    this.$submitBtn = this.$form.find("input[type='submit']");
+    this.submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
 
-    this.$submitBtn.each(function(i, btn){
+    this.submitBtn.each(function(i, btn){
       btnTitles.push($(btn).attr('value'));
     });
 
@@ -4475,12 +4504,12 @@ Object.assign(submittable.prototype, {
   },
 
   setSubmitButton: function(e, message) {
-    this.$submitBtn.attr('value', message);
+    this.submitBtn.attr('value', message);
   },
 
   resetSubmitButton: function(){
     var titles = this.submitBtnTitles;
-    this.$submitBtn.each(function(index, item) {
+    this.submitBtn.each(function(index, item) {
       $(item).attr('value', titles[index]);
     });
   },
@@ -4511,14 +4540,14 @@ Object.assign(submittable.prototype, {
 
   _disableSubmitButton: function(message){
     this.setSubmitButton(null, message || i18n.t("general:wait"));
-    this.$submitBtn
+    this.submitBtn
     .attr('disabled', 'disabled')
     .addClass('disabled');
   },
 
   _enableSubmitButton: function(){
     this.resetSubmitButton();
-    this.$submitBtn
+    this.submitBtn
     .removeAttr('disabled')
     .removeClass('disabled');
   },
@@ -4541,10 +4570,10 @@ Object.assign(submittable.prototype, {
 
 });
 
-module.exports = submittable;
+module.exports = Submittable;
 
 
-},{"../event-bus":76,"../utils":96}],81:[function(require,module,exports){
+},{"../event-bus":78,"../utils":99}],83:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4557,9 +4586,10 @@ var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
 
-var FloatingBlockControls = function(wrapper, instance_id) {
+var FloatingBlockControls = function(wrapper, instance_id, mediator) {
   this.$wrapper = wrapper;
   this.instance_id = instance_id;
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -4625,16 +4655,14 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
   handleBlockClick: function(e) {
     e.stopPropagation();
-
-    var block = $(e.currentTarget);
-    this.trigger('showBlockControls', block);
+    this.mediator.trigger('block-controls:render', $(e.currentTarget));
   }
 
 });
 
 module.exports = FloatingBlockControls;
 
-},{"./event-bus":76,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],82:[function(require,module,exports){
+},{"./event-bus":78,"./events":79,"./function-bind":88,"./lodash":93,"./renderable":95}],84:[function(require,module,exports){
 "use strict";
 
 var config = require('./config');
@@ -4648,17 +4676,21 @@ var formBound = false; // Flag to tell us once we've bound our submit event
 var FormEvents = {
   bindFormSubmit: function(form) {
     if (!formBound) {
-      this.submittable = new Submittable(form);
-      form.on('submit.sirtrevor', this.onFormSubmit);
+      // XXX: should we have a formBound and submittable per-editor?
+      // telling JSHint to ignore as it'll complain we shouldn't be creating
+      // a new object, but otherwise `this` won't be set in the Submittable
+      // initialiser. Bit weird.
+      new Submittable(form); // jshint ignore:line
+      form.bind('submit', this.onFormSubmit);
       formBound = true;
     }
   },
 
-  onBeforeSubmit: function(should_validate) {
+  onBeforeSubmit: function(shouldValidate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
     config.instances.forEach(function(inst, i) {
-      errors += inst.onFormSubmit(should_validate);
+      errors += inst.onFormSubmit(shouldValidate);
     });
     utils.log("Total errors: " + errors);
 
@@ -4677,7 +4709,7 @@ var FormEvents = {
 
 module.exports = FormEvents;
 
-},{"./config":74,"./event-bus":76,"./extensions/submittable":80,"./utils":96}],83:[function(require,module,exports){
+},{"./config":75,"./event-bus":78,"./extensions/submittable":82,"./utils":99}],85:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4692,19 +4724,30 @@ var _ = require('./lodash');
 var config = require('./config');
 var Formatters = require('./formatters');
 
-var FormatBar = function(options) {
+var FormatBar = function(options, mediator) {
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
+  this.mediator = mediator;
+
   this._ensureElement();
   this._bindFunctions();
+  this._bindMediatedEvents();
 
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(FormatBar.prototype, require('./function-bind'), require('./events'), require('./renderable'), {
+Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediated-events'), require('./events'), require('./renderable'), {
 
   className: 'st-format-bar',
 
   bound: ["onFormatButtonClick", "renderBySelection", "hide"],
+
+  eventNamespace: 'formatter',
+
+  mediatedEvents: {
+    'positon': 'renderBySelection',
+    'show': 'show',
+    'hide': 'hide'
+  },
 
   initialize: function() {
     var formatName, format, btn;
@@ -4739,7 +4782,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 
   remove: function(){ this.$el.remove(); },
 
-  renderBySelection: function(rectangles) {
+  renderBySelection: function() {
 
     var selection = window.getSelection(),
     range = selection.getRangeAt(0),
@@ -4790,7 +4833,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 
 module.exports = FormatBar;
 
-},{"./config":74,"./events":77,"./formatters":85,"./function-bind":86,"./lodash":91,"./renderable":92}],84:[function(require,module,exports){
+},{"./config":75,"./events":79,"./formatters":87,"./function-bind":88,"./lodash":93,"./mediated-events":94,"./renderable":95}],86:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -4862,7 +4905,7 @@ Formatter.extend = require('./helpers/extend');
 
 module.exports = Formatter;
 
-},{"./helpers/extend":88,"./lodash":91}],85:[function(require,module,exports){
+},{"./helpers/extend":90,"./lodash":93}],87:[function(require,module,exports){
 "use strict";
 
 /* Our base formatters */
@@ -4932,7 +4975,7 @@ exports.Italic = new Italic();
 exports.Link = new Link();
 exports.Unlink = new UnLink();
 
-},{"./formatter":84}],86:[function(require,module,exports){
+},{"./formatter":86}],88:[function(require,module,exports){
 "use strict";
 
 /* Generic function binding utility, used by lots of our classes */
@@ -4947,7 +4990,7 @@ module.exports = {
 };
 
 
-},{}],87:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 "use strict";
 
 /*
@@ -5002,7 +5045,7 @@ $.fn.caretToEnd = function(){
 };
 
 
-},{}],88:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 "use strict";
 
 /*
@@ -5048,7 +5091,7 @@ module.exports = function(protoProps, staticProps) {
   return child;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5063,6 +5106,7 @@ var SirTrevor = {
   log: require('./utils').log,
   Locales: require('./locales'),
 
+  Events: require('./events'),
   EventBus: require('./event-bus'),
 
   EditorStore: require('./extensions/editor-store'),
@@ -5075,6 +5119,7 @@ var SirTrevor = {
   BlockDeletion: require('./block-deletion'),
   BlockValidations: require('./block-validations'),
   BlockStore: require('./block-store'),
+  BlockManager: require('./block-manager'),
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),
@@ -5139,7 +5184,7 @@ Object.assign(SirTrevor, require('./form-events'));
 
 module.exports = SirTrevor;
 
-},{"./block":58,"./block-control":51,"./block-controls":52,"./block-deletion":53,"./block-positioner":54,"./block-reorder":55,"./block-store":56,"./block-validations":57,"./block_mixins":63,"./blocks":68,"./config":74,"./editor":75,"./event-bus":76,"./extensions/editor-store":78,"./extensions/file-uploader":79,"./extensions/submittable":80,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./formatter":84,"./formatters":85,"./helpers/event":87,"./locales":90,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"./vendor/array-includes":97}],90:[function(require,module,exports){
+},{"./block":59,"./block-control":51,"./block-controls":52,"./block-deletion":53,"./block-manager":54,"./block-positioner":55,"./block-reorder":56,"./block-store":57,"./block-validations":58,"./block_mixins":64,"./blocks":69,"./config":75,"./editor":76,"./event-bus":78,"./events":79,"./extensions/editor-store":80,"./extensions/file-uploader":81,"./extensions/submittable":82,"./floating-block-controls":83,"./form-events":84,"./format-bar":85,"./formatter":86,"./formatters":87,"./helpers/event":89,"./locales":92,"./lodash":93,"./simple-block":96,"./to-html":97,"./to-markdown":98,"./utils":99,"./vendor/array-includes":100}],92:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5200,7 +5245,7 @@ var Locales = {
   }
 };
 
-if (window.i18n === undefined || window.i18n.init === undefined) {
+if (window.i18n === undefined) {
   // Minimal i18n stub that only reads the English strings
   utils.log("Using i18n stub");
   window.i18n = {
@@ -5241,7 +5286,7 @@ if (window.i18n === undefined || window.i18n.init === undefined) {
 
 module.exports = Locales;
 
-},{"./config":74,"./lodash":91,"./utils":96}],91:[function(require,module,exports){
+},{"./config":75,"./lodash":93,"./utils":99}],93:[function(require,module,exports){
 "use strict";
 
 exports.isEmpty = require('lodash.isempty');
@@ -5253,7 +5298,24 @@ exports.result = require('lodash.result');
 exports.template = require('lodash.template');
 exports.uniqueId = require('lodash.uniqueid');
 
-},{"lodash.isempty":3,"lodash.isfunction":27,"lodash.isobject":28,"lodash.isstring":30,"lodash.isundefined":31,"lodash.result":32,"lodash.template":33,"lodash.uniqueid":49}],92:[function(require,module,exports){
+},{"lodash.isempty":3,"lodash.isfunction":27,"lodash.isobject":28,"lodash.isstring":30,"lodash.isundefined":31,"lodash.result":32,"lodash.template":33,"lodash.uniqueid":49}],94:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+  mediatedEvents: {},
+  eventNamespace: null,
+  _bindMediatedEvents: function() {
+    Object.keys(this.mediatedEvents).forEach(function(eventName){
+      var cb = this.mediatedEvents[eventName];
+      eventName = this.eventNamespace ?
+        this.eventNamespace + ':' + eventName :
+        eventName;
+      this.mediator.on(eventName, this[cb].bind(this));
+    }, this);
+  }
+};
+
+},{}],95:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5303,7 +5365,7 @@ module.exports = {
 };
 
 
-},{"./lodash":91}],93:[function(require,module,exports){
+},{"./lodash":93}],96:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5311,10 +5373,11 @@ var utils = require('./utils');
 
 var BlockReorder = require('./block-reorder');
 
-var SimpleBlock = function(data, instance_id) {
+var SimpleBlock = function(data, instance_id, mediator) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -5353,7 +5416,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   type: '',
 
-  'class': function() {
+  class: function() {
     return utils.classify(this.type);
   },
 
@@ -5416,7 +5479,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   },
 
   addMessage: function(msg, additionalClass) {
-    var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
+    var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
     this.$messages.append($msg)
     .addClass('st-block__messages--is-visible');
     return $msg;
@@ -5440,7 +5503,7 @@ SimpleBlock.extend = require('./helpers/extend');
 
 module.exports = SimpleBlock;
 
-},{"./block-reorder":55,"./block-store":56,"./events":77,"./function-bind":86,"./helpers/extend":88,"./lodash":91,"./renderable":92,"./utils":96}],94:[function(require,module,exports){
+},{"./block-reorder":56,"./block-store":57,"./events":79,"./function-bind":88,"./helpers/extend":90,"./lodash":93,"./renderable":95,"./utils":99}],97:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5466,7 +5529,7 @@ module.exports = function(markdown, type) {
   }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-    return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
+    return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
   });
 
   // This may seem crazy, but because JS doesn't have a look behind,
@@ -5476,10 +5539,10 @@ module.exports = function(markdown, type) {
   html = utils.reverse(
            utils.reverse(html)
            .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-              return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
+              return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
            })
            .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-              return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
+              return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
            })
           );
 
@@ -5508,12 +5571,12 @@ module.exports = function(markdown, type) {
   }
 
   if (shouldWrap) {
-    html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\r?\n/gm, "</div><div>");
+    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+    html = html.replace(/\n/gm, "</div><div>");
   }
 
   html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-             .replace(/\r?\n/g, "<br>")
+             .replace(/\n/g, "<br>")
              .replace(/\*\*/, "")
              .replace(/__/, "");  // Cleanup any markdown characters left
 
@@ -5533,11 +5596,10 @@ module.exports = function(markdown, type) {
   return html;
 };
 
-},{"./blocks":68,"./formatters":85,"./lodash":91,"./utils":96}],95:[function(require,module,exports){
+},{"./blocks":69,"./formatters":87,"./lodash":93,"./utils":99}],98:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
-var config = require('./config');
 var utils = require('./utils');
 
 module.exports = function(content, type) {
@@ -5639,16 +5701,12 @@ module.exports = function(content, type) {
   }
 
   // Strip remaining HTML
-  if (config.defaults.toMarkdown.aggresiveHTMLStrip) {
-    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
-  } else {
-    markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
-  }
+  markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
 
   return markdown;
 };
 
-},{"./blocks":68,"./config":74,"./formatters":85,"./lodash":91,"./utils":96}],96:[function(require,module,exports){
+},{"./blocks":69,"./formatters":87,"./lodash":93,"./utils":99}],99:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5683,6 +5741,17 @@ var utils = {
     return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
   },
 
+  flatten: function(obj) {
+    var x = {};
+    (Array.isArray(obj) ? obj : Object.keys(obj)).forEach(function (i) {
+      x[i] = true;
+    });
+    /* _.each(obj, function(a,b) {
+     *   x[(_.isArray(obj)) ? a : b] = true;
+     * }); */
+    return x;
+  },
+
   underscored: function(str){
     return str.trim().replace(/([a-z\d])([A-Z]+)/g, '$1_$2')
     .replace(/[-\s]+/g, '_').toLowerCase();
@@ -5703,7 +5772,7 @@ var utils = {
 
 module.exports = utils;
 
-},{"./config":74,"./lodash":91}],97:[function(require,module,exports){
+},{"./config":75,"./lodash":93}],100:[function(require,module,exports){
 "use strict";
 
 // jshint freeze: false

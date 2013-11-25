@@ -20,7 +20,7 @@ module.exports = Block.extend({
 
   type: "quote",
 
-  title: function(){ return i18n.t('blocks:quote:title'); },
+  title: function() { return i18n.t('blocks:quote:title'); },
 
   icon_name: 'quote',
 
