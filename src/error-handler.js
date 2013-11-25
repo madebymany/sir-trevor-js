@@ -17,15 +17,13 @@ SirTrevor.ErrorHandler = (function(){
     this.initialize();
   };
 
-  _.extend(ErrorHandler.prototype, FunctionBind, Renderable, {
+  _.extend(ErrorHandler.prototype, FunctionBind, MediatedEvents, Renderable, {
 
     errors: [],
     className: "st-errors",
     eventNamespace: 'errors',
 
-    bound: ['reset', 'addMessage', 'render'],
-
-    events: {
+    mediatedEvents: {
       'reset': 'reset',
       'add': 'addMessage',
       'render': 'render'
@@ -58,14 +56,6 @@ SirTrevor.ErrorHandler = (function(){
       this.errors = [];
       this.$list.html('');
       this.$el.hide();
-    },
-
-    _bindMediatedEvents: function() {
-      _.each(this.events, function(callbackFunction, eventName){
-        console.log(eventName, callbackFunction);
-        this.mediator.on(this.eventNamespace + ":" + eventName,
-                         this[callbackFunction]);
-      }, this);
     }
 
   });

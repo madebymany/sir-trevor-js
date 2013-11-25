@@ -5,26 +5,28 @@ SirTrevor.BlockManager = (function(){
     this.instance_scope = editorInstance;
     this.mediator = mediator;
 
+    this._setBlocksTypes();
+    this._setRequired();
+    this._bindMediatedEvents();
+
     this.initialize();
   };
 
-  _.extend(BlockManager.prototype, FunctionBind, SirTrevor.Events, {
+  _.extend(BlockManager.prototype, FunctionBind, MediatedEvents, SirTrevor.Events, {
 
     blocks: [],
     blockCounts: {},
     blockTypes: {},
 
-    events: {
-      'createBlock': 'createBlock',
-      'removeBlock': 'removeBlock'
+    eventNamespace: 'block',
+
+    mediatedEvents: {
+      'create': 'createBlock',
+      'remove': 'removeBlock',
+      'rerender': 'rerenderBlock'
     },
 
-    initialize: function() {
-      this._setBlocksTypes();
-      this._setRequired();
-
-      this._subscribeToEvents();
-    },
+    initialize: function() {},
 
     createBlock: function(type, data) {
       type = _.classify(type);
@@ -36,29 +38,39 @@ SirTrevor.BlockManager = (function(){
       this.blocks.push(block);
 
       this._incrementBlockTypeCount(type);
-      this.mediator.trigger('renderBlock', block);
+      this.mediator.trigger('block:render', block);
 
-      // this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
-      // this.triggerBlockCountUpdate();
-      // SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
-      // SirTrevor.log("Block created of type " + type);
+      this.triggerBlockCountUpdate();
+      this.mediator.trigger('block:limitReached', this.blockLimitReached());
+
+      SirTrevor.log("Block created of type " + type);
     },
 
     removeBlock: function(blockID) {
       var block = this.findBlockById(blockID),
-          type = _.classify(block.type),
-          controls = block.$el.find('.st-block-controls');
+          type = _.classify(block.type);
 
-      if (controls.length) {
-        this.block_controls.hide();
-        this.$wrapper.prepend(controls);
-      }
-
+      this.mediator.trigger('block-controls:reset');
       this.blocks = _.reject(this.blocks, function(item){
                              return (item.blockID == block.blockID); });
 
       this._decrementBlockTypeCount(type);
+      this.triggerBlockCountUpdate();
+      this.mediator.trigger('block:limitReached', this.blockLimitReached());
+
       SirTrevor.EventBus.trigger("block:remove");
+    },
+
+    rerenderBlock: function(blockID) {
+      var block = this.findBlockById(blockID);
+      if (!_.isUndefined(block) && !block.isEmpty() &&
+          block.drop_options.re_render_on_reorder) {
+        block.beforeLoadingData();
+      }
+    },
+
+    triggerBlockCountUpdate: function() {
+      this.mediator.trigger('block:countUpdate', this.blocks.length);
     },
 
     canCreateBlock: function(type) {
@@ -137,12 +149,6 @@ SirTrevor.BlockManager = (function(){
     _getBlockTypeLimit: function(t) {
       if (!this.isBlockTypeAvailable(t)) { return 0; }
       return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
-    },
-
-    _subscribeToEvents: function() {
-      _.each(this.events, function(eventKey, callbackFunction) {
-        this.listenTo(this.mediator, eventKey, this[callbackFunction]);
-      }, this);
     }
 
   });

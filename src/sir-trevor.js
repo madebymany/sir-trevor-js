@@ -60,6 +60,17 @@
     }
   };
 
+  var MediatedEvents = {
+    mediatedEvents: {},
+    eventNamespace: null,
+    _bindMediatedEvents: function() {
+      _.each(this.mediatedEvents, function(callbackFunction, eventName){
+        eventName = this.eventNamespace ? this.eventNamespace + ':' + eventName : eventName;
+        this.mediator.on(eventName, _.bind(this[callbackFunction], this));
+      }, this);
+    }
+  };
+
   var Renderable = {
     tagName: 'div',
     className: 'sir-trevor__view',

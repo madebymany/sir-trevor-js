@@ -65,6 +65,8 @@ SirTrevor.Block = (function(){
 
     toolbarEnabled: true,
 
+    availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable', 'ajaxable'],
+
     droppable: false,
     pastable: false,
     uploadable: false,
@@ -108,10 +110,10 @@ SirTrevor.Block = (function(){
       }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
+
+      _.each(this.availableMixins, function(mixin) {
+        if (this[mixin]) { this.withMixin(SirTrevor.BlockMixins[_.classify(mixin)]); }
+      }, this);
 
       if (this.formattable) { this._initFormatting(); }
 
@@ -216,8 +218,8 @@ SirTrevor.Block = (function(){
 
       var onDeleteConfirm = function(e) {
         e.preventDefault();
+        this.mediator.trigger('block:remove', this.blockID);
         this.remove();
-        this.mediator.trigger('removeBlock', this.blockID);
       };
 
       var onDeleteDeny = function(e) {
@@ -280,19 +282,16 @@ SirTrevor.Block = (function(){
 
     _initUIComponents: function() {
 
-      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID);
+      var positioner = new SirTrevor.BlockPositioner(this.$el, this.mediator);
 
       this._withUIComponent(
-        positioner, '.st-block-ui-btn--reorder', positioner.toggle
-      );
+        positioner, '.st-block-ui-btn--reorder', positioner.toggle);
 
       this._withUIComponent(
-        new SirTrevor.BlockReorder(this.$el)
-      );
+        new SirTrevor.BlockReorder(this.$el, this.mediator));
 
       this._withUIComponent(
-        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
-      );
+        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick);
 
       this.onFocus();
       this.onBlur();
@@ -320,13 +319,17 @@ SirTrevor.Block = (function(){
     },
 
     getSelectionForFormatter: function() {
+      var mediator = this.mediator;
+
       _.defer(function(){
         var selection = window.getSelection(),
            selectionStr = selection.toString().trim();
 
         if (selectionStr === '') {
+          mediator.trigger('formatter:hide');
           SirTrevor.EventBus.trigger('formatter:hide');
         } else {
+          mediator.trigger('formatter:positon');
           SirTrevor.EventBus.trigger('formatter:positon');
         }
       });

@@ -14,17 +14,12 @@ SirTrevor.Editor = (function(){
 
   _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
-    bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
-            'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
-            'removeBlockDragOver', 'onBlockDropped', 'renderBlock'],
+    bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition', 'removeBlockDragOver',
+            'renderBlock', 'resetBlockControls', 'blockLimitReached'],
 
     events: {
-      'block:reorder:down':       'hideBlockControls',
-      'block:reorder:dragstart':  'onBlockDragStart',
-      'block:reorder:dragend':    'onBlockDragEnd',
-      'block:content:dropped':    'removeBlockDragOver',
-      'block:reorder:dropped':    'onBlockDropped',
-      'block:create:new':         'onNewBlockCreated'
+      'block:reorder:dragend': 'removeBlockDragOver',
+      'block:content:dropped': 'removeBlockDragOver'
     },
 
     initialize: function(options) {
@@ -35,7 +30,8 @@ SirTrevor.Editor = (function(){
 
       if (!this._ensureAndSetElements()) { return false; }
 
-      if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+      if(!_.isUndefined(this.options.onEditorRender) &&
+        _.isFunction(this.options.onEditorRender)) {
         this.onEditorRender = this.options.onEditorRender;
       }
 
@@ -59,24 +55,18 @@ SirTrevor.Editor = (function(){
     build: function() {
       this.$el.hide();
 
-      this.block_manager = new SirTrevor.BlockManager(this.options,
-        this.ID, this.mediator);
-      this.block_controls = new SirTrevor.BlockControls(this.block_manager.blockTypes,
-        this.ID, this.mediator);
-      this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
-      this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
+      this.block_manager = new SirTrevor.BlockManager(this.options, this.ID, this.mediator);
+      this.block_controls = new SirTrevor.BlockControls(this.block_manager.blockTypes, this.mediator);
+      this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
+      this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this.mediator);
+      this.errorHandler = new SirTrevor.ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
 
-      this.errorHandler = new SirTrevor.ErrorHandler(this.$outer,
-        this.mediator, this.options.errorsContainer);
-
-      this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
-      this.listenTo(this.mediator, 'renderBlock', this.renderBlock);
+      this.mediator.on('block:changePosition', this.changeBlockPosition);
+      this.mediator.on('block-controls:reset', this.resetBlockControls);
+      this.mediator.on('block:limitReached', this.blockLimitReached);
+      this.mediator.on('block:render', this.renderBlock);
 
       this._setEvents();
-
-      SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-      SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderBySelection);
-      SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
       this.$wrapper.prepend(this.fl_block_controls.render().$el);
       $(document.body).append(this.formatBar.render().$el);
@@ -137,6 +127,15 @@ SirTrevor.Editor = (function(){
       this.initialize(options || this.options);
     },
 
+    resetBlockControls: function() {
+      this.block_controls.renderInContainer(this.$wrapper);
+      this.block_controls.hide();
+    },
+
+    blockLimitReached: function(toggle) {
+      this.$wrapper.toggleClass('st--block-limit-reached', toggle);
+    },
+
     _setEvents: function() {
       _.each(this.events, function(callback, type) {
         SirTrevor.EventBus.on(type, this[callback], this);
@@ -146,23 +145,6 @@ SirTrevor.Editor = (function(){
     hideAllTheThings: function(e) {
       this.block_controls.hide();
       this.formatBar.hide();
-
-      if (!_.isUndefined(this.block_controls.current_container)) {
-        this.block_controls.current_container.removeClass("with-st-controls");
-      }
-    },
-
-    showBlockControls: function(container) {
-      if (!_.isUndefined(this.block_controls.current_container)) {
-        this.block_controls.current_container.removeClass("with-st-controls");
-      }
-
-      this.block_controls.show();
-
-      container.append(this.block_controls.$el.detach());
-      container.addClass('with-st-controls');
-
-      this.block_controls.current_container = container;
     },
 
     store: function(method, options){
@@ -171,43 +153,25 @@ SirTrevor.Editor = (function(){
 
     renderBlock: function(block) {
       this._renderInPosition(block.render().$el);
-      block.trigger("onRender");
-    },
-
-    onNewBlockCreated: function(block) {
-      this.hideBlockControls();
+      this.hideAllTheThings();
       this.scrollTo(block.$el);
+
+      block.trigger("onRender");
     },
 
     scrollTo: function(element) {
       $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
     },
 
-    blockFocus: function(block) {
-      this.block_controls.current_container = null;
-    },
-
-    hideBlockControls: function() {
-      if (!_.isUndefined(this.block_controls.current_container)) {
-        this.block_controls.current_container.removeClass("with-st-controls");
-      }
-
-      this.block_controls.hide();
-    },
-
     removeBlockDragOver: function() {
       this.$outer.find('.st-drag-over').removeClass('st-drag-over');
-    },
-
-    triggerBlockCountUpdate: function() {
-      SirTrevor.EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
     },
 
     changeBlockPosition: function($block, selectedPosition) {
       selectedPosition = selectedPosition - 1;
 
-      var blockPosition = this.getBlockPosition($block);
-      var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+      var blockPosition = this.getBlockPosition($block),
+          $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
 
       var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -218,29 +182,9 @@ SirTrevor.Editor = (function(){
       }
     },
 
-    onBlockDropped: function(block_id) {
-      this.hideAllTheThings();
-      var block = this.findBlockById(block_id);
-      if (!_.isUndefined(block) &&
-          !_.isEmpty(block.getData()) &&
-          block.drop_options.re_render_on_reorder) {
-        block.beforeLoadingData();
-      }
-    },
-
-    onBlockDragStart: function() {
-      this.hideBlockControls();
-      this.$wrapper.addClass("st-outer--is-reordering");
-    },
-
-    onBlockDragEnd: function() {
-      this.removeBlockDragOver();
-      this.$wrapper.removeClass("st-outer--is-reordering");
-    },
-
     _renderInPosition: function(block) {
-      if (this.block_controls.current_container) {
-        this.block_controls.current_container.after(block);
+      if (this.block_controls.currentContainer) {
+        this.block_controls.currentContainer.after(block);
       } else {
         this.$wrapper.append(block);
       }
