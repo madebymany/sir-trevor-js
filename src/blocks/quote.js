@@ -1,7 +1,3 @@
-/*
-  Block Quote
-*/
-
 SirTrevor.Blocks.Quote = (function(){
 
   var template = _.template([

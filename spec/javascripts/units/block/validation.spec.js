@@ -1,4 +1,4 @@
-describe("Validation", function(){
+describe("Block:Validation", function(){
   var element, editor, block, block_two;
 
   beforeEach(function(){

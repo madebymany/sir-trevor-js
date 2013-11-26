@@ -1,4 +1,4 @@
-describe("Store", function(){
+describe("Block:Store", function(){
 
   var element, editor, block;
 

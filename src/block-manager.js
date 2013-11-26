@@ -5,6 +5,10 @@ SirTrevor.BlockManager = (function(){
     this.instance_scope = editorInstance;
     this.mediator = mediator;
 
+    this.blocks = [];
+    this.blockCounts = {};
+    this.blockTypes = {};
+
     this._setBlocksTypes();
     this._setRequired();
     this._bindMediatedEvents();
@@ -13,10 +17,6 @@ SirTrevor.BlockManager = (function(){
   };
 
   _.extend(BlockManager.prototype, FunctionBind, MediatedEvents, SirTrevor.Events, {
-
-    blocks: [],
-    blockCounts: {},
-    blockTypes: {},
 
     eventNamespace: 'block',
 
@@ -93,6 +93,35 @@ SirTrevor.BlockManager = (function(){
       return true;
     },
 
+    validateBlockTypesExist: function(should_validate) {
+      if (SirTrevor.SKIP_VALIDATION || !should_validate) { return false; }
+
+      var blockTypeIterator = function(type, index) {
+        if (!this.isBlockTypeAvailable(type)) { return; }
+
+        if (this._getBlockTypeCount(type) === 0) {
+          SirTrevor.log("Failed validation on required block type " + type);
+          this.mediator.trigger('errors:add',
+              { text: i18n.t("errors:type_missing", { type: type }) });
+
+        } else {
+          var blocks = _.filter(this.getBlocksByType(type),
+                                function(b) { return !b.isEmpty(); });
+
+          if (blocks.length > 0) { return false; }
+
+          this.mediator.trigger('errors:add',
+              { text: i18n.t("errors:required_type_empty", { type: type }) });
+
+          SirTrevor.log("A required block type " + type + " is empty");
+        }
+      };
+
+      if (_.isArray(this.required)) {
+        _.each(this.required, blockTypeIterator, this);
+      }
+    },
+
     findBlockById: function(blockID) {
       return _.find(this.blocks, function(b){ return b.blockID == blockID; });
     },
@@ -131,11 +160,11 @@ SirTrevor.BlockManager = (function(){
     },
 
     _incrementBlockTypeCount: function(type) {
-      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
+      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] + 1;
     },
 
     _decrementBlockTypeCount: function(type) {
-      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] - 1;
+      this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] - 1;
     },
 
     _getBlockTypeCount: function(type) {

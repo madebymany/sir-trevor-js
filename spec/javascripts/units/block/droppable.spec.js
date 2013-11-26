@@ -1,4 +1,4 @@
-describe("Droppable Block", function(){
+describe("Block:Droppable Block", function(){
 
   var element, editor, block;
 

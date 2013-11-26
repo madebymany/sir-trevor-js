@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-11-25
+ * 2013-11-26
  */
 
 (function ($, _){
@@ -49,6 +49,12 @@
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined
+  };
+
+  SirTrevor.log = function(message) {
+    if (!_.isUndefined(console) && SirTrevor.DEBUG) {
+      console.log(message);
+    }
   };
 
   SirTrevor.BlockMixins = {};
@@ -124,31 +130,6 @@
     }
   };
 
-  function diffText(before, after) {
-    var pos1 = -1,
-        pos2 = -1,
-        after_len = after.length,
-        before_len = before.length;
-  
-    for (var i = 0; i < after_len; i++) {
-      if (pos1 == -1 && before.substr(i, 1) != after.substr(i, 1)) {
-        pos1 = i - 1;
-      }
-  
-      if (pos2 == -1 &&
-          before.substr(before_len - i - 1, 1) !=
-          after.substr(after_len - i - 1, 1)
-        ) {
-        pos2 = i;
-      }
-    }
-  
-    return {
-      result: after.substr(pos1, after_len - pos2 - pos1 + 1),
-      pos1: pos1,
-      pos2: pos2
-    };
-  }
   /*
     Drop Area Plugin from @maccman
     http://blog.alexmaccaw.com/svbtle-image-uploading
@@ -240,15 +221,6 @@
     child.__super__ = parent.prototype;
   
     return child;
-  };
-  /*
-  * Ultra simple logging
-  */
-  
-  SirTrevor.log = function(message) {
-    if (!_.isUndefined(console) && SirTrevor.DEBUG) {
-      console.log(message);
-    }
   };
   SirTrevor.Locales = {
     en: {
@@ -344,69 +316,6 @@
   }
   //fgnass.github.com/spin.js#v1.2.5
   (function(a,b,c){function g(a,c){var d=b.createElement(a||"div"),e;for(e in c)d[e]=c[e];return d}function h(a){for(var b=1,c=arguments.length;b<c;b++)a.appendChild(arguments[b]);return a}function j(a,b,c,d){var g=["opacity",b,~~(a*100),c,d].join("-"),h=.01+c/d*100,j=Math.max(1-(1-a)/b*(100-h),a),k=f.substring(0,f.indexOf("Animation")).toLowerCase(),l=k&&"-"+k+"-"||"";return e[g]||(i.insertRule("@"+l+"keyframes "+g+"{"+"0%{opacity:"+j+"}"+h+"%{opacity:"+a+"}"+(h+.01)+"%{opacity:1}"+(h+b)%100+"%{opacity:"+a+"}"+"100%{opacity:"+j+"}"+"}",0),e[g]=1),g}function k(a,b){var e=a.style,f,g;if(e[b]!==c)return b;b=b.charAt(0).toUpperCase()+b.slice(1);for(g=0;g<d.length;g++){f=d[g]+b;if(e[f]!==c)return f}}function l(a,b){for(var c in b)a.style[k(a,c)||c]=b[c];return a}function m(a){for(var b=1;b<arguments.length;b++){var d=arguments[b];for(var e in d)a[e]===c&&(a[e]=d[e])}return a}function n(a){var b={x:a.offsetLeft,y:a.offsetTop};while(a=a.offsetParent)b.x+=a.offsetLeft,b.y+=a.offsetTop;return b}var d=["webkit","Moz","ms","O"],e={},f,i=function(){var a=g("style");return h(b.getElementsByTagName("head")[0],a),a.sheet||a.styleSheet}(),o={lines:12,length:7,width:5,radius:10,rotate:0,color:"#000",speed:1,trail:100,opacity:.25,fps:20,zIndex:2e9,className:"spinner",top:"auto",left:"auto"},p=function q(a){if(!this.spin)return new q(a);this.opts=m(a||{},q.defaults,o)};p.defaults={},m(p.prototype,{spin:function(a){this.stop();var b=this,c=b.opts,d=b.el=l(g(0,{className:c.className}),{position:"relative",zIndex:c.zIndex}),e=c.radius+c.length+c.width,h,i;a&&(a.insertBefore(d,a.firstChild||null),i=n(a),h=n(d),l(d,{left:(c.left=="auto"?i.x-h.x+(a.offsetWidth>>1):c.left+e)+"px",top:(c.top=="auto"?i.y-h.y+(a.offsetHeight>>1):c.top+e)+"px"})),d.setAttribute("aria-role","progressbar"),b.lines(d,b.opts);if(!f){var j=0,k=c.fps,m=k/c.speed,o=(1-c.opacity)/(m*c.trail/100),p=m/c.lines;!function q(){j++;for(var a=c.lines;a;a--){var e=Math.max(1-(j+a*p)%m*o,c.opacity);b.opacity(d,c.lines-a,e,c)}b.timeout=b.el&&setTimeout(q,~~(1e3/k))}()}return b},stop:function(){var a=this.el;return a&&(clearTimeout(this.timeout),a.parentNode&&a.parentNode.removeChild(a),this.el=c),this},lines:function(a,b){function e(a,d){return l(g(),{position:"absolute",width:b.length+b.width+"px",height:b.width+"px",background:a,boxShadow:d,transformOrigin:"left",transform:"rotate("+~~(360/b.lines*c+b.rotate)+"deg) translate("+b.radius+"px"+",0)",borderRadius:(b.width>>1)+"px"})}var c=0,d;for(;c<b.lines;c++)d=l(g(),{position:"absolute",top:1+~(b.width/2)+"px",transform:b.hwaccel?"translate3d(0,0,0)":"",opacity:b.opacity,animation:f&&j(b.opacity,b.trail,c,b.lines)+" "+1/b.speed+"s linear infinite"}),b.shadow&&h(d,l(e("#000","0 0 4px #000"),{top:"2px"})),h(a,h(d,e(b.color,"0 0 1px rgba(0,0,0,.1)")));return a},opacity:function(a,b,c){b<a.childNodes.length&&(a.childNodes[b].style.opacity=c)}}),!function(){function a(a,b){return g("<"+a+' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">',b)}var b=l(g("group"),{behavior:"url(#default#VML)"});!k(b,"transform")&&b.adj?(i.addRule(".spin-vml","behavior:url(#default#VML)"),p.prototype.lines=function(b,c){function f(){return l(a("group",{coordsize:e+" "+e,coordorigin:-d+" "+ -d}),{width:e,height:e})}function k(b,e,g){h(i,h(l(f(),{rotation:360/c.lines*b+"deg",left:~~e}),h(l(a("roundrect",{arcsize:1}),{width:d,height:c.width,left:c.radius,top:-c.width>>1,filter:g}),a("fill",{color:c.color,opacity:c.opacity}),a("stroke",{opacity:0}))))}var d=c.length+c.width,e=2*d,g=-(c.width+c.length)*2+"px",i=l(f(),{position:"absolute",top:g,left:g}),j;if(c.shadow)for(j=1;j<=c.lines;j++)k(j,-2,"progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)");for(j=1;j<=c.lines;j++)k(j);return h(b,i)},p.prototype.opacity=function(a,b,c,d){var e=a.firstChild;d=d.shadow&&d.lines||0,e&&b+d<e.childNodes.length&&(e=e.childNodes[b+d],e=e&&e.firstChild,e=e&&e.firstChild,e&&(e.opacity=c))}):f=k(b,"animation")}(),a.Spinner=p})(window,document);
-  /*
-  * Sir Trevor Editor Store
-  * By default we store the complete data on the instances $el
-  * We can easily extend this and store it on some server or something
-  */
-  
-  SirTrevor.editorStore = function(editor, method, options) {
-    var resp;
-  
-    options = options || {};
-  
-    switch(method) {
-  
-      case "create":
-        // Grab our JSON from the textarea and clean any whitespace incase there is a line wrap between the opening and closing textarea tags
-        var content = _.trim(editor.$el.val());
-        editor.dataStore = { data: [] };
-  
-        if (content.length > 0) {
-          try {
-            // Ensure the JSON string has a data element that's an array
-            var str = JSON.parse(content);
-            if (!_.isUndefined(str.data)) {
-              // Set it
-              editor.dataStore = str;
-            }
-          } catch(e) {
-            editor.errors.push({ text: i18n.t("errors:load_fail") });
-            editor.renderErrors();
-  
-            console.log('Sorry there has been a problem with parsing the JSON');
-            console.log(e);
-          }
-        }
-      break;
-  
-      case "reset":
-        editor.dataStore = { data: [] };
-      break;
-  
-      case "add":
-        if (options.data) {
-          editor.dataStore.data.push(options.data);
-          resp = editor.dataStore;
-        }
-      break;
-  
-      case "save":
-        // Store to our element
-        editor.$el.val((editor.dataStore.data.length > 0) ? JSON.stringify(editor.dataStore) : '');
-      break;
-  
-      case "read":
-        resp = editor.dataStore;
-      break;
-  
-    }
-  
-    if(resp) {
-      return resp;
-    }
-  
-  };
   /*
     SirTrevor.Submittable
     --
@@ -1824,46 +1733,6 @@
   })();
 
   /* Default Blocks */
-  /*
-    Block Quote
-  */
-  
-  SirTrevor.Blocks.Quote = (function(){
-  
-    var template = _.template([
-      '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-      '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
-      '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
-      ' class="st-input-string st-required js-cite-input" type="text" />'
-    ].join("\n"));
-  
-    return SirTrevor.Block.extend({
-  
-      type: "quote",
-  
-      title: function(){ return i18n.t('blocks:quote:title'); },
-  
-      icon_name: 'quote',
-  
-      editorHTML: function() {
-        return template(this);
-      },
-  
-      loadData: function(data){
-        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
-        this.$('.js-cite-input').val(data.cite);
-      },
-  
-      toMarkdown: function(markdown) {
-        return markdown.replace(/^(.+)$/mg,"> $1");
-      }
-  
-    });
-  
-  })();
-  /*
-    Text Block
-  */
   SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
   
     type: 'Heading',
@@ -1878,10 +1747,6 @@
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
     }
   });
-  /*
-    Simple Image Block
-  */
-  
   SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   
     type: "image",
@@ -1932,6 +1797,98 @@
       }
     }
   });
+  SirTrevor.Blocks.List = (function() {
+  
+    var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
+  
+    return SirTrevor.Block.extend({
+  
+      type: 'list',
+  
+      title: function() { return i18n.t('blocks:list:title'); },
+  
+      icon_name: 'list',
+  
+      editorHTML: function() {
+        return _.template(template, this);
+      },
+  
+      loadData: function(data){
+        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
+      },
+  
+      onBlockRender: function() {
+        this.checkForList = _.bind(this.checkForList, this);
+        this.getTextBlock().on('click keyup', this.checkForList);
+        this.focus();
+      },
+  
+      checkForList: function() {
+        if (this.$('ul').length === 0) {
+          document.execCommand("insertUnorderedList", false, false);
+        }
+      },
+  
+      toMarkdown: function(markdown) {
+        return markdown.replace(/<\/li>/mg,"\n")
+                       .replace(/<\/?[^>]+(>|$)/g, "")
+                       .replace(/^(.+)$/mg," - $1");
+      },
+  
+      toHTML: function(html) {
+        html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+                   .replace(/\n/mg, "");
+  
+        return html;
+      },
+  
+      onContentPasted: function(event, target) {
+        var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
+            list = this.$('ul').html(replace);
+  
+        this.getTextBlock().caretToEnd();
+      },
+  
+      isEmpty: function() {
+        return _.isEmpty(this.saveAndGetData().text);
+      }
+  
+    });
+  
+  })();
+  SirTrevor.Blocks.Quote = (function(){
+  
+    var template = _.template([
+      '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
+      '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
+      '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
+      ' class="st-input-string st-required js-cite-input" type="text" />'
+    ].join("\n"));
+  
+    return SirTrevor.Block.extend({
+  
+      type: "quote",
+  
+      title: function(){ return i18n.t('blocks:quote:title'); },
+  
+      icon_name: 'quote',
+  
+      editorHTML: function() {
+        return template(this);
+      },
+  
+      loadData: function(data){
+        this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+        this.$('.js-cite-input').val(data.cite);
+      },
+  
+      toMarkdown: function(markdown) {
+        return markdown.replace(/^(.+)$/mg,"> $1");
+      }
+  
+    });
+  
+  })();
   /*
     Text Block
   */
@@ -2050,68 +2007,6 @@
         var url = transferData.getData('text/plain');
         this.handleTwitterDropPaste(url);
       }
-    });
-  
-  })();
-  /*
-    Unordered List
-  */
-  
-  SirTrevor.Blocks.List = (function() {
-  
-    var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
-  
-    return SirTrevor.Block.extend({
-  
-      type: 'list',
-  
-      title: function() { return i18n.t('blocks:list:title'); },
-  
-      icon_name: 'list',
-  
-      editorHTML: function() {
-        return _.template(template, this);
-      },
-  
-      loadData: function(data){
-        this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
-      },
-  
-      onBlockRender: function() {
-        this.checkForList = _.bind(this.checkForList, this);
-        this.getTextBlock().on('click keyup', this.checkForList);
-      },
-  
-      checkForList: function() {
-        if (this.$('ul').length === 0) {
-          document.execCommand("insertUnorderedList", false, false);
-        }
-      },
-  
-      toMarkdown: function(markdown) {
-        return markdown.replace(/<\/li>/mg,"\n")
-                       .replace(/<\/?[^>]+(>|$)/g, "")
-                       .replace(/^(.+)$/mg," - $1");
-      },
-  
-      toHTML: function(html) {
-        html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-                   .replace(/\n/mg, "");
-  
-        return html;
-      },
-  
-      onContentPasted: function(event, target) {
-        var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
-            list = this.$('ul').html(replace);
-  
-        this.getTextBlock().caretToEnd();
-      },
-  
-      isEmpty: function() {
-        return _.isEmpty(this.saveAndGetData().text);
-      }
-  
     });
   
   })();
@@ -2573,12 +2468,75 @@
     return FormatBar;
   
   })();
+  SirTrevor.EditorStore = (function(){
+  
+    var EditorStore = function(data, mediator) {
+      this.mediator = mediator;
+      this.initialize(_.trim(data) || '');
+    };
+  
+    _.extend(EditorStore.prototype, {
+  
+      initialize: function(data) {
+        this.store = this._parseData(data) || { data: [] };
+      },
+  
+      retrieve: function() {
+        return this.store;
+      },
+  
+      toString: function() {
+        return JSON.stringify(this.store);
+      },
+  
+      reset: function() {
+        SirTrevor.log("Resetting the EditorStore");
+        this.store = { data: [] };
+      },
+  
+      addData: function(data) {
+        this.store.data.push(data);
+        return this.store;
+      },
+  
+      _parseData: function(data) {
+        var result;
+  
+        if (data.length === 0) { return result; }
+  
+        try {
+          // Ensure the JSON string has a data element that's an array
+          var jsonStr = JSON.parse(data);
+          if (!_.isUndefined(jsonStr.data)) {
+            result = jsonStr;
+          }
+        } catch(e) {
+          this.mediator.trigger('errors:add',
+            { text: i18n.t("errors:load_fail") });
+          this.mediator.trigger('errors:render');
+  
+          console.log('Sorry there has been a problem with parsing the JSON');
+          console.log(e);
+        }
+  
+        return result;
+      }
+  
+    });
+  
+    return EditorStore;
+  
+  })();
   SirTrevor.BlockManager = (function(){
   
     var BlockManager = function(options, editorInstance, mediator) {
       this.options = options;
       this.instance_scope = editorInstance;
       this.mediator = mediator;
+  
+      this.blocks = [];
+      this.blockCounts = {};
+      this.blockTypes = {};
   
       this._setBlocksTypes();
       this._setRequired();
@@ -2588,10 +2546,6 @@
     };
   
     _.extend(BlockManager.prototype, FunctionBind, MediatedEvents, SirTrevor.Events, {
-  
-      blocks: [],
-      blockCounts: {},
-      blockTypes: {},
   
       eventNamespace: 'block',
   
@@ -2668,6 +2622,35 @@
         return true;
       },
   
+      validateBlockTypesExist: function(should_validate) {
+        if (SirTrevor.SKIP_VALIDATION || !should_validate) { return false; }
+  
+        var blockTypeIterator = function(type, index) {
+          if (!this.isBlockTypeAvailable(type)) { return; }
+  
+          if (this._getBlockTypeCount(type) === 0) {
+            SirTrevor.log("Failed validation on required block type " + type);
+            this.mediator.trigger('errors:add',
+                { text: i18n.t("errors:type_missing", { type: type }) });
+  
+          } else {
+            var blocks = _.filter(this.getBlocksByType(type),
+                                  function(b) { return !b.isEmpty(); });
+  
+            if (blocks.length > 0) { return false; }
+  
+            this.mediator.trigger('errors:add',
+                { text: i18n.t("errors:required_type_empty", { type: type }) });
+  
+            SirTrevor.log("A required block type " + type + " is empty");
+          }
+        };
+  
+        if (_.isArray(this.required)) {
+          _.each(this.required, blockTypeIterator, this);
+        }
+      },
+  
       findBlockById: function(blockID) {
         return _.find(this.blocks, function(b){ return b.blockID == blockID; });
       },
@@ -2706,11 +2689,11 @@
       },
   
       _incrementBlockTypeCount: function(type) {
-        this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
+        this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] + 1;
       },
   
       _decrementBlockTypeCount: function(type) {
-        this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] - 1;
+        this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] - 1;
       },
   
       _getBlockTypeCount: function(type) {
@@ -2837,8 +2820,6 @@
         this.mediator = _.extend({}, SirTrevor.Events);
   
         this._bindFunctions();
-  
-        this.store("create");
         this.build();
   
         SirTrevor.instances.push(this);
@@ -2853,16 +2834,19 @@
       build: function() {
         this.$el.hide();
   
+        this.errorHandler = new SirTrevor.ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
+        this.store = new SirTrevor.EditorStore(this.$el.val(), this.mediator);
         this.block_manager = new SirTrevor.BlockManager(this.options, this.ID, this.mediator);
         this.block_controls = new SirTrevor.BlockControls(this.block_manager.blockTypes, this.mediator);
         this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
         this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this.mediator);
-        this.errorHandler = new SirTrevor.ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
   
         this.mediator.on('block:changePosition', this.changeBlockPosition);
         this.mediator.on('block-controls:reset', this.resetBlockControls);
         this.mediator.on('block:limitReached', this.blockLimitReached);
         this.mediator.on('block:render', this.renderBlock);
+  
+        this.dataStore = "Please use store.retrieve();";
   
         this._setEvents();
   
@@ -2881,14 +2865,14 @@
       },
   
       createBlocks: function() {
-        var store = this.store("read");
+        var store = this.store.retrieve();
   
         if (store.data.length > 0) {
           _.each(store.data, function(block) {
-            this.mediator.trigger('createBlock', block.type, block.data);
+            this.mediator.trigger('block:create', block.type, block.data);
           }, this);
         } else if (this.options.defaultType !== false) {
-          this.mediator.trigger('createBlock', this.options.defaultType, {});
+          this.mediator.trigger('block:create', this.options.defaultType, {});
         }
       },
   
@@ -2907,17 +2891,14 @@
         this.mediator.stopListening();
         this.stopListening();
   
-        // Cleanup element
-        var el = this.$el.detach();
-  
         // Remove instance
         SirTrevor.instances = _.reject(SirTrevor.instances, _.bind(function(instance) {
           return instance.ID == this.ID;
         }, this));
   
         // Clear the store
-        this.store("reset");
-        this.$outer.replaceWith(el);
+        this.store.reset();
+        this.$outer.replaceWith(this.$el.detach());
       },
   
       reinitialize: function(options) {
@@ -2946,7 +2927,8 @@
       },
   
       store: function(method, options){
-        return SirTrevor.editorStore(this, method, options || {});
+        SirTrevor.log("The store method has been removed, please call store[methodName]");
+        return this.store[method].call(this, options || {});
       },
   
       renderBlock: function(block) {
@@ -2988,26 +2970,15 @@
         }
       },
   
-      performValidations : function(block, should_validate) {
-        var errors = 0;
-  
-        if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-          if(!block.valid()){
-            this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
-            SirTrevor.log("Block " + block.blockID + " failed validation");
-            ++errors;
-          }
+      validateAndSaveBlock: function(block, should_validate) {
+        if ((!SirTrevor.SKIP_VALIDATION || should_validate) && !block.valid()) {
+          this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+          SirTrevor.log("Block " + block.blockID + " failed validation");
+          return;
         }
   
-        return errors;
-      },
-  
-      saveBlockStateToStore: function(block) {
-        var store = block.saveAndReturnData();
-        if(store && !_.isEmpty(store.data)) {
-          SirTrevor.log("Adding data for block " + block.blockID + " to block store");
-          this.store("add", { data: store });
-        }
+        SirTrevor.log("Adding data for block " + block.blockID + " to block store");
+        this.store.addData(block.saveAndReturnData());
       },
   
       /*
@@ -3021,61 +2992,26 @@
         SirTrevor.log("Handling form submission for Editor " + this.ID);
   
         this.mediator.trigger('errors:reset');
-        this.store("reset");
+        this.store.reset();
   
         this.validateBlocks(should_validate);
-        this.validateBlockTypesExist(should_validate);
+        this.block_manager.validateBlockTypesExist(should_validate);
   
         this.mediator.trigger('errors:render');
-        this.store("save");
+        this.$el.val(this.store.toString());
   
         return this.errorHandler.errors.length;
       },
   
       validateBlocks: function(should_validate) {
-        if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-          return false;
-        }
-  
-        var blockIterator = function(block,index) {
+        var blockIterator = function(block) {
           var _block = this.block_manager.findBlockById($(block).attr('id'));
-          if (_.isUndefined(_block)) { return false; }
-  
-          // Find our block
-          this.performValidations(_block, should_validate);
-          this.saveBlockStateToStore(_block);
-        };
-  
-        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
-      },
-  
-      validateBlockTypesExist: function(should_validate) {
-        if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-          return false;
-        }
-  
-        var blockTypeIterator = function(type, index) {
-          if (!this.block_manager.isBlockTypeAvailable(type)) { return; }
-  
-          if (this.block_manager._getBlockTypeCount(type) === 0) {
-            SirTrevor.log("Failed validation on required block type " + type);
-            this.mediator.trigger('errors:add',
-                { text: i18n.t("errors:type_missing", { type: type }) });
-          } else {
-            var blocks = _.filter(this.getBlocksByType(type),
-                                  function(b) { return !b.isEmpty(); });
-  
-            if (blocks.length > 0) { return false; }
-  
-            this.mediator.trigger('errors:add',
-                { text: i18n.t("errors:required_type_empty", { type: type }) });
-            SirTrevor.log("A required block type " + type + " is empty");
+          if (!_.isUndefined(_block)) {
+            this.validateAndSaveBlock(_block, should_validate);
           }
         };
   
-        if (_.isArray(this.block_manager.required)) {
-          _.each(this.block_manager.required, blockTypeIterator, this);
-        }
+        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
       },
   
       findBlockById: function(block_id) {

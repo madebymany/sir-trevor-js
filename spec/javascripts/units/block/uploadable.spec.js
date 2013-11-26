@@ -1,4 +1,4 @@
-describe("Uploadable Block", function(){
+describe("Block:Uploadable Block", function(){
 
   var element, editor, block;
 

@@ -1,7 +1,3 @@
-/*
-  Unordered List
-*/
-
 SirTrevor.Blocks.List = (function() {
 
   var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
@@ -25,6 +21,7 @@ SirTrevor.Blocks.List = (function() {
     onBlockRender: function() {
       this.checkForList = _.bind(this.checkForList, this);
       this.getTextBlock().on('click keyup', this.checkForList);
+      this.focus();
     },
 
     checkForList: function() {

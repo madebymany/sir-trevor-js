@@ -42,6 +42,12 @@
     errorsContainer: undefined
   };
 
+  SirTrevor.log = function(message) {
+    if (!_.isUndefined(console) && SirTrevor.DEBUG) {
+      console.log(message);
+    }
+  };
+
   SirTrevor.BlockMixins = {};
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
@@ -145,9 +151,10 @@
   //= floating-block-controls.js
   /* FormatBar */
   //= format-bar.js
+  //= editor.store.js
   //= block-manager.js
   //= error-handler.js
-  //= sir-trevor-editor.js
+  //= editor.js
 
   /* We need a form handler here to handle all the form submits */
   SirTrevor.setDefaults = function(options) {

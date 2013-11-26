@@ -1,4 +1,4 @@
-describe("Pastable Block", function(){
+describe("Block:Pastable Block", function(){
 
   var element, editor, block;
 

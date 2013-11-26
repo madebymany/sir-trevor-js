@@ -39,8 +39,6 @@ SirTrevor.Editor = (function(){
       this.mediator = _.extend({}, SirTrevor.Events);
 
       this._bindFunctions();
-
-      this.store("create");
       this.build();
 
       SirTrevor.instances.push(this);
@@ -55,16 +53,19 @@ SirTrevor.Editor = (function(){
     build: function() {
       this.$el.hide();
 
+      this.errorHandler = new SirTrevor.ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
+      this.store = new SirTrevor.EditorStore(this.$el.val(), this.mediator);
       this.block_manager = new SirTrevor.BlockManager(this.options, this.ID, this.mediator);
       this.block_controls = new SirTrevor.BlockControls(this.block_manager.blockTypes, this.mediator);
       this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
       this.formatBar = new SirTrevor.FormatBar(this.options.formatBar, this.mediator);
-      this.errorHandler = new SirTrevor.ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
 
       this.mediator.on('block:changePosition', this.changeBlockPosition);
       this.mediator.on('block-controls:reset', this.resetBlockControls);
       this.mediator.on('block:limitReached', this.blockLimitReached);
       this.mediator.on('block:render', this.renderBlock);
+
+      this.dataStore = "Please use store.retrieve();";
 
       this._setEvents();
 
@@ -83,14 +84,14 @@ SirTrevor.Editor = (function(){
     },
 
     createBlocks: function() {
-      var store = this.store("read");
+      var store = this.store.retrieve();
 
       if (store.data.length > 0) {
         _.each(store.data, function(block) {
-          this.mediator.trigger('createBlock', block.type, block.data);
+          this.mediator.trigger('block:create', block.type, block.data);
         }, this);
       } else if (this.options.defaultType !== false) {
-        this.mediator.trigger('createBlock', this.options.defaultType, {});
+        this.mediator.trigger('block:create', this.options.defaultType, {});
       }
     },
 
@@ -109,17 +110,14 @@ SirTrevor.Editor = (function(){
       this.mediator.stopListening();
       this.stopListening();
 
-      // Cleanup element
-      var el = this.$el.detach();
-
       // Remove instance
       SirTrevor.instances = _.reject(SirTrevor.instances, _.bind(function(instance) {
         return instance.ID == this.ID;
       }, this));
 
       // Clear the store
-      this.store("reset");
-      this.$outer.replaceWith(el);
+      this.store.reset();
+      this.$outer.replaceWith(this.$el.detach());
     },
 
     reinitialize: function(options) {
@@ -148,7 +146,8 @@ SirTrevor.Editor = (function(){
     },
 
     store: function(method, options){
-      return SirTrevor.editorStore(this, method, options || {});
+      SirTrevor.log("The store method has been removed, please call store[methodName]");
+      return this.store[method].call(this, options || {});
     },
 
     renderBlock: function(block) {
@@ -190,26 +189,15 @@ SirTrevor.Editor = (function(){
       }
     },
 
-    performValidations : function(block, should_validate) {
-      var errors = 0;
-
-      if (!SirTrevor.SKIP_VALIDATION && should_validate) {
-        if(!block.valid()){
-          this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
-          SirTrevor.log("Block " + block.blockID + " failed validation");
-          ++errors;
-        }
+    validateAndSaveBlock: function(block, should_validate) {
+      if ((!SirTrevor.SKIP_VALIDATION || should_validate) && !block.valid()) {
+        this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+        SirTrevor.log("Block " + block.blockID + " failed validation");
+        return;
       }
 
-      return errors;
-    },
-
-    saveBlockStateToStore: function(block) {
-      var store = block.saveAndReturnData();
-      if(store && !_.isEmpty(store.data)) {
-        SirTrevor.log("Adding data for block " + block.blockID + " to block store");
-        this.store("add", { data: store });
-      }
+      SirTrevor.log("Adding data for block " + block.blockID + " to block store");
+      this.store.addData(block.saveAndReturnData());
     },
 
     /*
@@ -223,61 +211,26 @@ SirTrevor.Editor = (function(){
       SirTrevor.log("Handling form submission for Editor " + this.ID);
 
       this.mediator.trigger('errors:reset');
-      this.store("reset");
+      this.store.reset();
 
       this.validateBlocks(should_validate);
-      this.validateBlockTypesExist(should_validate);
+      this.block_manager.validateBlockTypesExist(should_validate);
 
       this.mediator.trigger('errors:render');
-      this.store("save");
+      this.$el.val(this.store.toString());
 
       return this.errorHandler.errors.length;
     },
 
     validateBlocks: function(should_validate) {
-      if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-        return false;
-      }
-
-      var blockIterator = function(block,index) {
+      var blockIterator = function(block) {
         var _block = this.block_manager.findBlockById($(block).attr('id'));
-        if (_.isUndefined(_block)) { return false; }
-
-        // Find our block
-        this.performValidations(_block, should_validate);
-        this.saveBlockStateToStore(_block);
-      };
-
-      _.each(this.$wrapper.find('.st-block'), blockIterator, this);
-    },
-
-    validateBlockTypesExist: function(should_validate) {
-      if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-        return false;
-      }
-
-      var blockTypeIterator = function(type, index) {
-        if (!this.block_manager.isBlockTypeAvailable(type)) { return; }
-
-        if (this.block_manager._getBlockTypeCount(type) === 0) {
-          SirTrevor.log("Failed validation on required block type " + type);
-          this.mediator.trigger('errors:add',
-              { text: i18n.t("errors:type_missing", { type: type }) });
-        } else {
-          var blocks = _.filter(this.getBlocksByType(type),
-                                function(b) { return !b.isEmpty(); });
-
-          if (blocks.length > 0) { return false; }
-
-          this.mediator.trigger('errors:add',
-              { text: i18n.t("errors:required_type_empty", { type: type }) });
-          SirTrevor.log("A required block type " + type + " is empty");
+        if (!_.isUndefined(_block)) {
+          this.validateAndSaveBlock(_block, should_validate);
         }
       };
 
-      if (_.isArray(this.block_manager.required)) {
-        _.each(this.block_manager.required, blockTypeIterator, this);
-      }
+      _.each(this.$wrapper.find('.st-block'), blockIterator, this);
     },
 
     findBlockById: function(block_id) {
