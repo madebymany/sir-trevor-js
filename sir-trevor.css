@@ -267,6 +267,13 @@ ul.st-text-block {
 .st-block__upload-container:hover .st-upload-btn {
   background: #34e0c2; }
 
+.st-block__editor--with-square-media {
+  padding-top: 100%;
+  /* 16:9 */
+  height: 0;
+  position: relative;
+  width: 100%; }
+
 .st-block__editor--with-sixteen-by-nine-media {
   padding-top: 56.25%;
   /* 16:9 */
@@ -274,6 +281,8 @@ ul.st-text-block {
   position: relative;
   width: 100%; }
 
+.st-block__editor--with-square-media video,
+.st-block__editor--with-square-media iframe,
 .st-block__editor--with-sixteen-by-nine-media video,
 .st-block__editor--with-sixteen-by-nine-media iframe {
   height: 100%;

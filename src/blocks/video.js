@@ -23,11 +23,13 @@ SirTrevor.Blocks.Video = (function(){
     icon_name: 'video',
 
     loadData: function(data){
+      if (!this.providers.hasOwnProperty(data.source)) { return; }
+
       if (this.providers[data.source].square) {
         this.$editor.addClass('st-block__editor--with-square-media');
       } else {
         this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
-      } 
+      }
 
       var embed_string = this.providers[data.source].html
         .replace('{{protocol}}', window.location.protocol)
@@ -38,30 +40,28 @@ SirTrevor.Blocks.Video = (function(){
     },
 
     onContentPasted: function(event){
-      // Content pasted. Delegate to the drop parse method
-      var input = $(event.target),
-          val = input.val();
-
-      // Pass this to the same handler as onDrop
-      this.handleDropPaste(val);
+      this.handleDropPaste($(event.target).val());
     },
 
     handleDropPaste: function(url){
-      if(_.isURI(url))
-      {
-        _.each(this.providers, function(provider, index) {
-          var match = provider.regex.exec(url);
-
-          if(match !== null && match[1] !== undefined) {
-            var data = {};
-            data.source = index;
-            data.remote_id = match[1];
-            // save the data 
-            this.setAndLoadData(data);
-          }  
-        }.bind(this));
+      if(!_.isURI(url)) {
+        return;
       }
 
+      var match, data;
+
+      _.each(this.providers, function(provider, index) {
+        match = provider.regex.exec(url);
+
+        if(match !== null && !_.isUndefined(match[1])) {
+          data = {
+            source: index,
+            remote_id: match[1]
+          };
+
+          this.setAndLoadData(data);
+        }
+      }, this);
     },
 
     onDrop: function(transferData){
