@@ -1,5 +1,5 @@
 /*!
- * Sir Trevor JS v0.3.0
+ * Sir Trevor JS v0.3.1
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
