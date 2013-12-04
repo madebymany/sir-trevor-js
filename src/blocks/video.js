@@ -1,8 +1,18 @@
 SirTrevor.Blocks.Video = (function(){
 
-  var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
-
   return SirTrevor.Block.extend({
+
+    // more providers at https://gist.github.com/jeffling/a9629ae28e076785a14f
+    providers: {
+      vimeo: {
+        regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.+)/,
+        html: "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
+      },
+      youtube: {
+        regex: /(?:http[s]?:\/\/)?(?:www.)?(?:(?:youtube.com\/watch\?(?:.*)(?:v=))|(?:youtu.be\/))([^&].+)/,
+        html: "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
+      }
+    },
 
     type: 'video',
     title: function() { return i18n.t('blocks:video:title'); },
@@ -13,13 +23,18 @@ SirTrevor.Blocks.Video = (function(){
     icon_name: 'video',
 
     loadData: function(data){
-      this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
+      if (this.providers[data.source].square) {
+        this.$editor.addClass('st-block__editor--with-square-media');
+      } else {
+        this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
+      } 
 
-      if(data.source == "youtube" || data.source == "youtu") {
-        this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
-      } else if(data.source == "vimeo") {
-        this.$editor.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
-      }
+      var embed_string = this.providers[data.source].html
+        .replace('{{protocol}}', window.location.protocol)
+        .replace('{{remote_id}}', data.remote_id)
+        .replace('{{width}}', this.$editor.width()); // for videos that can't resize automatically like vine
+
+      this.$editor.html(embed_string);
     },
 
     onContentPasted: function(event){
@@ -32,30 +47,19 @@ SirTrevor.Blocks.Video = (function(){
     },
 
     handleDropPaste: function(url){
-
       if(_.isURI(url))
       {
-        if (url.indexOf("youtu") != -1 || url.indexOf("vimeo") != -1) {
+        _.each(this.providers, function(provider, index) {
+          var match = provider.regex.exec(url);
 
-          var data = {},
-          videos = url.match(video_regex);
-
-          // Work out the source and extract ID
-          if(videos[3] !== undefined) {
-            data.source = videos[3];
-            data.remote_id = videos[4];
-          } else if (videos[1] !== undefined) {
-            data.source = videos[1];
-            data.remote_id = videos[2];
-          }
-
-          if (data.source == "youtu") {
-            data.source = "youtube";
-          }
-
-          // Save the data
-          this.setAndLoadData(data);
-        }
+          if(match !== null && match[1] !== undefined) {
+            var data = {};
+            data.source = index;
+            data.remote_id = match[1];
+            // save the data 
+            this.setAndLoadData(data);
+          }  
+        }.bind(this));
       }
 
     },
