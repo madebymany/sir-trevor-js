@@ -8,6 +8,7 @@
 * Swap the onBlockRender method to be executed *after* the block $el is appended onto the DOM by emitting an event
 * Added a `destroy` method for all Renderable views
 * Added a `destroy` and `reinitialize` method for a `SirTrevor.Editor` instance
+* Modified the Video block to allow for more providers to be added.
 
 ## 0.3.0
 
