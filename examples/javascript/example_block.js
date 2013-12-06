@@ -84,7 +84,7 @@ SirTrevor.Blocks.Example = (function(){
     // st-text-block – gives the block the ability to use the formatting controls
 
     editorHTML: function() {
-      return "<div class='st-text-block' contenteditable='contenteditable'></div>";
+      return "<div class='st-text-block' contenteditable='true'></div>";
     },
 
     // Element shorthands
