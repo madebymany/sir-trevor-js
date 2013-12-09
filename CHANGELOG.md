@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.2
+
+* Added new controllable mixin for adding new functionality to blocks (https://github.com/madebymany/sir-trevor-js/pull/118)
+
 ## 0.3.1
 
 * Localise titles of the tweet & heading blocks
