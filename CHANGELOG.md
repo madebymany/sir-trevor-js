@@ -3,6 +3,9 @@
 ## 0.3.2
 
 * Added new controllable mixin for adding new functionality to blocks (https://github.com/madebymany/sir-trevor-js/pull/118)
+* Removed Source Sans from the CSS file
+* Added a dataType: 'json' to the uploader
+* Added a `getInstance` method to retrieve editor instances
 
 ## 0.3.1
 
