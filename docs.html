@@ -48,6 +48,7 @@
             <li><a href="#1-1">Installation</a></li>
             <li><a href="#1-2">Initialising</a></li>
             <li><a href="#1-3">The Output</a></li>
+            <li><a href="#1-4">Getting an instance</a></li>
           </ul>
         </li>
 
@@ -168,6 +169,17 @@
 
 <p>For a server-side example, please see our <a href="http://github.com/madebymany/sir-trevor-rails">Sir Trevor Rails gem</a>. The ideas within this could easily be extrapolated for other languages.</p>
 
+<p><a name="1-4"></a></p>
+
+<h2>Retrieving Editor Instances</h2>
+
+<p>You can retrieve <code>SirTrevor.Editor</code> instances using the <code>SirTrevor.getInstance</code> method.</p>
+
+<pre><code>SirTrevor.getInstance(); // Gets the first instance
+SirTrevor.getInstance(&#39;st-editor-11&#39;) // Gets editor by it&#39;s identifier
+SirTrevor.getInstance(0) // Gets by it&#39;s position
+</code></pre>
+
     <p><a name="2"></a></p>
 
 <h1>Options</h1>
@@ -285,12 +297,12 @@ Call a function once the Editor has rendered.<br>
 });
 </code></pre>
 
-<p>The uploader posts an <code>attachments</code> hash that has three properties:</p>
+<p>The uploader posts an <code>attachment</code> hash that has three properties:</p>
 
 <ul>
-<li><code>attachments[name]</code> – the files name</li>
-<li><code>attachments[file]</code> – the file</li>
-<li><code>attachments[uid]</code> – a unique identifier for this file</li>
+<li><code>attachment[name]</code> – the files name</li>
+<li><code>attachment[file]</code> – the file</li>
+<li><code>attachment[uid]</code> – a unique identifier for this file</li>
 </ul>
 
 <p>For an uploader example, using Rails + Carrierwave <a href="https://gist.github.com/cjbell88/7091537">please see here</a>.</p>
@@ -410,6 +422,9 @@ Provides support for uploadable content and mixins in the uploader into the bloc
 
 <p><strong><code>ajaxable</code></strong><br>
 Gives a way to fetch content remotely through a editor managed queue.</p>
+
+<p><strong><code>controllable</code></strong><br>
+Provides a second, smaller UI in the lower left block corner to control its contents. Requires the <code>controls</code>-object so be specified in the block configuration (<code>&#39;command-name&#39;: handler</code>).</p>
 
 <p>The <strong>droppable, uploadable and pastable</strong> components have the ability to override the default HTML that gets built as the UI. This can easily be done through the <code>uploadable_options.html</code>, <code>droppable_options.html</code> or <code>pastable_options.html</code> objects on the block. Each takes a string that is passed to an underscore <code>_.template</code> method.</p>
 
