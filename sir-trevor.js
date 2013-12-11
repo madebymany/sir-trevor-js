@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-09
+ * 2013-12-11
  */
 
 (function ($, _){
@@ -537,6 +537,7 @@
       cache: false,
       contentType: false,
       processData: false,
+      dataType: 'json',
       type: 'POST'
     });
   
