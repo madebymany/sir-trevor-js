@@ -176,7 +176,7 @@
 
     if (_.isString(identifier)) {
       return _.find(this.instances,
-        function(editor){ return editor.ID == identifier; });
+        function(editor){ return editor.ID === identifier; });
     }
 
     return this.instances[identifier];
