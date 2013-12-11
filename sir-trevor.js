@@ -537,6 +537,7 @@
       cache: false,
       contentType: false,
       processData: false,
+      dataType: 'json',
       type: 'POST'
     });
   
