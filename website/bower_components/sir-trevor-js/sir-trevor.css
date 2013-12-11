@@ -1,6 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600);
 .st-outer {
-  font-family: "Source Sans Pro", sans-serif;
   font-size: 16px; }
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
@@ -66,7 +64,6 @@
 .st-text-block,
 .st-block input[type="text"],
 .st-block textarea {
-  font-family: "Source Sans Pro", sans-serif;
   font-size: inherit;
   margin: 0;
   padding: 0.3em 0; }
@@ -126,7 +123,6 @@
   background: #f3f3f3; }
 
 .st-block-controls {
-  font-family: "Source Sans Pro", sans-serif;
   background-color: #f3f3f3;
   display: none;
   border-radius: 0.2em;
@@ -241,7 +237,6 @@ ul.st-text-block {
   margin: 0; }
 
 .st-block__dropzone p span {
-  text-transform: lowercase;
   font-weight: 700; }
 
 .st-drag-over .st-block__inputs {
@@ -258,7 +253,6 @@ ul.st-text-block {
   background: #42474b;
   border-radius: 0.2em;
   padding: 0.35em 1em;
-  font-family: "Source Sans Pro", sans-serif;
   font-size: 1.125em;
   cursor: pointer;
   color: #fff;
@@ -268,6 +262,13 @@ ul.st-text-block {
 .st-block__upload-container:hover .st-upload-btn {
   background: #34e0c2; }
 
+.st-block__editor--with-square-media {
+  padding-top: 100%;
+  /* 16:9 */
+  height: 0;
+  position: relative;
+  width: 100%; }
+
 .st-block__editor--with-sixteen-by-nine-media {
   padding-top: 56.25%;
   /* 16:9 */
@@ -275,6 +276,8 @@ ul.st-text-block {
   position: relative;
   width: 100%; }
 
+.st-block__editor--with-square-media video,
+.st-block__editor--with-square-media iframe,
 .st-block__editor--with-sixteen-by-nine-media video,
 .st-block__editor--with-sixteen-by-nine-media iframe {
   height: 100%;
@@ -381,10 +384,17 @@ ul.st-text-block {
   right: 0;
   opacity: 0; }
 
-.st-block__inner:hover .st-block__ui {
+.st-block__control-ui {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  opacity: 0; }
+
+.st-block__inner:hover .st-block__ui,
+.st-block__inner:hover .st-block__control-ui {
   opacity: 1; }
 
-.st-block-ui-btn {
+.st-block-ui-btn, .st-block-control-ui-btn {
   display: block;
   float: left;
   width: 3em;
@@ -400,17 +410,30 @@ ul.st-text-block {
   margin-bottom: 0;
   cursor: pointer; }
 
-.st-block--with-errors .st-block-ui-btn,
-.st-block--delete-active .st-block-ui-btn {
+.st-block-control-ui-btn {
+  width: 2em;
+  height: 1.75em;
+  font-size: 1.5em;
+  line-height: 1.25em;
+  height: 1.25em;
+  border: 2px solid #34e0c2;
+  border-left: 0;
+  border-bottom: 0; }
+
+.st-block--with-errors .st-block-ui-btn, .st-block--with-errors .st-block-control-ui-btn,
+.st-block--delete-active .st-block-ui-btn,
+.st-block--delete-active .st-block-control-ui-btn {
   color: #d70014;
   border-color: #d70014; }
 
-.st-block-ui-btn:hover {
+.st-block-ui-btn:hover, .st-block-control-ui-btn:hover,
+.st-block-control-ui-btn:hover {
   color: #fff;
   background: #34e0c2; }
 
-.st-block--with-errors .st-block-ui-btn:hover,
-.st-block--delete-active .st-block-ui-btn:hover {
+.st-block--with-errors .st-block-ui-btn:hover, .st-block--with-errors .st-block-control-ui-btn:hover,
+.st-block--delete-active .st-block-ui-btn:hover,
+.st-block--delete-active .st-block-control-ui-btn:hover {
   background-color: #d70014; }
 
 .st-block--delete-active .st-block__ui-delete-controls {

@@ -16,11 +16,11 @@
     "jquery": "~1.9.1"
   },
   "homepage": "https://github.com/madebymany/sir-trevor-js",
-  "_release": "0b0b9bb368",
+  "_release": "3e18059ea7",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "0b0b9bb36813bab8453a006d5c0f67dacc671250"
+    "commit": "3e18059ea7158540fa35127df13dbe63ebb20858"
   },
   "_source": "https://github.com/madebymany/sir-trevor-js.git",
   "_target": "master",
