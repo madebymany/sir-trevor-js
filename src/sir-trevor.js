@@ -169,6 +169,19 @@
     }
   };
 
+  SirTrevor.getInstance = function(identifier) {
+    if (_.isUndefined(identifier)) {
+      return this.instances[0];
+    }
+
+    if (_.isString(identifier)) {
+      return _.find(this.instances,
+        function(editor){ return editor.ID == identifier; });
+    }
+
+    return this.instances[identifier];
+  };
+
   SirTrevor.setBlockOptions = function(type, options) {
     var block = SirTrevor.Blocks[type];
 

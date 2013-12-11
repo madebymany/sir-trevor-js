@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-09
+ * 2013-12-11
  */
 
 (function ($, _){
@@ -3128,6 +3128,19 @@
       SirTrevor.EventBus.trigger("onError");
       ev.preventDefault();
     }
+  };
+
+  SirTrevor.getInstance = function(identifier) {
+    if (_.isUndefined(identifier)) {
+      return this.instances[0];
+    }
+
+    if (_.isString(identifier)) {
+      return _.find(this.instances,
+        function(editor){ return editor.ID == identifier; });
+    }
+
+    return this.instances[identifier];
   };
 
   SirTrevor.setBlockOptions = function(type, options) {
