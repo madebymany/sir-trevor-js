@@ -16,7 +16,8 @@ SirTrevor.Locales = {
       'block_empty': "__name__ must not be empty",
       'type_missing': "You must have a block of type __type__",
       'required_type_empty': "A required block type __type__ is empty",
-      'load_fail': "There was a problem loading the contents of the document"
+      'load_fail': "There was a problem loading the contents of the document",
+      'unsupported_browser': "Sorry, but your browser isn't supported."
     },
     blocks: {
       text: {

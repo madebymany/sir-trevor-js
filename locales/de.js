@@ -15,7 +15,8 @@ SirTrevor.Locales.de = {
     'block_empty': "__name__ darf nicht leer sein",
     'type_missing': "Blöcke mit Typ __type__ sind hier nicht zulässig",
     'required_type_empty': "Angeforderter Block-Typ __type__ ist leer",
-    'load_fail': "Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt"
+    'load_fail': "Es wurde ein Problem beim Laden des Dokumentinhalts festgestellt",
+    'unsupported_browser': "Sorry, but your browser isn't supported."
   },
   blocks: {
     text: {

@@ -15,7 +15,8 @@ SirTrevor.Locales.fr = {
     'block_empty': "__name__ ne doit pas être vide",
     'type_missing': "Vous devez avoir un bloc de type __type__",
     'required_type_empty': "Un bloc requis de type __type__ est vide",
-    'load_fail': "Il y a un problème avec le chargement des données du document"
+    'load_fail': "Il y a un problème avec le chargement des données du document",
+    'unsupported_browser': "Sorry, but your browser isn't supported."
   },
   blocks: {
     text: {

@@ -57,6 +57,11 @@
   SirTrevor.instances = [];
   SirTrevor.Events = Eventable;
 
+  function makesTheGrade() {
+    return "FormData" in window &&
+           ("URL" in window || "webkitURL" in window);
+  }
+
   var formBound = false; // Flag to tell us once we've bound our submit event
 
   /* Generic function binding utility, used by lots of our classes */
@@ -257,7 +262,8 @@
         'block_empty': "__name__ must not be empty",
         'type_missing': "You must have a block of type __type__",
         'required_type_empty': "A required block type __type__ is empty",
-        'load_fail': "There was a problem loading the contents of the document"
+        'load_fail': "There was a problem loading the contents of the document",
+        'unsupported_browser': "Sorry, but your browser isn't supported."
       },
       blocks: {
         text: {
@@ -2602,6 +2608,12 @@
         this.ID = _.uniqueId('st-editor-');
   
         if (!this._ensureAndSetElements()) { return false; }
+  
+        if (!makesTheGrade()) {
+          this.errors.push({ text: i18n.t("errors:unsupported_browser") });
+          this.renderErrors();
+          return false;
+        }
   
         if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
           this.onEditorRender = this.options.onEditorRender;

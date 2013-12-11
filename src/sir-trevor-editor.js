@@ -39,7 +39,14 @@ SirTrevor.Editor = (function(){
 
       if (!this._ensureAndSetElements()) { return false; }
 
-      if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+      if (!makesTheGrade()) {
+        this.errors.push({ text: i18n.t("errors:unsupported_browser") });
+        this.renderErrors();
+        return false;
+      }
+
+      if(!_.isUndefined(this.options.onEditorRender) &&
+        _.isFunction(this.options.onEditorRender)) {
         this.onEditorRender = this.options.onEditorRender;
       }
 

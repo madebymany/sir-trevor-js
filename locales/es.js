@@ -15,7 +15,8 @@ SirTrevor.Locales.es = {
     'block_empty': "__name__ no debe estar vacío",
     'type_missing': "Debe tene un tipo de bloque __type__",
     'required_type_empty': "Un bloque obligatorio de tipo __type__ está vacío",
-    'load_fail': "Hay un problema con la carga de datos"
+    'load_fail': "Hay un problema con la carga de datos",
+    'unsupported_browser': "Sorry, but your browser isn't supported."
   },
   blocks: {
     text: {

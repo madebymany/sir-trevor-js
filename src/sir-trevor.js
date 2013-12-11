@@ -48,6 +48,11 @@
   SirTrevor.instances = [];
   SirTrevor.Events = Eventable;
 
+  function makesTheGrade() {
+    return "FormData" in window &&
+           ("URL" in window || "webkitURL" in window);
+  }
+
   var formBound = false; // Flag to tell us once we've bound our submit event
 
   /* Generic function binding utility, used by lots of our classes */
