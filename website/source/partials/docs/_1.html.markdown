@@ -67,3 +67,12 @@ Each piece of JSON is made up of an object that contains the *type* and *data* f
 Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You'll need to remember to transform the markdown to HTML using a library too.
 
 For a server-side example, please see our [Sir Trevor Rails gem](http://github.com/madebymany/sir-trevor-rails). The ideas within this could easily be extrapolated for other languages.
+
+<a name="1-4"></a>
+## Retrieving Editor Instances
+
+You can retrieve `SirTrevor.Editor` instances using the `SirTrevor.getInstance` method.
+
+    SirTrevor.getInstance(); // Gets the first instance
+    SirTrevor.getInstance('st-editor-11') // Gets editor by it's identifier
+    SirTrevor.getInstance(0) // Gets by it's position
