@@ -24,4 +24,30 @@ describe("SirTrevor", function(){
 
   });
 
+  describe("getInstance", function(){
+
+    beforeEach(function(){
+      SirTrevor.instances = [
+        { ID: '123' },
+        { ID: '456' }
+      ];
+    });
+
+    it("retrieves the first instance if no params are given", function(){
+      var instance = SirTrevor.getInstance();
+      expect(instance.ID).toBe('123');
+    });
+
+    it("retrieves the instance by ID if a string is provided", function(){
+      var instance = SirTrevor.getInstance('456');
+      expect(instance.ID).toBe('456');
+    });
+
+    it("retrieves the instance by position if an integer is provided", function(){
+      var instance = SirTrevor.getInstance(0);
+      expect(instance.ID).toBe('123');
+    });
+
+  });
+
 });

@@ -121,7 +121,6 @@ ul.st-text-block {
   background: $base-ui-color;
   border-radius: 0.2em;
   padding: 0.35em 1em;
-  font-family: $base-font-family;
   font-size: 1.125em;
   cursor: pointer;
   color: #fff;
@@ -133,6 +132,13 @@ ul.st-text-block {
   background:$accent-color;
 }
 
+.st-block__editor--with-square-media {
+  padding-top: 100%; /* 16:9 */
+  height: 0;
+  position: relative;
+  width: 100%;
+}
+
 .st-block__editor--with-sixteen-by-nine-media {
   padding-top: 56.25%; /* 16:9 */
   height: 0;
@@ -140,6 +146,8 @@ ul.st-text-block {
   width: 100%;
 }
 
+.st-block__editor--with-square-media video,
+.st-block__editor--with-square-media iframe,
 .st-block__editor--with-sixteen-by-nine-media video,
 .st-block__editor--with-sixteen-by-nine-media iframe {
   height: 100%; width: 100%;

@@ -40,6 +40,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
     cache: false,
     contentType: false,
     processData: false,
+    dataType: 'json',
     type: 'POST'
   });
 

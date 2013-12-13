@@ -65,7 +65,8 @@ SirTrevor.Block = (function(){
 
     toolbarEnabled: true,
 
-    availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable', 'ajaxable'],
+    availableMixins: ['droppable', 'pastable', 'uploadable',
+                      'fetchable', 'ajaxable', 'controllable'],
 
     droppable: false,
     pastable: false,

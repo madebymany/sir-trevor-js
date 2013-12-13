@@ -47,11 +47,15 @@ SirTrevor.BlockControls = (function(){
 
     show: function() {
       this.$el.addClass('st-block-controls--active');
+
+      SirTrevor.EventBus.trigger('block:controls:shown');
     },
 
     hide: function() {
       this.removeCurrentContainer();
       this.$el.removeClass('st-block-controls--active');
+
+      SirTrevor.EventBus.trigger('block:controls:hidden');
     },
 
     handleControlButtonClick: function(e) {

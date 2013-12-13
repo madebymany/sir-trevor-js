@@ -25,7 +25,7 @@
     onClick: function() {
 
       var link = prompt(i18n.t("general:link")),
-          link_regex = /(ftp|http|https):\/\/./;
+          link_regex = /((ftp|http|https):\/\/.)|mailto(?=\:[-\.\w]+@)/;
 
       if(link && link.length > 0) {
 

@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.3.0
+ * Sir Trevor JS v0.3.1
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-04
+ * 2013-12-13
  */
 
 (function ($, _){
@@ -457,6 +457,7 @@
       cache: false,
       contentType: false,
       processData: false,
+      dataType: 'json',
       type: 'POST'
     });
   
@@ -739,6 +740,36 @@
       }, this);
     }
   
+  };
+  SirTrevor.BlockMixins.Controllable = {
+  
+    mixinName: "Controllable",
+  
+    initializeControllable: function() {
+      SirTrevor.log("Adding controllable to block " + this.blockID);
+      this.$control_ui = $('<div>', {'class': 'st-block__control-ui'});
+      _.each(
+        this.controls,
+        function(handler, cmd) {
+          // Bind configured handler to current block context
+          this.addUiControl(cmd, _.bind(handler, this));
+        },
+        this
+      );
+      this.$inner.append(this.$control_ui);
+    },
+  
+    getControlTemplate: function(cmd) {
+      return $("<a>",
+        { 'data-icon': cmd,
+          'class': 'st-icon st-block-control-ui-btn st-block-control-ui-btn--' + cmd
+        });
+    },
+  
+    addUiControl: function(cmd, handler) {
+      this.$control_ui.append(this.getControlTemplate(cmd));
+      this.$control_ui.on('click', '.st-block-control-ui-btn--' + cmd, handler);
+    }
   };
   /* Adds drop functionaltiy to this block */
   
@@ -1368,7 +1399,8 @@
   
       toolbarEnabled: true,
   
-      availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable', 'ajaxable'],
+      availableMixins: ['droppable', 'pastable', 'uploadable',
+                        'fetchable', 'ajaxable', 'controllable'],
   
       droppable: false,
       pastable: false,
@@ -1733,6 +1765,10 @@
   })();
 
   /* Default Blocks */
+  /*
+    Heading Block
+  */
+  
   SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
   
     type: 'Heading',
@@ -2012,9 +2048,19 @@
   })();
   SirTrevor.Blocks.Video = (function(){
   
-    var video_regex = /http[s]?:\/\/(?:www.)?(?:(vimeo).com\/(.*))|(?:(youtu(?:be)?).(?:be|com)\/(?:watch\?v=)?([^&]*)(?:&(?:.))?)/;
-  
     return SirTrevor.Block.extend({
+  
+      // more providers at https://gist.github.com/jeffling/a9629ae28e076785a14f
+      providers: {
+        vimeo: {
+          regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.+)/,
+          html: "<iframe src=\"{{protocol}}//player.vimeo.com/video/{{remote_id}}?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
+        },
+        youtube: {
+          regex: /(?:http[s]?:\/\/)?(?:www.)?(?:(?:youtube.com\/watch\?(?:.*)(?:v=))|(?:youtu.be\/))([^&].+)/,
+          html: "<iframe src=\"{{protocol}}//www.youtube.com/embed/{{remote_id}}\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
+        }
+      },
   
       type: 'video',
       title: function() { return i18n.t('blocks:video:title'); },
@@ -2025,51 +2071,45 @@
       icon_name: 'video',
   
       loadData: function(data){
-        this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
+        if (!this.providers.hasOwnProperty(data.source)) { return; }
   
-        if(data.source == "youtube" || data.source == "youtu") {
-          this.$editor.html("<iframe src=\""+window.location.protocol+"//www.youtube.com/embed/" + data.remote_id + "\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>");
-        } else if(data.source == "vimeo") {
-          this.$editor.html("<iframe src=\""+window.location.protocol+"//player.vimeo.com/video/" + data.remote_id + "?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>");
+        if (this.providers[data.source].square) {
+          this.$editor.addClass('st-block__editor--with-square-media');
+        } else {
+          this.$editor.addClass('st-block__editor--with-sixteen-by-nine-media');
         }
+  
+        var embed_string = this.providers[data.source].html
+          .replace('{{protocol}}', window.location.protocol)
+          .replace('{{remote_id}}', data.remote_id)
+          .replace('{{width}}', this.$editor.width()); // for videos that can't resize automatically like vine
+  
+        this.$editor.html(embed_string);
       },
   
       onContentPasted: function(event){
-        // Content pasted. Delegate to the drop parse method
-        var input = $(event.target),
-            val = input.val();
-  
-        // Pass this to the same handler as onDrop
-        this.handleDropPaste(val);
+        this.handleDropPaste($(event.target).val());
       },
   
       handleDropPaste: function(url){
-  
-        if(_.isURI(url))
-        {
-          if (url.indexOf("youtu") != -1 || url.indexOf("vimeo") != -1) {
-  
-            var data = {},
-            videos = url.match(video_regex);
-  
-            // Work out the source and extract ID
-            if(videos[3] !== undefined) {
-              data.source = videos[3];
-              data.remote_id = videos[4];
-            } else if (videos[1] !== undefined) {
-              data.source = videos[1];
-              data.remote_id = videos[2];
-            }
-  
-            if (data.source == "youtu") {
-              data.source = "youtube";
-            }
-  
-            // Save the data
-            this.setAndLoadData(data);
-          }
+        if(!_.isURI(url)) {
+          return;
         }
   
+        var match, data;
+  
+        _.each(this.providers, function(provider, index) {
+          match = provider.regex.exec(url);
+  
+          if(match !== null && !_.isUndefined(match[1])) {
+            data = {
+              source: index,
+              remote_id: match[1]
+            };
+  
+            this.setAndLoadData(data);
+          }
+        }, this);
       },
   
       onDrop: function(transferData){
@@ -2107,7 +2147,7 @@
       onClick: function() {
   
         var link = prompt(i18n.t("general:link")),
-            link_regex = /(ftp|http|https):\/\/./;
+            link_regex = /((ftp|http|https):\/\/.)|mailto(?=\:[-\.\w]+@)/;
   
         if(link && link.length > 0) {
   
@@ -2229,11 +2269,15 @@
   
       show: function() {
         this.$el.addClass('st-block-controls--active');
+  
+        SirTrevor.EventBus.trigger('block:controls:shown');
       },
   
       hide: function() {
         this.removeCurrentContainer();
         this.$el.removeClass('st-block-controls--active');
+  
+        SirTrevor.EventBus.trigger('block:controls:hidden');
       },
   
       handleControlButtonClick: function(e) {
@@ -3090,6 +3134,19 @@
       SirTrevor.EventBus.trigger("onError");
       ev.preventDefault();
     }
+  };
+
+  SirTrevor.getInstance = function(identifier) {
+    if (_.isUndefined(identifier)) {
+      return this.instances[0];
+    }
+
+    if (_.isString(identifier)) {
+      return _.find(this.instances,
+        function(editor){ return editor.ID === identifier; });
+    }
+
+    return this.instances[identifier];
   };
 
   SirTrevor.setBlockOptions = function(type, options) {

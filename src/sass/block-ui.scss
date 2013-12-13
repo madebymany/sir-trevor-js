@@ -5,7 +5,14 @@
   opacity: 0;
 }
 
-.st-block__inner:hover .st-block__ui {
+.st-block__control-ui {
+  position: absolute;
+  bottom: 0; left: 0;
+  opacity: 0;
+}
+
+.st-block__inner:hover .st-block__ui,
+.st-block__inner:hover .st-block__control-ui {
   opacity: 1;
 }
 
@@ -25,13 +32,25 @@
   cursor: pointer;
 }
 
+.st-block-control-ui-btn {
+  @extend .st-block-ui-btn;
+  width: 2em; height: 1.75em;
+  font-size: 1.5em;
+  line-height: 1.25em;
+  height: 1.25em;
+  border: 2px solid $accent-color;
+  border-left: 0;
+  border-bottom: 0;
+}
+
 .st-block--with-errors .st-block-ui-btn ,
 .st-block--delete-active .st-block-ui-btn {
   color: $error-color;
   border-color: $error-color;
 }
 
-.st-block-ui-btn:hover {
+.st-block-ui-btn:hover,
+.st-block-control-ui-btn:hover {
   color: #fff;
   background: $accent-color;
 }

@@ -1,3 +1,7 @@
+/*
+  Heading Block
+*/
+
 SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
 
   type: 'Heading',
