@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-11
+ * 2013-12-12
  */
 
 (function ($, _){
@@ -2232,7 +2232,7 @@
       onClick: function() {
   
         var link = prompt(i18n.t("general:link")),
-            link_regex = /(ftp|http|https):\/\/./;
+            link_regex = /((ftp|http|https):\/\/.)|mailto(?=\:[-\.\w]+@)/;
   
         if(link && link.length > 0) {
   
