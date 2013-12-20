@@ -19,8 +19,9 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 ### Implementations
 
 1. [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails)
-2. [Umbraco](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
+2. [Umbraco 7](https://github.com/mindrevolution/SirTrevor-for-Umbraco), [Umbraco 6](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
 3. [CakePHP](http://github.com/martinbean/cakephp-sir-trevor-plugin)
+4. [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
 
 ## Custom blocks
 

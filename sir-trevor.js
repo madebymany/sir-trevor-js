@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.3.1
+ * Sir Trevor JS v0.3.2
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-13
+ * 2013-12-20
  */
 
 (function ($, _){
@@ -1351,7 +1351,7 @@
     var drop_options = {
       html: ['<div class="st-block__dropzone">',
              '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-             '<p><%= i18n.t("general:drop", { block: "<span>" + block.title() + "</span>" }) %>',
+             '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
              '</p></div>'].join('\n'),
       re_render_on_reorder: false
     };

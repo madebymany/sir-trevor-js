@@ -6,6 +6,8 @@
 * Removed Source Sans from the CSS file
 * Added a dataType: 'json' to the uploader
 * Added a `getInstance` method to retrieve editor instances
+* Fixed `.st-text-block--heading` class to have `min-height: 0` not `auto`.
+* Added mailto support to the link regex
 
 ## 0.3.1
 
