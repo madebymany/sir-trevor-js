@@ -7,18 +7,19 @@
   This will be triggered *by anything* so it needs to subscribe to events.
 */
 
-var Submittable = function(){
+SirTrevor.Submittable = function($form){
+  this.$form = $form;
   this.intialize();
 };
 
-_.extend(Submittable.prototype, {
+_.extend(SirTrevor.Submittable.prototype, {
 
   intialize: function(){
-    this.submitBtn = $("input[type='submit']");
+    this.$submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
 
-    _.each(this.submitBtn, function(btn){
+    _.each(this.$submitBtn, function(btn){
       btnTitles.push($(btn).attr('value'));
     });
 
@@ -29,11 +30,11 @@ _.extend(Submittable.prototype, {
   },
 
   setSubmitButton: function(e, message) {
-    this.submitBtn.attr('value', message);
+    this.$submitBtn.attr('value', message);
   },
 
   resetSubmitButton: function(){
-    _.each(this.submitBtn, function(item, index){
+    _.each(this.$submitBtn, function(item, index){
       $(item).attr('value', this.submitBtnTitles[index]);
     }, this);
   },
@@ -64,14 +65,14 @@ _.extend(Submittable.prototype, {
 
   _disableSubmitButton: function(message){
     this.setSubmitButton(null, message || i18n.t("general:wait"));
-    this.submitBtn
+    this.$submitBtn
       .attr('disabled', 'disabled')
       .addClass('disabled');
   },
 
   _enableSubmitButton: function(){
     this.resetSubmitButton();
-    this.submitBtn
+    this.$submitBtn
       .removeAttr('disabled')
       .removeClass('disabled');
   },
@@ -93,7 +94,3 @@ _.extend(Submittable.prototype, {
   }
 
 });
-
-SirTrevor.submittable = function(){
-  new Submittable();
-};

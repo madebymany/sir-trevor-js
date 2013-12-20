@@ -36,8 +36,6 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.$inputs.hide();
       this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
-      // Upload!
-      SirTrevor.EventBus.trigger('setSubmitButton', ['Please wait...']);
       this.uploader(
         file,
         function(data) {

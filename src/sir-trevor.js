@@ -143,7 +143,7 @@
 
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
-      SirTrevor.submittable();
+      new SirTrevor.Submittable(form);
       form.bind('submit', this.onFormSubmit);
       formBound = true;
     }

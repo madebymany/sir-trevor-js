@@ -405,18 +405,19 @@
     This will be triggered *by anything* so it needs to subscribe to events.
   */
   
-  var Submittable = function(){
+  SirTrevor.Submittable = function($form){
+    this.$form = $form;
     this.intialize();
   };
   
-  _.extend(Submittable.prototype, {
+  _.extend(SirTrevor.Submittable.prototype, {
   
     intialize: function(){
-      this.submitBtn = $("input[type='submit']");
+      this.$submitBtn = this.$form.find("input[type='submit']");
   
       var btnTitles = [];
   
-      _.each(this.submitBtn, function(btn){
+      _.each(this.$submitBtn, function(btn){
         btnTitles.push($(btn).attr('value'));
       });
   
@@ -427,11 +428,11 @@
     },
   
     setSubmitButton: function(e, message) {
-      this.submitBtn.attr('value', message);
+      this.$submitBtn.attr('value', message);
     },
   
     resetSubmitButton: function(){
-      _.each(this.submitBtn, function(item, index){
+      _.each(this.$submitBtn, function(item, index){
         $(item).attr('value', this.submitBtnTitles[index]);
       }, this);
     },
@@ -462,14 +463,14 @@
   
     _disableSubmitButton: function(message){
       this.setSubmitButton(null, message || i18n.t("general:wait"));
-      this.submitBtn
+      this.$submitBtn
         .attr('disabled', 'disabled')
         .addClass('disabled');
     },
   
     _enableSubmitButton: function(){
       this.resetSubmitButton();
-      this.submitBtn
+      this.$submitBtn
         .removeAttr('disabled')
         .removeClass('disabled');
     },
@@ -491,18 +492,12 @@
     }
   
   });
-  
-  SirTrevor.submittable = function(){
-    new Submittable();
-  };
   /*
   *   Sir Trevor Uploader
   *   Generic Upload implementation that can be extended for blocks
   */
   
   SirTrevor.fileUploader = function(block, file, success, error) {
-  
-    SirTrevor.EventBus.trigger("onUploadStart");
   
     var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
     var data = new FormData();
@@ -515,7 +510,6 @@
   
     var callbackSuccess = function(data){
       SirTrevor.log('Upload callback called');
-      SirTrevor.EventBus.trigger("onUploadStop");
   
       if (!_.isUndefined(success) && _.isFunction(success)) {
         _.bind(success, block)(data);
@@ -524,7 +518,6 @@
   
     var callbackError = function(jqXHR, status, errorThrown){
       SirTrevor.log('Upload callback error called');
-      SirTrevor.EventBus.trigger("onUploadStop");
   
       if (!_.isUndefined(error) && _.isFunction(error)) {
         _.bind(error, block)(status);
@@ -801,11 +794,15 @@
   
     addQueuedItem: function(name, deffered) {
       SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
+      SirTrevor.EventBus.trigger("onUploadStart");
+  
       this._queued.push({ name: name, deffered: deffered });
     },
   
     removeQueuedItem: function(name) {
       SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
+      SirTrevor.EventBus.trigger("onUploadStop");
+  
       this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
     },
   
@@ -1932,8 +1929,6 @@
         this.$inputs.hide();
         this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
   
-        // Upload!
-        SirTrevor.EventBus.trigger('setSubmitButton', ['Please wait...']);
         this.uploader(
           file,
           function(data) {
@@ -3105,7 +3100,7 @@
 
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
-      SirTrevor.submittable();
+      new SirTrevor.Submittable(form);
       form.bind('submit', this.onFormSubmit);
       formBound = true;
     }

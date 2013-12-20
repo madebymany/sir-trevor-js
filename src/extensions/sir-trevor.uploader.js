@@ -5,8 +5,6 @@
 
 SirTrevor.fileUploader = function(block, file, success, error) {
 
-  SirTrevor.EventBus.trigger("onUploadStart");
-
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
 
@@ -18,7 +16,6 @@ SirTrevor.fileUploader = function(block, file, success, error) {
 
   var callbackSuccess = function(data){
     SirTrevor.log('Upload callback called');
-    SirTrevor.EventBus.trigger("onUploadStop");
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
       _.bind(success, block)(data);
@@ -27,7 +24,6 @@ SirTrevor.fileUploader = function(block, file, success, error) {
 
   var callbackError = function(jqXHR, status, errorThrown){
     SirTrevor.log('Upload callback error called');
-    SirTrevor.EventBus.trigger("onUploadStop");
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
       _.bind(error, block)(status);
