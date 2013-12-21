@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.3
+
+* Refactored upload triggers, now handled by Ajaxable mixin
+* Slight change to the `Image` block – no longer sets the button title to 'Please wait...' on upload
+* Escaped `class` names and other minor fixes so including ST doesn't blow up IE 7 / 8
+
 ## 0.3.2
 
 * Added new controllable mixin for adding new functionality to blocks (https://github.com/madebymany/sir-trevor-js/pull/118)
