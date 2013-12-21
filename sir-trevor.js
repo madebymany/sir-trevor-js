@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-20
+ * 2013-12-21
  */
 
 (function ($, _){
@@ -363,8 +363,8 @@
             editor.errors.push({ text: i18n.t("errors:load_fail") });
             editor.renderErrors();
   
-            console.log('Sorry there has been a problem with parsing the JSON');
-            console.log(e);
+            SirTrevor.log('Sorry there has been a problem with parsing the JSON');
+            SirTrevor.log(e);
           }
         }
       break;
@@ -1327,7 +1327,7 @@
   
       type: '',
   
-      class: function() {
+      'class': function() {
         return _.classify(this.type);
       },
   
@@ -1388,7 +1388,7 @@
       },
   
       addMessage: function(msg, additionalClass) {
-        var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
+        var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
         this.$messages.append($msg)
                       .addClass('st-block__messages--is-visible');
         return $msg;
