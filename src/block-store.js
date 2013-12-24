@@ -1,7 +1,13 @@
 SirTrevor.BlockStore = {
 
+  /** 
+   * Internal storage object for the block
+   */
   blockStorage: {},
 
+  /**
+   * Initialize the store, including the block type
+   */
   createStore: function(blockData) {
     this.blockStorage = {
       type: _.underscored(this.type),
@@ -9,6 +15,9 @@ SirTrevor.BlockStore = {
     };
   },
 
+  /**
+   * Serialized the block and saves the data into the store
+   */
   save: function() { 
     var data = this._serializeData(); 
 
@@ -33,10 +42,17 @@ SirTrevor.BlockStore = {
     return this.blockStorage.data;
   },
 
+  /**
+   * Internal method to get the block's data
+   */
   _getData: function() {
     return this.blockStorage.data;
   },
 
+  /**
+   * Set the block data.
+   * This is used by the save() method
+   */
   setData: function(blockData) {
     SirTrevor.log("Setting data for block " + this.blockID);
     _.extend(this.blockStorage.data, blockData || {});
