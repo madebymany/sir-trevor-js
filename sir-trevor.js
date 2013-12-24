@@ -2752,8 +2752,14 @@ var EventBus = require('./event-bus');
 
 module.exports = {
 
+  /**
+   * Internal storage object for the block
+   */
   blockStorage: {},
 
+  /**
+   * Initialize the store, including the block type
+   */
   createStore: function(blockData) {
     this.blockStorage = {
       type: utils.underscored(this.type),
@@ -2761,6 +2767,9 @@ module.exports = {
     };
   },
 
+  /**
+   * Serialize the block and save the data into the store
+   */
   save: function() {
     var data = this._serializeData();
 
@@ -2783,6 +2792,10 @@ module.exports = {
     return this.blockStorage.data;
   },
 
+  /**
+   * Set the block data.
+   * This is used by the save() method.
+   */
   setData: function(blockData) {
     utils.log("Setting data for block " + this.blockID);
     Object.assign(this.blockStorage.data, blockData || {});
