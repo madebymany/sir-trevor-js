@@ -1183,11 +1183,6 @@
       _.extend(this.blockStorage.data, blockData || {});
     },
   
-    setAndRetrieveData: function(blockData) {
-      this.setData(blockData);
-      return this._getData();
-    },
-  
     setAndLoadData: function(blockData) {
       this.setData(blockData);
       this.beforeLoadingData();
