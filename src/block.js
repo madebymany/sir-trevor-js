@@ -352,7 +352,7 @@ SirTrevor.Block = (function(){
     },
 
     isEmpty: function() {
-      return _.isEmpty(this.saveAndGetData());
+      return _.isEmpty(this.getBlockData());
     }
 
   });

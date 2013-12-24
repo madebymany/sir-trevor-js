@@ -22,9 +22,12 @@ SirTrevor.BlockStore = {
     return this.blockStorage;
   },
 
-  saveAndGetData: function() {
-    var store = this.saveAndReturnData();
-    return store.data || store;
+  /**
+   * Get the block's specific data
+   */
+  getBlockData: function() {
+    this.save();
+    return this.blockStorage.data;
   },
 
   _getData: function() {

@@ -1163,9 +1163,12 @@
       return this.blockStorage;
     },
   
-    saveAndGetData: function() {
-      var store = this.saveAndReturnData();
-      return store.data || store;
+    /**
+     * Get the block's specific data
+     */
+    getBlockData: function() {
+      this.save();
+      return this.blockStorage.data;
     },
   
     _getData: function() {
@@ -1692,7 +1695,7 @@
       },
   
       isEmpty: function() {
-        return _.isEmpty(this.saveAndGetData());
+        return _.isEmpty(this.getBlockData());
       }
   
     });
@@ -1890,7 +1893,7 @@
       },
   
       isEmpty: function() {
-        return _.isEmpty(this.saveAndGetData().text);
+        return _.isEmpty(this.getBlockData().text);
       }
   
     });
