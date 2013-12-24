@@ -55,7 +55,7 @@ module.exports = Block.extend({
   },
 
   isEmpty: function() {
-    return _.isEmpty(this.saveAndGetData().text);
+    return _.isEmpty(this.getBlockData().text);
   }
 
 });

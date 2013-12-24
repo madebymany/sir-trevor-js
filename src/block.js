@@ -172,7 +172,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     /* Generic _serializeData implementation to serialize the block into a plain object.
      * Can be overwritten, although hopefully this will cover most situations.
-     * If you want to get the data of your block use block.saveAndGetData()
+     * If you want to get the data of your block use block.getBlockData()
      */
     _serializeData: function() {
       utils.log("toData for " + this.blockID);
@@ -364,7 +364,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     },
 
     isEmpty: function() {
-      return _.isEmpty(this.saveAndGetData());
+      return _.isEmpty(this.getBlockData());
     }
 
 });

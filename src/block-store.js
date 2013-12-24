@@ -29,9 +29,9 @@ module.exports = {
     return this.blockStorage;
   },
 
-  saveAndGetData: function() {
-    var store = this.saveAndReturnData();
-    return store.data || store;
+  getBlockData: function() {
+    this.save();
+    return this.blockStorage.data;
   },
 
   _getData: function() {
