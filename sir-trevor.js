@@ -1158,7 +1158,10 @@
       }
     },
   
-    saveAndReturnData: function() {
+    /**
+     * Get the full data object, including block type, etc
+     */
+    getData: function() {
       this.save();
       return this.blockStorage;
     },
@@ -3029,7 +3032,7 @@
         }
   
         SirTrevor.log("Adding data for block " + block.blockID + " to block store");
-        this.store.addData(block.saveAndReturnData());
+        this.store.addData(block.getData());
       },
   
       /*

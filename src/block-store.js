@@ -17,7 +17,10 @@ SirTrevor.BlockStore = {
     }
   },
 
-  saveAndReturnData: function() {
+  /**
+   * Get the full data object, including block type, etc
+   */
+  getData: function() {
     this.save();
     return this.blockStorage;
   },
