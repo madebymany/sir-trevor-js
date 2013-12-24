@@ -2769,7 +2769,7 @@ module.exports = {
     }
   },
 
-  saveAndReturnData: function() {
+  getData: function() {
     this.save();
     return this.blockStorage;
   },
@@ -4176,7 +4176,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       return;
     }
 
-    var blockData = block.saveAndReturnData();
+    var blockData = block.getData();
     utils.log("Adding data for block " + block.blockID + " to block store:",
               blockData);
     this.store.addData(blockData);
