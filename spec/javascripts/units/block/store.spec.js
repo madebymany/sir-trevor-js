@@ -57,12 +57,12 @@ describe("Block:Store", function(){
 
     beforeEach(function() {
       block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
-      spyOn(block, '_toData');
+      spyOn(block, '_serializeData');
     });
 
-    it("calls _toData on save", function(){
+    it("calls _serializeData on save", function(){
       block.save();
-      expect(block._toData).toHaveBeenCalled();
+      expect(block._serializeData).toHaveBeenCalled();
     });
 
   });

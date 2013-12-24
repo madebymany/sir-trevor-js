@@ -1151,7 +1151,7 @@
     },
   
     save: function() { 
-      var data = this._toData(); 
+      var data = this._serializeData(); 
   
       if (!_.isEmpty(data)) {
         this.setData(data);
@@ -1187,7 +1187,7 @@
       this.beforeLoadingData();
     },
   
-    _toData: function() {},
+    _serializeData: function() {},
     loadData: function() {},
   
     beforeLoadingData: function() {
@@ -1489,12 +1489,12 @@
       },
   
       /*
-        Generic _toData implementation to serialize the block into a plain object.
+        Generic _serializeData implementation to serialize the block into a plain object.
         Can be overwritten, although hopefully this will cover most situations.
         If you want to get the data of your block use block.saveAndGetData()
       */
-      _toData: function() {
-        SirTrevor.log("toData for " + this.blockID);
+      _serializeData: function() {
+        SirTrevor.log("serializing data for " + this.blockID);
   
         var bl = this.$el,
             data = {};
