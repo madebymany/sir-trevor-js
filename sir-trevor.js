@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-12-02
+ * 2014-12-03
  */
 
 
@@ -2324,7 +2324,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./me
   handleControlButtonClick: function(e) {
     e.stopPropagation();
 
-    this.mediator.trigger('createBlock', $(e.currentTarget).attr('data-type'));
+    this.mediator.trigger('block:create', $(e.currentTarget).attr('data-type'));
   },
 
   renderInContainer: function(container) {
@@ -2761,7 +2761,13 @@ module.exports = {
     };
   },
 
-  save: function() { this.toData(); },
+  save: function() {
+    var data = this.toData();
+
+    if (!_.isEmpty(data)) {
+      this.setData(data);
+    }
+  },
 
   saveAndReturnData: function() {
     this.save();
@@ -3065,35 +3071,33 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       }
     },
 
-    /* Generic toData implementation.
+    /* Serializes the block into a plain object.
+     * Generic toData implementation.
      * Can be overwritten, although hopefully this will cover most situations
      */
     toData: function() {
       utils.log("toData for " + this.blockID);
 
-      var dataObj = {};
+      var data = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
         var content = this.getTextBlock().html();
         if (content.length > 0) {
-          dataObj.text = stToMarkdown(content, this.type);
+          data.text = stToMarkdown(content, this.type);
         }
       }
 
       // Add any inputs to the data attr
-      if(this.$(':input').not('.st-paste-block').length > 0) {
+      if (this.$(':input').not('.st-paste-block').length > 0) {
         this.$(':input').each(function(index,input){
           if (input.getAttribute('name')) {
-            dataObj[input.getAttribute('name')] = input.value;
+            data[input.getAttribute('name')] = input.value;
           }
         });
       }
 
-      // Set
-      if(!_.isEmpty(dataObj)) {
-        this.setData(dataObj);
-      }
+      return data;
     },
 
     /* Generic implementation to tell us when the block is active */
@@ -4172,8 +4176,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       return;
     }
 
-    utils.log("Adding data for block " + block.blockID + " to block store");
-    this.store.addData(block.getData());
+    var blockData = block.saveAndReturnData();
+    utils.log("Adding data for block " + block.blockID + " to block store:",
+              blockData);
+    this.store.addData(blockData);
   },
 
   /*
@@ -4199,12 +4205,13 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   validateBlocks: function(shouldValidate) {
-    this.$wrapper.find('.st-block').each(function(block) {
-      var _block = this.block_manager.findBlockById($(block).attr('id'));
+    var self = this;
+    this.$wrapper.find('.st-block').each(function(idx, block) {
+      var _block = self.block_manager.findBlockById($(block).attr('id'));
       if (!_.isUndefined(_block)) {
-        this.validateAndSaveBlock(_block, shouldValidate);
+        self.validateAndSaveBlock(_block, shouldValidate);
       }
-    }, this);
+    });
   },
 
   findBlockById: function(block_id) {
@@ -4357,8 +4364,8 @@ Object.assign(EditorStore.prototype, {
     return this.store;
   },
 
-  toString: function() {
-    return JSON.stringify(this.store);
+  toString: function(space) {
+    return JSON.stringify(this.store, undefined, space);
   },
 
   reset: function() {

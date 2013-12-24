@@ -170,35 +170,33 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       }
     },
 
-    /* Generic toData implementation.
+    /* Serializes the block into a plain object.
+     * Generic toData implementation.
      * Can be overwritten, although hopefully this will cover most situations
      */
     toData: function() {
       utils.log("toData for " + this.blockID);
 
-      var dataObj = {};
+      var data = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
         var content = this.getTextBlock().html();
         if (content.length > 0) {
-          dataObj.text = stToMarkdown(content, this.type);
+          data.text = stToMarkdown(content, this.type);
         }
       }
 
       // Add any inputs to the data attr
-      if(this.$(':input').not('.st-paste-block').length > 0) {
+      if (this.$(':input').not('.st-paste-block').length > 0) {
         this.$(':input').each(function(index,input){
           if (input.getAttribute('name')) {
-            dataObj[input.getAttribute('name')] = input.value;
+            data[input.getAttribute('name')] = input.value;
           }
         });
       }
 
-      // Set
-      if(!_.isEmpty(dataObj)) {
-        this.setData(dataObj);
-      }
+      return data;
     },
 
     /* Generic implementation to tell us when the block is active */
