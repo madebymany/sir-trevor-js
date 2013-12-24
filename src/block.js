@@ -149,11 +149,11 @@ SirTrevor.Block = (function(){
     },
 
     /*
-      Serializes the block into a plain object.
-      Generic toData implementation.
-      Can be overwritten, although hopefully this will cover most situations
+      Generic _toData implementation to serialize the block into a plain object.
+      Can be overwritten, although hopefully this will cover most situations.
+      If you want to get the data of your block use block.saveAndGetData()
     */
-    toData: function() {
+    _toData: function() {
       SirTrevor.log("toData for " + this.blockID);
 
       var bl = this.$el,

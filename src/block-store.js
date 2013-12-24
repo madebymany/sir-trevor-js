@@ -10,7 +10,7 @@ SirTrevor.BlockStore = {
   },
 
   save: function() { 
-    var data = this.toData(); 
+    var data = this._toData(); 
 
     if (!_.isEmpty(data)) {
       this.setData(data);
@@ -46,7 +46,7 @@ SirTrevor.BlockStore = {
     this.beforeLoadingData();
   },
 
-  toData: function() {},
+  _toData: function() {},
   loadData: function() {},
 
   beforeLoadingData: function() {
