@@ -2779,7 +2779,7 @@ module.exports = {
     return store.data || store;
   },
 
-  getData: function() {
+  _getData: function() {
     return this.blockStorage.data;
   },
 
@@ -2790,7 +2790,7 @@ module.exports = {
 
   setAndRetrieveData: function(blockData) {
     this.setData(blockData);
-    return this.getData();
+    return this._getData();
   },
 
   setAndLoadData: function(blockData) {
@@ -2804,7 +2804,7 @@ module.exports = {
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);
     EventBus.trigger("editor/block/loadData");
-    this.loadData(this.getData());
+    this.loadData(this._getData());
   },
 
   _loadData: function() {
@@ -2813,7 +2813,7 @@ module.exports = {
   },
 
   checkAndLoadData: function() {
-    if (!_.isEmpty(this.getData())) {
+    if (!_.isEmpty(this._getData())) {
       this.beforeLoadingData();
     }
   }
