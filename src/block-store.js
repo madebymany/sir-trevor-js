@@ -17,7 +17,7 @@ module.exports = {
   },
 
   save: function() {
-    var data = this._toData();
+    var data = this._serializeData();
 
     if (!_.isEmpty(data)) {
       this.setData(data);
@@ -53,7 +53,7 @@ module.exports = {
     this.beforeLoadingData();
   },
 
-  _toData: function() {},
+  _serializeData: function() {},
   loadData: function() {},
 
   beforeLoadingData: function() {
