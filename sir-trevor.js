@@ -1168,7 +1168,7 @@
       return store.data || store;
     },
   
-    getData: function() {
+    _getData: function() {
       return this.blockStorage.data;
     },
   
@@ -1179,7 +1179,7 @@
   
     setAndRetrieveData: function(blockData) {
       this.setData(blockData);
-      return this.getData();
+      return this._getData();
     },
   
     setAndLoadData: function(blockData) {
@@ -1193,7 +1193,7 @@
     beforeLoadingData: function() {
       SirTrevor.log("loadData for " + this.blockID);
       SirTrevor.EventBus.trigger("editor/block/loadData");
-      this.loadData(this.getData());
+      this.loadData(this._getData());
     },
   
     _loadData: function() {
@@ -1202,7 +1202,7 @@
     },
   
     checkAndLoadData: function() {
-      if (!_.isEmpty(this.getData())) {
+      if (!_.isEmpty(this._getData())) {
         this.beforeLoadingData();
       }
     }
