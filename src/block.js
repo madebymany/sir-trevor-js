@@ -149,6 +149,7 @@ SirTrevor.Block = (function(){
     },
 
     /*
+      Serializes the block into a plain object.
       Generic toData implementation.
       Can be overwritten, although hopefully this will cover most situations
     */
@@ -156,29 +157,26 @@ SirTrevor.Block = (function(){
       SirTrevor.log("toData for " + this.blockID);
 
       var bl = this.$el,
-          dataObj = {};
+          data = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
         var content = this.getTextBlock().html();
         if (content.length > 0) {
-          dataObj.text = SirTrevor.toMarkdown(content, this.type);
+          data.text = SirTrevor.toMarkdown(content, this.type);
         }
       }
 
       // Add any inputs to the data attr
-      if(this.$(':input').not('.st-paste-block').length > 0) {
+      if (this.$(':input').not('.st-paste-block').length > 0) {
         this.$(':input').each(function(index,input){
           if (input.getAttribute('name')) {
-            dataObj[input.getAttribute('name')] = input.value;
+            data[input.getAttribute('name')] = input.value;
           }
         });
       }
 
-      // Set
-      if(!_.isEmpty(dataObj)) {
-        this.setData(dataObj);
-      }
+      return data;
     },
 
     /* Generic implementation to tell us when the block is active */

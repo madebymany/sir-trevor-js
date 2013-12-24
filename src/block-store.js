@@ -9,7 +9,13 @@ SirTrevor.BlockStore = {
     };
   },
 
-  save: function() { this.toData(); },
+  save: function() { 
+    var data = this.toData(); 
+
+    if (!_.isEmpty(data)) {
+      this.setData(data);
+    }
+  },
 
   saveAndReturnData: function() {
     this.save();
