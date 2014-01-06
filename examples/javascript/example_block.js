@@ -20,9 +20,6 @@ SirTrevor.Blocks.Example = (function(){
       return "Example";
     },
 
-    // Integer; the overall number of blocks of this type that can be added
-    limit: 0,
-
     // Boolean; show this blockType of the toolbar
     toolbarEnabled: true,
 
