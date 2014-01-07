@@ -48,9 +48,11 @@ SirTrevor.Editor = (function(){
       this._bindFunctions();
 
       this.store("create");
-      this.build();
-
+      
       SirTrevor.instances.push(this);
+      
+      this.build();
+      
       SirTrevor.bindFormSubmit(this.$form);
     },
 
