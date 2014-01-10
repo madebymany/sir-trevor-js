@@ -70,7 +70,7 @@ Convenience method while developing to compile the Sass files and concatenate th
 
 Please ensure any pull requests have relevant Jasmine tests (where applicable).
 
-## Licence
+## License
 
 Sir Trevor is released under the MIT license:
 [opensource.org/licenses/MIT](http://opensource.org/licenses/MIT)
