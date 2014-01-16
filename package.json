@@ -1,6 +1,10 @@
 {
   "name": "sir-trevor",
   "version": "0.3.2",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:madebymany/sir-trevor-js.git"  
+  },
   "dependencies": {
     "grunt": "0.4.1",
     "grunt-cli": "0.1.6",
