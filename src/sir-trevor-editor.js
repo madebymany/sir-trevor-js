@@ -78,7 +78,7 @@ SirTrevor.Editor = (function(){
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
       this.$wrapper.prepend(this.fl_block_controls.render().$el);
-      $(document.body).append(this.formatBar.render().$el);
+      $(this.options.formatBarContainer).append(this.formatBar.render().$el);
       this.$outer.append(this.block_controls.render().$el);
 
       $(window).bind('click', this.hideAllTheThings);

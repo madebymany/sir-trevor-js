@@ -39,7 +39,8 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
-    errorsContainer: undefined
+    errorsContainer: undefined,
+    formatBarContainer: document.body
   };
 
   SirTrevor.BlockMixins = {};
