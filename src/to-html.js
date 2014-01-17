@@ -12,7 +12,7 @@ SirTrevor.toHTML = function(markdown, type) {
   }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-    return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+    return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
   });
 
   // This may seem crazy, but because JS doesn't have a look behind,
@@ -22,10 +22,10 @@ SirTrevor.toHTML = function(markdown, type) {
   html = _.reverse(
            _.reverse(html)
            .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-              return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
+              return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
            })
            .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-              return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
+              return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
            })
           );
 
@@ -54,12 +54,12 @@ SirTrevor.toHTML = function(markdown, type) {
   }
 
   if (shouldWrap) {
-    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\n/gm, "</div><div>");
+    html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
+    html = html.replace(/\r?\n/gm, "</div><div>");
   }
 
   html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-             .replace(/\n/g, "<br>")
+             .replace(/\r?\n/g, "<br>")
              .replace(/\*\*/, "")
              .replace(/__/, "");  // Cleanup any markdown characters left
 
