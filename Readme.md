@@ -46,6 +46,13 @@ Sir Trevor can also load dependencies using component.
 
     component install madebymany/sir-trevor-js
 
+For a component/component example:
+
+    cd examples-component
+    component install
+    component build
+    open index.html
+
 ## Contributing
 
 See the [roadmap](https://github.com/madebymany/sir-trevor-js/wiki/Roadmap) and read a little about [the philosophy](https://github.com/madebymany/sir-trevor-js/wiki/Philosophy) guiding development.
