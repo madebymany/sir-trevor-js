@@ -1,0 +1,42 @@
+{
+  "name": "sir-trevor-js",
+  "version": "0.3.2",
+  "description": "",
+  "keywords": [],
+  "repo": "https://github.com/madebymany/sir-trevor-js",
+  "local": [],
+  "main": "sir-trevor.js",
+  "scripts": [
+    "sir-trevor.js"
+  ],
+  "styles": [
+    "sir-trevor.css",
+    "sir-trevor-icons.css"
+  ],
+  "files": [
+    "public/images/icons/src/Add.svg",
+    "public/images/icons/src/Bin-open.svg",
+    "public/images/icons/src/Bin.svg",
+    "public/images/icons/src/Competition.svg",
+    "public/images/icons/src/Embed.svg",
+    "public/images/icons/src/Header.svg",
+    "public/images/icons/src/iFrame.svg",
+    "public/images/icons/src/Image.svg",
+    "public/images/icons/src/link.svg",
+    "public/images/icons/src/List.svg",
+    "public/images/icons/src/Move.svg",
+    "public/images/icons/src/Poll.svg",
+    "public/images/icons/src/Quote.svg",
+    "public/images/icons/src/SirTrev.json",
+    "public/images/icons/src/Text.svg",
+    "public/images/icons/src/Tweet.svg",
+    "public/images/icons/src/Video.svg"
+  ],
+  "license": "MIT",
+  "remotes": [],
+  "dependencies": {
+    "components/underscore": "*",
+    "components/jquery": "*",
+    "thinkerous/eventable": "*"
+  }
+}
