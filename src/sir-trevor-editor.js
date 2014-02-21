@@ -216,7 +216,8 @@ SirTrevor.Editor = (function(){
     },
 
     scrollTo: function(element) {
-      $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
+      // scrolling is badly broken. So comment out.
+      // $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
     },
 
     blockFocus: function(block) {
