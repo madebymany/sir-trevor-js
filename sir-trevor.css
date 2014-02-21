@@ -456,7 +456,7 @@ ul.st-text-block {
   background: #4d5358;
   opacity: 0;
   visibility: hidden;
-  z-index: 10;
+  z-index: 2000;
   border-radius: 0.4em;
   padding: 0.5em 0.9em;
   -webkit-transition: opacity 0.2s ease-in-out;
