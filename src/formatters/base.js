@@ -58,6 +58,54 @@
     text : "link"
   });
 
+  var Superscript = SirTrevor.Formatter.extend({
+    title: "superscript",
+    cmd: "superscript",
+    text: "sup",
+    keyCode: 85,
+    toMarkdown: function( markdown ) {
+      function replaceSuperscripts(match, p1, p2){
+        if(_.isUndefined(p2)) { p2 = ''; }
+        return "^^^^" + p1.replace(/<(.)?br(.)?>/g, '') + "^^^^" + p2;
+      }
+
+      return markdown
+        .replace('<sup><br></sup>', '<br>')
+        .replace(/<sup>(?:\s*)(.*?)(\s)*?<\/sup>/gim, replaceSuperscripts);
+    },
+    toHTML: function( html ) {
+      return _.reverse(
+        _.reverse(html)
+        .replace(/\^\^\^\^(?!\\)((\^\^\^\^\\|[^\^\^\^\^])*)\^\^\^\^(?=$|[^\\])/gm, function(match, p1) {
+          return ">pus/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">pus<";
+        }));
+    }
+  });
+
+  var Subscript = SirTrevor.Formatter.extend({
+    title: "subscript",
+    cmd: "subscript",
+    text: "sub",
+    keyCode: 68,
+    toMarkdown: function( markdown ) {
+      function replaceSubscripts(match, p1, p2){
+        if(_.isUndefined(p2)) { p2 = ''; }
+        return "vvvv" + p1.replace(/<(.)?br(.)?>/g, '') + "vvvv" + p2;
+      }
+
+      return markdown
+        .replace('<sub><br></sub>', '<br>')
+        .replace(/<sub>(?:\s*)(.*?)(\s)*?<\/sub>/gim, replaceSubscripts);
+    },
+    toHTML: function( html ) {
+      return _.reverse(
+        _.reverse(html)
+        .replace(/vvvv(?!\\)((vvvv\\|[^vvvv])*)vvvv(?=$|[^\\])/gm, function(match, p1) {
+          return ">bus/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">bus<";
+        }));
+    }
+  });
+
   /*
     Create our formatters and add a static reference to them
   */
@@ -65,5 +113,7 @@
   SirTrevor.Formatters.Italic = new Italic();
   SirTrevor.Formatters.Link = new Link();
   SirTrevor.Formatters.Unlink = new UnLink();
+  SirTrevor.Formatters.Superscript = new Superscript();
+  SirTrevor.Formatters.Subscript = new Subscript();
 
 })();

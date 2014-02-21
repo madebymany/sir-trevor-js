@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-21
+ * 2014-02-21
  */
 
 (function ($, _){
@@ -615,7 +615,7 @@
     }
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-      return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+      return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
     });
   
     // This may seem crazy, but because JS doesn't have a look behind,
@@ -625,10 +625,10 @@
     html = _.reverse(
              _.reverse(html)
              .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-                return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
+                return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
              })
              .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-                return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
+                return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
              })
             );
   
@@ -657,12 +657,12 @@
     }
   
     if (shouldWrap) {
-      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-      html = html.replace(/\n/gm, "</div><div>");
+      html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
+      html = html.replace(/\r?\n/gm, "</div><div>");
     }
   
     html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-               .replace(/\n/g, "<br>")
+               .replace(/\r?\n/g, "<br>")
                .replace(/\*\*/, "")
                .replace(/__/, "");  // Cleanup any markdown characters left
   
@@ -2260,6 +2260,54 @@
       text : "link"
     });
   
+    var Superscript = SirTrevor.Formatter.extend({
+      title: "superscript",
+      cmd: "superscript",
+      text: "sup",
+      keyCode: 85,
+      toMarkdown: function( markdown ) {
+        function replaceSuperscripts(match, p1, p2){
+          if(_.isUndefined(p2)) { p2 = ''; }
+          return "^^^^" + p1.replace(/<(.)?br(.)?>/g, '') + "^^^^" + p2;
+        }
+  
+        return markdown
+          .replace('<sup><br></sup>', '<br>')
+          .replace(/<sup>(?:\s*)(.*?)(\s)*?<\/sup>/gim, replaceSuperscripts);
+      },
+      toHTML: function( html ) {
+        return _.reverse(
+          _.reverse(html)
+          .replace(/\^\^\^\^(?!\\)((\^\^\^\^\\|[^\^\^\^\^])*)\^\^\^\^(?=$|[^\\])/gm, function(match, p1) {
+            return ">pus/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">pus<";
+          }));
+      }
+    });
+  
+    var Subscript = SirTrevor.Formatter.extend({
+      title: "subscript",
+      cmd: "subscript",
+      text: "sub",
+      keyCode: 68,
+      toMarkdown: function( markdown ) {
+        function replaceSubscripts(match, p1, p2){
+          if(_.isUndefined(p2)) { p2 = ''; }
+          return "vvvv" + p1.replace(/<(.)?br(.)?>/g, '') + "vvvv" + p2;
+        }
+  
+        return markdown
+          .replace('<sub><br></sub>', '<br>')
+          .replace(/<sub>(?:\s*)(.*?)(\s)*?<\/sub>/gim, replaceSubscripts);
+      },
+      toHTML: function( html ) {
+        return _.reverse(
+          _.reverse(html)
+          .replace(/vvvv(?!\\)((vvvv\\|[^vvvv])*)vvvv(?=$|[^\\])/gm, function(match, p1) {
+            return ">bus/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">bus<";
+          }));
+      }
+    });
+  
     /*
       Create our formatters and add a static reference to them
     */
@@ -2267,6 +2315,8 @@
     SirTrevor.Formatters.Italic = new Italic();
     SirTrevor.Formatters.Link = new Link();
     SirTrevor.Formatters.Unlink = new UnLink();
+    SirTrevor.Formatters.Superscript = new Superscript();
+    SirTrevor.Formatters.Subscript = new Subscript();
   
   })();
   /* Marker */
@@ -2607,9 +2657,11 @@
         this._bindFunctions();
   
         this.store("create");
-        this.build();
-  
+        
         SirTrevor.instances.push(this);
+        
+        this.build();
+        
         SirTrevor.bindFormSubmit(this.$form);
       },
   
@@ -2773,7 +2825,8 @@
       },
   
       scrollTo: function(element) {
-        $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
+        // scrolling is badly broken. So comment out.
+        // $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
       },
   
       blockFocus: function(block) {
