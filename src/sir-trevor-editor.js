@@ -200,9 +200,13 @@ SirTrevor.Editor = (function(){
       this.blocks.push(block);
       this._incrementBlockTypeCount(type);
 
-      block.focus();
+      if ( data ) {
+        SirTrevor.EventBus.trigger("block:create:existing", block);
+      } else {
+        SirTrevor.EventBus.trigger("block:create:new", block);
+        block.focus();
+      }
 
-      SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
       SirTrevor.log("Block created of type " + type);
       block.trigger("onRender");
 
