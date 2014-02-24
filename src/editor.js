@@ -197,7 +197,7 @@ SirTrevor.Editor = (function(){
       }
 
       SirTrevor.log("Adding data for block " + block.blockID + " to block store");
-      this.store.addData(block.saveAndReturnData());
+      this.store.addData(block.getData());
     },
 
     /*

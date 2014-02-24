@@ -132,11 +132,11 @@
 
   /* Block Mixins */
   //= block_mixins
-  //= block.positioner.js
-  //= block.reorder.js
-  //= block.deletion.js
-  //= block.validations.js
-  //= block.store.js
+  //= block-positioner.js
+  //= block-reorder.js
+  //= block-deletion.js
+  //= block-validations.js
+  //= block-store.js
   //= simple-block.js
   //= block.js
   //= formatter.js
@@ -151,7 +151,7 @@
   //= floating-block-controls.js
   /* FormatBar */
   //= format-bar.js
-  //= editor.store.js
+  //= editor-store.js
   //= block-manager.js
   //= error-handler.js
   //= editor.js

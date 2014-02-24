@@ -1,7 +1,13 @@
 SirTrevor.BlockStore = {
 
+  /** 
+   * Internal storage object for the block
+   */
   blockStorage: {},
 
+  /**
+   * Initialize the store, including the block type
+   */
   createStore: function(blockData) {
     this.blockStorage = {
       type: _.underscored(this.type),
@@ -9,30 +15,47 @@ SirTrevor.BlockStore = {
     };
   },
 
-  save: function() { this.toData(); },
+  /**
+   * Serialized the block and saves the data into the store
+   */
+  save: function() { 
+    var data = this._serializeData(); 
 
-  saveAndReturnData: function() {
+    if (!_.isEmpty(data)) {
+      this.setData(data);
+    }
+  },
+
+  /**
+   * Get the full data object, including block type, etc
+   */
+  getData: function() {
     this.save();
     return this.blockStorage;
   },
 
-  saveAndGetData: function() {
-    var store = this.saveAndReturnData();
-    return store.data || store;
-  },
-
-  getData: function() {
+  /**
+   * Get the block's specific data
+   */
+  getBlockData: function() {
+    this.save();
     return this.blockStorage.data;
   },
 
+  /**
+   * Internal method to get the block's data
+   */
+  _getData: function() {
+    return this.blockStorage.data;
+  },
+
+  /**
+   * Set the block data.
+   * This is used by the save() method
+   */
   setData: function(blockData) {
     SirTrevor.log("Setting data for block " + this.blockID);
     _.extend(this.blockStorage.data, blockData || {});
-  },
-
-  setAndRetrieveData: function(blockData) {
-    this.setData(blockData);
-    return this.getData();
   },
 
   setAndLoadData: function(blockData) {
@@ -40,13 +63,13 @@ SirTrevor.BlockStore = {
     this.beforeLoadingData();
   },
 
-  toData: function() {},
+  _serializeData: function() {},
   loadData: function() {},
 
   beforeLoadingData: function() {
     SirTrevor.log("loadData for " + this.blockID);
     SirTrevor.EventBus.trigger("editor/block/loadData");
-    this.loadData(this.getData());
+    this.loadData(this._getData());
   },
 
   _loadData: function() {
@@ -55,7 +78,7 @@ SirTrevor.BlockStore = {
   },
 
   checkAndLoadData: function() {
-    if (!_.isEmpty(this.getData())) {
+    if (!_.isEmpty(this._getData())) {
       this.beforeLoadingData();
     }
   }
