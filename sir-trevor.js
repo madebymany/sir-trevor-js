@@ -7,7 +7,18 @@
  * 2013-12-21
  */
 
-(function ($, _){
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(['jquery', 'underscore', 'Eventable'], factory);
+  } else if (typeof exports === 'object') {
+    var $ = require("jquery");
+    var _ = require("underscore");
+    var Eventable = require("Eventable");
+
+    module.exports = factory($, _, Eventable);
+  }
+}(this, function ($, _, Eventable) {
+  var jQuery = $;
 
   var root = this,
       SirTrevor;
@@ -3160,4 +3171,5 @@
     }
   };
 
-}(jQuery, _));
+  return SirTrevor;
+}));
