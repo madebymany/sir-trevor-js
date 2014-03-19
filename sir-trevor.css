@@ -160,8 +160,8 @@
 .st-block__inner:hover {
   border-color: #34e0c2; }
 
-.st-block--with-errors .st-block__inner,
-.st-block--delete-active .st-block__inner {
+.st-block--with-errors > .st-block__inner,
+.st-block--delete-active > .st-block__inner {
   border-color: #d70014; }
 
 .st-block--with-plus:after,
@@ -318,7 +318,7 @@ ul.st-text-block {
 .st-block__messages--is-visible {
   display: block; }
 
-.st-block--with-errors .st-block__messages {
+.st-block--with-errors > .st-block__inner > .st-block__messages {
   border-color: #d70014; }
 
 .st-block__messages span {
@@ -390,8 +390,8 @@ ul.st-text-block {
   left: 0;
   opacity: 0; }
 
-.st-block__inner:hover .st-block__ui,
-.st-block__inner:hover .st-block__control-ui {
+.st-block__inner:hover > .st-block__ui,
+.st-block__inner:hover > .st-block__control-ui {
   opacity: 1; }
 
 .st-block-ui-btn, .st-block-control-ui-btn {
@@ -420,25 +420,19 @@ ul.st-text-block {
   border-left: 0;
   border-bottom: 0; }
 
-.st-block--with-errors .st-block-ui-btn, .st-block--with-errors .st-block-control-ui-btn,
-.st-block--delete-active .st-block-ui-btn,
-.st-block--delete-active .st-block-control-ui-btn {
+.st-block--with-errors > .st-block__inner > .st-block__ui .st-block-ui-btn, .st-block--with-errors > .st-block__inner > .st-block__ui .st-block-control-ui-btn, .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls .st-block-ui-btn, .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls .st-block-control-ui-btn, .st-block--delete-active > .st-block__inner > .st-block__ui .st-block-ui-btn, .st-block--delete-active > .st-block__inner > .st-block__ui .st-block-control-ui-btn, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls .st-block-ui-btn, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls .st-block-control-ui-btn {
   color: #d70014;
   border-color: #d70014; }
+  .st-block--with-errors > .st-block__inner > .st-block__ui .st-block-ui-btn:hover, .st-block--with-errors > .st-block__inner > .st-block__ui .st-block-control-ui-btn:hover, .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls .st-block-ui-btn:hover, .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls .st-block-control-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui .st-block-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui .st-block-control-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls .st-block-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls .st-block-control-ui-btn:hover {
+    background-color: #d70014; }
+.st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls {
+  opacity: 1;
+  z-index: 2; }
 
 .st-block-ui-btn:hover, .st-block-control-ui-btn:hover,
 .st-block-control-ui-btn:hover {
   color: #fff;
   background: #34e0c2; }
-
-.st-block--with-errors .st-block-ui-btn:hover, .st-block--with-errors .st-block-control-ui-btn:hover,
-.st-block--delete-active .st-block-ui-btn:hover,
-.st-block--delete-active .st-block-control-ui-btn:hover {
-  background-color: #d70014; }
-
-.st-block--delete-active .st-block__ui-delete-controls {
-  opacity: 1;
-  z-index: 2; }
 
 .st-block__delete-label {
   display: block;
@@ -449,6 +443,32 @@ ul.st-text-block {
   background: #fff;
   color: #d70014;
   padding: 0.4em 0; }
+
+.st-block[data-type=Columns] > .st-block__inner > .columns-row > .column {
+  position: relative; }
+  .st-block[data-type=Columns] > .st-block__inner > .columns-row > .column > .st-block-controls__top, .st-block[data-type=Columns] > .st-block__inner > .columns-row > .column > .st-block.st-icon--add::after {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto; }
+  .st-block[data-type=Columns] > .st-block__inner > .columns-row > .column::before {
+    display: none;
+    position: absolute;
+    width: 95%;
+    left: 2.5%;
+    border: 1px solid #35debc;
+    border-bottom: none;
+    height: 3px;
+    content: ' ';
+    box-sizing: border-box; }
+.st-block[data-type=Columns]:hover > .st-block__inner > .columns-row > .column::before {
+  display: block; }
+.st-block[data-type=Columns] .column .st-block-controls {
+  font-size: 90%; }
+  .st-block[data-type=Columns] .column .st-block-controls .st-block-control {
+    margin-right: 5px;
+    margin-bottom: 3px; }
+    .st-block[data-type=Columns] .column .st-block-controls .st-block-control[data-type=Columns] {
+      display: none; }
 
 .st-format-bar {
   position: absolute;

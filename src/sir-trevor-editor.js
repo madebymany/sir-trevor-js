@@ -65,7 +65,7 @@ SirTrevor.Editor = (function(){
       this.$el.hide();
 
       this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
-      this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
+      this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID, this);
       this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
 
       this.listenTo(this.block_controls, 'createBlock', this.createBlock);
@@ -74,7 +74,7 @@ SirTrevor.Editor = (function(){
       this._setEvents();
 
       SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-      SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderBySelection);
+      SirTrevor.EventBus.on("formatter:position", this.formatBar.renderBySelection);
       SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
 
       this.$wrapper.prepend(this.fl_block_controls.render().$el);
@@ -109,7 +109,7 @@ SirTrevor.Editor = (function(){
 
       // Destroy all blocks
       _.each(this.blocks, function(block) {
-        this.removeBlock(block.blockID);
+        this.removeBlock(block);
       }, this);
 
       // Stop listening to events
@@ -172,7 +172,7 @@ SirTrevor.Editor = (function(){
       A block will have a reference to an Editor instance & the parent BlockType.
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
-    createBlock: function(type, data, render_at) {
+    createBlock: function(type, data, $container) {
       type = _.classify(type);
 
       if(this._blockLimitReached()) {
@@ -191,9 +191,12 @@ SirTrevor.Editor = (function(){
         return false;
       }
 
-      var block = new SirTrevor.Blocks[type](data, this.ID);
+      // additionally pass master editor object to block (needed for nested blocks)
+      var block = new SirTrevor.Blocks[type](data, this.ID, this);
 
-      this._renderInPosition(block.render().$el);
+      // optional `$container` argument can define the DOM element to adopt new block
+      // this is used for initial blocks structure building to support nested blocks
+      this._renderInPosition(block.render().$el, $container);
 
       this.listenTo(block, 'removeBlock', this.removeBlock);
 
@@ -208,6 +211,8 @@ SirTrevor.Editor = (function(){
 
       this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
       this.triggerBlockCountUpdate();
+
+      return block;
     },
 
     onNewBlockCreated: function(block) {
@@ -216,7 +221,7 @@ SirTrevor.Editor = (function(){
     },
 
     scrollTo: function(element) {
-      $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
+      $('html, body').animate({ scrollTop: element.offset().top }, 300, "linear");
     },
 
     blockFocus: function(block) {
@@ -243,8 +248,7 @@ SirTrevor.Editor = (function(){
       selectedPosition = selectedPosition - 1;
 
       var blockPosition = this.getBlockPosition($block);
-      var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
-      var blockByPosition = this.getBlockPosition($blockBy);
+      var $blockBy = $block.parent().children('.st-block').eq(selectedPosition);
 
       var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -275,9 +279,9 @@ SirTrevor.Editor = (function(){
       this.$wrapper.removeClass("st-outer--is-reordering");
     },
 
-    _renderInPosition: function(block) {
-      if (this.block_controls.current_container) {
-        this.block_controls.current_container.after(block);
+    _renderInPosition: function(block, $container) {
+      if (!_.isUndefined($container)) {
+        $container.after(block);
       } else {
         this.$wrapper.append(block);
       }
@@ -301,23 +305,33 @@ SirTrevor.Editor = (function(){
       return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
     },
 
-    removeBlock: function(block_id) {
-      var block = this.findBlockById(block_id),
-          type = _.classify(block.type),
+    removeBlock: function(block) {
+      var type = _.classify(block.type),
           controls = block.$el.find('.st-block-controls');
+
+      var nested_blocks = block.$el.find('.st-block');
+      if (nested_blocks.length > 0)
+      {
+        var list = nested_blocks.map(function() {
+          return { depth: $(this).parents().length, id: this.getAttribute('id') };
+        }).get();
+        list.sort(function(a, b) { return a.depth - b.depth; });
+        // remove nested blocks in depth first order
+        for (var i=0; i<list.length; i++) this.removeBlock(this.findBlockById(list[i].id));
+      }
 
       if (controls.length) {
         this.block_controls.hide();
         this.$wrapper.prepend(controls);
       }
-
       this.blockCounts[type] = this.blockCounts[type] - 1;
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
 
+      SirTrevor.EventBus.trigger("block:remove:pre", block);
       block.remove();
 
-      SirTrevor.EventBus.trigger("block:remove");
+      SirTrevor.EventBus.trigger("block:remove", block);
       this.triggerBlockCountUpdate();
 
       this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
@@ -368,22 +382,18 @@ SirTrevor.Editor = (function(){
     },
 
     validateBlocks: function(should_validate) {
-      if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-        return false;
-      }
-
-      var blockIterator = function(block,index) {
-        var _block = _.find(this.blocks, function(b) {
-          return (b.blockID == $(block).attr('id')); });
-
-        if (_.isUndefined(_block)) { return false; }
-
-        // Find our block
-        this.performValidations(_block, should_validate);
-        this.saveBlockStateToStore(_block);
-      };
-
-      _.each(this.$wrapper.find('.st-block'), blockIterator, this);
+      var self = this;
+      // validate all blocks
+      _.each(this.blocks, function(_block) {
+        if (_.isUndefined(_block)) return;
+        self.performValidations(_block, should_validate);
+      });
+      // save only top-level blocks (nesting is handled by container blocks themeselves)
+      this.$wrapper.children('.st-block').each(function() {
+        var _block = self.findBlockById(this.id);
+        if (_.isUndefined(_block)) return;
+        self.saveBlockStateToStore(_block);
+      });
     },
 
     validateBlockTypesExist: function(should_validate) {
@@ -468,7 +478,7 @@ SirTrevor.Editor = (function(){
     },
 
     getBlockPosition: function($block) {
-      return this.$wrapper.find('.st-block').index($block);
+      return $block.parent().children('.st-block').index($block);
     },
 
     /*
