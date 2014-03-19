@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "dependencies": {
     "grunt": "0.4.1",
     "grunt-cli": "0.1.6",
@@ -14,6 +14,7 @@
     "grunt-contrib-jshint": "~0.2.0",
     "grunt-contrib-uglify": "~0.1.2",
     "grunt-contrib-watch": "~0.3.1",
-    "grunt-contrib-sass": "~0.2.2"
+    "grunt-contrib-sass": "~0.2.2",
+    "grunt-image-embed": "~0.3.1"
   }
 }

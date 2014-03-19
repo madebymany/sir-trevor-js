@@ -1,24 +1,13 @@
 /*!
- * Sir Trevor JS v0.3.2
+ * Sir Trevor JS v0.4.0
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-21
+ * 2014-03-19
  */
 
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define(['jquery', 'underscore', 'Eventable'], factory);
-  } else if (typeof exports === 'object') {
-    var $ = require("jquery");
-    var _ = require("underscore");
-    var Eventable = require("Eventable");
-
-    module.exports = factory($, _, Eventable);
-  }
-}(this, function ($, _, Eventable) {
-  var jQuery = $;
+(function ($, _){
 
   var root = this,
       SirTrevor;
@@ -274,6 +263,9 @@
         text: {
           'title': "Text"
         },
+        columns: {
+          'title': "Columns"
+        },
         list: {
           'title': "List"
         },
@@ -304,7 +296,7 @@
     }
   };
   
-  if (window.i18n === undefined) {
+  if (window.i18n === undefined  || window.i18n.init === undefined) {
     // Minimal i18n stub that only reads the English strings
     SirTrevor.log("Using i18n stub");
     window.i18n = {
@@ -626,7 +618,7 @@
     }
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-      return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+      return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
     });
   
     // This may seem crazy, but because JS doesn't have a look behind,
@@ -636,10 +628,10 @@
     html = _.reverse(
              _.reverse(html)
              .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-                return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
+                return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
              })
              .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-                return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
+                return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
              })
             );
   
@@ -668,12 +660,12 @@
     }
   
     if (shouldWrap) {
-      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-      html = html.replace(/\n/gm, "</div><div>");
+      html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
+      html = html.replace(/\r?\n/gm, "</div><div>");
     }
   
     html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-               .replace(/\n/g, "<br>")
+               .replace(/\r?\n/g, "<br>")
                .replace(/\*\*/, "")
                .replace(/__/, "");  // Cleanup any markdown characters left
   
@@ -1012,6 +1004,8 @@
       },
   
       onBlockCountChange: function(new_count) {
+        // count only siblings blocks
+        new_count = this.$block.siblings('.st-block').length + 1;
         if (new_count != this.total_blocks) {
           this.total_blocks = new_count;
           this.renderPositionList();
@@ -1096,19 +1090,22 @@
   
       onDrop: function(ev) {
         ev.preventDefault();
+        ev.stopPropagation(); // to prevent event handling on outer blocks
   
         var dropped_on = this.$block,
-            item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
-            block = $('#' + item_id);
+            item_id = ev.originalEvent.dataTransfer.getData("text/plain");
   
-        if (!_.isUndefined(item_id) &&
-          !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-          dropped_on.attr('data-instance') == block.attr('data-instance')
-        ) {
-          dropped_on.after(block);
+        if (!_.isUndefined(item_id) && item_id.substr(0,9) == 'st-block-') {
+          var block = $('#' + item_id);
+          if (!_.isEmpty(block) &&
+              dropped_on.attr('id') != item_id &&
+              dropped_on.attr('data-instance') == block.attr('data-instance') &&
+              !$.contains(block[0], dropped_on[0]) // additional check for nested blocks
+              ) {
+            dropped_on.after(block);
+          }
+          SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
         }
-        SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
       },
   
       onDragStart: function(ev) {
@@ -1296,10 +1293,11 @@
   };
   SirTrevor.SimpleBlock = (function(){
   
-    var SimpleBlock = function(data, instance_id) {
+    var SimpleBlock = function(data, instance_id, sirTrevor) {
       this.createStore(data);
       this.blockID = _.uniqueId('st-block-');
       this.instanceID = instance_id;
+      this.sirTrevor = sirTrevor;
   
       this._ensureElement();
       this._bindFunctions();
@@ -1425,7 +1423,7 @@
   })();
   SirTrevor.Block = (function(){
   
-    var Block = function(data, instance_id) {
+    var Block = function(data, instance_id, sirTrevor) {
       SirTrevor.SimpleBlock.apply(this, arguments);
     };
   
@@ -1483,7 +1481,7 @@
       icon_name: 'default',
   
       validationFailMsg: function() {
-        return i18n.t('errors:validation_fail', { type: this.title() });
+        return i18n.t('errors:validation_fail', { type: _.result(this,'title') });
       },
   
       editorHTML: '<div class="st-block__editor"></div>',
@@ -1638,7 +1636,7 @@
   
         var onDeleteConfirm = function(e) {
           e.preventDefault();
-          this.trigger('removeBlock', this.blockID);
+          this.trigger('removeBlock', this);
         };
   
         var onDeleteDeny = function(e) {
@@ -1748,7 +1746,7 @@
           if (selectionStr === '') {
             SirTrevor.EventBus.trigger('formatter:hide');
           } else {
-            SirTrevor.EventBus.trigger('formatter:positon');
+            SirTrevor.EventBus.trigger('formatter:position');
           }
         });
        },
@@ -1884,6 +1882,184 @@
   
     });
   
+  })();
+  SirTrevor.Blocks.Columns = (function() {
+    return SirTrevor.Block.extend({
+      type: "Columns",
+      title: function() { return i18n.t('blocks:columns:title'); },
+      icon_name: 'columns',
+  
+      columns_presets: {
+        'columns-6-6': [6,6],
+        'columns-3-9': [3,9],
+        'columns-9-3': [9,3],
+        'columns-4-8': [4,8],
+        'columns-8-4': [8,4],
+        'columns-4-4-4': [4,4,4],
+        'columns-3-6-3': [3,6,3],
+        'columns-3-3-3-3': [3,3,3,3]
+      },
+  
+      controllable: true,
+  
+      constructor: function(data, instance_id, sirTrevor) {
+        SirTrevor.Block.apply(this, arguments);
+      },
+  
+      beforeBlockRender: function() {
+        this.controls = {
+          'twocolumns': this.changeColumnsHandler('columns-6-6'),
+          'threecolumns': this.changeColumnsHandler('columns-4-4-4'),
+          'onetwocolumns': this.changeColumnsHandler('columns-4-8'),
+          'twoonecolumns': this.changeColumnsHandler('columns-8-4'),
+          'fourcolumns': this.changeColumnsHandler('columns-3-3-3-3'),
+          'onethreecolumns': this.changeColumnsHandler('columns-3-9'),
+          'threeonecolumns': this.changeColumnsHandler('columns-9-3'),
+          'onetwoonecolumns': this.changeColumnsHandler('columns-3-6-3')
+        };
+      },
+  
+      changeColumnsHandler: function(preset) {
+        var self = this;
+        return function() { self.changeColumns(preset, false) };
+      },
+  
+      changeColumns: function(preset) {
+        if (this.columns_preset != preset)
+        {
+          this.applyColumns(preset);
+        }
+      },
+  
+      editorHTML: function() {
+        return _.template(
+            '<div class="columns-row" id="<%= blockID %>-columns-row" style="overflow: auto"/>'
+            , {blockID: this.blockID})
+      },
+  
+      _setBlockInner: function() {
+        SirTrevor.Block.prototype._setBlockInner.apply(this, arguments);
+        this.applyColumns('columns-6-6', true); /* default */
+      },
+  
+      applyColumns: function(preset, initial)
+      {
+        var self = this;
+        var columns_config = this.columns_presets[preset];
+  
+        var $to_delete = this.getColumns(':gt('+(columns_config.length-1)+')');
+        // if there are unneeded columns
+        if ($to_delete.length > 0) {
+          // ask confirmation only if there are nested blocks
+          if ($to_delete.children('.st-block').length > 0)
+          {
+            var txt = $to_delete.length == 1 ? 'column' : ($to_delete.length + ' columns');
+            if (!confirm('This action will delete last ' + txt + '. Do you really want to proceed?')) {
+              return; // interrupt if "Cancel" is pressed
+            }
+          }
+          $to_delete.each(function() {
+            var $this = $(this);
+            // destroy nested blocks properly
+            $this.children('.st-block').each(function() {
+              self.sirTrevor.removeBlock(self.sirTrevor.findBlockById(this.getAttribute('id')));
+            });
+            // destroy column itself
+            $this.trigger('destroy').remove();
+          });
+        }
+  
+        // apply new configuration
+        var total_width = _.reduce(columns_config, function(total, width){ return total+width; }, 0);
+        var $row = this.$('.columns-row');
+  
+        _.each(columns_config, function(ratio, i) {
+          var width = Math.round(ratio*99.0*100/total_width)/100;
+  
+          var $column = self.getColumn(i);
+          if ($column.length == 0) {
+            $column = $('<div class="column" style="float: left; "></div>');
+            var plus = new SirTrevor.FloatingBlockControls($column, self.instanceID);
+            self.listenTo(plus, 'showBlockControls', self.sirTrevor.showBlockControls);
+            $column.prepend(plus.render().$el);
+            $row.append($column);
+          }
+  
+          $column.css('width', width+'%');
+        });
+  
+        this.$('.st-block-control-ui-btn').removeClass('active')
+            .filter('[data-icon='+preset+']').addClass('active');
+  
+        this.columns_preset = preset;
+  
+        if (!initial) this.trigger('block:columns:change');
+      },
+  
+      onBlockRender: function() {
+        this.$('.st-block-control-ui-btn').filter('[data-icon='+this.columns_preset+']').addClass('active');
+      },
+  
+      getRow: function() {
+        if (this.$row) return this.$row;
+        return this.$row = this.$('#'+this.blockID+'-columns-row');
+      },
+  
+      getColumns: function(filter) {
+        return this.getRow().children(filter);
+      },
+  
+      getColumn: function(index) {
+        return this.getRow().children(':eq('+index+')');
+      },
+  
+      toData: function() {
+        var self = this;
+        var column_config = this.columns_presets[this.columns_preset];
+        var dataObj = { columns: [], preset: this.columns_preset };
+  
+        this.getColumns().each(function(i) {
+          var blocksData = [];
+          $(this).children('.st-block').each(function(){
+            var block = self.sirTrevor.findBlockById(this.getAttribute('id'));
+            blocksData.push(block.saveAndReturnData());
+          });
+  
+          dataObj.columns.push({
+            width: column_config[i],
+            blocks: blocksData
+          });
+        });
+  
+        this.setData(dataObj);
+      },
+  
+      loadData: function(data)
+      {
+        if (data.preset) {
+          this.applyColumns(data.preset, true);
+        }
+  
+        var columns_data = (data.columns || []);
+        for (var i=0; i<columns_data.length; i++)
+        {
+          var $block = null;
+          var $column = this.getColumn(i);
+          for (var j=0; j<columns_data[i].blocks.length; j++) {
+            var block = columns_data[i].blocks[j];
+            $block = this.sirTrevor.createBlock(block.type, block.data, $block ? $block.$el : $column.children('.st-block-controls__top'));
+          }
+        }
+      },
+  
+      _initUIComponents: function() {
+        SirTrevor.Block.prototype._initUIComponents.apply(this, arguments);
+      },
+  
+      performValidations: function() {
+        // nothing
+      }
+    });
   })();
   /*
     Heading Block
@@ -2365,7 +2541,7 @@
       handleControlButtonClick: function(e) {
         e.stopPropagation();
   
-        this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
+        this.trigger('createBlock', $(e.currentTarget).attr('data-type'), null, this.current_container);
       }
   
     });
@@ -2417,6 +2593,7 @@
   
       onDrop: function(ev) {
         ev.preventDefault();
+        ev.stopPropagation(); // to prevent event handling on outer blocks
   
         var dropped_on = this.$el,
             item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
@@ -2618,9 +2795,11 @@
         this._bindFunctions();
   
         this.store("create");
-        this.build();
-  
+        
         SirTrevor.instances.push(this);
+        
+        this.build();
+        
         SirTrevor.bindFormSubmit(this.$form);
       },
   
@@ -2633,7 +2812,7 @@
         this.$el.hide();
   
         this.block_controls = new SirTrevor.BlockControls(this.blockTypes, this.ID);
-        this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID);
+        this.fl_block_controls = new SirTrevor.FloatingBlockControls(this.$wrapper, this.ID, this);
         this.formatBar = new SirTrevor.FormatBar(this.options.formatBar);
   
         this.listenTo(this.block_controls, 'createBlock', this.createBlock);
@@ -2642,7 +2821,7 @@
         this._setEvents();
   
         SirTrevor.EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-        SirTrevor.EventBus.on("formatter:positon", this.formatBar.renderBySelection);
+        SirTrevor.EventBus.on("formatter:position", this.formatBar.renderBySelection);
         SirTrevor.EventBus.on("formatter:hide", this.formatBar.hide);
   
         this.$wrapper.prepend(this.fl_block_controls.render().$el);
@@ -2677,7 +2856,7 @@
   
         // Destroy all blocks
         _.each(this.blocks, function(block) {
-          this.removeBlock(block.blockID);
+          this.removeBlock(block);
         }, this);
   
         // Stop listening to events
@@ -2740,7 +2919,7 @@
         A block will have a reference to an Editor instance & the parent BlockType.
         We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
       */
-      createBlock: function(type, data, render_at) {
+      createBlock: function(type, data, $container) {
         type = _.classify(type);
   
         if(this._blockLimitReached()) {
@@ -2759,9 +2938,12 @@
           return false;
         }
   
-        var block = new SirTrevor.Blocks[type](data, this.ID);
+        // additionally pass master editor object to block (needed for nested blocks)
+        var block = new SirTrevor.Blocks[type](data, this.ID, this);
   
-        this._renderInPosition(block.render().$el);
+        // optional `$container` argument can define the DOM element to adopt new block
+        // this is used for initial blocks structure building to support nested blocks
+        this._renderInPosition(block.render().$el, $container);
   
         this.listenTo(block, 'removeBlock', this.removeBlock);
   
@@ -2776,6 +2958,8 @@
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
         this.triggerBlockCountUpdate();
+  
+        return block;
       },
   
       onNewBlockCreated: function(block) {
@@ -2784,7 +2968,7 @@
       },
   
       scrollTo: function(element) {
-        $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
+        $('html, body').animate({ scrollTop: element.offset().top }, 300, "linear");
       },
   
       blockFocus: function(block) {
@@ -2811,8 +2995,7 @@
         selectedPosition = selectedPosition - 1;
   
         var blockPosition = this.getBlockPosition($block);
-        var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
-        var blockByPosition = this.getBlockPosition($blockBy);
+        var $blockBy = $block.parent().children('.st-block').eq(selectedPosition);
   
         var where = (blockPosition > selectedPosition) ? "Before" : "After";
   
@@ -2843,9 +3026,9 @@
         this.$wrapper.removeClass("st-outer--is-reordering");
       },
   
-      _renderInPosition: function(block) {
-        if (this.block_controls.current_container) {
-          this.block_controls.current_container.after(block);
+      _renderInPosition: function(block, $container) {
+        if (!_.isUndefined($container)) {
+          $container.after(block);
         } else {
           this.$wrapper.append(block);
         }
@@ -2869,23 +3052,33 @@
         return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
       },
   
-      removeBlock: function(block_id) {
-        var block = this.findBlockById(block_id),
-            type = _.classify(block.type),
+      removeBlock: function(block) {
+        var type = _.classify(block.type),
             controls = block.$el.find('.st-block-controls');
+  
+        var nested_blocks = block.$el.find('.st-block');
+        if (nested_blocks.length > 0)
+        {
+          var list = nested_blocks.map(function() {
+            return { depth: $(this).parents().length, id: this.getAttribute('id') };
+          }).get();
+          list.sort(function(a, b) { return a.depth - b.depth; });
+          // remove nested blocks in depth first order
+          for (var i=0; i<list.length; i++) this.removeBlock(this.findBlockById(list[i].id));
+        }
   
         if (controls.length) {
           this.block_controls.hide();
           this.$wrapper.prepend(controls);
         }
-  
         this.blockCounts[type] = this.blockCounts[type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
   
+        SirTrevor.EventBus.trigger("block:remove:pre", block);
         block.remove();
   
-        SirTrevor.EventBus.trigger("block:remove");
+        SirTrevor.EventBus.trigger("block:remove", block);
         this.triggerBlockCountUpdate();
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
@@ -2936,22 +3129,18 @@
       },
   
       validateBlocks: function(should_validate) {
-        if (!this.required && (SirTrevor.SKIP_VALIDATION && !should_validate)) {
-          return false;
-        }
-  
-        var blockIterator = function(block,index) {
-          var _block = _.find(this.blocks, function(b) {
-            return (b.blockID == $(block).attr('id')); });
-  
-          if (_.isUndefined(_block)) { return false; }
-  
-          // Find our block
-          this.performValidations(_block, should_validate);
-          this.saveBlockStateToStore(_block);
-        };
-  
-        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
+        var self = this;
+        // validate all blocks
+        _.each(this.blocks, function(_block) {
+          if (_.isUndefined(_block)) return;
+          self.performValidations(_block, should_validate);
+        });
+        // save only top-level blocks (nesting is handled by container blocks themeselves)
+        this.$wrapper.children('.st-block').each(function() {
+          var _block = self.findBlockById(this.id);
+          if (_.isUndefined(_block)) return;
+          self.saveBlockStateToStore(_block);
+        });
       },
   
       validateBlockTypesExist: function(should_validate) {
@@ -3036,7 +3225,7 @@
       },
   
       getBlockPosition: function($block) {
-        return this.$wrapper.find('.st-block').index($block);
+        return $block.parent().children('.st-block').index($block);
       },
   
       /*
@@ -3171,5 +3360,4 @@
     }
   };
 
-  return SirTrevor;
-}));
+}(jQuery, _));
