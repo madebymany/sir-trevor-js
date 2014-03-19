@@ -424,6 +424,7 @@ ul.st-text-block {
   color: #d70014;
   border-color: #d70014; }
   .st-block--with-errors > .st-block__inner > .st-block__ui .st-block-ui-btn:hover, .st-block--with-errors > .st-block__inner > .st-block__ui .st-block-control-ui-btn:hover, .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls .st-block-ui-btn:hover, .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls .st-block-control-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui .st-block-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui .st-block-control-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls .st-block-ui-btn:hover, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls .st-block-control-ui-btn:hover {
+    color: #fff;
     background-color: #d70014; }
 .st-block--with-errors > .st-block__inner > .st-block__ui-delete-controls, .st-block--delete-active > .st-block__inner > .st-block__ui-delete-controls {
   opacity: 1;

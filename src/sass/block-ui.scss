@@ -52,6 +52,7 @@
         border-color: $error-color;
 
         &:hover {
+          color: #fff;
           background-color: $error-color;
         }
       }

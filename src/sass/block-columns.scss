@@ -22,6 +22,12 @@
     }
   }
 
+  & > .st-block__inner > .st-block__control-ui .st-block-control-ui-btn {
+    &.active {
+
+    }
+  }
+
   &:hover > .st-block__inner > .columns-row > .column::before {
     display: block;
   }
