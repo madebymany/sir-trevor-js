@@ -1636,7 +1636,7 @@
   
         var onDeleteConfirm = function(e) {
           e.preventDefault();
-          this.trigger('removeBlock', this);
+          this.trigger('removeBlock', this.blockID);
         };
   
         var onDeleteDeny = function(e) {
@@ -2856,7 +2856,7 @@
   
         // Destroy all blocks
         _.each(this.blocks, function(block) {
-          this.removeBlock(block);
+          this.removeBlock(block.blockID);
         }, this);
   
         // Stop listening to events
@@ -3052,8 +3052,9 @@
         return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
       },
   
-      removeBlock: function(block) {
-        var type = _.classify(block.type),
+      removeBlock: function(block_id) {
+        var block = this.findBlockById(block_id),
+            type = _.classify(block.type),
             controls = block.$el.find('.st-block-controls');
   
         var nested_blocks = block.$el.find('.st-block');
@@ -3064,7 +3065,7 @@
           }).get();
           list.sort(function(a, b) { return a.depth - b.depth; });
           // remove nested blocks in depth first order
-          for (var i=0; i<list.length; i++) this.removeBlock(this.findBlockById(list[i].id));
+          for (var i=0; i<list.length; i++) this.removeBlock(list[i].id);
         }
   
         if (controls.length) {
@@ -3129,18 +3130,22 @@
       },
   
       validateBlocks: function(should_validate) {
-        var self = this;
-        // validate all blocks
-        _.each(this.blocks, function(_block) {
-          if (_.isUndefined(_block)) return;
-          self.performValidations(_block, should_validate);
-        });
-        // save only top-level blocks (nesting is handled by container blocks themeselves)
-        this.$wrapper.children('.st-block').each(function() {
-          var _block = self.findBlockById(this.id);
-          if (_.isUndefined(_block)) return;
-          self.saveBlockStateToStore(_block);
-        });
+        var blockIterator = function(block,index) {
+          var _block = _.find(this.blocks, function(b) {
+            return (b.blockID == $(block).attr('id')); });
+  
+          if (_.isUndefined(_block)) { return false; }
+  
+          // Find our block
+          this.performValidations(_block, should_validate);
+          // save only top-level blocks
+          if (this.$wrapper.children().has(block))
+          {
+            this.saveBlockStateToStore(_block);
+          }
+        };
+  
+        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
       },
   
       validateBlockTypesExist: function(should_validate) {
