@@ -26,9 +26,9 @@ module.exports = function(grunt) {
       'sir-trevor': {
         src : 'sir-trevor.js',
         options: {
-          vendor: ['components/components-jquery/jquery.js',
-                   'components/components-underscore/underscore.js',
-                   'components/thinkerous-eventable/eventable.js'],
+          vendor: ['components/jquery/jquery.js',
+            'components/underscore/underscore.js',
+            'components/Eventable/eventable.js'],
           specs : 'spec/javascripts/**/*.spec.js',
           helpers : 'spec/helpers/*.js'
         }
