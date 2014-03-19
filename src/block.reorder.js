@@ -41,19 +41,22 @@ SirTrevor.BlockReorder = (function(){
 
     onDrop: function(ev) {
       ev.preventDefault();
+      ev.stopPropagation(); // to prevent event handling on outer blocks
 
       var dropped_on = this.$block,
-          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
-          block = $('#' + item_id);
+          item_id = ev.originalEvent.dataTransfer.getData("text/plain");
 
-      if (!_.isUndefined(item_id) &&
-        !_.isEmpty(block) &&
-        dropped_on.attr('id') != item_id &&
-        dropped_on.attr('data-instance') == block.attr('data-instance')
-      ) {
-        dropped_on.after(block);
+      if (!_.isUndefined(item_id) && item_id.substr(0,9) == 'st-block-') {
+        var block = $('#' + item_id);
+        if (!_.isEmpty(block) &&
+            dropped_on.attr('id') != item_id &&
+            dropped_on.attr('data-instance') == block.attr('data-instance') &&
+            !$.contains(block[0], dropped_on[0]) // additional check for nested blocks
+            ) {
+          dropped_on.after(block);
+        }
+        SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
       }
-      SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
     },
 
     onDragStart: function(ev) {

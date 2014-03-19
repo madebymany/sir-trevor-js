@@ -1,9 +1,10 @@
 SirTrevor.SimpleBlock = (function(){
 
-  var SimpleBlock = function(data, instance_id) {
+  var SimpleBlock = function(data, instance_id, sirTrevor) {
     this.createStore(data);
     this.blockID = _.uniqueId('st-block-');
     this.instanceID = instance_id;
+    this.sirTrevor = sirTrevor;
 
     this._ensureElement();
     this._bindFunctions();

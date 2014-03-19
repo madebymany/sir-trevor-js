@@ -21,6 +21,9 @@ SirTrevor.Locales.fr = {
     text: {
       'title': "Texte"
     },
+    columns: {
+      'title': "Colonnes"
+    },
     list: {
       'title': "Liste"
     },
