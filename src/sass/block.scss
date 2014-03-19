@@ -13,8 +13,8 @@
   border-color: $accent-color;
 }
 
-.st-block--with-errors .st-block__inner,
-.st-block--delete-active .st-block__inner  {
+.st-block--with-errors > .st-block__inner,
+.st-block--delete-active > .st-block__inner  {
   border-color: $error-color;
 }
 
@@ -189,7 +189,7 @@ ul.st-text-block {
   display: block;
 }
 
-.st-block--with-errors .st-block__messages {
+.st-block--with-errors > .st-block__inner > .st-block__messages {
   border-color: $error-color;
 }
 

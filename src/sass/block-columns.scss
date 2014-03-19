@@ -1,0 +1,50 @@
+.st-block[data-type=Columns] {
+  & > .st-block__inner > .columns-row > .column {
+    position: relative;
+
+    // make "+" width = 95%
+    & > .st-block-controls__top, & > .st-block.st-icon--add::after {
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    // columns markers
+    &::before {
+      display: none;
+      position: absolute;
+      width: 95%;
+      left: 2.5%;
+      border: 1px solid #35debc;
+      border-bottom: none;
+      height: 3px;
+      content: ' ';
+      box-sizing: border-box;
+    }
+  }
+
+  & > .st-block__inner > .st-block__control-ui .st-block-control-ui-btn {
+    &.active {
+
+    }
+  }
+
+  &:hover > .st-block__inner > .columns-row > .column::before {
+    display: block;
+  }
+
+  .column {
+    .st-block-controls {
+      font-size: 90%;
+
+      .st-block-control {
+        margin-right: 5px;
+        margin-bottom: 3px;
+
+        &[data-type=Columns] {
+          // disable nesting columns block
+          display: none;
+        }
+      }
+    }
+  }
+}

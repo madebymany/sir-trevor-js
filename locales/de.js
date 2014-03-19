@@ -21,6 +21,9 @@ SirTrevor.Locales.de = {
     text: {
       'title': "Text"
     },
+    columns: {
+      'title': "Spalten"
+    },
     list: {
       'title': "Liste (unsortiert)"
     },
