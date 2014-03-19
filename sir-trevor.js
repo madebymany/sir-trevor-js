@@ -4,21 +4,10 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-21
+ * 2014-03-19
  */
 
-(function (root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define(['jquery', 'underscore', 'Eventable'], factory);
-  } else if (typeof exports === 'object') {
-    var $ = require("jquery");
-    var _ = require("underscore");
-    var Eventable = require("Eventable");
-
-    module.exports = factory($, _, Eventable);
-  }
-}(this, function ($, _, Eventable) {
-  var jQuery = $;
+(function ($, _){
 
   var root = this,
       SirTrevor;
@@ -626,7 +615,7 @@
     }
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-      return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+      return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
     });
   
     // This may seem crazy, but because JS doesn't have a look behind,
@@ -636,10 +625,10 @@
     html = _.reverse(
              _.reverse(html)
              .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-                return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
+                return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
              })
              .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-                return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
+                return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
              })
             );
   
@@ -668,12 +657,12 @@
     }
   
     if (shouldWrap) {
-      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-      html = html.replace(/\n/gm, "</div><div>");
+      html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
+      html = html.replace(/\r?\n/gm, "</div><div>");
     }
   
     html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-               .replace(/\n/g, "<br>")
+               .replace(/\r?\n/g, "<br>")
                .replace(/\*\*/, "")
                .replace(/__/, "");  // Cleanup any markdown characters left
   
@@ -2618,9 +2607,11 @@
         this._bindFunctions();
   
         this.store("create");
-        this.build();
-  
+        
         SirTrevor.instances.push(this);
+        
+        this.build();
+        
         SirTrevor.bindFormSubmit(this.$form);
       },
   
@@ -3171,5 +3162,4 @@
     }
   };
 
-  return SirTrevor;
-}));
+}(jQuery, _));
