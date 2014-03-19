@@ -4,9 +4,9 @@ Here are a few ways you can help make SirTrevor better!
 
 ## Team members
 
-[Chris Bell](https://github.com/cjbell88)
-[Andy Walker](https://github.com/ninjabiscuit)
-[Andrew Sprinz](https://github.com/andrewsprinz)
+[Chris Bell](https://github.com/cjbell88),
+[Andy Walker](https://github.com/ninjabiscuit),
+[Andrew Sprinz](https://github.com/andrewsprinz),
 [Ilya Poropudas](https://github.com/ilyaporopudas)
 
 
