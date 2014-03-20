@@ -3139,7 +3139,7 @@
           // Find our block
           this.performValidations(_block, should_validate);
           // save only top-level blocks
-          if (this.$wrapper.children().has(block))
+          if (this.$wrapper.children().filter(block).length > 0)
           {
             this.saveBlockStateToStore(_block);
           }
