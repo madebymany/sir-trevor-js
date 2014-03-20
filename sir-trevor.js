@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-19
+ * 2014-03-20
  */
 
 (function ($, _){
@@ -1974,7 +1974,7 @@
         var $row = this.$('.columns-row');
   
         _.each(columns_config, function(ratio, i) {
-          var width = Math.round(ratio*99.0*100/total_width)/100;
+          var width = Math.round(ratio*1000*100/total_width)/1000;
   
           var $column = self.getColumn(i);
           if ($column.length == 0) {

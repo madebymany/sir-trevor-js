@@ -89,7 +89,7 @@ SirTrevor.Blocks.Columns = (function() {
       var $row = this.$('.columns-row');
 
       _.each(columns_config, function(ratio, i) {
-        var width = Math.round(ratio*99.0*100/total_width)/100;
+        var width = Math.round(ratio*1000*100/total_width)/1000;
 
         var $column = self.getColumn(i);
         if ($column.length == 0) {
