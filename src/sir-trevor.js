@@ -149,6 +149,13 @@
     }
   };
 
+  SirTrevor.unbindFormSubmit = function(form) {
+    if (formBound) {
+      form.unbind('submit', this.onFormSubmit);
+      formBound = false;
+    }
+  };
+
   SirTrevor.onBeforeSubmit = function(should_validate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;

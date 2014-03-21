@@ -108,12 +108,13 @@ SirTrevor.Editor = (function(){
       this.block_controls.destroy();
 
       // Destroy all blocks
-      _.each(this.blocks, function(block) {
-        this.removeBlock(block.blockID);
+      _.each(this.$wrapper.children('.st-block'), function(block) {
+        this.removeBlock(block.id);
       }, this);
 
       // Stop listening to events
       this.stopListening();
+      SirTrevor.unbindFormSubmit(this.$form);
 
       // Cleanup element
       var el = this.$el.detach();

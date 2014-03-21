@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-20
+ * 2014-03-21
  */
 
 (function ($, _){
@@ -2855,12 +2855,13 @@
         this.block_controls.destroy();
   
         // Destroy all blocks
-        _.each(this.blocks, function(block) {
-          this.removeBlock(block.blockID);
+        _.each(this.$wrapper.children('.st-block'), function(block) {
+          this.removeBlock(block.id);
         }, this);
   
         // Stop listening to events
         this.stopListening();
+        SirTrevor.unbindFormSubmit(this.$form);
   
         // Cleanup element
         var el = this.$el.detach();
@@ -3308,6 +3309,13 @@
       new SirTrevor.Submittable(form);
       form.bind('submit', this.onFormSubmit);
       formBound = true;
+    }
+  };
+
+  SirTrevor.unbindFormSubmit = function(form) {
+    if (formBound) {
+      form.unbind('submit', this.onFormSubmit);
+      formBound = false;
     }
   };
 
