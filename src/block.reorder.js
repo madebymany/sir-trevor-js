@@ -2,6 +2,7 @@ SirTrevor.BlockReorder = (function(){
 
   var BlockReorder = function(block_element) {
     this.$block = block_element;
+    this.blockID = this.$block.attr('id');
 
     this._ensureElement();
     this._bindFunctions();
@@ -36,7 +37,7 @@ SirTrevor.BlockReorder = (function(){
     },
 
     onMouseDown: function() {
-      SirTrevor.EventBus.trigger("block:reorder:down");
+      SirTrevor.EventBus.trigger("block:reorder:down", this.blockID);
     },
 
     onDrop: function(ev) {
@@ -60,14 +61,14 @@ SirTrevor.BlockReorder = (function(){
       var btn = $(ev.currentTarget).parent();
 
       ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-      ev.originalEvent.dataTransfer.setData('Text', this.$block.attr('id'));
+      ev.originalEvent.dataTransfer.setData('Text', this.blockID);
 
-      SirTrevor.EventBus.trigger("block:reorder:dragstart");
+      SirTrevor.EventBus.trigger("block:reorder:dragstart", this.blockID);
       this.$block.addClass('st-block--dragging');
     },
 
     onDragEnd: function(ev) {
-      SirTrevor.EventBus.trigger("block:reorder:dragend");
+      SirTrevor.EventBus.trigger("block:reorder:dragend", this.blockID);
       this.$block.removeClass('st-block--dragging');
     },
 

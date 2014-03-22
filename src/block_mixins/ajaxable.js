@@ -10,14 +10,14 @@ SirTrevor.BlockMixins.Ajaxable = {
 
   addQueuedItem: function(name, deffered) {
     SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
-    SirTrevor.EventBus.trigger("onUploadStart");
+    SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
 
     this._queued.push({ name: name, deffered: deffered });
   },
 
   removeQueuedItem: function(name) {
     SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
-    SirTrevor.EventBus.trigger("onUploadStop");
+    SirTrevor.EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
   },

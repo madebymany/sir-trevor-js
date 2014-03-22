@@ -318,13 +318,10 @@ SirTrevor.Block = (function(){
     getSelectionForFormatter: function() {
       _.defer(function(){
         var selection = window.getSelection(),
-           selectionStr = selection.toString().trim();
+           selectionStr = selection.toString().trim(),
+           eventType = (selectionStr === '') ? 'hide' : 'position';
 
-        if (selectionStr === '') {
-          SirTrevor.EventBus.trigger('formatter:hide');
-        } else {
-          SirTrevor.EventBus.trigger('formatter:positon');
-        }
+        SirTrevor.EventBus.trigger('formatter:' + eventType , this);
       });
      },
 

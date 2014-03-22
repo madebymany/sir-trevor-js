@@ -801,14 +801,14 @@
   
     addQueuedItem: function(name, deffered) {
       SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
-      SirTrevor.EventBus.trigger("onUploadStart");
+      SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
   
       this._queued.push({ name: name, deffered: deffered });
     },
   
     removeQueuedItem: function(name) {
       SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
-      SirTrevor.EventBus.trigger("onUploadStop");
+      SirTrevor.EventBus.trigger("onUploadStop", this.blockID);
   
       this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
     },
@@ -902,7 +902,7 @@
         this.onDrop(e.dataTransfer);
       }
   
-      SirTrevor.EventBus.trigger('block:content:dropped');
+      SirTrevor.EventBus.trigger('block:content:dropped', this.blockID);
     }
   
   };
@@ -1053,6 +1053,7 @@
   
     var BlockReorder = function(block_element) {
       this.$block = block_element;
+      this.blockID = this.$block.attr('id');
   
       this._ensureElement();
       this._bindFunctions();
@@ -1087,7 +1088,7 @@
       },
   
       onMouseDown: function() {
-        SirTrevor.EventBus.trigger("block:reorder:down");
+        SirTrevor.EventBus.trigger("block:reorder:down", this.blockID);
       },
   
       onDrop: function(ev) {
@@ -1111,14 +1112,14 @@
         var btn = $(ev.currentTarget).parent();
   
         ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-        ev.originalEvent.dataTransfer.setData('Text', this.$block.attr('id'));
+        ev.originalEvent.dataTransfer.setData('Text', this.blockID);
   
-        SirTrevor.EventBus.trigger("block:reorder:dragstart");
+        SirTrevor.EventBus.trigger("block:reorder:dragstart", this.blockID);
         this.$block.addClass('st-block--dragging');
       },
   
       onDragEnd: function(ev) {
-        SirTrevor.EventBus.trigger("block:reorder:dragend");
+        SirTrevor.EventBus.trigger("block:reorder:dragend", this.blockID);
         this.$block.removeClass('st-block--dragging');
       },
   
@@ -1274,7 +1275,7 @@
   
     beforeLoadingData: function() {
       SirTrevor.log("loadData for " + this.blockID);
-      SirTrevor.EventBus.trigger("editor/block/loadData");
+      SirTrevor.EventBus.trigger("block:loadData", this.blockID);
       this.loadData(this.getData());
     },
   
@@ -1739,13 +1740,10 @@
       getSelectionForFormatter: function() {
         _.defer(function(){
           var selection = window.getSelection(),
-             selectionStr = selection.toString().trim();
+             selectionStr = selection.toString().trim(),
+             eventType = (selectionStr === '') ? 'hide' : 'position';
   
-          if (selectionStr === '') {
-            SirTrevor.EventBus.trigger('formatter:hide');
-          } else {
-            SirTrevor.EventBus.trigger('formatter:positon');
-          }
+          SirTrevor.EventBus.trigger('formatter:' + eventType , this);
         });
        },
   
@@ -2614,11 +2612,11 @@
         this._bindFunctions();
   
         this.store("create");
-        
+  
         SirTrevor.instances.push(this);
-        
+  
         this.build();
-        
+  
         SirTrevor.bindFormSubmit(this.$form);
       },
   
@@ -2883,7 +2881,7 @@
   
         block.remove();
   
-        SirTrevor.EventBus.trigger("block:remove");
+        SirTrevor.EventBus.trigger("block:remove", block);
         this.triggerBlockCountUpdate();
   
         this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
