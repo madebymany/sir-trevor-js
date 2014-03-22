@@ -45,7 +45,7 @@ SirTrevor.BlockMixins.Droppable = {
       this.onDrop(e.dataTransfer);
     }
 
-    SirTrevor.EventBus.trigger('block:content:dropped');
+    SirTrevor.EventBus.trigger('block:content:dropped', this.blockID);
   }
 
 };

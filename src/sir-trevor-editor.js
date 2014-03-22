@@ -48,11 +48,11 @@ SirTrevor.Editor = (function(){
       this._bindFunctions();
 
       this.store("create");
-      
+
       SirTrevor.instances.push(this);
-      
+
       this.build();
-      
+
       SirTrevor.bindFormSubmit(this.$form);
     },
 
@@ -317,7 +317,7 @@ SirTrevor.Editor = (function(){
 
       block.remove();
 
-      SirTrevor.EventBus.trigger("block:remove");
+      SirTrevor.EventBus.trigger("block:remove", block);
       this.triggerBlockCountUpdate();
 
       this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());

@@ -45,7 +45,7 @@ SirTrevor.BlockStore = {
 
   beforeLoadingData: function() {
     SirTrevor.log("loadData for " + this.blockID);
-    SirTrevor.EventBus.trigger("editor/block/loadData");
+    SirTrevor.EventBus.trigger("block:loadData", this.blockID);
     this.loadData(this.getData());
   },
 
