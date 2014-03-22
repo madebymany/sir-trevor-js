@@ -91,7 +91,11 @@ SirTrevor.toMarkdown = function(content, type) {
   }
 
   // Strip remaining HTML
-  markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+  if (SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip) {
+    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+  } else {
+    markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
+  }
 
   return markdown;
 };

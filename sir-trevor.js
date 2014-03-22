@@ -48,7 +48,10 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
-    errorsContainer: undefined
+    errorsContainer: undefined,
+    toMarkdown: {
+      aggresiveHTMLStrip: false
+    }
   };
 
   SirTrevor.BlockMixins = {};
@@ -774,7 +777,11 @@
     }
   
     // Strip remaining HTML
-    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+    if (SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip) {
+      markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+    } else {
+      markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
+    }
   
     return markdown;
   };
