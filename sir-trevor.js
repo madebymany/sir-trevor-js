@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-19
+ * 2014-03-22
  */
 
 (function ($, _){
@@ -48,7 +48,10 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
-    errorsContainer: undefined
+    errorsContainer: undefined,
+    toMarkdown: {
+      aggresiveHTMLStrip: false
+    }
   };
 
   SirTrevor.BlockMixins = {};
@@ -774,7 +777,11 @@
     }
   
     // Strip remaining HTML
-    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+    if (SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip) {
+      markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+    } else {
+      markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
+    }
   
     return markdown;
   };

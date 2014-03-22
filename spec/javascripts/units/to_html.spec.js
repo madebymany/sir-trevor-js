@@ -41,21 +41,21 @@ describe("toHTML", function(){
 
     expect(html).toBe("<div>hello!</div><div>hello!</div>");
   });
-  
+
   it("converts newlines with \r to HTML", function(){
     var markdown = "hello!\r\nhello!",
         html = SirTrevor.toHTML(markdown, "Text");
 
     expect(html).toBe("<div>hello!</div><div>hello!</div>");
   });
-  
+
   it("converts double newlines to paragraphs", function(){
     var markdown = "hello!\r\n\r\nhello!",
         html = SirTrevor.toHTML(markdown, "Text");
 
     expect(html).toBe("<div>hello!</div><div><br></div><div>hello!</div>");
   });
-  
+
   it("converts double newlines with \r to paragraphs", function(){
     var markdown = "hello!\r\n\r\nhello!",
         html = SirTrevor.toHTML(markdown, "Text");
