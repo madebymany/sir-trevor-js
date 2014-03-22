@@ -13,7 +13,7 @@ The easiest way to install Sir Trevor is with [Bower](https://github.com/bower/b
     {
       "name": "your-project",
       "dependencies": {
-        "sir-trevor-js": "0.3.0"
+        "sir-trevor-js": "0.3.2"
       }
     }
 
