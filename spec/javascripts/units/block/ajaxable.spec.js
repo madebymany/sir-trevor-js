@@ -23,7 +23,7 @@ describe("Ajaxable Block", function() {
     });
 
     it("should trigger the event bus with onUploadStart", function() {
-      expect(SirTrevor.EventBus.trigger).toHaveBeenCalledWith("onUploadStart");
+      expect(SirTrevor.EventBus.trigger).toHaveBeenCalledWith("onUploadStart", undefined);
     });
 
   });
@@ -45,7 +45,7 @@ describe("Ajaxable Block", function() {
     });
 
     it("should trigger the event bus with onUploadStop", function() {
-      expect(SirTrevor.EventBus.trigger).toHaveBeenCalledWith("onUploadStop");
+      expect(SirTrevor.EventBus.trigger).toHaveBeenCalledWith("onUploadStop", undefined);
     });
 
   });
