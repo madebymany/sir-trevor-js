@@ -14,19 +14,19 @@ SirTrevor.fileUploader = function(block, file, success, error) {
 
   block.resetMessages();
 
-  var callbackSuccess = function(data){
+  var callbackSuccess = function(){
     SirTrevor.log('Upload callback called');
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
-      _.bind(success, block)(data);
+      success.apply(block, arguments);
     }
   };
 
-  var callbackError = function(jqXHR, status, errorThrown){
+  var callbackError = function(){
     SirTrevor.log('Upload callback error called');
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
-      _.bind(error, block)(status);
+      error.apply(block, arguments);
     }
   };
 

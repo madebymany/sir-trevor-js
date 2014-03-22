@@ -508,19 +508,19 @@
   
     block.resetMessages();
   
-    var callbackSuccess = function(data){
+    var callbackSuccess = function(){
       SirTrevor.log('Upload callback called');
   
       if (!_.isUndefined(success) && _.isFunction(success)) {
-        _.bind(success, block)(data);
+        success.apply(block, arguments);
       }
     };
   
-    var callbackError = function(jqXHR, status, errorThrown){
+    var callbackError = function(){
       SirTrevor.log('Upload callback error called');
   
       if (!_.isUndefined(error) && _.isFunction(error)) {
-        _.bind(error, block)(status);
+        error.apply(block, arguments);
       }
     };
   
@@ -1921,13 +1921,9 @@
       this.ready();
     },
   
-    onUploadError : function(error){
+    onUploadError : function(jqXHR, status, errorThrown){
       this.addMessage(i18n.t('blocks:image:upload_error'));
       this.ready();
-    },
-  
-    handleUpload : function(file) {
-      this.upload = this.uploader(file, this.onUploadSuccess, this.onUploadError);
     },
   
     onDrop: function(transferData){
@@ -1941,7 +1937,7 @@
         this.$inputs.hide();
         this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
   
-        this.handleUpload(file)
+        this.uploader(file, this.onUploadSuccess, this.onUploadError);
       }
     }
   });

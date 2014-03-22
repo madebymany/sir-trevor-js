@@ -1,6 +1,5 @@
 describe('Image block', function() {
 
-  var data_uri = 'data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7';
   var element, editor;
   SirTrevor.DEBUG = false;
 
@@ -22,7 +21,7 @@ describe('Image block', function() {
       return "I was totes overridden!";
     };
 
-    SirTrevor.Blocks.Image.prototype.onUploadError = function(){
+    SirTrevor.Blocks.Image.prototype.onUploadError = function(jqXHR){
       return "I was also overridden!";
     };
 
@@ -34,7 +33,9 @@ describe('Image block', function() {
       expect(onUploadError()).toBe("I was also overridden!");
     });
 
-    image.handleUpload(data_uri);
+    image.onDrop({files:[{type: "image/gif"}]});
+
+    expect(image.uploader).toHaveBeenCalled();
   });
 
 });
