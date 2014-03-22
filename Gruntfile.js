@@ -89,6 +89,9 @@ module.exports = function(grunt) {
 
     sass: {
       dist: {
+        options: {
+          style: 'compressed'
+        },
         files: {
           'sir-trevor.css': 'src/sass/main.scss'
         }
