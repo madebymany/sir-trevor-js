@@ -25,6 +25,16 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
     }, this));
   },
 
+  onUploadSuccess : function(data) {
+    this.setData(data);
+    this.ready();
+  },
+
+  onUploadError : function(jqXHR, status, errorThrown){
+    this.addMessage(i18n.t('blocks:image:upload_error'));
+    this.ready();
+  },
+
   onDrop: function(transferData){
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
@@ -36,17 +46,7 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
       this.$inputs.hide();
       this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
-      this.uploader(
-        file,
-        function(data) {
-          this.setData(data);
-          this.ready();
-        },
-        function(error){
-          this.addMessage(i18n.t('blocks:image:upload_error'));
-          this.ready();
-        }
-      );
+      this.uploader(file, this.onUploadSuccess, this.onUploadError);
     }
   }
 });
