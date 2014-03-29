@@ -4,10 +4,26 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-22
+ * 2014-03-29
  */
 
-(function ($, _){
+(function (root, factory) {
+  // requirejs support
+  if (typeof define === 'function' && define.amd) {
+    define(['jquery', 'underscore', 'Eventable'], factory);
+  // commonjs support
+  } else if (typeof exports === 'object') {
+    var $ = require("jquery");
+    var _ = require("underscore");
+    var Eventable = require("Eventable");
+
+    module.exports = factory($, _, Eventable);
+  // Browser globals
+  } else {
+    root.SirTrevor = factory(root.$, root._, root.Eventable);
+  }
+}(this, function ($, _, Eventable) {
+  var jQuery = $;
 
   var root = this,
       SirTrevor;
@@ -3167,4 +3183,5 @@
     }
   };
 
-}(jQuery, _));
+  return SirTrevor;
+}));
