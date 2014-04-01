@@ -29,7 +29,7 @@ module.exports = function(grunt) {
                    'components/underscore/underscore.js',
                    'components/Eventable/eventable.js'],
           specs : 'spec/javascripts/**/*.spec.js',
-          helpers : 'spec/helpers/*.js'
+          helpers : 'spec/javascripts/helpers/*.js'
         }
       }
     },
