@@ -25,7 +25,6 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 5. [Laravel](https://github.com/caouecs/Laravel4-SirTrevorJS)
 6. [Django](https://github.com/philippbosch/django-sirtrevor)
 
-
 ## Custom blocks
 
 We are keeping a list of [custom block repos here](https://github.com/madebymany/sir-trevor-js/wiki/Custom-blocks). See the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
@@ -42,6 +41,19 @@ Sir Trevor is only tested on the following modern browsers:
 ## Dependencies
 
 Sir Trevor requires [Underscore](http://underscorejs.org/) (or LoDash), [jQuery](http://jquery.com) (or Zepto) and [Eventable](https://github.com/madebymany/eventable).
+
+## [Component/component](http://github.com/component/component)
+
+Sir Trevor can also load dependencies using component.
+
+    component install madebymany/sir-trevor-js
+
+For a component/component example:
+
+    cd examples-component
+    component install
+    component build
+    open index.html
 
 ## Contributing
 
