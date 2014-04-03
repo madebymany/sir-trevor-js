@@ -28,6 +28,8 @@
   }
 }(this, function(_, Eventable, $) {
   var SirTrevor = {};
+  var jQuery = $;
+
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
