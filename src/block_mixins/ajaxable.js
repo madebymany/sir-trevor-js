@@ -8,11 +8,11 @@ SirTrevor.BlockMixins.Ajaxable = {
     this._queued = [];
   },
 
-  addQueuedItem: function(name, deffered) {
+  addQueuedItem: function(name, deferred) {
     SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
     SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
 
-    this._queued.push({ name: name, deffered: deffered });
+    this._queued.push({ name: name, deferred: deferred });
   },
 
   removeQueuedItem: function(name) {
@@ -29,7 +29,7 @@ SirTrevor.BlockMixins.Ajaxable = {
   resolveAllInQueue: function() {
     _.each(this._queued, function(item){
       SirTrevor.log("Aborting queued request: " + item.name);
-      item.deffered.abort();
+      item.deferred.abort();
     }, this);
   }
 
