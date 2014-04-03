@@ -13,7 +13,7 @@
     var _ = require('underscore');
     var Eventable = require('eventable');
 
-    module.exports = factory(_,Eventable,global.jQuery);
+    module.exports = factory(_, Eventable, global.jQuery);
   } else {
     // Browser globals
 
