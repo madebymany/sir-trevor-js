@@ -17,15 +17,15 @@
     });
   } else if (typeof exports !== 'undefined') {
     // Node. Does not work with strict CommonJS, but only CommonJS-like
-    // enviroments that support module.exports, like Node. jQuery is not
-    // needed at this stage.
+    // enviroments that support module.exports, like Node. jQuery is loaded
+    // from global.jQuery.
     var _ = require('underscore');
 
     // Load Backbone.Events from Backbone, or eventable
     try { Eventable = (require('backbone')).Events; } catch(e) {}
     if(!Eventable) { Eventable = require('eventable'); }
 
-    module.exports = factory(_,Eventable);
+    module.exports = factory(_,Eventable,global.jQuery);
   } else {
     // Browser globals
 
@@ -35,8 +35,10 @@
 
     root.SirTrevor = factory(root._, root.Eventable, root.jQuery)
   }
-}(this, function(_, Eventable, $) {
+}(this, function(_, Eventable,jQuery) {
   var SirTrevor = {};
+  var jQuery = $;
+
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
