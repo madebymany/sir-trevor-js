@@ -36,9 +36,7 @@
     root.SirTrevor = factory(root._, root.Eventable, root.jQuery)
   }
 }(this, function(_, Eventable, $) {
-  var SirTrevor;
-
-  SirTrevor = {};
+  var SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
