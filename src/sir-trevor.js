@@ -11,18 +11,11 @@
     // enviroments that support module.exports, like Node. jQuery is loaded
     // from global.jQuery.
     var _ = require('underscore');
-
-    // Load Backbone.Events from Backbone, or eventable
-    try { Eventable = (require('backbone')).Events; } catch(e) {}
-    if(!Eventable) { Eventable = require('eventable'); }
+    var Eventable = require('eventable');
 
     module.exports = factory(_,Eventable,global.jQuery);
   } else {
     // Browser globals
-
-    // Load Backbone.Events from Backbone, or eventable
-    try { Eventable = (require('backbone')).Events; } catch(e) {}
-    if(!Eventable) { Eventable = root.Eventable}
 
     root.SirTrevor = factory(root._, root.Eventable, root.jQuery)
   }
