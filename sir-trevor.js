@@ -4,15 +4,29 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-22
+ * 2014-04-03
  */
 
-(function ($, _){
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['underscore','jquery'], function(_,$) {
+      return (root.SirTrevor = factory(_,$));
+    });
+  } else if (typeof exports !== 'undefined') {
+    // Node. Does not work with strict CommonJS, but only CommonJS-like
+    // enviroments that support module.exports, like Node. jQuery is not
+    // needed at this stage.
+    var _ = require('underscore');
+    module.exports = factory(_);
+  } else {
+    // Browser globals
+    root.SirTrevor = factory(root._,root.jQuery)
+  }
+}(this, function(_, $) {
+  var SirTrevor;
 
-  var root = this,
-      SirTrevor;
-
-  SirTrevor = root.SirTrevor = {};
+  SirTrevor = {};
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
@@ -3167,4 +3181,5 @@
     }
   };
 
-}(jQuery, _));
+  return SirTrevor;
+}));
