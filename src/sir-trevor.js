@@ -19,7 +19,7 @@
 
     root.SirTrevor = factory(root._, root.Eventable, root.jQuery)
   }
-}(this, function(_, Eventable,jQuery) {
+}(this, function(_,Eventable,jQuery) {
   var SirTrevor = {};
   var jQuery = $;
 
