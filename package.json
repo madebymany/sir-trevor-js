@@ -12,7 +12,8 @@
     "grunt": "0.4.1",
     "grunt-cli": "0.1.6",
     "grunt-rigger": "0.4.0",
-    "grunt-contrib-jasmine": "0.4.2"
+    "grunt-contrib-jasmine": "0.4.2",
+    "eventablejs": "1.0.4"
   },
   "main": "sir-trevor.js",
   "devDependencies": {

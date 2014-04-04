@@ -11,7 +11,7 @@
     // enviroments that support module.exports, like Node. jQuery is loaded
     // from global.jQuery.
     var _ = require('underscore');
-    var Eventable = require('eventable');
+    var Eventable = require('eventablejs');
 
     module.exports = factory(_, Eventable, global.jQuery);
   } else {

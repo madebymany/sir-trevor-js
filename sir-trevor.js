@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-04-03
+ * 2014-04-04
  */
 
 (function (root, factory) {
@@ -20,7 +20,7 @@
     // enviroments that support module.exports, like Node. jQuery is loaded
     // from global.jQuery.
     var _ = require('underscore');
-    var Eventable = require('eventable');
+    var Eventable = require('eventablejs');
 
     module.exports = factory(_, Eventable, global.jQuery);
   } else {
@@ -818,11 +818,11 @@
       this._queued = [];
     },
   
-    addQueuedItem: function(name, deffered) {
+    addQueuedItem: function(name, deferred) {
       SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
       SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
   
-      this._queued.push({ name: name, deffered: deffered });
+      this._queued.push({ name: name, deferred: deferred });
     },
   
     removeQueuedItem: function(name) {
@@ -839,7 +839,7 @@
     resolveAllInQueue: function() {
       _.each(this._queued, function(item){
         SirTrevor.log("Aborting queued request: " + item.name);
-        item.deffered.abort();
+        item.deferred.abort();
       }, this);
     }
   
