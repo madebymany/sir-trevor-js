@@ -316,13 +316,13 @@ SirTrevor.Block = (function(){
     },
 
     getSelectionForFormatter: function() {
-      _.defer(function(){
+      _.defer(function(block){
         var selection = window.getSelection(),
            selectionStr = selection.toString().trim(),
            eventType = (selectionStr === '') ? 'hide' : 'position';
 
-        SirTrevor.EventBus.trigger('formatter:' + eventType , this);
-      });
+        SirTrevor.EventBus.trigger('formatter:' + eventType, block);
+      }, this);
      },
 
     clearInsertedStyles: function(e) {
