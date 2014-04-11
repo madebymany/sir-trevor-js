@@ -52,7 +52,7 @@ SirTrevor.Locales = {
   }
 };
 
-if (window.i18n === undefined) {
+if (window.i18n === undefined || window.i18n.init === undefined) {
   // Minimal i18n stub that only reads the English strings
   SirTrevor.log("Using i18n stub");
   window.i18n = {
