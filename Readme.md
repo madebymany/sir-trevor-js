@@ -43,6 +43,19 @@ Sir Trevor is only tested on the following modern browsers:
 
 Sir Trevor requires [Underscore](http://underscorejs.org/) (or LoDash), [jQuery](http://jquery.com) (or Zepto) and [Eventable](https://github.com/madebymany/eventable).
 
+## [Component/component](http://github.com/component/component)
+
+Sir Trevor can also load dependencies using component.
+
+    component install madebymany/sir-trevor-js
+
+For a component/component example:
+
+    cd examples-component
+    component install
+    component build
+    open index.html
+
 ## Contributing
 
 See the [roadmap](https://github.com/madebymany/sir-trevor-js/wiki/Roadmap) and read a little about [the philosophy](https://github.com/madebymany/sir-trevor-js/wiki/Philosophy) guiding development.
