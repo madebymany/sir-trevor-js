@@ -23,6 +23,8 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 3. [CakePHP](http://github.com/martinbean/cakephp-sir-trevor-plugin)
 4. [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
 5. [Laravel](https://github.com/caouecs/Laravel4-SirTrevorJS)
+6. [Django](https://github.com/philippbosch/django-sirtrevor)
+
 
 ## Custom blocks
 
