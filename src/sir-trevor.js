@@ -1,6 +1,4 @@
 (function (root, factory) {
-  var Eventable;
-
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as a module.
     define('sir-trevor', ['underscore','jquery','eventable'], function(_,Eventable,$) {
@@ -21,7 +19,7 @@
   }
 }(this, function(_,Eventable,jQuery) {
   var SirTrevor = {};
-  var jQuery = $;
+  var $ = jQuery;
 
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
