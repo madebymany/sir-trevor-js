@@ -3,7 +3,7 @@
 
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as a module.
-    define('sir-trevor', ['underscore','jquery','eventable'], function(_,Eventable,$) {
+    define('sir-trevor', ['underscore', 'eventable', 'jquery'], function(_, Eventable, $) {
       return (root.SirTrevor = factory(_, Eventable, $));
     });
   } else if (typeof exports !== 'undefined') {
