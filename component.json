@@ -37,6 +37,6 @@
   "dependencies": {
     "components/underscore": "*",
     "components/jquery": "*",
-    "thinkerous/eventable": "*"
+    "madebymany/eventable": "*"
   }
 }
