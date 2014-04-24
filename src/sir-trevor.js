@@ -1,9 +1,26 @@
-(function ($, _){
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as a module.
+    define('sir-trevor', ['underscore', 'eventable', 'jquery'], function(_, Eventable, $) {
+      return (root.SirTrevor = factory(_, Eventable, $));
+    });
+  } else if (typeof exports !== 'undefined') {
+    // Node. Does not work with strict CommonJS, but only CommonJS-like
+    // enviroments that support module.exports, like Node. jQuery is loaded
+    // from global.jQuery.
+    var _ = require('underscore');
+    var Eventable = require('eventablejs');
 
-  var root = this,
-      SirTrevor;
+    module.exports = factory(_, Eventable, global.jQuery);
+  } else {
+    // Browser globals
 
-  SirTrevor = root.SirTrevor = {};
+    root.SirTrevor = factory(root._, root.Eventable, root.jQuery)
+  }
+}(this, function(_,Eventable,jQuery) {
+  var SirTrevor = {};
+  var $ = jQuery;
+
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
@@ -206,5 +223,5 @@
     }
   };
 
-}(jQuery, _));
-
+  return SirTrevor;
+}));

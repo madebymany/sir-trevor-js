@@ -4,15 +4,34 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-22
+ * 2014-04-04
  */
 
-(function ($, _){
+(function (root, factory) {
+  var Eventable;
 
-  var root = this,
-      SirTrevor;
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as a module.
+    define('sir-trevor', ['underscore','jquery','eventable'], function(_,Eventable,$) {
+      return (root.SirTrevor = factory(_, Eventable, $));
+    });
+  } else if (typeof exports !== 'undefined') {
+    // Node. Does not work with strict CommonJS, but only CommonJS-like
+    // enviroments that support module.exports, like Node. jQuery is loaded
+    // from global.jQuery.
+    var _ = require('underscore');
+    var Eventable = require('eventablejs');
 
-  SirTrevor = root.SirTrevor = {};
+    module.exports = factory(_, Eventable, global.jQuery);
+  } else {
+    // Browser globals
+
+    root.SirTrevor = factory(root._, root.Eventable, root.jQuery)
+  }
+}(this, function(_,Eventable,jQuery) {
+  var SirTrevor = {};
+  var jQuery = $;
+
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
@@ -799,11 +818,11 @@
       this._queued = [];
     },
   
-    addQueuedItem: function(name, deffered) {
+    addQueuedItem: function(name, deferred) {
       SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
       SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
   
-      this._queued.push({ name: name, deffered: deffered });
+      this._queued.push({ name: name, deferred: deferred });
     },
   
     removeQueuedItem: function(name) {
@@ -820,7 +839,7 @@
     resolveAllInQueue: function() {
       _.each(this._queued, function(item){
         SirTrevor.log("Aborting queued request: " + item.name);
-        item.deffered.abort();
+        item.deferred.abort();
       }, this);
     }
   
@@ -3167,4 +3186,5 @@
     }
   };
 
-}(jQuery, _));
+  return SirTrevor;
+}));
