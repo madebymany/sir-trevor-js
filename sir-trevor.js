@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-03-21
+ * 2014-05-15
  */
 
 (function ($, _){
@@ -1962,7 +1962,7 @@
             var $this = $(this);
             // destroy nested blocks properly
             $this.children('.st-block').each(function() {
-              self.sirTrevor.removeBlock(self.sirTrevor.findBlockById(this.getAttribute('id')));
+              self.sirTrevor.removeBlock(this.getAttribute('id'));
             });
             // destroy column itself
             $this.trigger('destroy').remove();

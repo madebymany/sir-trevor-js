@@ -77,7 +77,7 @@ SirTrevor.Blocks.Columns = (function() {
           var $this = $(this);
           // destroy nested blocks properly
           $this.children('.st-block').each(function() {
-            self.sirTrevor.removeBlock(self.sirTrevor.findBlockById(this.getAttribute('id')));
+            self.sirTrevor.removeBlock(this.getAttribute('id'));
           });
           // destroy column itself
           $this.trigger('destroy').remove();
