@@ -94,6 +94,16 @@ SirTrevor.Block = (function(){
         this[initializeMethod]();
       }
     },
+  
+    _setMixins: function () {
+      var fn,
+          _mixins = SirTrevor.BlockMixins;
+
+      for (name in _mixins) {
+          fn = _mixins[name];
+          if(this[name.toLowerCase()]) { this.withMixin(fn); }
+      }
+    },
 
     render: function() {
       this.beforeBlockRender();
@@ -108,11 +118,8 @@ SirTrevor.Block = (function(){
       }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
-      if (this.controllable) { this.withMixin(SirTrevor.BlockMixins.Controllable); }
+
+      this._setMixins();
 
       if (this.formattable) { this._initFormatting(); }
 
