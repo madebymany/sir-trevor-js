@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-05-01
+ * 2014-05-15
  */
 
 (function ($, _){
@@ -1516,6 +1516,22 @@
           this[initializeMethod]();
         }
       },
+    
+      _setMixins: function () {
+        var fn,
+            _mixins = SirTrevor.BlockMixins;
+  
+        for (name in _mixins) {
+            fn = _mixins[name];
+            if(this[name.toLowerCase()]) { this.withMixin(fn); }
+        }
+      },
+  
+      initInputs: function() {
+        var input_html = $("<div>", { 'class': 'st-block__inputs' });
+        this.$inner.append(input_html);
+        this.$inputs = input_html;
+      },
   
       render: function() {
         this.beforeBlockRender();
@@ -1523,18 +1539,11 @@
   
         this.$editor = this.$inner.children().first();
   
-        if(this.droppable || this.pastable || this.uploadable) {
-          var input_html = $("<div>", { 'class': 'st-block__inputs' });
-          this.$inner.append(input_html);
-          this.$inputs = input_html;
-        }
+        if(this.droppable || this.pastable || this.uploadable) { this.initInputs(); }
   
         if (this.hasTextBlock) { this._initTextBlocks(); }
-        if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
-        if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
-        if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
-        if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
-        if (this.controllable) { this.withMixin(SirTrevor.BlockMixins.Controllable); }
+  
+        this._setMixins();
   
         if (this.formattable) { this._initFormatting(); }
   
