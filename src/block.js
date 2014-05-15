@@ -105,17 +105,19 @@ SirTrevor.Block = (function(){
       }
     },
 
+    initInputs: function() {
+      var input_html = $("<div>", { 'class': 'st-block__inputs' });
+      this.$inner.append(input_html);
+      this.$inputs = input_html;
+    },
+
     render: function() {
       this.beforeBlockRender();
       this._setBlockInner();
 
       this.$editor = this.$inner.children().first();
 
-      if(this.droppable || this.pastable || this.uploadable) {
-        var input_html = $("<div>", { 'class': 'st-block__inputs' });
-        this.$inner.append(input_html);
-        this.$inputs = input_html;
-      }
+      if(this.droppable || this.pastable || this.uploadable) { this.initInputs(); }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
 
