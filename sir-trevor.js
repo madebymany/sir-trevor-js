@@ -1,5 +1,5 @@
 /*!
- * Sir Trevor JS v0.3.2
+ * Sir Trevor JS v0.4.0
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
@@ -3938,7 +3938,7 @@ module.exports = Block.extend({
 module.exports = {
   debug: false,
   skipValidation: false,
-  version: "0.3.0",
+  version: "0.4.0",
   language: "en",
 
   instances: [],

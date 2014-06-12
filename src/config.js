@@ -3,7 +3,7 @@
 module.exports = {
   debug: false,
   skipValidation: false,
-  version: "0.3.0",
+  version: "0.4.0",
   language: "en",
 
   instances: [],
