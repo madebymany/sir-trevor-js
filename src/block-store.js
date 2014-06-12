@@ -1,6 +1,6 @@
 SirTrevor.BlockStore = {
 
-  /** 
+  /**
    * Internal storage object for the block
    */
   blockStorage: {},
@@ -18,8 +18,8 @@ SirTrevor.BlockStore = {
   /**
    * Serialized the block and saves the data into the store
    */
-  save: function() { 
-    var data = this._serializeData(); 
+  save: function() {
+    var data = this._serializeData();
 
     if (!_.isEmpty(data)) {
       this.setData(data);
@@ -68,8 +68,8 @@ SirTrevor.BlockStore = {
 
   beforeLoadingData: function() {
     SirTrevor.log("loadData for " + this.blockID);
-    SirTrevor.EventBus.trigger("editor/block/loadData");
-    this.loadData(this._getData());
+    SirTrevor.EventBus.trigger("block:loadData", this.blockID);
+    this.loadData(this.getData());
   },
 
   _loadData: function() {

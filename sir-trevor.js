@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2013-12-24
+ * 2014-06-12
  */
 
 (function ($, _){
@@ -48,7 +48,10 @@
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
-    errorsContainer: undefined
+    errorsContainer: undefined,
+    toMarkdown: {
+      aggresiveHTMLStrip: false
+    }
   };
 
   SirTrevor.log = function(message) {
@@ -276,7 +279,7 @@
     }
   };
   
-  if (window.i18n === undefined) {
+  if (window.i18n === undefined || window.i18n.init === undefined) {
     // Minimal i18n stub that only reads the English strings
     SirTrevor.log("Using i18n stub");
     window.i18n = {
@@ -323,8 +326,6 @@
   
   SirTrevor.fileUploader = function(block, file, success, error) {
   
-    SirTrevor.EventBus.trigger("onUploadStart");
-  
     var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
     var data = new FormData();
   
@@ -334,21 +335,19 @@
   
     block.resetMessages();
   
-    var callbackSuccess = function(data){
+    var callbackSuccess = function(){
       SirTrevor.log('Upload callback called');
-      SirTrevor.EventBus.trigger("onUploadStop");
   
       if (!_.isUndefined(success) && _.isFunction(success)) {
-        _.bind(success, block)(data);
+        success.apply(block, arguments);
       }
     };
   
-    var callbackError = function(jqXHR, status, errorThrown){
+    var callbackError = function(){
       SirTrevor.log('Upload callback error called');
-      SirTrevor.EventBus.trigger("onUploadStop");
   
       if (!_.isUndefined(error) && _.isFunction(error)) {
-        _.bind(error, block)(status);
+        error.apply(block, arguments);
       }
     };
   
@@ -379,18 +378,19 @@
     This will be triggered *by anything* so it needs to subscribe to events.
   */
   
-  var Submittable = function(){
+  SirTrevor.Submittable = function($form){
+    this.$form = $form;
     this.intialize();
   };
   
-  _.extend(Submittable.prototype, {
+  _.extend(SirTrevor.Submittable.prototype, {
   
     intialize: function(){
-      this.submitBtn = $("input[type='submit']");
+      this.$submitBtn = this.$form.find("input[type='submit']");
   
       var btnTitles = [];
   
-      _.each(this.submitBtn, function(btn){
+      _.each(this.$submitBtn, function(btn){
         btnTitles.push($(btn).attr('value'));
       });
   
@@ -401,11 +401,11 @@
     },
   
     setSubmitButton: function(e, message) {
-      this.submitBtn.attr('value', message);
+      this.$submitBtn.attr('value', message);
     },
   
     resetSubmitButton: function(){
-      _.each(this.submitBtn, function(item, index){
+      _.each(this.$submitBtn, function(item, index){
         $(item).attr('value', this.submitBtnTitles[index]);
       }, this);
     },
@@ -436,14 +436,14 @@
   
     _disableSubmitButton: function(message){
       this.setSubmitButton(null, message || i18n.t("general:wait"));
-      this.submitBtn
+      this.$submitBtn
         .attr('disabled', 'disabled')
         .addClass('disabled');
     },
   
     _enableSubmitButton: function(){
       this.resetSubmitButton();
-      this.submitBtn
+      this.$submitBtn
         .removeAttr('disabled')
         .removeClass('disabled');
     },
@@ -465,10 +465,6 @@
     }
   
   });
-  
-  SirTrevor.submittable = function(){
-    new Submittable();
-  };
   /*
     Underscore helpers
   */
@@ -542,7 +538,7 @@
     }
   
     html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-      return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
+      return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
     });
   
     // This may seem crazy, but because JS doesn't have a look behind,
@@ -552,10 +548,10 @@
     html = _.reverse(
              _.reverse(html)
              .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-                return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
+                return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
              })
              .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-                return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
+                return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
              })
             );
   
@@ -584,12 +580,12 @@
     }
   
     if (shouldWrap) {
-      html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-      html = html.replace(/\n/gm, "</div><div>");
+      html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
+      html = html.replace(/\r?\n/gm, "</div><div>");
     }
   
     html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-               .replace(/\n/g, "<br>")
+               .replace(/\r?\n/g, "<br>")
                .replace(/\*\*/, "")
                .replace(/__/, "");  // Cleanup any markdown characters left
   
@@ -701,7 +697,11 @@
     }
   
     // Strip remaining HTML
-    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+    if (SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip) {
+      markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+    } else {
+      markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
+    }
   
     return markdown;
   };
@@ -719,13 +719,17 @@
       this._queued = [];
     },
   
-    addQueuedItem: function(name, deffered) {
+    addQueuedItem: function(name, deferred) {
       SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
-      this._queued.push({ name: name, deffered: deffered });
+      SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
+  
+      this._queued.push({ name: name, deferred: deferred });
     },
   
     removeQueuedItem: function(name) {
       SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
+      SirTrevor.EventBus.trigger("onUploadStop", this.blockID);
+  
       this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
     },
   
@@ -736,7 +740,7 @@
     resolveAllInQueue: function() {
       _.each(this._queued, function(item){
         SirTrevor.log("Aborting queued request: " + item.name);
-        item.deffered.abort();
+        item.deferred.abort();
       }, this);
     }
   
@@ -818,7 +822,7 @@
         this.onDrop(e.dataTransfer);
       }
   
-      SirTrevor.EventBus.trigger('block:content:dropped');
+      SirTrevor.EventBus.trigger('block:content:dropped', this.blockID);
     }
   
   };
@@ -970,6 +974,7 @@
     var BlockReorder = function(block_element, mediator) {
       this.$block = block_element;
       this.mediator = mediator;
+      this.blockID = this.$block.attr('id');
   
       this._ensureElement();
       this._bindFunctions();
@@ -1003,7 +1008,7 @@
   
       onMouseDown: function() {
         this.mediator.trigger('block-controls:hide');
-        SirTrevor.EventBus.trigger("block:reorder:down");
+        SirTrevor.EventBus.trigger("block:reorder:down", this.blockID);
       },
   
       onDrop: function(ev) {
@@ -1028,14 +1033,14 @@
         var btn = $(ev.currentTarget).parent();
   
         ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-        ev.originalEvent.dataTransfer.setData('Text', this.$block.attr('id'));
+        ev.originalEvent.dataTransfer.setData('Text', this.blockID);
   
-        SirTrevor.EventBus.trigger("block:reorder:dragstart");
+        SirTrevor.EventBus.trigger("block:reorder:dragstart", this.blockID);
         this.$block.addClass('st-block--dragging');
       },
   
       onDragEnd: function(ev) {
-        SirTrevor.EventBus.trigger("block:reorder:dragend");
+        SirTrevor.EventBus.trigger("block:reorder:dragend", this.blockID);
         this.$block.removeClass('st-block--dragging');
       },
   
@@ -1141,8 +1146,14 @@
   };
   SirTrevor.BlockStore = {
   
+    /**
+     * Internal storage object for the block
+     */
     blockStorage: {},
   
+    /**
+     * Initialize the store, including the block type
+     */
     createStore: function(blockData) {
       this.blockStorage = {
         type: _.underscored(this.type),
@@ -1150,8 +1161,11 @@
       };
     },
   
-    save: function() { 
-      var data = this._serializeData(); 
+    /**
+     * Serialized the block and saves the data into the store
+     */
+    save: function() {
+      var data = this._serializeData();
   
       if (!_.isEmpty(data)) {
         this.setData(data);
@@ -1174,10 +1188,17 @@
       return this.blockStorage.data;
     },
   
+    /**
+     * Internal method to get the block's data
+     */
     _getData: function() {
       return this.blockStorage.data;
     },
   
+    /**
+     * Set the block data.
+     * This is used by the save() method
+     */
     setData: function(blockData) {
       SirTrevor.log("Setting data for block " + this.blockID);
       _.extend(this.blockStorage.data, blockData || {});
@@ -1193,8 +1214,8 @@
   
     beforeLoadingData: function() {
       SirTrevor.log("loadData for " + this.blockID);
-      SirTrevor.EventBus.trigger("editor/block/loadData");
-      this.loadData(this._getData());
+      SirTrevor.EventBus.trigger("block:loadData", this.blockID);
+      this.loadData(this.getData());
     },
   
     _loadData: function() {
@@ -1254,7 +1275,7 @@
   
       type: '',
   
-      class: function() {
+      'class': function() {
         return _.classify(this.type);
       },
   
@@ -1315,7 +1336,7 @@
       },
   
       addMessage: function(msg, additionalClass) {
-        var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
+        var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
         this.$messages.append($msg)
                       .addClass('st-block__messages--is-visible');
         return $msg;
@@ -1661,18 +1682,14 @@
       getSelectionForFormatter: function() {
         var mediator = this.mediator;
   
-        _.defer(function(){
+        _.defer(function(block){
           var selection = window.getSelection(),
-             selectionStr = selection.toString().trim();
+              selectionStr = selection.toString().trim(),
+              eventType = (selectionStr === '') ? 'hide' : 'position';
   
-          if (selectionStr === '') {
-            mediator.trigger('formatter:hide');
-            SirTrevor.EventBus.trigger('formatter:hide');
-          } else {
-            mediator.trigger('formatter:positon');
-            SirTrevor.EventBus.trigger('formatter:positon');
-          }
-        });
+            mediator.trigger('formatter:' + eventType);
+            SirTrevor.EventBus.trigger('formatter:' + eventType, block);
+        }, this);
        },
   
       clearInsertedStyles: function(e) {
@@ -1811,6 +1828,16 @@
       }, this));
     },
   
+    onUploadSuccess : function(data) {
+      this.setData(data);
+      this.ready();
+    },
+  
+    onUploadError : function(jqXHR, status, errorThrown){
+      this.addMessage(i18n.t('blocks:image:upload_error'));
+      this.ready();
+    },
+  
     onDrop: function(transferData){
       var file = transferData.files[0],
           urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
@@ -1822,19 +1849,7 @@
         this.$inputs.hide();
         this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
   
-        // Upload!
-        SirTrevor.EventBus.trigger('setSubmitButton', ['Please wait...']);
-        this.uploader(
-          file,
-          function(data) {
-            this.setData(data);
-            this.ready();
-          },
-          function(error){
-            this.addMessage(i18n.t('blocks:image:upload_error'));
-            this.ready();
-          }
-        );
+        this.uploader(file, this.onUploadSuccess, this.onUploadError);
       }
     }
   });
@@ -2430,7 +2445,7 @@
       eventNamespace: 'formatter',
   
       mediatedEvents: {
-        'positon': 'renderBySelection',
+        'position': 'renderBySelection',
         'show': 'show',
         'hide': 'hide'
       },
@@ -2564,8 +2579,8 @@
             { text: i18n.t("errors:load_fail") });
           this.mediator.trigger('errors:render');
   
-          console.log('Sorry there has been a problem with parsing the JSON');
-          console.log(e);
+          SirTrevor.log('Sorry there has been a problem with parsing the JSON');
+          SirTrevor.log(e);
         }
   
         return result;
@@ -2636,7 +2651,7 @@
         this.triggerBlockCountUpdate();
         this.mediator.trigger('block:limitReached', this.blockLimitReached());
   
-        SirTrevor.EventBus.trigger("block:remove");
+        SirTrevor.EventBus.trigger("block:remove", block);
       },
   
       rerenderBlock: function(blockID) {
@@ -2869,9 +2884,11 @@
         this.mediator = _.extend({}, SirTrevor.Events);
   
         this._bindFunctions();
-        this.build();
   
         SirTrevor.instances.push(this);
+  
+        this.build();
+  
         SirTrevor.bindFormSubmit(this.$form);
       },
   
@@ -2933,7 +2950,7 @@
   
         // Destroy all blocks
         _.each(this.blocks, function(block) {
-          this.removeBlock(block.blockID);
+          this.mediator.trigger('block:remove', this.block.blockID);
         }, this);
   
         // Stop listening to events
@@ -3115,7 +3132,7 @@
 
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
-      SirTrevor.submittable();
+      new SirTrevor.Submittable(form);
       form.bind('submit', this.onFormSubmit);
       formBound = true;
     }

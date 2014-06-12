@@ -58,7 +58,7 @@ SirTrevor.BlockManager = (function(){
       this.triggerBlockCountUpdate();
       this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
-      SirTrevor.EventBus.trigger("block:remove");
+      SirTrevor.EventBus.trigger("block:remove", block);
     },
 
     rerenderBlock: function(blockID) {

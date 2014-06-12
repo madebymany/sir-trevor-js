@@ -6,3 +6,6 @@ node_modules
 components
 .grunt
 _SpecRunner.html
+build
+components
+/bower_components/

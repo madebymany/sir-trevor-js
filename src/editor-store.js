@@ -45,8 +45,8 @@ SirTrevor.EditorStore = (function(){
           { text: i18n.t("errors:load_fail") });
         this.mediator.trigger('errors:render');
 
-        console.log('Sorry there has been a problem with parsing the JSON');
-        console.log(e);
+        SirTrevor.log('Sorry there has been a problem with parsing the JSON');
+        SirTrevor.log(e);
       }
 
       return result;

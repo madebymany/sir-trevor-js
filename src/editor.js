@@ -39,9 +39,11 @@ SirTrevor.Editor = (function(){
       this.mediator = _.extend({}, SirTrevor.Events);
 
       this._bindFunctions();
-      this.build();
 
       SirTrevor.instances.push(this);
+
+      this.build();
+
       SirTrevor.bindFormSubmit(this.$form);
     },
 
@@ -103,7 +105,7 @@ SirTrevor.Editor = (function(){
 
       // Destroy all blocks
       _.each(this.blocks, function(block) {
-        this.removeBlock(block.blockID);
+        this.mediator.trigger('block:remove', this.block.blockID);
       }, this);
 
       // Stop listening to events

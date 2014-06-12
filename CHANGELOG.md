@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.3
+
+* Refactored upload triggers, now handled by Ajaxable mixin
+* Slight change to the `Image` block – no longer sets the button title to 'Please wait...' on upload
+* Escaped `class` names and other minor fixes so including ST doesn't blow up IE 7 / 8
+* Added `toMarkdown` `aggresiveHTMLStrip` default to not strip tags that have whitespace after the opening `<` character (#168)
+* Pass the block to the `block:remove` trigger
+* Add the block ID to all other block triggers
+
 ## 0.3.2
 
 * Added new controllable mixin for adding new functionality to blocks (https://github.com/madebymany/sir-trevor-js/pull/118)

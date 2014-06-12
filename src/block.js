@@ -320,18 +320,14 @@ SirTrevor.Block = (function(){
     getSelectionForFormatter: function() {
       var mediator = this.mediator;
 
-      _.defer(function(){
+      _.defer(function(block){
         var selection = window.getSelection(),
-           selectionStr = selection.toString().trim();
+            selectionStr = selection.toString().trim(),
+            eventType = (selectionStr === '') ? 'hide' : 'position';
 
-        if (selectionStr === '') {
-          mediator.trigger('formatter:hide');
-          SirTrevor.EventBus.trigger('formatter:hide');
-        } else {
-          mediator.trigger('formatter:positon');
-          SirTrevor.EventBus.trigger('formatter:positon');
-        }
-      });
+          mediator.trigger('formatter:' + eventType);
+          SirTrevor.EventBus.trigger('formatter:' + eventType, block);
+      }, this);
      },
 
     clearInsertedStyles: function(e) {

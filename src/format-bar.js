@@ -27,7 +27,7 @@ SirTrevor.FormatBar = (function(){
     eventNamespace: 'formatter',
 
     mediatedEvents: {
-      'positon': 'renderBySelection',
+      'position': 'renderBySelection',
       'show': 'show',
       'hide': 'hide'
     },
