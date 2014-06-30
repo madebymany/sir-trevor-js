@@ -7,7 +7,7 @@
   SirTrevor.DEBUG = false;
   SirTrevor.SKIP_VALIDATION = false;
 
-  SirTrevor.version = "0.3.0";
+  SirTrevor.version = "0.4.0";
   SirTrevor.LANGUAGE = "en";
 
   function $element(el) {
@@ -45,6 +45,12 @@
     }
   };
 
+  SirTrevor.log = function(message) {
+    if (!_.isUndefined(console) && SirTrevor.DEBUG) {
+      console.log(message);
+    }
+  };
+
   SirTrevor.BlockMixins = {};
   SirTrevor.Blocks = {};
   SirTrevor.Formatters = {};
@@ -60,6 +66,17 @@
       if (this.bound.length > 0) {
         _.bindAll.apply(null, _.union([this], this.bound));
       }
+    }
+  };
+
+  var MediatedEvents = {
+    mediatedEvents: {},
+    eventNamespace: null,
+    _bindMediatedEvents: function() {
+      _.each(this.mediatedEvents, function(callbackFunction, eventName){
+        eventName = this.eventNamespace ? this.eventNamespace + ':' + eventName : eventName;
+        this.mediator.on(eventName, _.bind(this[callbackFunction], this));
+      }, this);
     }
   };
 
@@ -118,11 +135,11 @@
 
   /* Block Mixins */
   //= block_mixins
-  //= block.positioner.js
-  //= block.reorder.js
-  //= block.deletion.js
-  //= block.validations.js
-  //= block.store.js
+  //= block-positioner.js
+  //= block-reorder.js
+  //= block-deletion.js
+  //= block-validations.js
+  //= block-store.js
   //= simple-block.js
   //= block.js
   //= formatter.js
@@ -137,7 +154,10 @@
   //= floating-block-controls.js
   /* FormatBar */
   //= format-bar.js
-  //= sir-trevor-editor.js
+  //= editor-store.js
+  //= block-manager.js
+  //= error-handler.js
+  //= editor.js
 
   /* We need a form handler here to handle all the form submits */
   SirTrevor.setDefaults = function(options) {

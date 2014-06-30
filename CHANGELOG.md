@@ -1,6 +1,18 @@
 # Changelog
 
-## 0.3.3
+## 0.4.x
+
+### 0.4.0
+
+* Refactored each instance to have it's own mediator object
+* Added a new block manager that handles block creation, deletion etc
+* Clean up the block store with more logical names
+* Cleaned up file names to have `-` conventions
+* Simplified the editor store
+
+## 0.3.x
+
+### 0.3.3
 
 * Refactored upload triggers, now handled by Ajaxable mixin
 * Slight change to the `Image` block – no longer sets the button title to 'Please wait...' on upload
@@ -9,7 +21,7 @@
 * Pass the block to the `block:remove` trigger
 * Add the block ID to all other block triggers
 
-## 0.3.2
+### 0.3.2
 
 * Added new controllable mixin for adding new functionality to blocks (https://github.com/madebymany/sir-trevor-js/pull/118)
 * Removed Source Sans from the CSS file
@@ -18,7 +30,7 @@
 * Fixed `.st-text-block--heading` class to have `min-height: 0` not `auto`.
 * Added mailto support to the link regex
 
-## 0.3.1
+### 0.3.1
 
 * Localise titles of the tweet & heading blocks
 * Defer the execution of internationalising the delete text, drop text, upload text and list block cite text until Sir Trevor has intialised.
@@ -28,7 +40,7 @@
 * Added a `destroy` and `reinitialize` method for a `SirTrevor.Editor` instance
 * Modified the Video block to allow for more providers to be added.
 
-## 0.3.0
+### 0.3.0
 
 * I18n support (in EN / DE) using the new `i18n.t` helper
 * Support for the I18next library (optional dependency)

@@ -1,7 +1,3 @@
-/*
-  Simple Image Block
-*/
-
 SirTrevor.Blocks.Image = SirTrevor.Block.extend({
 
   type: "image",

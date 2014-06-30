@@ -1,7 +1,8 @@
 SirTrevor.BlockReorder = (function(){
 
-  var BlockReorder = function(block_element) {
+  var BlockReorder = function(block_element, mediator) {
     this.$block = block_element;
+    this.mediator = mediator;
     this.blockID = this.$block.attr('id');
 
     this._ensureElement();
@@ -12,7 +13,7 @@ SirTrevor.BlockReorder = (function(){
 
   _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
 
-    bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+    bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrop'],
 
     className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
     tagName: 'a',
@@ -27,16 +28,15 @@ SirTrevor.BlockReorder = (function(){
 
     initialize: function() {
       this.$el.bind('mousedown touchstart', this.onMouseDown)
-              .bind('click', this.onClick)
               .bind('dragstart', this.onDragStart)
-              .bind('dragend touchend', this.onDragEnd)
-              .bind('drag touchmove', this.onDrag);
+              .bind('dragend touchend', this.onDragEnd);
 
       this.$block.dropArea()
                  .bind('drop', this.onDrop);
     },
 
     onMouseDown: function() {
+      this.mediator.trigger('block-controls:hide');
       SirTrevor.EventBus.trigger("block:reorder:down", this.blockID);
     },
 
@@ -47,13 +47,14 @@ SirTrevor.BlockReorder = (function(){
           item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
           block = $('#' + item_id);
 
-      if (!_.isUndefined(item_id) &&
-        !_.isEmpty(block) &&
+      if (!_.isUndefined(item_id) && !_.isEmpty(block) &&
         dropped_on.attr('id') != item_id &&
         dropped_on.attr('data-instance') == block.attr('data-instance')
       ) {
         dropped_on.after(block);
       }
+
+      this.mediator.trigger('block:rerender', item_id);
       SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
     },
 
@@ -70,11 +71,6 @@ SirTrevor.BlockReorder = (function(){
     onDragEnd: function(ev) {
       SirTrevor.EventBus.trigger("block:reorder:dragend", this.blockID);
       this.$block.removeClass('st-block--dragging');
-    },
-
-    onDrag: function(ev){},
-
-    onClick: function() {
     },
 
     render: function() {

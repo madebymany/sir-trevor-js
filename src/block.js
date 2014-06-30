@@ -1,6 +1,6 @@
 SirTrevor.Block = (function(){
 
-  var Block = function(data, instance_id) {
+  var Block = function(data, instance_id, mediator) {
     SirTrevor.SimpleBlock.apply(this, arguments);
   };
 
@@ -65,6 +65,9 @@ SirTrevor.Block = (function(){
 
     toolbarEnabled: true,
 
+    availableMixins: ['droppable', 'pastable', 'uploadable',
+                      'fetchable', 'ajaxable', 'controllable'],
+
     droppable: false,
     pastable: false,
     uploadable: false,
@@ -108,11 +111,10 @@ SirTrevor.Block = (function(){
       }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
-      if (this.controllable) { this.withMixin(SirTrevor.BlockMixins.Controllable); }
+
+      _.each(this.availableMixins, function(mixin) {
+        if (this[mixin]) { this.withMixin(SirTrevor.BlockMixins[_.classify(mixin)]); }
+      }, this);
 
       if (this.formattable) { this._initFormatting(); }
 
@@ -147,36 +149,34 @@ SirTrevor.Block = (function(){
     },
 
     /*
-      Generic toData implementation.
-      Can be overwritten, although hopefully this will cover most situations
+      Generic _serializeData implementation to serialize the block into a plain object.
+      Can be overwritten, although hopefully this will cover most situations.
+      If you want to get the data of your block use block.saveAndGetData()
     */
-    toData: function() {
-      SirTrevor.log("toData for " + this.blockID);
+    _serializeData: function() {
+      SirTrevor.log("serializing data for " + this.blockID);
 
       var bl = this.$el,
-          dataObj = {};
+          data = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
         var content = this.getTextBlock().html();
         if (content.length > 0) {
-          dataObj.text = SirTrevor.toMarkdown(content, this.type);
+          data.text = SirTrevor.toMarkdown(content, this.type);
         }
       }
 
       // Add any inputs to the data attr
-      if(this.$(':input').not('.st-paste-block').length > 0) {
+      if (this.$(':input').not('.st-paste-block').length > 0) {
         this.$(':input').each(function(index,input){
           if (input.getAttribute('name')) {
-            dataObj[input.getAttribute('name')] = input.value;
+            data[input.getAttribute('name')] = input.value;
           }
         });
       }
 
-      // Set
-      if(!_.isEmpty(dataObj)) {
-        this.setData(dataObj);
-      }
+      return data;
     },
 
     /* Generic implementation to tell us when the block is active */
@@ -206,6 +206,10 @@ SirTrevor.Block = (function(){
 
     _onBlur: function() {},
 
+    onBlockRender: function() {
+      this.focus();
+    },
+
     onDrop: function(dataTransferObj) {},
 
     onDeleteClick: function(ev) {
@@ -213,7 +217,8 @@ SirTrevor.Block = (function(){
 
       var onDeleteConfirm = function(e) {
         e.preventDefault();
-        this.trigger('removeBlock', this.blockID);
+        this.mediator.trigger('block:remove', this.blockID);
+        this.remove();
       };
 
       var onDeleteDeny = function(e) {
@@ -276,19 +281,16 @@ SirTrevor.Block = (function(){
 
     _initUIComponents: function() {
 
-      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID);
+      var positioner = new SirTrevor.BlockPositioner(this.$el, this.mediator);
 
       this._withUIComponent(
-        positioner, '.st-block-ui-btn--reorder', positioner.toggle
-      );
+        positioner, '.st-block-ui-btn--reorder', positioner.toggle);
 
       this._withUIComponent(
-        new SirTrevor.BlockReorder(this.$el)
-      );
+        new SirTrevor.BlockReorder(this.$el, this.mediator));
 
       this._withUIComponent(
-        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
-      );
+        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick);
 
       this.onFocus();
       this.onBlur();
@@ -316,12 +318,15 @@ SirTrevor.Block = (function(){
     },
 
     getSelectionForFormatter: function() {
+      var mediator = this.mediator;
+
       _.defer(function(block){
         var selection = window.getSelection(),
-           selectionStr = selection.toString().trim(),
-           eventType = (selectionStr === '') ? 'hide' : 'position';
+            selectionStr = selection.toString().trim(),
+            eventType = (selectionStr === '') ? 'hide' : 'position';
 
-        SirTrevor.EventBus.trigger('formatter:' + eventType, block);
+          mediator.trigger('formatter:' + eventType);
+          SirTrevor.EventBus.trigger('formatter:' + eventType, block);
       }, this);
      },
 
@@ -343,7 +348,7 @@ SirTrevor.Block = (function(){
     },
 
     isEmpty: function() {
-      return _.isEmpty(this.saveAndGetData());
+      return _.isEmpty(this.getBlockData());
     }
 
   });

@@ -7,19 +7,30 @@
 
 SirTrevor.FormatBar = (function(){
 
-  var FormatBar = function(options) {
+  var FormatBar = function(options, mediator) {
     this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
+    this.mediator = mediator;
+
     this._ensureElement();
     this._bindFunctions();
+    this._bindMediatedEvents();
 
     this.initialize.apply(this, arguments);
   };
 
-  _.extend(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
+  _.extend(FormatBar.prototype, FunctionBind, MediatedEvents, SirTrevor.Events, Renderable, {
 
     className: 'st-format-bar',
 
     bound: ["onFormatButtonClick", "renderBySelection", "hide"],
+
+    eventNamespace: 'formatter',
+
+    mediatedEvents: {
+      'position': 'renderBySelection',
+      'show': 'show',
+      'hide': 'hide'
+    },
 
     initialize: function() {
       var formatName, format, btn;
@@ -54,8 +65,7 @@ SirTrevor.FormatBar = (function(){
 
     remove: function(){ this.$el.remove(); },
 
-    renderBySelection: function(rectangles) {
-
+    renderBySelection: function() {
       var selection = window.getSelection(),
           range = selection.getRangeAt(0),
           boundary = range.getBoundingClientRect(),

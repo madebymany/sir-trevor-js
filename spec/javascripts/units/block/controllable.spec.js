@@ -15,7 +15,7 @@ describe("Controllable Block", function(){
       }
     });
 
-    block = new SirTrevor.Blocks.ControllableBlock({}, editor.ID);
+    block = new SirTrevor.Blocks.ControllableBlock({}, editor.ID, editor.mediator);
   });
 
   describe("render", function(){

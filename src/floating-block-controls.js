@@ -6,9 +6,10 @@
 
 SirTrevor.FloatingBlockControls = (function(){
 
-  var FloatingBlockControls = function(wrapper, instance_id) {
+  var FloatingBlockControls = function(wrapper, instance_id, mediator) {
     this.$wrapper = wrapper;
     this.instance_id = instance_id;
+    this.mediator = mediator;
 
     this._ensureElement();
     this._bindFunctions();
@@ -74,9 +75,7 @@ SirTrevor.FloatingBlockControls = (function(){
 
     handleBlockClick: function(e) {
       e.stopPropagation();
-
-      var block = $(e.currentTarget);
-      this.trigger('showBlockControls', block);
+      this.mediator.trigger('block-controls:render', $(e.currentTarget));
     }
 
   });

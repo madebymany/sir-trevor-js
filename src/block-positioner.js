@@ -7,10 +7,9 @@ SirTrevor.BlockPositioner = (function(){
     "</div>"
   ].join("\n");
 
-  var BlockPositioner = function(block_element, instance_id) {
+  var BlockPositioner = function(block_element, mediator) {
     this.$block = block_element;
-    this.instanceID = instance_id;
-    this.total_blocks = 0;
+    this.mediator = mediator;
 
     this._ensureElement();
     this._bindFunctions();
@@ -19,6 +18,8 @@ SirTrevor.BlockPositioner = (function(){
   };
 
   _.extend(BlockPositioner.prototype, FunctionBind, Renderable, {
+
+    total_blocks: 0,
 
     bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
@@ -30,8 +31,7 @@ SirTrevor.BlockPositioner = (function(){
       this.$select = this.$('.st-block-positioner__select');
 
       this.$select.on('change', this.onSelectChange);
-
-      SirTrevor.EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
+      this.mediator.on('block:countUpdate', this.onBlockCountChange);
     },
 
     onBlockCountChange: function(new_count) {
@@ -44,8 +44,8 @@ SirTrevor.BlockPositioner = (function(){
     onSelectChange: function() {
       var val = this.$select.val();
       if (val !== 0) {
-        SirTrevor.EventBus.trigger(this.instanceID + ":blocks:change_position",
-                                   this.$block, val, (val == 1 ? 'before' : 'after'));
+        this.mediator.trigger('block:changePosition',
+            this.$block, val, (val == 1 ? 'before' : 'after'));
         this.toggle();
       }
     },

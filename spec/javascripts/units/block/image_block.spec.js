@@ -1,18 +1,19 @@
 describe('Image block', function() {
 
-  var element, editor;
+  var element, editor, blockManager;
   SirTrevor.DEBUG = false;
 
   beforeEach(function(){
     element = $("<textarea>");
     editor = new SirTrevor.Editor({ el: element });
+    blockManager = editor.block_manager;
   });
 
   it("should be able to be created", function(){
-    var l = editor.blocks.length;
-    editor.createBlock("Image");
-    expect(editor.blocks.length).toBe(l + 1);
-    expect(editor.blocks[0].type).toBe("image");
+    var l = blockManager.blocks.length;
+    editor.mediator.trigger('block:create', "Image", {});
+    expect(blockManager.blocks.length).toBe(l + 1);
+    expect(blockManager.blocks[0].type).toBe("image");
   });
 
   it("upload success function should be overridable", function(){
@@ -25,8 +26,8 @@ describe('Image block', function() {
       return "I was also overridden!";
     };
 
-    editor.createBlock("Image");
-    var image = editor.blocks[0];
+    editor.mediator.trigger('block:create', "Image", {});
+    var image = blockManager.blocks[0];
 
     spyOn(image, "uploader").andCallFake(function(file, onUploadSuccess, onUploadError) {
       expect(onUploadSuccess()).toBe("I was totes overridden!");

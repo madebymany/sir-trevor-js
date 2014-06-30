@@ -36,12 +36,6 @@
       SirTrevor.DEBUG = true;
       SirTrevor.LANGUAGE = "en";
 
-      SirTrevor.setBlockOptions("Text", {
-        onBlockRender: function() {
-          console.log("Text block rendered");
-        }
-      });
-
       window.editor = new SirTrevor.Editor({
         el: $('.sir-trevor'),
         blockTypes: [
@@ -52,7 +46,8 @@
           "Image",
           "Video",
           "Tweet"
-        ]
+        ],
+        defaultType: 'Text'
       });
 
       $('form').bind('submit', function(){
