@@ -147,7 +147,7 @@
   SirTrevor.bindFormSubmit = function(form) {
     if (!formBound) {
       new SirTrevor.Submittable(form);
-      form.bind('submit', this.onFormSubmit);
+      form.on('submit.sirtrevor', this.onFormSubmit);
       formBound = true;
     }
   };
