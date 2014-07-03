@@ -81,7 +81,7 @@ SirTrevor.Editor = (function(){
       $(document.body).append(this.formatBar.render().$el);
       this.$outer.append(this.block_controls.render().$el);
 
-      $(window).bind('click', this.hideAllTheThings);
+      $(window).bind('click.sirtrevor', this.hideAllTheThings);
 
       var store = this.store("read");
 
