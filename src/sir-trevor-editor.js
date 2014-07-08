@@ -211,8 +211,10 @@ SirTrevor.Editor = (function(){
     },
 
     onNewBlockCreated: function(block) {
-      this.hideBlockControls();
-      this.scrollTo(block.$el);
+      if (block.instanceID === this.ID) {
+        this.hideBlockControls();
+        this.scrollTo(block.$el);
+      }
     },
 
     scrollTo: function(element) {
