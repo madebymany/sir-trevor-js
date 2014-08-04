@@ -1,6 +1,8 @@
 SirTrevor.SimpleBlock = (function(){
 
-  var SimpleBlock = function(data, instance_id) {
+  // Mammal models - added ref property
+  var SimpleBlock = function(data, ref, instance_id) {
+    this.ref = ref;
     this.createStore(data);
     this.blockID = _.uniqueId('st-block-');
     this.instanceID = instance_id;

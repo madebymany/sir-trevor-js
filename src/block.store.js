@@ -4,6 +4,7 @@ SirTrevor.BlockStore = {
 
   createStore: function(blockData) {
     this.blockStorage = {
+      ref: this.ref, // Mammal models
       type: _.underscored(this.type),
       data: blockData || {}
     };

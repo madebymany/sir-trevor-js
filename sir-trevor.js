@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-02-23
+ * 2014-08-04
  */
 
 (function ($, _){
@@ -1226,6 +1226,7 @@
   
     createStore: function(blockData) {
       this.blockStorage = {
+        ref: this.ref, // Mammal models
         type: _.underscored(this.type),
         data: blockData || {}
       };
@@ -1285,7 +1286,9 @@
   };
   SirTrevor.SimpleBlock = (function(){
   
-    var SimpleBlock = function(data, instance_id) {
+    // Mammal models - added ref property
+    var SimpleBlock = function(data, ref, instance_id) {
+      this.ref = ref;
       this.createStore(data);
       this.blockID = _.uniqueId('st-block-');
       this.instanceID = instance_id;
@@ -2697,7 +2700,7 @@
         if (store.data.length > 0) {
           _.each(store.data, function(block){
             SirTrevor.log('Creating: ' + block.type);
-            this.createBlock(block.type, block.data);
+            this.createBlock(block.type, block.data, block.ref); // Mammal models: ref
           }, this);
         } else if (this.options.defaultType !== false) {
           this.createBlock(this.options.defaultType, {});
@@ -2781,7 +2784,7 @@
         A block will have a reference to an Editor instance & the parent BlockType.
         We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
       */
-      createBlock: function(type, data, render_at) {
+      createBlock: function(type, data, ref) { // Mammal models: ref
         type = _.classify(type);
   
         if(this._blockLimitReached()) {
@@ -2800,7 +2803,7 @@
           return false;
         }
   
-        var block = new SirTrevor.Blocks[type](data, this.ID);
+        var block = new SirTrevor.Blocks[type](data, ref, this.ID); // Mammal models: ref
   
         this._renderInPosition(block.render().$el);
   

@@ -88,7 +88,7 @@ SirTrevor.Editor = (function(){
       if (store.data.length > 0) {
         _.each(store.data, function(block){
           SirTrevor.log('Creating: ' + block.type);
-          this.createBlock(block.type, block.data);
+          this.createBlock(block.type, block.data, block.ref); // Mammal models: ref
         }, this);
       } else if (this.options.defaultType !== false) {
         this.createBlock(this.options.defaultType, {});
@@ -172,7 +172,7 @@ SirTrevor.Editor = (function(){
       A block will have a reference to an Editor instance & the parent BlockType.
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
-    createBlock: function(type, data, render_at) {
+    createBlock: function(type, data, ref) { // Mammal models: ref
       type = _.classify(type);
 
       if(this._blockLimitReached()) {
@@ -191,7 +191,7 @@ SirTrevor.Editor = (function(){
         return false;
       }
 
-      var block = new SirTrevor.Blocks[type](data, this.ID);
+      var block = new SirTrevor.Blocks[type](data, ref, this.ID); // Mammal models: ref
 
       this._renderInPosition(block.render().$el);
 
