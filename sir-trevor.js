@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.4.2
+ * Sir Trevor JS v0.5.0
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-08-04
+ * 2014-08-12
  */
 
 (function ($, _){
@@ -235,7 +235,7 @@
   */
   
   SirTrevor.log = function(message) {
-    if (SirTrevor.DEBUG && !_.isUndefined(console)) {
+    if (!_.isUndefined(console) && SirTrevor.DEBUG) {
       console.log(message);
     }
   };
@@ -760,8 +760,7 @@
                    .replace(/(?:<div>)([^<>]+)(?:<div>)/g,"$1\n")                            // ^ (handle nested divs that start with content)
                    .replace(/(?:<div>)(?:<br>)?([^<>]+)(?:<br>)?(?:<\/div>)/g,"$1\n")        // ^ (handle content inside divs)
                    .replace(/<\/p>/g,"\n\n")                                               // P tags as line breaks
-                   .replace(/<(.)?br(.)?>/g,"\n")                                            // Convert normal line breaks
-                   .replace(/&lt;/g,"<").replace(/&gt;/g,">");                                 // Encoding
+                   .replace(/<(.)?br(.)?>/g,"\n");                                            // Convert normal line breaks
   
     // Use custom block toMarkdown functions (if any exist)
     var block;
@@ -775,6 +774,9 @@
   
     // Strip remaining HTML
     markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
+  
+    // Now safe to encode angle braces
+    mardown = markdown.replace(/&lt;/g,"<").replace(/&gt;/g,">");
   
     return markdown;
   };

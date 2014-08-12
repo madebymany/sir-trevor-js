@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "dependencies": {
     "grunt": "0.4.1",
     "grunt-cli": "0.1.6",
