@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('travis', ['rig', 'jasmine']);
 
-  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine']);
+  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine', 'watch']);
 
   grunt.registerTask('jasmine-browser', ['server','watch']);
 
