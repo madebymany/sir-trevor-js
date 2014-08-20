@@ -3,7 +3,7 @@
 */
 
 SirTrevor.log = function(message) {
-  if (!_.isUndefined(console) && SirTrevor.DEBUG) {
+  if (SirTrevor.DEBUG && !_.isUndefined(console)) {
     console.log(message);
   }
 };
