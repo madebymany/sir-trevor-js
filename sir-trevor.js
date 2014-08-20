@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.5.0
+ * Sir Trevor JS v0.5.2
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-08-12
+ * 2014-08-20
  */
 
 (function ($, _){
@@ -235,7 +235,7 @@
   */
   
   SirTrevor.log = function(message) {
-    if (!_.isUndefined(console) && SirTrevor.DEBUG) {
+    if (SirTrevor.DEBUG && !_.isUndefined(console)) {
       console.log(message);
     }
   };
