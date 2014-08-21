@@ -24,6 +24,7 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 4. [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
 5. [Laravel](https://github.com/caouecs/Laravel4-SirTrevorJS)
 6. [Django](https://github.com/philippbosch/django-sirtrevor)
+7. [Yii2](https://github.com/DrMabuse23/yii2-sir-trevor-js)
 
 
 ## Custom blocks
