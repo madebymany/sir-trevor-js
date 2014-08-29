@@ -9,7 +9,7 @@ SirTrevor.Blocks.Text = SirTrevor.Block.extend({
 
   editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
 
-  icon_name: 'text',
+  icon_name: '<span data-icon="text"></span>',
 
   loadData: function(data){
     this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));

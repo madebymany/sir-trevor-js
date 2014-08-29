@@ -12,7 +12,7 @@ SirTrevor.Blocks.List = (function() {
 
     title: function() { return i18n.t('blocks:list:title'); },
 
-    icon_name: 'list',
+    icon_name: '<span data-icon="list"></span>',
 
     editorHTML: function() {
       return _.template(template, this);

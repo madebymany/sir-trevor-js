@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-08-20
+ * 2014-08-29
  */
 
 (function ($, _){
@@ -1064,7 +1064,6 @@
   
       attributes: function() {
         return {
-          'html': 'reorder',
           'draggable': 'true',
           'data-icon': 'move'
         };
@@ -1144,7 +1143,6 @@
       className: 'st-block-ui-btn st-block-ui-btn--delete st-icon',
   
       attributes: {
-        html: 'delete',
         'data-icon': 'bin'
       }
   
@@ -1908,7 +1906,7 @@
     droppable: true,
     uploadable: true,
   
-    icon_name: 'image',
+    icon_name: '<span data-icon="image"></span>',
   
     loadData: function(data){
       // Create our image tag
@@ -1959,7 +1957,7 @@
   
     editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
   
-    icon_name: 'text',
+    icon_name: '<span data-icon="text"></span>',
   
     loadData: function(data){
       this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
@@ -2083,7 +2081,7 @@
   
       title: function() { return i18n.t('blocks:list:title'); },
   
-      icon_name: 'list',
+      icon_name: '<span data-icon="list"></span>',
   
       editorHTML: function() {
         return _.template(template, this);

@@ -18,7 +18,6 @@ SirTrevor.BlockReorder = (function(){
 
     attributes: function() {
       return {
-        'html': 'reorder',
         'draggable': 'true',
         'data-icon': 'move'
       };

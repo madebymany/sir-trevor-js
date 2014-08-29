@@ -10,7 +10,7 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   droppable: true,
   uploadable: true,
 
-  icon_name: 'image',
+  icon_name: '<span data-icon="image"></span>',
 
   loadData: function(data){
     // Create our image tag
