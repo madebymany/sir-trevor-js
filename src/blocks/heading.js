@@ -3,7 +3,7 @@
 */
 SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
 
-  type: 'Heading',
+  type: 'heading',
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
