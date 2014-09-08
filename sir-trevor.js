@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-07-03
+ * 2014-09-08
  */
 
 (function ($, _){
@@ -49,6 +49,7 @@
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
+    showBlockControlTitleText: true,
     toMarkdown: {
       aggresiveHTMLStrip: false
     }
@@ -1884,7 +1885,7 @@
   */
   SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
   
-    type: 'Heading',
+    type: 'heading',
   
     title: function(){ return i18n.t('blocks:heading:title'); },
   
@@ -2298,7 +2299,11 @@
       },
   
       render: function() {
-        this.$el.html('<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>' + _.result(this.block_type, 'title'));
+        var html = '<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>';
+        if (SirTrevor.DEFAULTS.showBlockControlTitleText) {
+          html = html + _.result(this.block_type, 'title');
+        }
+        this.$el.html(html);
         return this;
       }
     });
@@ -2775,8 +2780,10 @@
       },
   
       onNewBlockCreated: function(block) {
-        this.hideBlockControls();
-        this.scrollTo(block.$el);
+        if (block.instanceID === this.ID) {
+          this.hideBlockControls();
+          this.scrollTo(block.$el);
+        }
       },
   
       scrollTo: function(element) {
