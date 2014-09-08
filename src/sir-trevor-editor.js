@@ -317,6 +317,16 @@ SirTrevor.Editor = (function(){
       this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
       this.stopListening(block);
 
+      if (block.uploadable) {
+        $.ajax({
+          url: SirTrevor.DEFAULTS.uploadUrl,
+          data: {uid: block.uid},
+          cache: false,
+          dataType: 'json',
+          type: 'DELETE',
+        });
+      }
+
       block.remove();
 
       SirTrevor.EventBus.trigger("block:remove", block);

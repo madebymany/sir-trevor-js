@@ -1501,6 +1501,8 @@
   
       _previousSelection: '',
   
+      uid: null,
+  
       initialize: function() {},
   
       toMarkdown: function(markdown){ return markdown; },
@@ -2880,6 +2882,16 @@
         this.blockCounts[type] = this.blockCounts[type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
+  
+        if (block.uploadable) {
+          $.ajax({
+            url: SirTrevor.DEFAULTS.uploadUrl,
+            data: {uid: block.uid},
+            cache: false,
+            dataType: 'json',
+            type: 'DELETE',
+          });
+        }
   
         block.remove();
   
