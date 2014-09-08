@@ -40,6 +40,7 @@
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
+    showBlockControlTitleText: true,
     toMarkdown: {
       aggresiveHTMLStrip: false
     }
