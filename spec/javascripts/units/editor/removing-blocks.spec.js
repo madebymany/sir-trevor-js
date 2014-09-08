@@ -33,7 +33,6 @@ describe("Removing blocks", function() {
     })
 
     it("makes an ajax request to delete the file", function() {
-      debugger
       editor.createBlock('custom_block');
 
       spyOn($, "ajax");
