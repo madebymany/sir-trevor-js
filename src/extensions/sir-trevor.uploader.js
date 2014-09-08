@@ -6,6 +6,7 @@
 SirTrevor.fileUploader = function(block, file, success, error) {
 
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
+  block.uid = uid;
   var data = new FormData();
 
   data.append('attachment[name]', file.name);
