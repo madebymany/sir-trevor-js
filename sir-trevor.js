@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-07-03
+ * 2014-09-08
  */
 
 (function ($, _){
@@ -1884,7 +1884,7 @@
   */
   SirTrevor.Blocks.Heading = SirTrevor.Block.extend({
   
-    type: 'Heading',
+    type: 'heading',
   
     title: function(){ return i18n.t('blocks:heading:title'); },
   
@@ -2775,8 +2775,10 @@
       },
   
       onNewBlockCreated: function(block) {
-        this.hideBlockControls();
-        this.scrollTo(block.$el);
+        if (block.instanceID === this.ID) {
+          this.hideBlockControls();
+          this.scrollTo(block.$el);
+        }
       },
   
       scrollTo: function(element) {
