@@ -10,8 +10,7 @@ SirTrevor.BlockMixins.Droppable = {
 
     this.drop_options = _.extend({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
 
-    var drop_html = $(_.template(this.drop_options.html,
-                      { block: this }));
+    var drop_html = $(_.template(this.drop_options.html)({ block: this }));
 
     this.$editor.hide();
     this.$inputs.append(drop_html);
