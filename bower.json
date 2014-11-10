@@ -5,7 +5,7 @@
     "**/.*",
     "node_modules",
     "components",
-    "src",
+    "src/!(blocks)",
     "spec",
     "examples",
     "website",
