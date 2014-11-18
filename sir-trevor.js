@@ -503,6 +503,7 @@
   SirTrevor.fileUploader = function(block, file, success, error) {
   
     var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
+    block.uid = uid;
     var data = new FormData();
   
     data.append('attachment[name]', file.name);
@@ -1500,6 +1501,8 @@
       formattable: true,
   
       _previousSelection: '',
+  
+      uid: null,
   
       initialize: function() {},
   
@@ -2880,6 +2883,16 @@
         this.blockCounts[type] = this.blockCounts[type] - 1;
         this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
         this.stopListening(block);
+  
+        if (block.uploadable) {
+          $.ajax({
+            url: SirTrevor.DEFAULTS.uploadUrl,
+            data: {uid: block.uid},
+            cache: false,
+            dataType: 'json',
+            type: 'DELETE',
+          });
+        }
   
         block.remove();
   

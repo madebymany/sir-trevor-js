@@ -79,6 +79,8 @@ SirTrevor.Block = (function(){
 
     _previousSelection: '',
 
+    uid: null,
+
     initialize: function() {},
 
     toMarkdown: function(markdown){ return markdown; },
