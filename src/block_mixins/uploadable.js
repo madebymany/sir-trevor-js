@@ -8,7 +8,7 @@ SirTrevor.BlockMixins.Uploadable = {
     SirTrevor.log("Adding uploadable to block " + this.blockID);
     this.withMixin(SirTrevor.BlockMixins.Ajaxable);
 
-    this.upload_options = _.extend({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
+    this.upload_options = Object.assign({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
     this.$inputs.append(_.template(this.upload_options.html, this));
   },
 

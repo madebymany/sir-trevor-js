@@ -42,7 +42,7 @@ SirTrevor.Block = (function(){
     upload_options: upload_options
   };
 
-  _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
+  Object.assign(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
 
     bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
             "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
@@ -50,7 +50,7 @@ SirTrevor.Block = (function(){
     className: 'st-block st-icon--add',
 
     attributes: function() {
-      return _.extend(SirTrevor.SimpleBlock.fn.attributes.call(this), {
+      return Object.assign(SirTrevor.SimpleBlock.fn.attributes.call(this), {
         'data-icon-after' : "add"
       });
     },
@@ -90,7 +90,7 @@ SirTrevor.Block = (function(){
       var initializeMethod = "initialize" + mixin.mixinName;
 
       if (_.isUndefined(this[initializeMethod])) {
-        _.extend(this, mixin);
+        Object.assign(this, mixin);
         this[initializeMethod]();
       }
     },
@@ -233,9 +233,9 @@ SirTrevor.Block = (function(){
       var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
 
       this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
-                      _.bind(onDeleteConfirm, this))
+                      onDeleteConfirm.bind(this))
                  .on('click', '.st-block-ui-btn--deny-delete',
-                      _.bind(onDeleteDeny, this));
+                      onDeleteDeny.bind(this));
     },
 
     pastedMarkdownToHTML: function(content) {
@@ -261,9 +261,7 @@ SirTrevor.Block = (function(){
     },
 
     _handleContentPaste: function(ev) {
-      var target = $(ev.currentTarget);
-
-      _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
+      setTimeout(this.onContentPasted.bind(this, ev, $(ev.currentTarget)), 0);
     },
 
     _getBlockClass: function() {
@@ -316,13 +314,14 @@ SirTrevor.Block = (function(){
     },
 
     getSelectionForFormatter: function() {
-      _.defer(function(block){
+      var block = this;
+      setTimeout(function() {
         var selection = window.getSelection(),
            selectionStr = selection.toString().trim(),
            eventType = (selectionStr === '') ? 'hide' : 'position';
 
         SirTrevor.EventBus.trigger('formatter:' + eventType, block);
-      }, this);
+      }, 1);
      },
 
     clearInsertedStyles: function(e) {

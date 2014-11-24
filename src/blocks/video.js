@@ -44,13 +44,13 @@ SirTrevor.Blocks.Video = (function(){
     },
 
     handleDropPaste: function(url){
-      if(!_.isURI(url)) {
+      if(!SirTrevor.Utils.isURI(url)) {
         return;
       }
 
       var match, data;
 
-      _.each(this.providers, function(provider, index) {
+      this.providers.forEach(function(provider, index) {
         match = provider.regex.exec(url);
 
         if(match !== null && !_.isUndefined(match[1])) {

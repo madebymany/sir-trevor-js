@@ -21,7 +21,7 @@ describe("Controllable Block", function(){
   describe("render", function(){
 
     beforeEach(function(){
-      spyOn(block, 'withMixin').andCallThrough();
+      spyOn(block, 'withMixin').and.callThrough();
       block = block.render();
     });
 

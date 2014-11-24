@@ -62,9 +62,7 @@ We use the awesome [Grunt](http://gruntjs.com/) for our build process. Before ge
 
 ``$ npm install``
 
-Make sure install the dependecies of bower. As you need jQuery, Eventable and Underscore while you are testing with Jasmine:
-
-``$ bower install``
+This should also install the dependencies of bower via the `postinstall` script. If you change bower dependencies, re-run this command.
 
 When completed you'll be able to run the various grunt commands provided:
 

@@ -13,7 +13,7 @@ SirTrevor.editorStore = function(editor, method, options) {
 
     case "create":
       // Grab our JSON from the textarea and clean any whitespace incase there is a line wrap between the opening and closing textarea tags
-      var content = _.trim(editor.$el.val());
+      var content = editor.$el.val().trim();
       editor.dataStore = { data: [] };
 
       if (content.length > 0) {

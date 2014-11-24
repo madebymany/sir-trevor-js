@@ -28,7 +28,7 @@ describe('Image block', function() {
     editor.createBlock("Image");
     var image = editor.blocks[0];
 
-    spyOn(image, "uploader").andCallFake(function(file, onUploadSuccess, onUploadError) {
+    spyOn(image, "uploader").and.callFake(function(file, onUploadSuccess, onUploadError) {
       expect(onUploadSuccess()).toBe("I was totes overridden!");
       expect(onUploadError()).toBe("I was also overridden!");
     });

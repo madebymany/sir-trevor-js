@@ -10,11 +10,11 @@ describe("Submission", function(){
     });
   });
 
-  it("calls reset on the store", function(){
+  it("calls reset and save on the store", function(){
     spyOn(editor, "store");
     editor.onFormSubmit();
     // Store gets called twice
-    expect(editor.store.calls[0].args[0]).toEqual("reset");
+    expect(editor.store.calls.argsFor(0)).toEqual(["reset"]);
   });
 
   it("calls the validateBlocks method", function(){
@@ -33,7 +33,7 @@ describe("Submission", function(){
     spyOn(editor, "store");
     editor.onFormSubmit();
     // Store gets called twice
-    expect(editor.store.calls[1].args[0]).toEqual("save");
+    expect(editor.store.calls.argsFor(1)).toEqual(["save"]);
   });
 
 });

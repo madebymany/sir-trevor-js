@@ -27,9 +27,12 @@ module.exports = function(grunt) {
         options: {
           vendor: ['bower_components/jquery/jquery.js',
                    'bower_components/underscore/underscore.js',
+                   'bower_components/es5-shim/es5-shim.js',
+                   'bower_components/es6-shim/es6-shim.js',
                    'bower_components/Eventable/eventable.js'],
           specs : 'spec/javascripts/**/*.spec.js',
-          helpers : 'spec/javascripts/helpers/*.js'
+          helpers : 'spec/javascripts/helpers/*.js',
+          summary: true
         }
       }
     },

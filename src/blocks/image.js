@@ -20,9 +20,9 @@ SirTrevor.Blocks.Image = SirTrevor.Block.extend({
   onBlockRender: function(){
     /* Setup the upload button */
     this.$inputs.find('button').bind('click', function(ev){ ev.preventDefault(); });
-    this.$inputs.find('input').on('change', _.bind(function(ev){
+    this.$inputs.find('input').on('change', (function(ev) {
       this.onDrop(ev.currentTarget);
-    }, this));
+    }).bind(this));
   },
 
   onUploadSuccess : function(data) {

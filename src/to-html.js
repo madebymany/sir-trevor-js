@@ -1,6 +1,6 @@
 SirTrevor.toHTML = function(markdown, type) {
   // MD -> HTML
-  type = _.classify(type);
+  type = SirTrevor.Utils.classify(type);
 
   var html = markdown,
       shouldWrap = type === "Text";
@@ -19,8 +19,8 @@ SirTrevor.toHTML = function(markdown, type) {
   // we reverse the string to regex out the italic items (and bold)
   // and look for something that doesn't start (or end in the reversed strings case)
   // with a slash.
-  html = _.reverse(
-           _.reverse(html)
+  html = SirTrevor.Utils.reverse(
+           SirTrevor.Utils.reverse(html)
            .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
               return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
            })

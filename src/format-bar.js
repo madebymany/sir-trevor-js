@@ -8,14 +8,14 @@
 SirTrevor.FormatBar = (function(){
 
   var FormatBar = function(options) {
-    this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
+    this.options = Object.assign({}, SirTrevor.DEFAULTS.formatBar, options || {});
     this._ensureElement();
     this._bindFunctions();
 
     this.initialize.apply(this, arguments);
   };
 
-  _.extend(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
+  Object.assign(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
 
     className: 'st-format-bar',
 
@@ -72,7 +72,7 @@ SirTrevor.FormatBar = (function(){
 
     highlightSelectedButtons: function() {
       var formatter;
-      _.each(this.$btns, function($btn) {
+      this.$btns.forEach(function($btn) {
         formatter = SirTrevor.Formatters[$btn.attr('data-type')];
         $btn.toggleClass("st-format-btn--is-active",
                          formatter.isActive());

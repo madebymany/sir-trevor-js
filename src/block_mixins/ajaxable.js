@@ -19,7 +19,9 @@ SirTrevor.BlockMixins.Ajaxable = {
     SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
     SirTrevor.EventBus.trigger("onUploadStop", this.blockID);
 
-    this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
+    this._queued = this._queued.filter(function(queued) {
+      return queued.name != name;
+    });
   },
 
   hasItemsInQueue: function() {
@@ -27,7 +29,7 @@ SirTrevor.BlockMixins.Ajaxable = {
   },
 
   resolveAllInQueue: function() {
-    _.each(this._queued, function(item){
+    this._queued.forEach(function(item){
       SirTrevor.log("Aborting queued request: " + item.name);
       item.deferred.abort();
     }, this);

@@ -5,7 +5,7 @@ var bestNameFromField = function(field) {
     msg = 'Field';
   }
 
-  return _.capitalize(msg);
+  return SirTrevor.Utils.capitalize(msg);
 };
 
 SirTrevor.BlockValidations = {
@@ -23,8 +23,8 @@ SirTrevor.BlockValidations = {
     this.resetErrors();
 
     var required_fields = this.$('.st-required');
-    _.each(required_fields, this.validateField, this);
-    _.each(this.validations, this.runValidator, this);
+    required_fields.each(this.validateField, this);
+    this.validations.forEach(this.runValidator, this);
 
     this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
   },
@@ -57,7 +57,7 @@ SirTrevor.BlockValidations = {
   },
 
   resetErrors: function() {
-    _.each(this.errors, function(error){
+    this.errors.forEach(function(error){
       error.field.removeClass('st-error');
       error.msg.remove();
     });

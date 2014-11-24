@@ -12,7 +12,7 @@ SirTrevor.Editor = (function(){
     this.initialize(options);
   };
 
-  _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
+  Object.assign(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
 
     bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
             'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
@@ -34,7 +34,7 @@ SirTrevor.Editor = (function(){
       this.blockCounts = {}; // Cached block type counts
       this.blocks = []; // Block references
       this.errors = [];
-      this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
+      this.options = Object.assign({}, SirTrevor.DEFAULTS, options || {});
       this.ID = _.uniqueId('st-editor-');
 
       if (!this._ensureAndSetElements()) { return false; }
@@ -86,7 +86,7 @@ SirTrevor.Editor = (function(){
       var store = this.store("read");
 
       if (store.data.length > 0) {
-        _.each(store.data, function(block){
+        store.data.forEach(function(block){
           SirTrevor.log('Creating: ' + block.type);
           this.createBlock(block.type, block.data);
         }, this);
@@ -108,7 +108,7 @@ SirTrevor.Editor = (function(){
       this.block_controls.destroy();
 
       // Destroy all blocks
-      _.each(this.blocks, function(block) {
+      this.blocks.forEach(function(block) {
         this.removeBlock(block.blockID);
       }, this);
 
@@ -119,9 +119,9 @@ SirTrevor.Editor = (function(){
       var el = this.$el.detach();
 
       // Remove instance
-      SirTrevor.instances = _.reject(SirTrevor.instances, _.bind(function(instance) {
-        return instance.ID == this.ID;
-      }, this));
+      SirTrevor.instances = SirTrevor.instances.filter(function(instance) {
+        return instance.ID != this.ID;
+      }, this);
 
       // Clear the store
       this.store("reset");
@@ -135,8 +135,8 @@ SirTrevor.Editor = (function(){
     },
 
     _setEvents: function() {
-      _.each(this.events, function(callback, type) {
-        SirTrevor.EventBus.on(type, this[callback], this);
+      Object.keys(this.events).forEach(function(type) {
+        SirTrevor.EventBus.on(type, this[this.events[type]], this);
       }, this);
     },
 
@@ -173,7 +173,7 @@ SirTrevor.Editor = (function(){
       We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
     */
     createBlock: function(type, data, render_at) {
-      type = _.classify(type);
+      type = SirTrevor.Utils.classify(type);
 
       if(this._blockLimitReached()) {
         SirTrevor.log("Cannot add any more blocks. Limit reached.");
@@ -305,7 +305,7 @@ SirTrevor.Editor = (function(){
 
     removeBlock: function(block_id) {
       var block = this.findBlockById(block_id),
-          type = _.classify(block.type),
+          type = SirTrevor.Utils.classify(block.type),
           controls = block.$el.find('.st-block-controls');
 
       if (controls.length) {
@@ -314,7 +314,9 @@ SirTrevor.Editor = (function(){
       }
 
       this.blockCounts[type] = this.blockCounts[type] - 1;
-      this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
+      this.blocks = this.blocks.filter(function(item) {
+        return item.blockID != block.blockID;
+      });
       this.stopListening(block);
 
       block.remove();
@@ -375,7 +377,7 @@ SirTrevor.Editor = (function(){
       }
 
       var blockIterator = function(block,index) {
-        var _block = _.find(this.blocks, function(b) {
+        var _block = this.blocks.find(function(b) {
           return (b.blockID == $(block).attr('id')); });
 
         if (_.isUndefined(_block)) { return false; }
@@ -385,7 +387,7 @@ SirTrevor.Editor = (function(){
         this.saveBlockStateToStore(_block);
       };
 
-      _.each(this.$wrapper.find('.st-block'), blockIterator, this);
+      this.$wrapper.find('.st-block').each(blockIterator, this);
     },
 
     validateBlockTypesExist: function(should_validate) {
@@ -400,7 +402,7 @@ SirTrevor.Editor = (function(){
           SirTrevor.log("Failed validation on required block type " + type);
           this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
         } else {
-          var blocks = _.filter(this.getBlocksByType(type), function(b) {
+          var blocks = this.getBlocksByType(type).filter(function(b) {
             return !b.isEmpty();
           });
 
@@ -411,8 +413,8 @@ SirTrevor.Editor = (function(){
         }
       };
 
-      if (_.isArray(this.required)) {
-        _.each(this.required, blockTypeIterator, this);
+      if (Array.isArray(this.required)) {
+        this.required.forEach(blockTypeIterator, this);
       }
     },
 
@@ -425,7 +427,7 @@ SirTrevor.Editor = (function(){
 
       var str = "<ul>";
 
-      _.each(this.errors, function(error) {
+      this.errors.forEach(function(error) {
         str += '<li class="st-errors__msg">'+ error.text +'</li>';
       });
 
@@ -458,15 +460,19 @@ SirTrevor.Editor = (function(){
     },
 
     findBlockById: function(block_id) {
-      return _.find(this.blocks, function(b){ return b.blockID == block_id; });
+      return this.blocks.find(function(b) { return b.blockID == block_id; });
     },
 
     getBlocksByType: function(block_type) {
-      return _.filter(this.blocks, function(b){ return _.classify(b.type) == block_type; });
+      return this.blocks.filter(function(b) {
+        return SirTrevor.Utils.classify(b.type) == block_type;
+      });
     },
 
     getBlocksByIDs: function(block_ids) {
-      return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+      return this.blocks.filter(function(b) {
+        return block_ids.includes(b.blockID);
+      });
     },
 
     getBlockPosition: function($block) {
@@ -520,12 +526,17 @@ SirTrevor.Editor = (function(){
       These will either be set on a per Editor instance, or set on a global scope.
     */
     _setBlocksTypes: function() {
-      this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
+      this.blockTypes = {};
+      var keys = this.options.blockTypes || Object.keys(SirTrevor.Blocks);
+      keys.forEach(function (k) {
+        this.blockTypes[k] = true;
+      }, this);
     },
 
     /* Get our required blocks (if any) */
     _setRequired: function() {
-      if (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+      if (Array.isArray(this.options.required) &&
+          !_.isEmpty(this.options.required)) {
         this.required = this.options.required;
       } else {
         this.required = false;

@@ -5,11 +5,10 @@ SirTrevor.BlockMixins.Controllable = {
   initializeControllable: function() {
     SirTrevor.log("Adding controllable to block " + this.blockID);
     this.$control_ui = $('<div>', {'class': 'st-block__control-ui'});
-    _.each(
-      this.controls,
-      function(handler, cmd) {
+    Object.keys(this.controls).forEach(
+      function(cmd) {
         // Bind configured handler to current block context
-        this.addUiControl(cmd, _.bind(handler, this));
+        this.addUiControl(cmd, this.controls[cmd].bind(this));
       },
       this
     );
