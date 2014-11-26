@@ -8,7 +8,7 @@ A good place to start is to read through one of the [blocks that comes bundled w
 <a name="4-1"></a>
 ## Concepts
 
-A `SirTrevor.Block` essentially takes some data, provides and interface for that data and knows how to serialize itself into JSON.
+A `SirTrevor.Block` essentially takes some data, provides an interface for that data and knows how to serialize itself into JSON.
 
 Generally the flow for a block goes like this:
 
