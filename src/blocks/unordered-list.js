@@ -23,7 +23,7 @@ SirTrevor.Blocks.List = (function() {
     },
 
     onBlockRender: function() {
-      this.checkForList = _.bind(this.checkForList, this);
+      this.checkForList = this.checkForList.bind(this);
       this.getTextBlock().on('click keyup', this.checkForList);
     },
 

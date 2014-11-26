@@ -9,7 +9,7 @@ SirTrevor.BlockControl = (function(){
     this._ensureElement();
   };
 
-  _.extend(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+  Object.assign(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
 
     tagName: 'a',
     className: "st-block-control",

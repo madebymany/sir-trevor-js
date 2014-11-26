@@ -1,5 +1,5 @@
 SirTrevor.toMarkdown = function(content, type) {
-  type = _.classify(type);
+  type = SirTrevor.Utils.classify(type);
 
   var markdown = content;
 

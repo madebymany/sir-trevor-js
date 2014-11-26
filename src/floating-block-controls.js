@@ -16,7 +16,7 @@ SirTrevor.FloatingBlockControls = (function(){
     this.initialize();
   };
 
-  _.extend(FloatingBlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+  Object.assign(FloatingBlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
 
     className: "st-block-controls__top",
 

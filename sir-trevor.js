@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-09-08
+ * 2014-11-25
  */
 
 (function ($, _){
@@ -66,9 +66,9 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      if (this.bound.length > 0) {
-        _.bindAll.apply(null, _.union([this], this.bound));
-      }
+      this.bound.forEach(function(f) {
+        this[f] = this[f].bind(this)
+      }, this);
     }
   };
 
@@ -92,7 +92,7 @@
 
     _ensureElement: function() {
       if (!this.el) {
-        var attrs = _.extend({}, _.result(this, 'attributes')),
+        var attrs = Object.assign({}, _.result(this, 'attributes')),
             html;
         if (this.id) { attrs.id = this.id; }
         if (this.className) { attrs['class'] = this.className; }
@@ -208,14 +208,14 @@
     // The constructor function for the new subclass is either defined by you
     // (the "constructor" property in your `extend` definition), or defaulted
     // by us to simply call the parent's constructor.
-    if (protoProps && _.has(protoProps, 'constructor')) {
+    if (protoProps && protoProps.hasOwnProperty('constructor')) {
       child = protoProps.constructor;
     } else {
       child = function(){ return parent.apply(this, arguments); };
     }
   
     // Add static properties to the constructor function, if supplied.
-    _.extend(child, parent, staticProps);
+    Object.assign(child, parent, staticProps);
   
     // Set the prototype chain to inherit from `parent`, without calling
     // `parent`'s constructor function.
@@ -225,7 +225,7 @@
   
     // Add prototype properties (instance properties) to the subclass,
     // if supplied.
-    if (protoProps) _.extend(child.prototype, protoProps);
+    if (protoProps) Object.assign(child.prototype, protoProps);
   
     // Set a convenience property in case the parent's prototype is needed
     // later.
@@ -318,8 +318,8 @@
         if (!_.isString(str)) { return ""; }
   
         if (str.indexOf('__') >= 0) {
-          _.each(options, function(value, opt) {
-            str = str.replace('__' + opt + '__', value);
+          Object.keys(options).forEach(function(opt) {
+            str = str.replace('__' + opt + '__', options[opt]);
           });
         }
   
@@ -333,6 +333,35 @@
     i18n.init({ resStore: SirTrevor.Locales, fallbackLng: SirTrevor.LANGUAGE,
                 ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
     });
+  }
+  if (![].includes) {
+    Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
+      if (this === undefined || this === null) {
+        throw new TypeError('Cannot convert this value to object');
+      }
+      var O = Object(this);
+      var len = parseInt(O.length) || 0;
+      if (len === 0) {
+        return false;
+      }
+      var n = parseInt(arguments[1]) || 0;
+      var k;
+      if (n >= 0) {
+        k = n;
+      } else {
+        k = len + n;
+        if (k < 0) k = 0;
+      }
+      while (k < len) {
+        var currentElement = O[k];
+        if (searchElement === currentElement ||
+           (searchElement !== searchElement && currentElement !== currentElement)) {
+          return true;
+        }
+        k++;
+      }
+      return false;
+    }
   }
   //fgnass.github.com/spin.js#v1.2.5
   (function(a,b,c){function g(a,c){var d=b.createElement(a||"div"),e;for(e in c)d[e]=c[e];return d}function h(a){for(var b=1,c=arguments.length;b<c;b++)a.appendChild(arguments[b]);return a}function j(a,b,c,d){var g=["opacity",b,~~(a*100),c,d].join("-"),h=.01+c/d*100,j=Math.max(1-(1-a)/b*(100-h),a),k=f.substring(0,f.indexOf("Animation")).toLowerCase(),l=k&&"-"+k+"-"||"";return e[g]||(i.insertRule("@"+l+"keyframes "+g+"{"+"0%{opacity:"+j+"}"+h+"%{opacity:"+a+"}"+(h+.01)+"%{opacity:1}"+(h+b)%100+"%{opacity:"+a+"}"+"100%{opacity:"+j+"}"+"}",0),e[g]=1),g}function k(a,b){var e=a.style,f,g;if(e[b]!==c)return b;b=b.charAt(0).toUpperCase()+b.slice(1);for(g=0;g<d.length;g++){f=d[g]+b;if(e[f]!==c)return f}}function l(a,b){for(var c in b)a.style[k(a,c)||c]=b[c];return a}function m(a){for(var b=1;b<arguments.length;b++){var d=arguments[b];for(var e in d)a[e]===c&&(a[e]=d[e])}return a}function n(a){var b={x:a.offsetLeft,y:a.offsetTop};while(a=a.offsetParent)b.x+=a.offsetLeft,b.y+=a.offsetTop;return b}var d=["webkit","Moz","ms","O"],e={},f,i=function(){var a=g("style");return h(b.getElementsByTagName("head")[0],a),a.sheet||a.styleSheet}(),o={lines:12,length:7,width:5,radius:10,rotate:0,color:"#000",speed:1,trail:100,opacity:.25,fps:20,zIndex:2e9,className:"spinner",top:"auto",left:"auto"},p=function q(a){if(!this.spin)return new q(a);this.opts=m(a||{},q.defaults,o)};p.defaults={},m(p.prototype,{spin:function(a){this.stop();var b=this,c=b.opts,d=b.el=l(g(0,{className:c.className}),{position:"relative",zIndex:c.zIndex}),e=c.radius+c.length+c.width,h,i;a&&(a.insertBefore(d,a.firstChild||null),i=n(a),h=n(d),l(d,{left:(c.left=="auto"?i.x-h.x+(a.offsetWidth>>1):c.left+e)+"px",top:(c.top=="auto"?i.y-h.y+(a.offsetHeight>>1):c.top+e)+"px"})),d.setAttribute("aria-role","progressbar"),b.lines(d,b.opts);if(!f){var j=0,k=c.fps,m=k/c.speed,o=(1-c.opacity)/(m*c.trail/100),p=m/c.lines;!function q(){j++;for(var a=c.lines;a;a--){var e=Math.max(1-(j+a*p)%m*o,c.opacity);b.opacity(d,c.lines-a,e,c)}b.timeout=b.el&&setTimeout(q,~~(1e3/k))}()}return b},stop:function(){var a=this.el;return a&&(clearTimeout(this.timeout),a.parentNode&&a.parentNode.removeChild(a),this.el=c),this},lines:function(a,b){function e(a,d){return l(g(),{position:"absolute",width:b.length+b.width+"px",height:b.width+"px",background:a,boxShadow:d,transformOrigin:"left",transform:"rotate("+~~(360/b.lines*c+b.rotate)+"deg) translate("+b.radius+"px"+",0)",borderRadius:(b.width>>1)+"px"})}var c=0,d;for(;c<b.lines;c++)d=l(g(),{position:"absolute",top:1+~(b.width/2)+"px",transform:b.hwaccel?"translate3d(0,0,0)":"",opacity:b.opacity,animation:f&&j(b.opacity,b.trail,c,b.lines)+" "+1/b.speed+"s linear infinite"}),b.shadow&&h(d,l(e("#000","0 0 4px #000"),{top:"2px"})),h(a,h(d,e(b.color,"0 0 1px rgba(0,0,0,.1)")));return a},opacity:function(a,b,c){b<a.childNodes.length&&(a.childNodes[b].style.opacity=c)}}),!function(){function a(a,b){return g("<"+a+' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">',b)}var b=l(g("group"),{behavior:"url(#default#VML)"});!k(b,"transform")&&b.adj?(i.addRule(".spin-vml","behavior:url(#default#VML)"),p.prototype.lines=function(b,c){function f(){return l(a("group",{coordsize:e+" "+e,coordorigin:-d+" "+ -d}),{width:e,height:e})}function k(b,e,g){h(i,h(l(f(),{rotation:360/c.lines*b+"deg",left:~~e}),h(l(a("roundrect",{arcsize:1}),{width:d,height:c.width,left:c.radius,top:-c.width>>1,filter:g}),a("fill",{color:c.color,opacity:c.opacity}),a("stroke",{opacity:0}))))}var d=c.length+c.width,e=2*d,g=-(c.width+c.length)*2+"px",i=l(f(),{position:"absolute",top:g,left:g}),j;if(c.shadow)for(j=1;j<=c.lines;j++)k(j,-2,"progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)");for(j=1;j<=c.lines;j++)k(j);return h(b,i)},p.prototype.opacity=function(a,b,c,d){var e=a.firstChild;d=d.shadow&&d.lines||0,e&&b+d<e.childNodes.length&&(e=e.childNodes[b+d],e=e&&e.firstChild,e=e&&e.firstChild,e&&(e.opacity=c))}):f=k(b,"animation")}(),a.Spinner=p})(window,document);
@@ -351,7 +380,7 @@
   
       case "create":
         // Grab our JSON from the textarea and clean any whitespace incase there is a line wrap between the opening and closing textarea tags
-        var content = _.trim(editor.$el.val());
+        var content = editor.$el.val().trim();
         editor.dataStore = { data: [] };
   
         if (content.length > 0) {
@@ -413,14 +442,14 @@
     this.intialize();
   };
   
-  _.extend(SirTrevor.Submittable.prototype, {
+  Object.assign(SirTrevor.Submittable.prototype, {
   
     intialize: function(){
       this.$submitBtn = this.$form.find("input[type='submit']");
   
       var btnTitles = [];
   
-      _.each(this.$submitBtn, function(btn){
+      this.$submitBtn.each(function(i, btn){
         btnTitles.push($(btn).attr('value'));
       });
   
@@ -435,9 +464,10 @@
     },
   
     resetSubmitButton: function(){
-      _.each(this.$submitBtn, function(item, index){
-        $(item).attr('value', this.submitBtnTitles[index]);
-      }, this);
+      var titles = this.submitBtnTitles;
+      this.$submitBtn.each(function(index, item) {
+        $(item).attr('value', titles[index]);
+      });
     },
   
     onUploadStart: function(e){
@@ -489,8 +519,8 @@
     },
   
     _bindEvents: function(){
-      _.forEach(this._events, function(callback, type) {
-        SirTrevor.EventBus.on(type, this[callback], this);
+      Object.keys(this._events).forEach(function(type) {
+        SirTrevor.EventBus.on(type, this[this._events[type]], this);
       }, this);
     }
   
@@ -541,72 +571,54 @@
   
     xhr.done(callbackSuccess)
        .fail(callbackError)
-       .always(_.bind(block.removeQueuedItem, block, uid));
+       .always(block.removeQueuedItem.bind(block, uid));
   
     return xhr;
   };
-  /*
-    Underscore helpers
-  */
+  (function() {
+    var urlRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
   
-  var url_regex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
+    SirTrevor.Utils = {
+      isURI : function(string) {
+        return (urlRegex.test(string));
+      },
   
-  _.mixin({
-    isURI : function(string) {
-      return (url_regex.test(string));
-    },
+      titleize: function(str){
+        if (str === null) return '';
+        str  = String(str).toLowerCase();
+        return str.replace(/(?:^|\s|-)\S/g, function(c){ return c.toUpperCase(); });
+      },
   
-    titleize: function(str){
-      if (str === null) return '';
-      str  = String(str).toLowerCase();
-      return str.replace(/(?:^|\s|-)\S/g, function(c){ return c.toUpperCase(); });
-    },
+      classify: function(str){
+        return SirTrevor.Utils.titleize(String(str).replace(/[\W_]/g, ' ')).replace(/\s/g, '');
+      },
   
-    classify: function(str){
-      return _.titleize(String(str).replace(/[\W_]/g, ' ')).replace(/\s/g, '');
-    },
+      capitalize : function(string) {
+        return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
+      },
   
-    classifyList: function(a){
-      return _.map(a, function(i){ return _.classify(i); });
-    },
+      underscored: function(str){
+        return str.trim().replace(/([a-z\d])([A-Z]+)/g, '$1_$2')
+        .replace(/[-\s]+/g, '_').toLowerCase();
+      },
   
-    capitalize : function(string) {
-      return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
-    },
+      reverse: function(str) {
+        return str.split("").reverse().join("");
+      },
   
-    underscored: function(str){
-      return _.trim(str).replace(/([a-z\d])([A-Z]+)/g, '$1_$2')
-                        .replace(/[-\s]+/g, '_').toLowerCase();
-    },
-  
-    trim : function(string) {
-      return string.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-    },
-  
-    reverse: function(str) {
-      return str.split("").reverse().join("");
-    },
-  
-    flattern: function(obj) {
-      var x = {};
-      _.each(obj, function(a,b) {
-        x[(_.isArray(obj)) ? a : b] = true;
-      });
-      return x;
-    },
-  
-    to_slug: function(str) {
-      return str
+      toSlug: function(str) {
+        return str
           .toLowerCase()
           .replace(/[^\w ]+/g,'')
           .replace(/ +/g,'-');
-    }
+      }
   
-  });
+    };
+  })();
   
   SirTrevor.toHTML = function(markdown, type) {
     // MD -> HTML
-    type = _.classify(type);
+    type = SirTrevor.Utils.classify(type);
   
     var html = markdown,
         shouldWrap = type === "Text";
@@ -625,8 +637,8 @@
     // we reverse the string to regex out the italic items (and bold)
     // and look for something that doesn't start (or end in the reversed strings case)
     // with a slash.
-    html = _.reverse(
-             _.reverse(html)
+    html = SirTrevor.Utils.reverse(
+             SirTrevor.Utils.reverse(html)
              .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
                 return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
              })
@@ -685,7 +697,7 @@
     return html;
   };
   SirTrevor.toMarkdown = function(content, type) {
-    type = _.classify(type);
+    type = SirTrevor.Utils.classify(type);
   
     var markdown = content;
   
@@ -786,7 +798,7 @@
     return markdown;
   };
 
-  SirTrevor.EventBus = _.extend({}, SirTrevor.Events);
+  SirTrevor.EventBus = Object.assign({}, SirTrevor.Events);
 
   /* Block Mixins */
   SirTrevor.BlockMixins.Ajaxable = {
@@ -810,7 +822,9 @@
       SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
       SirTrevor.EventBus.trigger("onUploadStop", this.blockID);
   
-      this._queued = _.reject(this._queued, function(queued){ return queued.name == name; });
+      this._queued = this._queued.filter(function(queued) {
+        return queued.name != name;
+      });
     },
   
     hasItemsInQueue: function() {
@@ -818,7 +832,7 @@
     },
   
     resolveAllInQueue: function() {
-      _.each(this._queued, function(item){
+      this._queued.forEach(function(item){
         SirTrevor.log("Aborting queued request: " + item.name);
         item.deferred.abort();
       }, this);
@@ -832,11 +846,10 @@
     initializeControllable: function() {
       SirTrevor.log("Adding controllable to block " + this.blockID);
       this.$control_ui = $('<div>', {'class': 'st-block__control-ui'});
-      _.each(
-        this.controls,
-        function(handler, cmd) {
+      Object.keys(this.controls).forEach(
+        function(cmd) {
           // Bind configured handler to current block context
-          this.addUiControl(cmd, _.bind(handler, this));
+          this.addUiControl(cmd, this.controls[cmd].bind(this));
         },
         this
       );
@@ -865,10 +878,9 @@
     initializeDroppable: function() {
       SirTrevor.log("Adding droppable to block " + this.blockID);
   
-      this.drop_options = _.extend({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
+      this.drop_options = Object.assign({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
   
-      var drop_html = $(_.template(this.drop_options.html,
-                        { block: this }));
+      var drop_html = $(_.template(this.drop_options.html)({ block: this }));
   
       this.$editor.hide();
       this.$inputs.append(drop_html);
@@ -876,7 +888,7 @@
   
       // Bind our drop event
       this.$dropzone.dropArea()
-                    .bind('drop', _.bind(this._handleDrop, this));
+                    .bind('drop', this._handleDrop.bind(this));
   
       this.$inner.addClass('st-block__inner--droppable');
     },
@@ -897,8 +909,10 @@
         delegate it away to our blockTypes to process
       */
   
-      if (!_.isUndefined(types) &&
-        _.some(types, function(type){ return _.include(this.valid_drop_file_types, type); }, this)) {
+      if (types &&
+          types.some(function(type) {
+                       return this.valid_drop_file_types.includes(type);
+                     }, this)) {
         this.onDrop(e.dataTransfer);
       }
   
@@ -922,14 +936,14 @@
       this.addQueuedItem(uid, xhr);
   
       if(!_.isUndefined(success)) {
-        xhr.done(_.bind(success, this));
+        xhr.done(success.bind(this));
       }
   
       if(!_.isUndefined(failure)) {
-        xhr.fail(_.bind(failure, this));
+        xhr.fail(failure.bind(this));
       }
   
-      xhr.always(_.bind(this.removeQueuedItem, this, uid));
+      xhr.always(this.removeQueuedItem.bind(this, uid));
   
       return xhr;
     }
@@ -942,7 +956,7 @@
     initializePastable: function() {
       SirTrevor.log("Adding pastable to block " + this.blockID);
   
-      this.paste_options = _.extend({}, SirTrevor.DEFAULTS.Block.paste_options, this.paste_options);
+      this.paste_options = Object.assign({}, SirTrevor.DEFAULTS.Block.paste_options, this.paste_options);
       this.$inputs.append(_.template(this.paste_options.html, this));
   
       this.$('.st-paste-block')
@@ -962,7 +976,7 @@
       SirTrevor.log("Adding uploadable to block " + this.blockID);
       this.withMixin(SirTrevor.BlockMixins.Ajaxable);
   
-      this.upload_options = _.extend({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
+      this.upload_options = Object.assign({}, SirTrevor.DEFAULTS.Block.upload_options, this.upload_options);
       this.$inputs.append(_.template(this.upload_options.html, this));
     },
   
@@ -991,7 +1005,7 @@
       this.initialize();
     };
   
-    _.extend(BlockPositioner.prototype, FunctionBind, Renderable, {
+    Object.assign(BlockPositioner.prototype, FunctionBind, Renderable, {
   
       bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
   
@@ -1061,7 +1075,7 @@
       this.initialize();
     };
   
-    _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
+    Object.assign(BlockReorder.prototype, FunctionBind, Renderable, {
   
       bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
   
@@ -1144,7 +1158,7 @@
       this._bindFunctions();
     };
   
-    _.extend(BlockDeletion.prototype, FunctionBind, Renderable, {
+    Object.assign(BlockDeletion.prototype, FunctionBind, Renderable, {
   
       tagName: 'a',
       className: 'st-block-ui-btn st-block-ui-btn--delete st-icon',
@@ -1166,7 +1180,7 @@
       msg = 'Field';
     }
   
-    return _.capitalize(msg);
+    return SirTrevor.Utils.capitalize(msg);
   };
   
   SirTrevor.BlockValidations = {
@@ -1184,8 +1198,8 @@
       this.resetErrors();
   
       var required_fields = this.$('.st-required');
-      _.each(required_fields, this.validateField, this);
-      _.each(this.validations, this.runValidator, this);
+      required_fields.each(this.validateField, this);
+      this.validations.forEach(this.runValidator, this);
   
       this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
     },
@@ -1218,7 +1232,7 @@
     },
   
     resetErrors: function() {
-      _.each(this.errors, function(error){
+      this.errors.forEach(function(error){
         error.field.removeClass('st-error');
         error.msg.remove();
       });
@@ -1234,7 +1248,7 @@
   
     createStore: function(blockData) {
       this.blockStorage = {
-        type: _.underscored(this.type),
+        type: SirTrevor.Utils.underscored(this.type),
         data: blockData || {}
       };
     },
@@ -1257,7 +1271,7 @@
   
     setData: function(blockData) {
       SirTrevor.log("Setting data for block " + this.blockID);
-      _.extend(this.blockStorage.data, blockData || {});
+      Object.assign(this.blockStorage.data, blockData || {});
     },
   
     setAndRetrieveData: function(blockData) {
@@ -1304,7 +1318,7 @@
       this.initialize.apply(this, arguments);
     };
   
-    _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, SirTrevor.BlockStore, {
+    Object.assign(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, SirTrevor.BlockStore, {
   
       focus : function() {},
   
@@ -1325,18 +1339,18 @@
       },
   
       title: function() {
-        return _.titleize(this.type.replace(/[\W_]/g, ' '));
+        return SirTrevor.Utils.titleize(this.type.replace(/[\W_]/g, ' '));
       },
   
       blockCSSClass: function() {
-        this.blockCSSClass = _.to_slug(this.type);
+        this.blockCSSClass = SirTrevor.Utils.toSlug(this.type);
         return this.blockCSSClass;
       },
   
       type: '',
   
       'class': function() {
-        return _.classify(this.type);
+        return SirTrevor.Utils.classify(this.type);
       },
   
       editorHTML: '',
@@ -1464,7 +1478,7 @@
       upload_options: upload_options
     };
   
-    _.extend(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
+    Object.assign(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
   
       bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
               "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
@@ -1472,7 +1486,7 @@
       className: 'st-block st-icon--add',
   
       attributes: function() {
-        return _.extend(SirTrevor.SimpleBlock.fn.attributes.call(this), {
+        return Object.assign(SirTrevor.SimpleBlock.fn.attributes.call(this), {
           'data-icon-after' : "add"
         });
       },
@@ -1512,7 +1526,7 @@
         var initializeMethod = "initialize" + mixin.mixinName;
   
         if (_.isUndefined(this[initializeMethod])) {
-          _.extend(this, mixin);
+          Object.assign(this, mixin);
           this[initializeMethod]();
         }
       },
@@ -1655,9 +1669,9 @@
         var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
   
         this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
-                        _.bind(onDeleteConfirm, this))
+                        onDeleteConfirm.bind(this))
                    .on('click', '.st-block-ui-btn--deny-delete',
-                        _.bind(onDeleteDeny, this));
+                        onDeleteDeny.bind(this));
       },
   
       pastedMarkdownToHTML: function(content) {
@@ -1683,9 +1697,7 @@
       },
   
       _handleContentPaste: function(ev) {
-        var target = $(ev.currentTarget);
-  
-        _.delay(_.bind(this.onContentPasted, this, ev, target), 0);
+        setTimeout(this.onContentPasted.bind(this, ev, $(ev.currentTarget)), 0);
       },
   
       _getBlockClass: function() {
@@ -1738,13 +1750,14 @@
       },
   
       getSelectionForFormatter: function() {
-        _.defer(function(block){
+        var block = this;
+        setTimeout(function() {
           var selection = window.getSelection(),
              selectionStr = selection.toString().trim(),
              eventType = (selectionStr === '') ? 'hide' : 'position';
   
           SirTrevor.EventBus.trigger('formatter:' + eventType, block);
-        }, this);
+        }, 1);
        },
   
       clearInsertedStyles: function(e) {
@@ -1785,7 +1798,7 @@
   
     var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick", "toMarkdown", "toHTML"];
   
-    _.extend(Format.prototype, {
+    Object.assign(Format.prototype, {
   
       title: '',
       className: '',
@@ -1799,7 +1812,7 @@
       initialize: function(){},
   
       _configure: function(options) {
-        if (this.options) options = _.extend({}, this.options, options);
+        if (this.options) options = Object.assign({}, this.options, options);
         for (var i = 0, l = formatOptions.length; i < l; i++) {
           var attr = formatOptions[i];
           if (options[attr]) this[attr] = options[attr];
@@ -1918,9 +1931,9 @@
     onBlockRender: function(){
       /* Setup the upload button */
       this.$inputs.find('button').bind('click', function(ev){ ev.preventDefault(); });
-      this.$inputs.find('input').on('change', _.bind(function(ev){
+      this.$inputs.find('input').on('change', (function(ev) {
         this.onDrop(ev.currentTarget);
-      }, this));
+      }).bind(this));
     },
   
     onUploadSuccess : function(data) {
@@ -2032,7 +2045,7 @@
       },
   
       validTweetUrl: function(url) {
-        return (_.isURI(url) &&
+        return (SirTrevor.Utils.isURI(url) &&
                 url.indexOf("twitter") !== -1 &&
                 url.indexOf("status") !== -1);
       },
@@ -2094,7 +2107,7 @@
       },
   
       onBlockRender: function() {
-        this.checkForList = _.bind(this.checkForList, this);
+        this.checkForList = this.checkForList.bind(this);
         this.getTextBlock().on('click keyup', this.checkForList);
       },
   
@@ -2177,13 +2190,13 @@
       },
   
       handleDropPaste: function(url){
-        if(!_.isURI(url)) {
+        if(!SirTrevor.Utils.isURI(url)) {
           return;
         }
   
         var match, data;
   
-        _.each(this.providers, function(provider, index) {
+        this.providers.forEach(function(provider, index) {
           match = provider.regex.exec(url);
   
           if(match !== null && !_.isUndefined(match[1])) {
@@ -2286,7 +2299,7 @@
       this._ensureElement();
     };
   
-    _.extend(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+    Object.assign(BlockControl.prototype, FunctionBind, Renderable, SirTrevor.Events, {
   
       tagName: 'a',
       className: "st-block-control",
@@ -2322,7 +2335,7 @@
       this.initialize();
     };
   
-    _.extend(BlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+    Object.assign(BlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
   
       bound: ['handleControlButtonClick'],
       block_controls: null,
@@ -2387,7 +2400,7 @@
       this.initialize();
     };
   
-    _.extend(FloatingBlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
+    Object.assign(FloatingBlockControls.prototype, FunctionBind, Renderable, SirTrevor.Events, {
   
       className: "st-block-controls__top",
   
@@ -2466,14 +2479,14 @@
   SirTrevor.FormatBar = (function(){
   
     var FormatBar = function(options) {
-      this.options = _.extend({}, SirTrevor.DEFAULTS.formatBar, options || {});
+      this.options = Object.assign({}, SirTrevor.DEFAULTS.formatBar, options || {});
       this._ensureElement();
       this._bindFunctions();
   
       this.initialize.apply(this, arguments);
     };
   
-    _.extend(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
+    Object.assign(FormatBar.prototype, FunctionBind, SirTrevor.Events, Renderable, {
   
       className: 'st-format-bar',
   
@@ -2530,7 +2543,7 @@
   
       highlightSelectedButtons: function() {
         var formatter;
-        _.each(this.$btns, function($btn) {
+        this.$btns.forEach(function($btn) {
           formatter = SirTrevor.Formatters[$btn.attr('data-type')];
           $btn.toggleClass("st-format-btn--is-active",
                            formatter.isActive());
@@ -2576,7 +2589,7 @@
       this.initialize(options);
     };
   
-    _.extend(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
+    Object.assign(SirTrevorEditor.prototype, FunctionBind, SirTrevor.Events, {
   
       bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings', 'hideBlockControls',
               'onNewBlockCreated', 'changeBlockPosition', 'onBlockDragStart', 'onBlockDragEnd',
@@ -2598,7 +2611,7 @@
         this.blockCounts = {}; // Cached block type counts
         this.blocks = []; // Block references
         this.errors = [];
-        this.options = _.extend({}, SirTrevor.DEFAULTS, options || {});
+        this.options = Object.assign({}, SirTrevor.DEFAULTS, options || {});
         this.ID = _.uniqueId('st-editor-');
   
         if (!this._ensureAndSetElements()) { return false; }
@@ -2650,7 +2663,7 @@
         var store = this.store("read");
   
         if (store.data.length > 0) {
-          _.each(store.data, function(block){
+          store.data.forEach(function(block){
             SirTrevor.log('Creating: ' + block.type);
             this.createBlock(block.type, block.data);
           }, this);
@@ -2672,7 +2685,7 @@
         this.block_controls.destroy();
   
         // Destroy all blocks
-        _.each(this.blocks, function(block) {
+        this.blocks.forEach(function(block) {
           this.removeBlock(block.blockID);
         }, this);
   
@@ -2683,9 +2696,9 @@
         var el = this.$el.detach();
   
         // Remove instance
-        SirTrevor.instances = _.reject(SirTrevor.instances, _.bind(function(instance) {
-          return instance.ID == this.ID;
-        }, this));
+        SirTrevor.instances = SirTrevor.instances.filter(function(instance) {
+          return instance.ID != this.ID;
+        }, this);
   
         // Clear the store
         this.store("reset");
@@ -2699,8 +2712,8 @@
       },
   
       _setEvents: function() {
-        _.each(this.events, function(callback, type) {
-          SirTrevor.EventBus.on(type, this[callback], this);
+        Object.keys(this.events).forEach(function(type) {
+          SirTrevor.EventBus.on(type, this[this.events[type]], this);
         }, this);
       },
   
@@ -2737,7 +2750,7 @@
         We also have to remember to store static counts for how many blocks we have, and keep a nice array of all the blocks available.
       */
       createBlock: function(type, data, render_at) {
-        type = _.classify(type);
+        type = SirTrevor.Utils.classify(type);
   
         if(this._blockLimitReached()) {
           SirTrevor.log("Cannot add any more blocks. Limit reached.");
@@ -2764,7 +2777,7 @@
         this.blocks.push(block);
         this._incrementBlockTypeCount(type);
   
-        block.focus();
+        !data && block.focus();
   
         SirTrevor.EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
         SirTrevor.log("Block created of type " + type);
@@ -2869,7 +2882,7 @@
   
       removeBlock: function(block_id) {
         var block = this.findBlockById(block_id),
-            type = _.classify(block.type),
+            type = SirTrevor.Utils.classify(block.type),
             controls = block.$el.find('.st-block-controls');
   
         if (controls.length) {
@@ -2878,7 +2891,9 @@
         }
   
         this.blockCounts[type] = this.blockCounts[type] - 1;
-        this.blocks = _.reject(this.blocks, function(item){ return (item.blockID == block.blockID); });
+        this.blocks = this.blocks.filter(function(item) {
+          return item.blockID != block.blockID;
+        });
         this.stopListening(block);
   
         block.remove();
@@ -2939,7 +2954,7 @@
         }
   
         var blockIterator = function(block,index) {
-          var _block = _.find(this.blocks, function(b) {
+          var _block = this.blocks.find(function(b) {
             return (b.blockID == $(block).attr('id')); });
   
           if (_.isUndefined(_block)) { return false; }
@@ -2949,7 +2964,7 @@
           this.saveBlockStateToStore(_block);
         };
   
-        _.each(this.$wrapper.find('.st-block'), blockIterator, this);
+        this.$wrapper.find('.st-block').each(blockIterator, this);
       },
   
       validateBlockTypesExist: function(should_validate) {
@@ -2964,7 +2979,7 @@
             SirTrevor.log("Failed validation on required block type " + type);
             this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
           } else {
-            var blocks = _.filter(this.getBlocksByType(type), function(b) {
+            var blocks = this.getBlocksByType(type).filter(function(b) {
               return !b.isEmpty();
             });
   
@@ -2975,8 +2990,8 @@
           }
         };
   
-        if (_.isArray(this.required)) {
-          _.each(this.required, blockTypeIterator, this);
+        if (Array.isArray(this.required)) {
+          this.required.forEach(blockTypeIterator, this);
         }
       },
   
@@ -2989,7 +3004,7 @@
   
         var str = "<ul>";
   
-        _.each(this.errors, function(error) {
+        this.errors.forEach(function(error) {
           str += '<li class="st-errors__msg">'+ error.text +'</li>';
         });
   
@@ -3022,15 +3037,19 @@
       },
   
       findBlockById: function(block_id) {
-        return _.find(this.blocks, function(b){ return b.blockID == block_id; });
+        return this.blocks.find(function(b) { return b.blockID == block_id; });
       },
   
       getBlocksByType: function(block_type) {
-        return _.filter(this.blocks, function(b){ return _.classify(b.type) == block_type; });
+        return this.blocks.filter(function(b) {
+          return SirTrevor.Utils.classify(b.type) == block_type;
+        });
       },
   
       getBlocksByIDs: function(block_ids) {
-        return _.filter(this.blocks, function(b){ return _.contains(block_ids, b.blockID); });
+        return this.blocks.filter(function(b) {
+          return block_ids.includes(b.blockID);
+        });
       },
   
       getBlockPosition: function($block) {
@@ -3084,12 +3103,17 @@
         These will either be set on a per Editor instance, or set on a global scope.
       */
       _setBlocksTypes: function() {
-        this.blockTypes = _.flattern((_.isUndefined(this.options.blockTypes)) ? SirTrevor.Blocks : this.options.blockTypes);
+        this.blockTypes = {};
+        var keys = this.options.blockTypes || Object.keys(SirTrevor.Blocks);
+        keys.forEach(function (k) {
+          this.blockTypes[k] = true;
+        }, this);
       },
   
       /* Get our required blocks (if any) */
       _setRequired: function() {
-        if (_.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+        if (Array.isArray(this.options.required) &&
+            !_.isEmpty(this.options.required)) {
           this.required = this.options.required;
         } else {
           this.required = false;
@@ -3104,7 +3128,7 @@
 
   /* We need a form handler here to handle all the form submits */
   SirTrevor.setDefaults = function(options) {
-    SirTrevor.DEFAULTS = _.extend(SirTrevor.DEFAULTS, options || {});
+    SirTrevor.DEFAULTS = Object.assign(SirTrevor.DEFAULTS, options || {});
   };
 
   SirTrevor.bindFormSubmit = function(form) {
@@ -3118,7 +3142,7 @@
   SirTrevor.onBeforeSubmit = function(should_validate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
-    _.each(SirTrevor.instances, function(inst, i) {
+    SirTrevor.instances.forEach(function(inst, i) {
       errors += inst.onFormSubmit(should_validate);
     });
     SirTrevor.log("Total errors: " + errors);
@@ -3141,8 +3165,9 @@
     }
 
     if (_.isString(identifier)) {
-      return _.find(this.instances,
-        function(editor){ return editor.ID === identifier; });
+      return this.instances.find(function(editor) {
+        return editor.ID === identifier;
+      });
     }
 
     return this.instances[identifier];
@@ -3155,15 +3180,15 @@
       return;
     }
 
-    _.extend(block.prototype, options || {});
+    Object.assign(block.prototype, options || {});
   };
 
   SirTrevor.runOnAllInstances = function(method) {
-    if (_.has(SirTrevor.Editor.prototype, method)) {
-      // augment the arguments pseudo array and pass on to invoke()
-      // this allows us to pass arguments on to the target methods
-      [].unshift.call(arguments, SirTrevor.instances);
-      _.invoke.apply(_, arguments);
+    if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
+      var methodArgs = Array.prototype.slice.call(arguments, 1);
+      Array.prototype.forEach.call(SirTrevor.instances, function(i) {
+        i[method].apply(null, methodArgs)
+      });
     } else {
       SirTrevor.log("method doesn't exist");
     }

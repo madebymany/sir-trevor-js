@@ -18,7 +18,7 @@ SirTrevor.BlockPositioner = (function(){
     this.initialize();
   };
 
-  _.extend(BlockPositioner.prototype, FunctionBind, Renderable, {
+  Object.assign(BlockPositioner.prototype, FunctionBind, Renderable, {
 
     bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 

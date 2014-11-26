@@ -14,7 +14,7 @@ describe("Creating blocks on the Editor", function(){
 
       block = new SirTrevor.Block();
 
-      spyOn(SirTrevor.Blocks, 'Text').andReturn(block);
+      spyOn(SirTrevor.Blocks, 'Text').and.returnValue(block);
       spyOn(SirTrevor.EventBus, 'trigger');
       spyOn(editor, 'listenTo');
 

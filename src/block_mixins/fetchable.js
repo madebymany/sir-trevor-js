@@ -14,14 +14,14 @@ SirTrevor.BlockMixins.Fetchable = {
     this.addQueuedItem(uid, xhr);
 
     if(!_.isUndefined(success)) {
-      xhr.done(_.bind(success, this));
+      xhr.done(success.bind(this));
     }
 
     if(!_.isUndefined(failure)) {
-      xhr.fail(_.bind(failure, this));
+      xhr.fail(failure.bind(this));
     }
 
-    xhr.always(_.bind(this.removeQueuedItem, this, uid));
+    xhr.always(this.removeQueuedItem.bind(this, uid));
 
     return xhr;
   }

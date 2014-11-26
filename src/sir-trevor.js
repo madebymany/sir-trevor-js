@@ -57,9 +57,9 @@
   var FunctionBind = {
     bound: [],
     _bindFunctions: function(){
-      if (this.bound.length > 0) {
-        _.bindAll.apply(null, _.union([this], this.bound));
-      }
+      this.bound.forEach(function(f) {
+        this[f] = this[f].bind(this)
+      }, this);
     }
   };
 
@@ -83,7 +83,7 @@
 
     _ensureElement: function() {
       if (!this.el) {
-        var attrs = _.extend({}, _.result(this, 'attributes')),
+        var attrs = Object.assign({}, _.result(this, 'attributes')),
             html;
         if (this.id) { attrs.id = this.id; }
         if (this.className) { attrs['class'] = this.className; }
@@ -111,10 +111,11 @@
   //= locales.js
   //= vendor
   //= extensions
+  //= utils.js
   //= to-html.js
   //= to-markdown.js
 
-  SirTrevor.EventBus = _.extend({}, SirTrevor.Events);
+  SirTrevor.EventBus = Object.assign({}, SirTrevor.Events);
 
   /* Block Mixins */
   //= block_mixins
@@ -141,7 +142,7 @@
 
   /* We need a form handler here to handle all the form submits */
   SirTrevor.setDefaults = function(options) {
-    SirTrevor.DEFAULTS = _.extend(SirTrevor.DEFAULTS, options || {});
+    SirTrevor.DEFAULTS = Object.assign(SirTrevor.DEFAULTS, options || {});
   };
 
   SirTrevor.bindFormSubmit = function(form) {
@@ -155,7 +156,7 @@
   SirTrevor.onBeforeSubmit = function(should_validate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
-    _.each(SirTrevor.instances, function(inst, i) {
+    SirTrevor.instances.forEach(function(inst, i) {
       errors += inst.onFormSubmit(should_validate);
     });
     SirTrevor.log("Total errors: " + errors);
@@ -178,8 +179,9 @@
     }
 
     if (_.isString(identifier)) {
-      return _.find(this.instances,
-        function(editor){ return editor.ID === identifier; });
+      return this.instances.find(function(editor) {
+        return editor.ID === identifier;
+      });
     }
 
     return this.instances[identifier];
@@ -192,15 +194,15 @@
       return;
     }
 
-    _.extend(block.prototype, options || {});
+    Object.assign(block.prototype, options || {});
   };
 
   SirTrevor.runOnAllInstances = function(method) {
-    if (_.has(SirTrevor.Editor.prototype, method)) {
-      // augment the arguments pseudo array and pass on to invoke()
-      // this allows us to pass arguments on to the target methods
-      [].unshift.call(arguments, SirTrevor.instances);
-      _.invoke.apply(_, arguments);
+    if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
+      var methodArgs = Array.prototype.slice.call(arguments, 1);
+      Array.prototype.forEach.call(SirTrevor.instances, function(i) {
+        i[method].apply(null, methodArgs)
+      });
     } else {
       SirTrevor.log("method doesn't exist");
     }

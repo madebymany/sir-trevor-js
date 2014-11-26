@@ -8,7 +8,7 @@ SirTrevor.Formatter = (function(){
 
   var formatOptions = ["title", "className", "cmd", "keyCode", "param", "onClick", "toMarkdown", "toHTML"];
 
-  _.extend(Format.prototype, {
+  Object.assign(Format.prototype, {
 
     title: '',
     className: '',
@@ -22,7 +22,7 @@ SirTrevor.Formatter = (function(){
     initialize: function(){},
 
     _configure: function(options) {
-      if (this.options) options = _.extend({}, this.options, options);
+      if (this.options) options = Object.assign({}, this.options, options);
       for (var i = 0, l = formatOptions.length; i < l; i++) {
         var attr = formatOptions[i];
         if (options[attr]) this[attr] = options[attr];

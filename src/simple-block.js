@@ -11,7 +11,7 @@ SirTrevor.SimpleBlock = (function(){
     this.initialize.apply(this, arguments);
   };
 
-  _.extend(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, SirTrevor.BlockStore, {
+  Object.assign(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, SirTrevor.BlockStore, {
 
     focus : function() {},
 
@@ -32,18 +32,18 @@ SirTrevor.SimpleBlock = (function(){
     },
 
     title: function() {
-      return _.titleize(this.type.replace(/[\W_]/g, ' '));
+      return SirTrevor.Utils.titleize(this.type.replace(/[\W_]/g, ' '));
     },
 
     blockCSSClass: function() {
-      this.blockCSSClass = _.to_slug(this.type);
+      this.blockCSSClass = SirTrevor.Utils.toSlug(this.type);
       return this.blockCSSClass;
     },
 
     type: '',
 
     'class': function() {
-      return _.classify(this.type);
+      return SirTrevor.Utils.classify(this.type);
     },
 
     editorHTML: '',

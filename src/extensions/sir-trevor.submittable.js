@@ -12,14 +12,14 @@ SirTrevor.Submittable = function($form){
   this.intialize();
 };
 
-_.extend(SirTrevor.Submittable.prototype, {
+Object.assign(SirTrevor.Submittable.prototype, {
 
   intialize: function(){
     this.$submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
 
-    _.each(this.$submitBtn, function(btn){
+    this.$submitBtn.each(function(i, btn){
       btnTitles.push($(btn).attr('value'));
     });
 
@@ -34,9 +34,10 @@ _.extend(SirTrevor.Submittable.prototype, {
   },
 
   resetSubmitButton: function(){
-    _.each(this.$submitBtn, function(item, index){
-      $(item).attr('value', this.submitBtnTitles[index]);
-    }, this);
+    var titles = this.submitBtnTitles;
+    this.$submitBtn.each(function(index, item) {
+      $(item).attr('value', titles[index]);
+    });
   },
 
   onUploadStart: function(e){
@@ -88,8 +89,8 @@ _.extend(SirTrevor.Submittable.prototype, {
   },
 
   _bindEvents: function(){
-    _.forEach(this._events, function(callback, type) {
-      SirTrevor.EventBus.on(type, this[callback], this);
+    Object.keys(this._events).forEach(function(type) {
+      SirTrevor.EventBus.on(type, this[this._events[type]], this);
     }, this);
   }
 

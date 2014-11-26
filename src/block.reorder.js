@@ -10,7 +10,7 @@ SirTrevor.BlockReorder = (function(){
     this.initialize();
   };
 
-  _.extend(BlockReorder.prototype, FunctionBind, Renderable, {
+  Object.assign(BlockReorder.prototype, FunctionBind, Renderable, {
 
     bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
 

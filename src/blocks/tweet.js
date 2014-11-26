@@ -65,7 +65,7 @@ SirTrevor.Blocks.Tweet = (function(){
     },
 
     validTweetUrl: function(url) {
-      return (_.isURI(url) &&
+      return (SirTrevor.Utils.isURI(url) &&
               url.indexOf("twitter") !== -1 &&
               url.indexOf("status") !== -1);
     },

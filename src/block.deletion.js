@@ -5,7 +5,7 @@ SirTrevor.BlockDeletion = (function(){
     this._bindFunctions();
   };
 
-  _.extend(BlockDeletion.prototype, FunctionBind, Renderable, {
+  Object.assign(BlockDeletion.prototype, FunctionBind, Renderable, {
 
     tagName: 'a',
     className: 'st-block-ui-btn st-block-ui-btn--delete st-icon',

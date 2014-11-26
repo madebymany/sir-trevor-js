@@ -44,7 +44,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
 
   xhr.done(callbackSuccess)
      .fail(callbackError)
-     .always(_.bind(block.removeQueuedItem, block, uid));
+     .always(block.removeQueuedItem.bind(block, uid));
 
   return xhr;
 };

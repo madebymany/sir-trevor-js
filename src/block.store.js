@@ -4,7 +4,7 @@ SirTrevor.BlockStore = {
 
   createStore: function(blockData) {
     this.blockStorage = {
-      type: _.underscored(this.type),
+      type: SirTrevor.Utils.underscored(this.type),
       data: blockData || {}
     };
   },
@@ -27,7 +27,7 @@ SirTrevor.BlockStore = {
 
   setData: function(blockData) {
     SirTrevor.log("Setting data for block " + this.blockID);
-    _.extend(this.blockStorage.data, blockData || {});
+    Object.assign(this.blockStorage.data, blockData || {});
   },
 
   setAndRetrieveData: function(blockData) {

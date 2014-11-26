@@ -74,8 +74,8 @@ if (window.i18n === undefined || window.i18n.init === undefined) {
       if (!_.isString(str)) { return ""; }
 
       if (str.indexOf('__') >= 0) {
-        _.each(options, function(value, opt) {
-          str = str.replace('__' + opt + '__', value);
+        Object.keys(options).forEach(function(opt) {
+          str = str.replace('__' + opt + '__', options[opt]);
         });
       }
 
