@@ -6,8 +6,8 @@
     "url": "git@github.com:madebymany/sir-trevor-js.git"  
   },
   "scripts": {
-    "postinstall": "if [ -x ./node_modules/bower/bin/bower ]; then ./node_modules/bower/bin/bower install; else true; fi",
-    "test": "./node_modules/bower/bin/grunt travis --verbose"
+    "postinstall": "if command -v bower >/dev/null; then bower install; else true; fi",
+    "test": "grunt travis --verbose"
   },
   "dependencies": {
     "grunt": "0.4.1",
