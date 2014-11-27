@@ -1,9 +1,11 @@
-SirTrevor.BlockMixins.Controllable = {
+var utils = require('../utils');
+
+module.exports = {
 
   mixinName: "Controllable",
 
   initializeControllable: function() {
-    SirTrevor.log("Adding controllable to block " + this.blockID);
+    utils.log("Adding controllable to block " + this.blockID);
     this.$control_ui = $('<div>', {'class': 'st-block__control-ui'});
     Object.keys(this.controls).forEach(
       function(cmd) {

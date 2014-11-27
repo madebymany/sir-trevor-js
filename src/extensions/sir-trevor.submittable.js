@@ -1,18 +1,23 @@
 /*
-  SirTrevor.Submittable
-  --
-  We need a global way of setting if the editor can and can't be submitted,
-  and a way to disable the submit button and add messages (when appropriate)
-  We also need this to be highly extensible so it can be overridden.
-  This will be triggered *by anything* so it needs to subscribe to events.
-*/
+ * SirTrevor.Submittable
+ * --
+ * We need a global way of setting if the editor can and can't be submitted,
+ * and a way to disable the submit button and add messages (when appropriate)
+ * We also need this to be highly extensible so it can be overridden.
+ * This will be triggered *by anything* so it needs to subscribe to events.
+ */
 
-SirTrevor.Submittable = function($form){
+
+var utils = require('../utils');
+
+var EventBus = require('../event-bus');
+
+var submittable = function($form) {
   this.$form = $form;
   this.intialize();
 };
 
-Object.assign(SirTrevor.Submittable.prototype, {
+Object.assign(submittable.prototype, {
 
   intialize: function(){
     this.$submitBtn = this.$form.find("input[type='submit']");
@@ -42,7 +47,7 @@ Object.assign(SirTrevor.Submittable.prototype, {
 
   onUploadStart: function(e){
     this.globalUploadCount++;
-    SirTrevor.log('onUploadStart called ' + this.globalUploadCount);
+    utils.log('onUploadStart called ' + this.globalUploadCount);
 
     if(this.globalUploadCount === 1) {
       this._disableSubmitButton();
@@ -52,7 +57,7 @@ Object.assign(SirTrevor.Submittable.prototype, {
   onUploadStop: function(e) {
     this.globalUploadCount = (this.globalUploadCount <= 0) ? 0 : this.globalUploadCount - 1;
 
-    SirTrevor.log('onUploadStop called ' + this.globalUploadCount);
+    utils.log('onUploadStop called ' + this.globalUploadCount);
 
     if(this.globalUploadCount === 0) {
       this._enableSubmitButton();
@@ -60,22 +65,22 @@ Object.assign(SirTrevor.Submittable.prototype, {
   },
 
   onError: function(e){
-    SirTrevor.log('onError called');
+    utils.log('onError called');
     this.canSubmit = false;
   },
 
   _disableSubmitButton: function(message){
     this.setSubmitButton(null, message || i18n.t("general:wait"));
     this.$submitBtn
-      .attr('disabled', 'disabled')
-      .addClass('disabled');
+    .attr('disabled', 'disabled')
+    .addClass('disabled');
   },
 
   _enableSubmitButton: function(){
     this.resetSubmitButton();
     this.$submitBtn
-      .removeAttr('disabled')
-      .removeClass('disabled');
+    .removeAttr('disabled')
+    .removeClass('disabled');
   },
 
   _events : {
@@ -90,8 +95,11 @@ Object.assign(SirTrevor.Submittable.prototype, {
 
   _bindEvents: function(){
     Object.keys(this._events).forEach(function(type) {
-      SirTrevor.EventBus.on(type, this[this._events[type]], this);
+      EventBus.on(type, this[this._events[type]], this);
     }, this);
   }
 
 });
+
+module.exports = submittable;
+

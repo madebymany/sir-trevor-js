@@ -27,7 +27,7 @@ describe("SirTrevor", function(){
   describe("getInstance", function(){
 
     beforeEach(function(){
-      SirTrevor.instances = [
+      SirTrevor.config.instances = [
         { ID: '123' },
         { ID: '456' }
       ];

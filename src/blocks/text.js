@@ -1,7 +1,11 @@
 /*
   Text Block
 */
-SirTrevor.Blocks.Text = SirTrevor.Block.extend({
+
+var Block = require('../block');
+var stToHTML = require('../to-html');
+
+module.exports = Block.extend({
 
   type: "text",
 
@@ -12,6 +16,6 @@ SirTrevor.Blocks.Text = SirTrevor.Block.extend({
   icon_name: 'text',
 
   loadData: function(data){
-    this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
+    this.getTextBlock().html(stToHTML(data.text, this.type));
   }
 });

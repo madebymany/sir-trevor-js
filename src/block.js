@@ -1,56 +1,71 @@
-SirTrevor.Block = (function(){
+var _ = require('./lodash');
 
-  var Block = function(data, instance_id) {
-    SirTrevor.SimpleBlock.apply(this, arguments);
-  };
+var config = require('./config');
+var utils = require('./utils');
+var stToHTML = require('./to-html');
+var stToMarkdown = require('./to-markdown');
+var BlockMixins = require('./block_mixins');
 
-  var delete_template = [
-    "<div class='st-block__ui-delete-controls'>",
-      "<label class='st-block__delete-label'>",
-      "<%= i18n.t('general:delete') %>",
-      "</label>",
-      "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
-      "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
-    "</div>"
-  ].join("\n");
+var SimpleBlock = require('./simple-block');
+var BlockReorder = require('./block.reorder');
+var BlockDeletion = require('./block.deletion');
+var BlockPositioner = require('./block.positioner');
+var Formatters = require('./formatters');
+var EventBus = require('./event-bus');
 
-  var drop_options = {
-    html: ['<div class="st-block__dropzone">',
-           '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-           '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
-           '</p></div>'].join('\n'),
+var Spinner = require('spin.js');
+
+var Block = function(data, instance_id) {
+  SimpleBlock.apply(this, arguments);
+};
+
+var delete_template = [
+  "<div class='st-block__ui-delete-controls'>",
+  "<label class='st-block__delete-label'>",
+  "<%= i18n.t('general:delete') %>",
+  "</label>",
+  "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
+  "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
+  "</div>"
+].join("\n");
+
+var drop_options = {
+  html: ['<div class="st-block__dropzone">',
+    '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
+    '</p></div>'].join('\n'),
     re_render_on_reorder: false
-  };
+};
 
-  var paste_options = {
-    html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
-           ' class="st-block__paste-input st-paste-block">'].join('')
-  };
+var paste_options = {
+  html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
+    ' class="st-block__paste-input st-paste-block">'].join('')
+};
 
-  var upload_options = {
-    html: [
-      '<div class="st-block__upload-container">',
-      '<input type="file" type="st-file-upload">',
-      '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
-      '</div>'
-    ].join('\n')
-  };
+var upload_options = {
+  html: [
+    '<div class="st-block__upload-container">',
+    '<input type="file" type="st-file-upload">',
+    '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
+    '</div>'
+  ].join('\n')
+};
 
-  SirTrevor.DEFAULTS.Block = {
-    drop_options: drop_options,
-    paste_options: paste_options,
-    upload_options: upload_options
-  };
+config.defaults.Block = {
+  drop_options: drop_options,
+  paste_options: paste_options,
+  upload_options: upload_options
+};
 
-  Object.assign(Block.prototype, SirTrevor.SimpleBlock.fn, SirTrevor.BlockValidations, {
+Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
 
-    bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
-            "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
+  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
+    "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
 
     className: 'st-block st-icon--add',
 
     attributes: function() {
-      return Object.assign(SirTrevor.SimpleBlock.fn.attributes.call(this), {
+      return Object.assign(SimpleBlock.fn.attributes.call(this), {
         'data-icon-after' : "add"
       });
     },
@@ -108,11 +123,11 @@ SirTrevor.Block = (function(){
       }
 
       if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(SirTrevor.BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(SirTrevor.BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(SirTrevor.BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(SirTrevor.BlockMixins.Fetchable); }
-      if (this.controllable) { this.withMixin(SirTrevor.BlockMixins.Controllable); }
+      if (this.droppable) { this.withMixin(BlockMixins.Droppable); }
+      if (this.pastable) { this.withMixin(BlockMixins.Pastable); }
+      if (this.uploadable) { this.withMixin(BlockMixins.Uploadable); }
+      if (this.fetchable) { this.withMixin(BlockMixins.Fetchable); }
+      if (this.controllable) { this.withMixin(BlockMixins.Controllable); }
 
       if (this.formattable) { this._initFormatting(); }
 
@@ -132,7 +147,7 @@ SirTrevor.Block = (function(){
     loading: function() {
       if(!_.isUndefined(this.spinner)) { this.ready(); }
 
-      this.spinner = new Spinner(SirTrevor.DEFAULTS.spinner);
+      this.spinner = new Spinner(config.defaults.spinner);
       this.spinner.spin(this.$el[0]);
 
       this.$el.addClass('st--is-loading');
@@ -146,21 +161,20 @@ SirTrevor.Block = (function(){
       }
     },
 
-    /*
-      Generic toData implementation.
-      Can be overwritten, although hopefully this will cover most situations
-    */
+    /* Generic toData implementation.
+     * Can be overwritten, although hopefully this will cover most situations
+     */
     toData: function() {
-      SirTrevor.log("toData for " + this.blockID);
+      utils.log("toData for " + this.blockID);
 
       var bl = this.$el,
-          dataObj = {};
+      dataObj = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
         var content = this.getTextBlock().html();
         if (content.length > 0) {
-          dataObj.text = SirTrevor.toMarkdown(content, this.type);
+          dataObj.text = stToMarkdown(content, this.type);
         }
       }
 
@@ -197,8 +211,8 @@ SirTrevor.Block = (function(){
     },
 
     /*
-    * Event handlers
-    */
+     * Event handlers
+     */
 
     _onFocus: function() {
       this.trigger('blockFocus', this.$el);
@@ -233,13 +247,13 @@ SirTrevor.Block = (function(){
       var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
 
       this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
-                      onDeleteConfirm.bind(this))
-                 .on('click', '.st-block-ui-btn--deny-delete',
-                      onDeleteDeny.bind(this));
+                     onDeleteConfirm.bind(this))
+                     .on('click', '.st-block-ui-btn--deny-delete',
+                         onDeleteDeny.bind(this));
     },
 
     pastedMarkdownToHTML: function(content) {
-      return SirTrevor.toHTML(SirTrevor.toMarkdown(content, this.type), this.type);
+      return stToHTML(stToMarkdown(content, this.type), this.type);
     },
 
     onContentPasted: function(event, target){
@@ -255,7 +269,7 @@ SirTrevor.Block = (function(){
         this.$inputs.hide();
       }
 
-      SirTrevor.SimpleBlock.fn.beforeLoadingData.call(this);
+      SimpleBlock.fn.beforeLoadingData.call(this);
 
       this.ready();
     },
@@ -269,23 +283,23 @@ SirTrevor.Block = (function(){
     },
 
     /*
-    * Init functions for adding functionality
-    */
+     * Init functions for adding functionality
+     */
 
     _initUIComponents: function() {
 
-      var positioner = new SirTrevor.BlockPositioner(this.$el, this.instanceID);
+      var positioner = new BlockPositioner(this.$el, this.instanceID);
 
       this._withUIComponent(
         positioner, '.st-block-ui-btn--reorder', positioner.toggle
       );
 
       this._withUIComponent(
-        new SirTrevor.BlockReorder(this.$el)
+        new BlockReorder(this.$el)
       );
 
       this._withUIComponent(
-        new SirTrevor.BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
+        new BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
       );
 
       this.onFocus();
@@ -295,9 +309,9 @@ SirTrevor.Block = (function(){
     _initFormatting: function() {
       // Enable formatting keyboard input
       var formatter;
-      for (var name in SirTrevor.Formatters) {
-        if (SirTrevor.Formatters.hasOwnProperty(name)) {
-          formatter = SirTrevor.Formatters[name];
+      for (var name in Formatters) {
+        if (Formatters.hasOwnProperty(name)) {
+          formatter = Formatters[name];
           if (!_.isUndefined(formatter.keyCode)) {
             formatter._bindToBlock(this.$el);
           }
@@ -307,22 +321,22 @@ SirTrevor.Block = (function(){
 
     _initTextBlocks: function() {
       this.getTextBlock()
-        .bind('paste', this._handleContentPaste)
-        .bind('keyup', this.getSelectionForFormatter)
-        .bind('mouseup', this.getSelectionForFormatter)
-        .bind('DOMNodeInserted', this.clearInsertedStyles);
+      .bind('paste', this._handleContentPaste)
+      .bind('keyup', this.getSelectionForFormatter)
+      .bind('mouseup', this.getSelectionForFormatter)
+      .bind('DOMNodeInserted', this.clearInsertedStyles);
     },
 
     getSelectionForFormatter: function() {
       var block = this;
       setTimeout(function() {
         var selection = window.getSelection(),
-           selectionStr = selection.toString().trim(),
-           eventType = (selectionStr === '') ? 'hide' : 'position';
+        selectionStr = selection.toString().trim(),
+        eventType = (selectionStr === '') ? 'hide' : 'position';
 
-        SirTrevor.EventBus.trigger('formatter:' + eventType, block);
+        EventBus.trigger('formatter:' + eventType, block);
       }, 1);
-     },
+    },
 
     clearInsertedStyles: function(e) {
       var target = e.target;
@@ -345,10 +359,8 @@ SirTrevor.Block = (function(){
       return _.isEmpty(this.saveAndGetData());
     }
 
-  });
+});
 
-  Block.extend = extend; // Allow our Block to be extended.
+Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 
-  return Block;
-
-})();
+module.exports = Block;

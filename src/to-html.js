@@ -1,6 +1,15 @@
-SirTrevor.toHTML = function(markdown, type) {
+var _ = require('./lodash');
+var utils = require('./utils');
+
+module.exports = function(markdown, type) {
+
+  // Deferring requiring these to sidestep a circular dependency:
+  // Block -> this -> Blocks -> Block
+  var Blocks = require('./blocks');
+  var Formatters = require('./formatters');
+
   // MD -> HTML
-  type = SirTrevor.Utils.classify(type);
+  type = utils.classify(type);
 
   var html = markdown,
       shouldWrap = type === "Text";
@@ -19,8 +28,8 @@ SirTrevor.toHTML = function(markdown, type) {
   // we reverse the string to regex out the italic items (and bold)
   // and look for something that doesn't start (or end in the reversed strings case)
   // with a slash.
-  html = SirTrevor.Utils.reverse(
-           SirTrevor.Utils.reverse(html)
+  html = utils.reverse(
+           utils.reverse(html)
            .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
               return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
            })
@@ -33,9 +42,9 @@ SirTrevor.toHTML = function(markdown, type) {
 
   // Use custom formatters toHTML functions (if any exist)
   var formatName, format;
-  for(formatName in SirTrevor.Formatters) {
-    if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
-      format = SirTrevor.Formatters[formatName];
+  for(formatName in Formatters) {
+    if (Formatters.hasOwnProperty(formatName)) {
+      format = Formatters[formatName];
       // Do we have a toHTML function?
       if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
         html = format.toHTML(html);
@@ -45,8 +54,8 @@ SirTrevor.toHTML = function(markdown, type) {
 
   // Use custom block toHTML functions (if any exist)
   var block;
-  if (SirTrevor.Blocks.hasOwnProperty(type)) {
-    block = SirTrevor.Blocks[type];
+  if (Blocks.hasOwnProperty(type)) {
+    block = Blocks[type];
     // Do we have a toHTML function?
     if (!_.isUndefined(block.prototype.toHTML) && _.isFunction(block.prototype.toHTML)) {
       html = block.prototype.toHTML(html);

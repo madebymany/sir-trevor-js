@@ -1,10 +1,13 @@
 /*
-* Sir Trevor Editor Store
-* By default we store the complete data on the instances $el
-* We can easily extend this and store it on some server or something
-*/
+ * Sir Trevor Editor Store
+ * By default we store the complete data on the instances $el
+ * We can easily extend this and store it on some server or something
+ */
 
-SirTrevor.editorStore = function(editor, method, options) {
+var _ = require('../lodash');
+var utils = require('../utils');
+
+module.exports = function(editor, method, options) {
   var resp;
 
   options = options || {};
@@ -12,7 +15,8 @@ SirTrevor.editorStore = function(editor, method, options) {
   switch(method) {
 
     case "create":
-      // Grab our JSON from the textarea and clean any whitespace incase there is a line wrap between the opening and closing textarea tags
+      // Grab our JSON from the textarea and clean any whitespace in case
+      // there is a line wrap between the opening and closing textarea tags
       var content = editor.$el.val().trim();
       editor.dataStore = { data: [] };
 
@@ -28,31 +32,31 @@ SirTrevor.editorStore = function(editor, method, options) {
           editor.errors.push({ text: i18n.t("errors:load_fail") });
           editor.renderErrors();
 
-          SirTrevor.log('Sorry there has been a problem with parsing the JSON');
-          SirTrevor.log(e);
+          utils.log('Sorry there has been a problem with parsing the JSON');
+          utils.log(e);
         }
       }
-    break;
+      break;
 
     case "reset":
       editor.dataStore = { data: [] };
-    break;
+      break;
 
     case "add":
       if (options.data) {
         editor.dataStore.data.push(options.data);
         resp = editor.dataStore;
       }
-    break;
+      break;
 
     case "save":
       // Store to our element
       editor.$el.val((editor.dataStore.data.length > 0) ? JSON.stringify(editor.dataStore) : '');
-    break;
+      break;
 
     case "read":
       resp = editor.dataStore;
-    break;
+      break;
 
   }
 

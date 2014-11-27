@@ -1,16 +1,22 @@
 /* Adds drop functionaltiy to this block */
 
-SirTrevor.BlockMixins.Droppable = {
+var _ = require('../lodash');
+var config = require('../config');
+var utils = require('../utils');
+
+var EventBus = require('../event-bus');
+
+module.exports = {
 
   mixinName: "Droppable",
   valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
 
   initializeDroppable: function() {
-    SirTrevor.log("Adding droppable to block " + this.blockID);
+    utils.log("Adding droppable to block " + this.blockID);
 
-    this.drop_options = Object.assign({}, SirTrevor.DEFAULTS.Block.drop_options, this.drop_options);
+    this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
-    var drop_html = $(_.template(this.drop_options.html)({ block: this }));
+    var drop_html = $(_.template(this.drop_options.html)({ block: this, _: _ }));
 
     this.$editor.hide();
     this.$inputs.append(drop_html);
@@ -46,7 +52,7 @@ SirTrevor.BlockMixins.Droppable = {
       this.onDrop(e.dataTransfer);
     }
 
-    SirTrevor.EventBus.trigger('block:content:dropped', this.blockID);
+    EventBus.trigger('block:content:dropped', this.blockID);
   }
 
 };

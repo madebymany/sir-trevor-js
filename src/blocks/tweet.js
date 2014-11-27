@@ -1,104 +1,105 @@
-SirTrevor.Blocks.Tweet = (function(){
+var _ = require('../lodash');
+var utils = require('../utils');
 
-  var tweet_template = _.template([
-    "<blockquote class='twitter-tweet' align='center'>",
-    "<p><%= text %></p>",
-    "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
-    "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
-    "</blockquote>",
-    '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
-  ].join("\n"));
+var Block = require('../block');
 
-  return SirTrevor.Block.extend({
+var tweet_template = _.template([
+  "<blockquote class='twitter-tweet' align='center'>",
+  "<p><%= text %></p>",
+  "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
+  "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
+  "</blockquote>",
+  '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
+].join("\n"));
 
-    type: "tweet",
-    droppable: true,
-    pastable: true,
-    fetchable: true,
+module.exports = Block.extend({
 
-    drop_options: {
-      re_render_on_reorder: true
-    },
+  type: "tweet",
+  droppable: true,
+  pastable: true,
+  fetchable: true,
 
-    title: function(){ return i18n.t('blocks:tweet:title'); },
+  drop_options: {
+    re_render_on_reorder: true
+  },
 
-    fetchUrl: function(tweetID) {
-      return "/tweets/?tweet_id=" + tweetID;
-    },
+  title: function(){ return i18n.t('blocks:tweet:title'); },
 
-    icon_name: 'twitter',
+  fetchUrl: function(tweetID) {
+    return "/tweets/?tweet_id=" + tweetID;
+  },
 
-    loadData: function(data) {
-      if (_.isUndefined(data.status_url)) { data.status_url = ''; }
-      this.$inner.find('iframe').remove();
-      this.$inner.prepend(tweet_template(data));
-    },
+  icon_name: 'twitter',
 
-    onContentPasted: function(event){
-      // Content pasted. Delegate to the drop parse method
-      var input = $(event.target),
-          val = input.val();
+  loadData: function(data) {
+    if (_.isUndefined(data.status_url)) { data.status_url = ''; }
+    this.$inner.find('iframe').remove();
+    this.$inner.prepend(tweet_template(data));
+  },
 
-      // Pass this to the same handler as onDrop
-      this.handleTwitterDropPaste(val);
-    },
+  onContentPasted: function(event){
+    // Content pasted. Delegate to the drop parse method
+    var input = $(event.target),
+    val = input.val();
 
-    handleTwitterDropPaste: function(url){
-      if (!this.validTweetUrl(url)) {
-        SirTrevor.log("Invalid Tweet URL");
-        return;
-      }
+    // Pass this to the same handler as onDrop
+    this.handleTwitterDropPaste(val);
+  },
 
-      // Twitter status
-      var tweetID = url.match(/[^\/]+$/);
-      if (!_.isEmpty(tweetID)) {
-        this.loading();
-        tweetID = tweetID[0];
+  handleTwitterDropPaste: function(url){
+    if (!this.validTweetUrl(url)) {
+      utils.log("Invalid Tweet URL");
+      return;
+    }
 
-        var ajaxOptions = {
-          url: this.fetchUrl(tweetID),
-          dataType: "json"
-        };
+    // Twitter status
+    var tweetID = url.match(/[^\/]+$/);
+    if (!_.isEmpty(tweetID)) {
+      this.loading();
+      tweetID = tweetID[0];
 
-        this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
-      }
-    },
-
-    validTweetUrl: function(url) {
-      return (SirTrevor.Utils.isURI(url) &&
-              url.indexOf("twitter") !== -1 &&
-              url.indexOf("status") !== -1);
-    },
-
-    onTweetSuccess: function(data) {
-      // Parse the twitter object into something a bit slimmer..
-      var obj = {
-        user: {
-          profile_image_url: data.user.profile_image_url,
-          profile_image_url_https: data.user.profile_image_url_https,
-          screen_name: data.user.screen_name,
-          name: data.user.name
-        },
-        id: data.id_str,
-        text: data.text,
-        created_at: data.created_at,
-        entities: data.entities,
-        status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
+      var ajaxOptions = {
+        url: this.fetchUrl(tweetID),
+        dataType: "json"
       };
 
-      this.setAndLoadData(obj);
-      this.ready();
-    },
-
-    onTweetFail: function() {
-      this.addMessage(i18n.t("blocks:tweet:fetch_error"));
-      this.ready();
-    },
-
-    onDrop: function(transferData){
-      var url = transferData.getData('text/plain');
-      this.handleTwitterDropPaste(url);
+      this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
     }
-  });
+  },
 
-})();
+  validTweetUrl: function(url) {
+    return (utils.isURI(url) &&
+            url.indexOf("twitter") !== -1 &&
+            url.indexOf("status") !== -1);
+  },
+
+  onTweetSuccess: function(data) {
+    // Parse the twitter object into something a bit slimmer..
+    var obj = {
+      user: {
+        profile_image_url: data.user.profile_image_url,
+        profile_image_url_https: data.user.profile_image_url_https,
+        screen_name: data.user.screen_name,
+        name: data.user.name
+      },
+      id: data.id_str,
+      text: data.text,
+      created_at: data.created_at,
+      entities: data.entities,
+      status_url: "https://twitter.com/" + data.user.screen_name + "/status/" + data.id_str
+    };
+
+    this.setAndLoadData(obj);
+    this.ready();
+  },
+
+  onTweetFail: function() {
+    this.addMessage(i18n.t("blocks:tweet:fetch_error"));
+    this.ready();
+  },
+
+  onDrop: function(transferData){
+    var url = transferData.getData('text/plain');
+    this.handleTwitterDropPaste(url);
+  }
+});

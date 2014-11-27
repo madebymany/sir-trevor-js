@@ -1,62 +1,63 @@
 /*
-  Unordered List
-*/
+   Unordered List
+   */
 
-SirTrevor.Blocks.List = (function() {
+var _ = require('../lodash');
 
-  var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
+var Block = require('../block');
+var stToHTML = require('../to-html');
 
-  return SirTrevor.Block.extend({
+var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
 
-    type: 'list',
+module.exports = Block.extend({
 
-    title: function() { return i18n.t('blocks:list:title'); },
+  type: 'list',
 
-    icon_name: 'list',
+  title: function() { return i18n.t('blocks:list:title'); },
 
-    editorHTML: function() {
-      return _.template(template, this);
-    },
+  icon_name: 'list',
 
-    loadData: function(data){
-      this.getTextBlock().html("<ul>" + SirTrevor.toHTML(data.text, this.type) + "</ul>");
-    },
+  editorHTML: function() {
+    return _.template(template, this);
+  },
 
-    onBlockRender: function() {
-      this.checkForList = this.checkForList.bind(this);
-      this.getTextBlock().on('click keyup', this.checkForList);
-    },
+  loadData: function(data){
+    this.getTextBlock().html("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+  },
 
-    checkForList: function() {
-      if (this.$('ul').length === 0) {
-        document.execCommand("insertUnorderedList", false, false);
-      }
-    },
+  onBlockRender: function() {
+    this.checkForList = this.checkForList.bind(this);
+    this.getTextBlock().on('click keyup', this.checkForList);
+  },
 
-    toMarkdown: function(markdown) {
-      return markdown.replace(/<\/li>/mg,"\n")
-                     .replace(/<\/?[^>]+(>|$)/g, "")
-                     .replace(/^(.+)$/mg," - $1");
-    },
-
-    toHTML: function(html) {
-      html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-                 .replace(/\n/mg, "");
-
-      return html;
-    },
-
-    onContentPasted: function(event, target) {
-      var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
-          list = this.$('ul').html(replace);
-
-      this.getTextBlock().caretToEnd();
-    },
-
-    isEmpty: function() {
-      return _.isEmpty(this.saveAndGetData().text);
+  checkForList: function() {
+    if (this.$('ul').length === 0) {
+      document.execCommand("insertUnorderedList", false, false);
     }
+  },
 
-  });
+  toMarkdown: function(markdown) {
+    return markdown.replace(/<\/li>/mg,"\n")
+    .replace(/<\/?[^>]+(>|$)/g, "")
+    .replace(/^(.+)$/mg," - $1");
+  },
 
-})();
+  toHTML: function(html) {
+    html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+    .replace(/\n/mg, "");
+
+    return html;
+  },
+
+  onContentPasted: function(event, target) {
+    var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
+    list = this.$('ul').html(replace);
+
+    this.getTextBlock().caretToEnd();
+  },
+
+  isEmpty: function() {
+    return _.isEmpty(this.saveAndGetData().text);
+  }
+
+});

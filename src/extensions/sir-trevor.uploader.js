@@ -3,7 +3,11 @@
 *   Generic Upload implementation that can be extended for blocks
 */
 
-SirTrevor.fileUploader = function(block, file, success, error) {
+var _ = require('../lodash');
+var config = require('../config');
+var utils = require('../utils');
+
+module.exports = function(block, file, success, error) {
 
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
@@ -15,7 +19,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   block.resetMessages();
 
   var callbackSuccess = function(){
-    SirTrevor.log('Upload callback called');
+    utils.log('Upload callback called');
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
       success.apply(block, arguments);
@@ -23,7 +27,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   };
 
   var callbackError = function(){
-    SirTrevor.log('Upload callback error called');
+    utils.log('Upload callback error called');
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
       error.apply(block, arguments);
@@ -31,7 +35,7 @@ SirTrevor.fileUploader = function(block, file, success, error) {
   };
 
   var xhr = $.ajax({
-    url: SirTrevor.DEFAULTS.uploadUrl,
+    url: config.defaults.uploadUrl,
     data: data,
     cache: false,
     contentType: false,

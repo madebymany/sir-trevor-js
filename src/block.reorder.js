@@ -1,88 +1,88 @@
-SirTrevor.BlockReorder = (function(){
+var _ = require('./lodash');
 
-  var BlockReorder = function(block_element) {
-    this.$block = block_element;
-    this.blockID = this.$block.attr('id');
+var EventBus = require('./event-bus');
 
-    this._ensureElement();
-    this._bindFunctions();
+var BlockReorder = function(block_element) {
+  this.$block = block_element;
+  this.blockID = this.$block.attr('id');
 
-    this.initialize();
-  };
+  this._ensureElement();
+  this._bindFunctions();
 
-  Object.assign(BlockReorder.prototype, FunctionBind, Renderable, {
+  this.initialize();
+};
 
-    bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+Object.assign(BlockReorder.prototype, require('./function-bind'), require('./renderable'), {
 
-    className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
-    tagName: 'a',
+  bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
 
-    attributes: function() {
-      return {
-        'html': 'reorder',
-        'draggable': 'true',
-        'data-icon': 'move'
-      };
-    },
+  className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
+  tagName: 'a',
 
-    initialize: function() {
-      this.$el.bind('mousedown touchstart', this.onMouseDown)
-              .bind('click', this.onClick)
-              .bind('dragstart', this.onDragStart)
-              .bind('dragend touchend', this.onDragEnd)
-              .bind('drag touchmove', this.onDrag);
+  attributes: function() {
+    return {
+      'html': 'reorder',
+      'draggable': 'true',
+      'data-icon': 'move'
+    };
+  },
 
-      this.$block.dropArea()
-                 .bind('drop', this.onDrop);
-    },
+  initialize: function() {
+    this.$el.bind('mousedown touchstart', this.onMouseDown)
+    .bind('click', this.onClick)
+    .bind('dragstart', this.onDragStart)
+    .bind('dragend touchend', this.onDragEnd)
+    .bind('drag touchmove', this.onDrag);
 
-    onMouseDown: function() {
-      SirTrevor.EventBus.trigger("block:reorder:down", this.blockID);
-    },
+    this.$block.dropArea()
+    .bind('drop', this.onDrop);
+  },
 
-    onDrop: function(ev) {
-      ev.preventDefault();
+  onMouseDown: function() {
+    EventBus.trigger("block:reorder:down", this.blockID);
+  },
 
-      var dropped_on = this.$block,
-          item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
-          block = $('#' + item_id);
+  onDrop: function(ev) {
+    ev.preventDefault();
 
-      if (!_.isUndefined(item_id) &&
+    var dropped_on = this.$block,
+    item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+    block = $('#' + item_id);
+
+    if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-        dropped_on.attr('id') != item_id &&
-        dropped_on.attr('data-instance') == block.attr('data-instance')
-      ) {
-        dropped_on.after(block);
-      }
-      SirTrevor.EventBus.trigger("block:reorder:dropped", item_id);
-    },
+          dropped_on.attr('id') != item_id &&
+            dropped_on.attr('data-instance') == block.attr('data-instance')
+       ) {
+         dropped_on.after(block);
+       }
+       EventBus.trigger("block:reorder:dropped", item_id);
+  },
 
-    onDragStart: function(ev) {
-      var btn = $(ev.currentTarget).parent();
+  onDragStart: function(ev) {
+    var btn = $(ev.currentTarget).parent();
 
-      ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-      ev.originalEvent.dataTransfer.setData('Text', this.blockID);
+    ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
+    ev.originalEvent.dataTransfer.setData('Text', this.blockID);
 
-      SirTrevor.EventBus.trigger("block:reorder:dragstart", this.blockID);
-      this.$block.addClass('st-block--dragging');
-    },
+    EventBus.trigger("block:reorder:dragstart", this.blockID);
+    this.$block.addClass('st-block--dragging');
+  },
 
-    onDragEnd: function(ev) {
-      SirTrevor.EventBus.trigger("block:reorder:dragend", this.blockID);
-      this.$block.removeClass('st-block--dragging');
-    },
+  onDragEnd: function(ev) {
+    EventBus.trigger("block:reorder:dragend", this.blockID);
+    this.$block.removeClass('st-block--dragging');
+  },
 
-    onDrag: function(ev){},
+  onDrag: function(ev){},
 
-    onClick: function() {
-    },
+  onClick: function() {
+  },
 
-    render: function() {
-      return this;
-    }
+  render: function() {
+    return this;
+  }
 
-  });
+});
 
-  return BlockReorder;
-
-})();
+module.exports = BlockReorder;

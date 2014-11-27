@@ -10,11 +10,12 @@ describe("Editor", function(){
   describe("instantiating without an element", function(){
 
     beforeEach(function(){
+      SirTrevor.config.instances = [];
       editor = new SirTrevor.Editor();
     });
 
     it("won't create an instance", function(){
-      expect(SirTrevor.instances.length).toBe(0);
+      expect(SirTrevor.config.instances.length).toBe(0);
     });
 
   });
@@ -22,11 +23,12 @@ describe("Editor", function(){
   describe("instantiating with an element", function(){
 
     beforeEach(function(){
+      SirTrevor.config.instances = [];
       editor = new SirTrevor.Editor({ el: element });
     });
 
     it("creates an instance", function(){
-      expect(SirTrevor.instances.length).toBe(1);
+      expect(SirTrevor.config.instances.length).toBe(1);
     });
 
   });

@@ -810,4 +810,4 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   window.getJSONFixture = function (url) {
     return jasmine.getJSONFixtures().proxyCallTo_('read', arguments)[url]
   }
-}(window, window.jasmine, window.jQuery);
+}(window, window.jasmine, require('jquery'));

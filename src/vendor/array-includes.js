@@ -25,5 +25,5 @@ if (![].includes) {
       k++;
     }
     return false;
-  }
+  };
 }

@@ -1,10 +1,15 @@
-SirTrevor.BlockStore = {
+var _ = require('./lodash');
+var utils = require('./utils');
+
+var EventBus = require('./event-bus');
+
+module.exports = {
 
   blockStorage: {},
 
   createStore: function(blockData) {
     this.blockStorage = {
-      type: SirTrevor.Utils.underscored(this.type),
+      type: utils.underscored(this.type),
       data: blockData || {}
     };
   },
@@ -26,7 +31,7 @@ SirTrevor.BlockStore = {
   },
 
   setData: function(blockData) {
-    SirTrevor.log("Setting data for block " + this.blockID);
+    utils.log("Setting data for block " + this.blockID);
     Object.assign(this.blockStorage.data, blockData || {});
   },
 
@@ -44,13 +49,13 @@ SirTrevor.BlockStore = {
   loadData: function() {},
 
   beforeLoadingData: function() {
-    SirTrevor.log("loadData for " + this.blockID);
-    SirTrevor.EventBus.trigger("block:loadData", this.blockID);
+    utils.log("loadData for " + this.blockID);
+    EventBus.trigger("block:loadData", this.blockID);
     this.loadData(this.getData());
   },
 
   _loadData: function() {
-    SirTrevor.log("_loadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
+    utils.log("_loadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
     this.beforeLoadingData();
   },
 

@@ -25,16 +25,17 @@
     <input type="submit" value="Submit">
   </form>
 
-  <script src="../bower_components/jquery/jquery.js"></script>
-  <script src="../bower_components/underscore/underscore.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../bower_components/Eventable/eventable.js" type="text/javascript" charset="utf-8"></script>
+  <pre id="st-json-debug"></pre>
 
-  <script src="../sir-trevor.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../node_modules/es5-shim/es5-shim.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../node_modules/es6-shim/es6-shim.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../node_modules/jquery/dist/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../sir-trevor.debug.js" type="text/javascript" charset="utf-8"></script>
   <script src="../locales/de.js" type="text/javascript" charset="utf-8"></script>
   <script type="text/javascript" charset="utf-8">
     $(function(){
-      SirTrevor.DEBUG = true;
-      SirTrevor.LANGUAGE = "en";
+      SirTrevor.config.debug = true;
+      SirTrevor.config.language = "en";
 
       SirTrevor.setBlockOptions("Text", {
         onBlockRender: function() {
@@ -56,6 +57,7 @@
       });
 
       $('form').bind('submit', function(){
+        $('#st-json-debug').text(JSON.stringify(window.editor.store('read')));
         return false;
       });
 
