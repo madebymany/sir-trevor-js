@@ -2,36 +2,37 @@
   Block Quote
 */
 
-SirTrevor.Blocks.Quote = (function(){
+var _ = require('../lodash');
 
-  var template = _.template([
-    '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-    '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
-    '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
-    ' class="st-input-string st-required js-cite-input" type="text" />'
-  ].join("\n"));
+var Block = require('../block');
+var stToHTML = require('../to-html');
 
-  return SirTrevor.Block.extend({
+var template = _.template([
+  '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
+  '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
+  '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
+  ' class="st-input-string st-required js-cite-input" type="text" />'
+].join("\n"));
 
-    type: "quote",
+module.exports = Block.extend({
 
-    title: function(){ return i18n.t('blocks:quote:title'); },
+  type: "quote",
 
-    icon_name: 'quote',
+  title: function(){ return i18n.t('blocks:quote:title'); },
 
-    editorHTML: function() {
-      return template(this);
-    },
+  icon_name: 'quote',
 
-    loadData: function(data){
-      this.getTextBlock().html(SirTrevor.toHTML(data.text, this.type));
-      this.$('.js-cite-input').val(data.cite);
-    },
+  editorHTML: function() {
+    return template(this);
+  },
 
-    toMarkdown: function(markdown) {
-      return markdown.replace(/^(.+)$/mg,"> $1");
-    }
+  loadData: function(data){
+    this.getTextBlock().html(stToHTML(data.text, this.type));
+    this.$('.js-cite-input').val(data.cite);
+  },
 
-  });
+  toMarkdown: function(markdown) {
+    return markdown.replace(/^(.+)$/mg,"> $1");
+  }
 
-})();
+});

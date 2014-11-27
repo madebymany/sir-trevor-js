@@ -1,5 +1,15 @@
-SirTrevor.toMarkdown = function(content, type) {
-  type = SirTrevor.Utils.classify(type);
+var _ = require('./lodash');
+var config = require('./config');
+var utils = require('./utils');
+
+module.exports = function(content, type) {
+
+  // Deferring requiring these to sidestep a circular dependency:
+  // Block -> this -> Blocks -> Block
+  var Blocks = require('./blocks');
+  var Formatters = require('./formatters');
+
+  type = utils.classify(type);
 
   var markdown = content;
 
@@ -61,9 +71,9 @@ SirTrevor.toMarkdown = function(content, type) {
 
   // Use custom formatters toMarkdown functions (if any exist)
   var formatName, format;
-  for(formatName in SirTrevor.Formatters) {
-    if (SirTrevor.Formatters.hasOwnProperty(formatName)) {
-      format = SirTrevor.Formatters[formatName];
+  for(formatName in Formatters) {
+    if (Formatters.hasOwnProperty(formatName)) {
+      format = Formatters[formatName];
       // Do we have a toMarkdown function?
       if (!_.isUndefined(format.toMarkdown) && _.isFunction(format.toMarkdown)) {
         markdown = format.toMarkdown(markdown);
@@ -82,8 +92,8 @@ SirTrevor.toMarkdown = function(content, type) {
 
   // Use custom block toMarkdown functions (if any exist)
   var block;
-  if (SirTrevor.Blocks.hasOwnProperty(type)) {
-    block = SirTrevor.Blocks[type];
+  if (Blocks.hasOwnProperty(type)) {
+    block = Blocks[type];
     // Do we have a toMarkdown function?
     if (!_.isUndefined(block.prototype.toMarkdown) && _.isFunction(block.prototype.toMarkdown)) {
       markdown = block.prototype.toMarkdown(markdown);
@@ -91,7 +101,7 @@ SirTrevor.toMarkdown = function(content, type) {
   }
 
   // Strip remaining HTML
-  if (SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip) {
+  if (config.defaults.toMarkdown.aggresiveHTMLStrip) {
     markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
   } else {
     markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");

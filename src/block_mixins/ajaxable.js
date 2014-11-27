@@ -1,4 +1,8 @@
-SirTrevor.BlockMixins.Ajaxable = {
+var utils = require('../utils');
+
+var EventBus = require('../event-bus');
+
+module.exports = {
 
   mixinName: "Ajaxable",
 
@@ -9,15 +13,15 @@ SirTrevor.BlockMixins.Ajaxable = {
   },
 
   addQueuedItem: function(name, deferred) {
-    SirTrevor.log("Adding queued item for " + this.blockID + " called " + name);
-    SirTrevor.EventBus.trigger("onUploadStart", this.blockID);
+    utils.log("Adding queued item for " + this.blockID + " called " + name);
+    EventBus.trigger("onUploadStart", this.blockID);
 
     this._queued.push({ name: name, deferred: deferred });
   },
 
   removeQueuedItem: function(name) {
-    SirTrevor.log("Removing queued item for " + this.blockID + " called " + name);
-    SirTrevor.EventBus.trigger("onUploadStop", this.blockID);
+    utils.log("Removing queued item for " + this.blockID + " called " + name);
+    EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
       return queued.name != name;
@@ -30,7 +34,7 @@ SirTrevor.BlockMixins.Ajaxable = {
 
   resolveAllInQueue: function() {
     this._queued.forEach(function(item){
-      SirTrevor.log("Aborting queued request: " + item.name);
+      utils.log("Aborting queued request: " + item.name);
       item.deferred.abort();
     }, this);
   }

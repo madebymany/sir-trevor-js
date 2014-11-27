@@ -1,129 +1,131 @@
-SirTrevor.SimpleBlock = (function(){
+var _ = require('./lodash');
+var utils = require('./utils');
 
-  var SimpleBlock = function(data, instance_id) {
-    this.createStore(data);
-    this.blockID = _.uniqueId('st-block-');
-    this.instanceID = instance_id;
+var BlockReorder = require('./block.reorder');
 
-    this._ensureElement();
-    this._bindFunctions();
+var SimpleBlock = function(data, instance_id) {
+  this.createStore(data);
+  this.blockID = _.uniqueId('st-block-');
+  this.instanceID = instance_id;
 
-    this.initialize.apply(this, arguments);
-  };
+  this._ensureElement();
+  this._bindFunctions();
 
-  Object.assign(SimpleBlock.prototype, FunctionBind, SirTrevor.Events, Renderable, SirTrevor.BlockStore, {
+  this.initialize.apply(this, arguments);
+};
 
-    focus : function() {},
+Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block.store'), {
 
-    valid : function() { return true; },
+  focus : function() {},
 
-    className: 'st-block',
+  valid : function() { return true; },
 
-    block_template: _.template(
-      "<div class='st-block__inner'><%= editor_html %></div>"
-    ),
+  className: 'st-block',
 
-    attributes: function() {
-      return {
-        'id': this.blockID,
-        'data-type': this.type,
-        'data-instance': this.instanceID
-      };
-    },
+  block_template: _.template(
+    "<div class='st-block__inner'><%= editor_html %></div>"
+  ),
 
-    title: function() {
-      return SirTrevor.Utils.titleize(this.type.replace(/[\W_]/g, ' '));
-    },
+  attributes: function() {
+    return {
+      'id': this.blockID,
+      'data-type': this.type,
+      'data-instance': this.instanceID
+    };
+  },
 
-    blockCSSClass: function() {
-      this.blockCSSClass = SirTrevor.Utils.toSlug(this.type);
-      return this.blockCSSClass;
-    },
+  title: function() {
+    return utils.titleize(this.type.replace(/[\W_]/g, ' '));
+  },
 
-    type: '',
+  blockCSSClass: function() {
+    this.blockCSSClass = utils.toSlug(this.type);
+    return this.blockCSSClass;
+  },
 
-    'class': function() {
-      return SirTrevor.Utils.classify(this.type);
-    },
+  type: '',
 
-    editorHTML: '',
+  'class': function() {
+    return utils.classify(this.type);
+  },
 
-    initialize: function() {},
+  editorHTML: '',
 
-    onBlockRender: function(){},
-    beforeBlockRender: function(){},
+  initialize: function() {},
 
-    _setBlockInner : function() {
-      var editor_html = _.result(this, 'editorHTML');
+  onBlockRender: function(){},
+  beforeBlockRender: function(){},
 
-      this.$el.append(
-        this.block_template({ editor_html: editor_html })
-      );
+  _setBlockInner : function() {
+    var editor_html = _.result(this, 'editorHTML');
 
-      this.$inner = this.$el.find('.st-block__inner');
-      this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
-    },
+    this.$el.append(
+      this.block_template({ editor_html: editor_html })
+    );
 
-    render: function() {
-      this.beforeBlockRender();
+    this.$inner = this.$el.find('.st-block__inner');
+    this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
+  },
 
-      this._setBlockInner();
-      this._blockPrepare();
+  render: function() {
+    this.beforeBlockRender();
 
-      return this;
-    },
+    this._setBlockInner();
+    this._blockPrepare();
 
-    _blockPrepare : function() {
-      this._initUI();
-      this._initMessages();
+    return this;
+  },
 
-      this.checkAndLoadData();
+  _blockPrepare : function() {
+    this._initUI();
+    this._initMessages();
 
-      this.$el.addClass('st-item-ready');
-      this.on("onRender", this.onBlockRender);
-      this.save();
-    },
+    this.checkAndLoadData();
 
-    _withUIComponent: function(component, className, callback) {
-      this.$ui.append(component.render().$el);
-      (className && callback) && this.$ui.on('click', className, callback);
-    },
+    this.$el.addClass('st-item-ready');
+    this.on("onRender", this.onBlockRender);
+    this.save();
+  },
 
-    _initUI : function() {
-      var ui_element = $("<div>", { 'class': 'st-block__ui' });
-      this.$inner.append(ui_element);
-      this.$ui = ui_element;
-      this._initUIComponents();
-    },
+  _withUIComponent: function(component, className, callback) {
+    this.$ui.append(component.render().$el);
+    if (className && callback) this.$ui.on('click', className, callback);
+  },
 
-    _initMessages: function() {
-      var msgs_element = $("<div>", { 'class': 'st-block__messages' });
-      this.$inner.prepend(msgs_element);
-      this.$messages = msgs_element;
-    },
+  _initUI : function() {
+    var ui_element = $("<div>", { 'class': 'st-block__ui' });
+    this.$inner.append(ui_element);
+    this.$ui = ui_element;
+    this._initUIComponents();
+  },
 
-    addMessage: function(msg, additionalClass) {
-      var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
-      this.$messages.append($msg)
-                    .addClass('st-block__messages--is-visible');
-      return $msg;
-    },
+  _initMessages: function() {
+    var msgs_element = $("<div>", { 'class': 'st-block__messages' });
+    this.$inner.prepend(msgs_element);
+    this.$messages = msgs_element;
+  },
 
-    resetMessages: function() {
-      this.$messages.html('')
-                    .removeClass('st-block__messages--is-visible');
-    },
+  addMessage: function(msg, additionalClass) {
+    var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
+    this.$messages.append($msg)
+    .addClass('st-block__messages--is-visible');
+    return $msg;
+  },
 
-    _initUIComponents: function() {
-      this._withUIComponent(new SirTrevor.BlockReorder(this.$el));
-    }
+  resetMessages: function() {
+    this.$messages.html('')
+    .removeClass('st-block__messages--is-visible');
+  },
 
-  });
+  _initUIComponents: function() {
+    this._withUIComponent(new BlockReorder(this.$el));
+  }
 
-  SimpleBlock.fn = SimpleBlock.prototype;
+});
 
-  SimpleBlock.extend = extend; // Allow our Block to be extended.
+SimpleBlock.fn = SimpleBlock.prototype;
 
-  return SimpleBlock;
+// Allow our Block to be extended.
+SimpleBlock.extend = require('./helpers/extend');
 
-})();
+module.exports = SimpleBlock;

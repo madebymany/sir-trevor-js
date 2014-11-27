@@ -6,7 +6,7 @@
   (c) 2010-2012 Jeremy Ashkenas, DocumentCloud Inc.
 */
 
-var extend = function(protoProps, staticProps) {
+module.exports = function(protoProps, staticProps) {
   var parent = this;
   var child;
 
@@ -26,7 +26,7 @@ var extend = function(protoProps, staticProps) {
   // `parent`'s constructor function.
   var Surrogate = function(){ this.constructor = child; };
   Surrogate.prototype = parent.prototype;
-  child.prototype = new Surrogate;
+  child.prototype = new Surrogate; // jshint ignore:line
 
   // Add prototype properties (instance properties) to the subclass,
   // if supplied.

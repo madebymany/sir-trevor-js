@@ -169,7 +169,7 @@ describe("toMarkdown", function(){
   });
 
   it("strips all tags if aggresiveHTMLStrip is true", function() {
-    SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip = true;
+    SirTrevor.config.defaults.toMarkdown.aggresiveHTMLStrip = true;
 
     var html = "x < 4. y > 5.",
         markdown = SirTrevor.toMarkdown(html, "Text");
@@ -178,7 +178,7 @@ describe("toMarkdown", function(){
   });
 
   it("leaves < & > alone if aggresiveHTMLStrip is false", function(){
-    SirTrevor.DEFAULTS.toMarkdown.aggresiveHTMLStrip = false;
+    SirTrevor.config.defaults.toMarkdown.aggresiveHTMLStrip = false;
 
     var html = "x < 4. y > 5.",
         markdown = SirTrevor.toMarkdown(html, "Text");

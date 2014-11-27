@@ -1,3 +1,6 @@
+var _ = require('./lodash');
+var utils = require('./utils');
+
 var bestNameFromField = function(field) {
   var msg = field.attr("data-st-name") || field.attr("name");
 
@@ -5,10 +8,10 @@ var bestNameFromField = function(field) {
     msg = 'Field';
   }
 
-  return SirTrevor.Utils.capitalize(msg);
+  return utils.capitalize(msg);
 };
 
-SirTrevor.BlockValidations = {
+module.exports = {
 
   errors: [],
 
@@ -23,7 +26,9 @@ SirTrevor.BlockValidations = {
     this.resetErrors();
 
     var required_fields = this.$('.st-required');
-    required_fields.each(this.validateField, this);
+    required_fields.each(function (i, f) {
+      this.validateField(f);
+    }.bind(this));
     this.validations.forEach(this.runValidator, this);
 
     this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
