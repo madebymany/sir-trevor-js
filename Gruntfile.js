@@ -75,23 +75,40 @@ module.exports = function(grunt) {
       all: ['index.js', 'src/**/*.js'],
 
       options: {
+        // Errors
+        bitwise: true,
+        camelcase: false,
         curly: true,
         eqeqeq: true,
-        immed: false,
+        forin: true,
+        freeze: true,
+        immed: true,
+        indent: 2,
         latedef: true,
         newcap: true,
         noarg: true,
-        sub: true,
+        nonbsp: true,
+        nonew: true,
+        strict: false,
+        maxparams: 4,
+        maxdepth: 3,
+        maxcomplexity: 13, // this is quite complex, would be good to reduce
         undef: true,
-        boss: true,
+        unused: 'vars',
+
+        // Relax
         eqnull: true,
-        browser: true
+
+        // Envs
+        browser: true,
+        jquery: true,
+        node: true,
+
+        globals: {
+          i18n: true,
+          webkitURL: true
+        },
       },
-      globals: {
-        jQuery: true,
-        _: true,
-        console: true
-      }
     },
 
     sass: {
@@ -105,7 +122,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', ['test', 'sass', 'browserify', 'uglify']);
-  grunt.registerTask('test', ['karma']);
+  grunt.registerTask('test', ['jshint', 'karma']);
   grunt.registerTask('dev', ['sass', 'browserify:debug']);
   grunt.registerTask('jasmine-browser', ['server', 'watch']);
 

@@ -2507,8 +2507,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
     toData: function() {
       utils.log("toData for " + this.blockID);
 
-      var bl = this.$el,
-      dataObj = {};
+      var dataObj = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
@@ -2744,7 +2743,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   },
 
   onBlockCountChange: function(new_count) {
-    if (new_count != this.total_blocks) {
+    if (new_count !== this.total_blocks) {
       this.total_blocks = new_count;
       this.renderPositionList();
     }
@@ -2754,7 +2753,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
     var val = this.$select.val();
     if (val !== 0) {
       EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val == 1 ? 'before' : 'after'));
+                       this.$block, val, (val === 1 ? 'before' : 'after'));
                        this.toggle();
     }
   },
@@ -2838,8 +2837,8 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-            dropped_on.attr('data-instance') == block.attr('data-instance')
+          dropped_on.attr('id') !== item_id &&
+            dropped_on.attr('data-instance') === block.attr('data-instance')
        ) {
          dropped_on.after(block);
        }
@@ -3047,7 +3046,7 @@ module.exports = {
     EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
-      return queued.name != name;
+      return queued.name !== name;
     });
   },
 
@@ -3135,8 +3134,7 @@ module.exports = {
     e = e.originalEvent;
 
     var el = $(e.target),
-        types = e.dataTransfer.types,
-        type, data = [];
+        types = e.dataTransfer.types;
 
     el.removeClass('st-dropzone--dragover');
 
@@ -3228,7 +3226,7 @@ var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
-var FileUploader = require('../extensions/sir-trevor.uploader');
+var fileUploader = require('../extensions/sir-trevor.uploader');
 
 module.exports = {
 
@@ -3245,7 +3243,7 @@ module.exports = {
   },
 
   uploader: function(file, success, failure){
-    return FileUploader(this, file, success, failure);
+    return fileUploader(this, file, success, failure);
   }
 
 };
@@ -3564,9 +3562,8 @@ module.exports = Block.extend({
   },
 
   onContentPasted: function(event, target) {
-    var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
-    list = this.$('ul').html(replace);
-
+    this.$('ul').html(
+      this.pastedMarkdownToHTML(target[0].innerHTML));
     this.getTextBlock().caretToEnd();
   },
 
@@ -3708,7 +3705,7 @@ var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var EditorStore = require('./extensions/sir-trevor.editor-store');
+var editorStore = require('./extensions/sir-trevor.editor-store');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -3823,7 +3820,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Remove instance
     config.instances = config.instances.filter(function(instance) {
-      return instance.ID != this.ID;
+      return instance.ID !== this.ID;
     }, this);
 
     // Clear the store
@@ -3866,7 +3863,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   store: function(method, options){
-    return EditorStore(this, method, options || {});
+    return editorStore(this, method, options || {});
   },
 
   /* Create an instance of a block from an available type.  We have to check
@@ -3904,7 +3901,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);
 
-    if(!data) block.focus();
+    if(!data) {
+      block.focus();
+    }
 
     EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
     utils.log("Block created of type " + type);
@@ -3950,7 +3949,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     var blockPosition = this.getBlockPosition($block);
     var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
-    var blockByPosition = this.getBlockPosition($blockBy);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -4019,7 +4017,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.blockCounts[type] = this.blockCounts[type] - 1;
     this.blocks = this.blocks.filter(function(item) {
-      return item.blockID != block.blockID;
+      return item.blockID !== block.blockID;
     });
     this.stopListening(block);
 
@@ -4081,7 +4079,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.$wrapper.find('.st-block').each(function(index, block) {
       var _block = this.blocks.find(function(b) {
-        return (b.blockID == $(block).attr('id'));
+        return (b.blockID === $(block).attr('id'));
       });
 
       if (_.isUndefined(_block)) { return false; }
@@ -4162,12 +4160,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   findBlockById: function(block_id) {
-    return this.blocks.find(function(b) { return b.blockID == block_id; });
+    return this.blocks.find(function(b) { return b.blockID === block_id; });
   },
 
   getBlocksByType: function(block_type) {
     return this.blocks.filter(function(b) {
-      return utils.classify(b.type) == block_type;
+      return utils.classify(b.type) === block_type;
     });
   },
 
@@ -4535,8 +4533,8 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-            this.instance_id == block.attr('data-instance')
+          dropped_on.attr('id') !== item_id &&
+            this.instance_id === block.attr('data-instance')
        ) {
          dropped_on.after(block);
        }
@@ -4583,7 +4581,7 @@ var formBound = false; // Flag to tell us once we've bound our submit event
 var FormEvents = {
   bindFormSubmit: function(form) {
     if (!formBound) {
-      new Submittable(form);
+      this.submittable = new Submittable(form);
       form.on('submit.sirtrevor', this.onFormSubmit);
       formBound = true;
     }
@@ -4703,7 +4701,9 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
     var btn = $(ev.target),
     format = Formatters[btn.attr('data-type')];
 
-    if (_.isUndefined(format)) return false;
+    if (_.isUndefined(format)) {
+      return false;
+    }
 
     // Do we have a click function defined on this formatter?
     if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
@@ -4746,10 +4746,14 @@ Object.assign(Formatter.prototype, {
   initialize: function(){},
 
   _configure: function(options) {
-    if (this.options) options = Object.assign({}, this.options, options);
+    if (this.options) {
+      options = Object.assign({}, this.options, options);
+    }
     for (var i = 0, l = formatOptions.length; i < l; i++) {
       var attr = formatOptions[i];
-      if (options[attr]) this[attr] = options[attr];
+      if (options[attr]) {
+        this[attr] = options[attr];
+      }
     }
     this.options = options;
   },
@@ -4764,16 +4768,16 @@ Object.assign(Formatter.prototype, {
 
     block
     .on('keyup','.st-text-block', function(ev) {
-      if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
         ctrlDown = false;
       }
     })
     .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
-      if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
         ctrlDown = true;
       }
 
-      if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
+      if(ev.which === ev.data.formatter.keyCode && ctrlDown === true) {
         document.execCommand(ev.data.formatter.cmd, false, true);
         ev.preventDefault();
         ctrlDown = false;
@@ -4815,7 +4819,7 @@ var Link = Formatter.extend({
 
   onClick: function() {
 
-    var link = prompt(i18n.t("general:link")),
+    var link = window.prompt(i18n.t("general:link")),
     link_regex = /((ftp|http|https):\/\/.)|mailto(?=\:[-\.\w]+@)/;
 
     if(link && link.length > 0) {
@@ -4838,7 +4842,7 @@ var Link = Formatter.extend({
       .parentNode;
     }
 
-    return (node && node.nodeName == "A");
+    return (node && node.nodeName === "A");
   }
 });
 
@@ -4954,7 +4958,9 @@ module.exports = function(protoProps, staticProps) {
 
   // Add prototype properties (instance properties) to the subclass,
   // if supplied.
-  if (protoProps) Object.assign(child.prototype, protoProps);
+  if (protoProps) {
+    Object.assign(child.prototype, protoProps);
+  }
 
   // Set a convenience property in case the parent's prototype is needed
   // later.
@@ -5007,7 +5013,7 @@ var SirTrevor = {
   toHTML: require('./to-html'),
 
   setDefaults: function(options) {
-    config.defaults = Object.assign(config.defaults, options || {});
+    Object.assign(SirTrevor.config.defaults, options || {});
   },
 
   getInstance: function(identifier) {
@@ -5302,7 +5308,9 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   _withUIComponent: function(component, className, callback) {
     this.$ui.append(component.render().$el);
-    if (className && callback) this.$ui.on('click', className, callback);
+    if (className && callback) {
+      this.$ui.on('click', className, callback);
+    }
   },
 
   _initUI : function() {
@@ -5565,7 +5573,9 @@ var utils = {
   },
 
   titleize: function(str){
-    if (str === null) return '';
+    if (str === null) {
+      return '';
+    }
     str  = String(str).toLowerCase();
     return str.replace(/(?:^|\s|-)\S/g, function(c){ return c.toUpperCase(); });
   },
@@ -5599,6 +5609,8 @@ var utils = {
 module.exports = utils;
 
 },{"./config":74,"./lodash":91}],97:[function(require,module,exports){
+// jshint freeze: false
+
 if (![].includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
     if (this === undefined || this === null) {
@@ -5615,7 +5627,9 @@ if (![].includes) {
       k = n;
     } else {
       k = len + n;
-      if (k < 0) k = 0;
+      if (k < 0) {
+        k = 0;
+      }
     }
     while (k < len) {
       var currentElement = O[k];

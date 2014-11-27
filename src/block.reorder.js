@@ -51,8 +51,8 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-            dropped_on.attr('data-instance') == block.attr('data-instance')
+          dropped_on.attr('id') !== item_id &&
+            dropped_on.attr('data-instance') === block.attr('data-instance')
        ) {
          dropped_on.after(block);
        }

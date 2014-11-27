@@ -30,7 +30,9 @@ module.exports = function(protoProps, staticProps) {
 
   // Add prototype properties (instance properties) to the subclass,
   // if supplied.
-  if (protoProps) Object.assign(child.prototype, protoProps);
+  if (protoProps) {
+    Object.assign(child.prototype, protoProps);
+  }
 
   // Set a convenience property in case the parent's prototype is needed
   // later.

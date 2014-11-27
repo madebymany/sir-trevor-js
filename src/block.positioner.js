@@ -36,7 +36,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   },
 
   onBlockCountChange: function(new_count) {
-    if (new_count != this.total_blocks) {
+    if (new_count !== this.total_blocks) {
       this.total_blocks = new_count;
       this.renderPositionList();
     }
@@ -46,7 +46,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
     var val = this.$select.val();
     if (val !== 0) {
       EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val == 1 ? 'before' : 'after'));
+                       this.$block, val, (val === 1 ? 'before' : 'after'));
                        this.toggle();
     }
   },

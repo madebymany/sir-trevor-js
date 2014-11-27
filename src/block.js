@@ -167,8 +167,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
     toData: function() {
       utils.log("toData for " + this.blockID);
 
-      var bl = this.$el,
-      dataObj = {};
+      var dataObj = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {

@@ -15,7 +15,9 @@ var utils = {
   },
 
   titleize: function(str){
-    if (str === null) return '';
+    if (str === null) {
+      return '';
+    }
     str  = String(str).toLowerCase();
     return str.replace(/(?:^|\s|-)\S/g, function(c){ return c.toUpperCase(); });
   },

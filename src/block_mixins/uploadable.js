@@ -2,7 +2,7 @@ var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
-var FileUploader = require('../extensions/sir-trevor.uploader');
+var fileUploader = require('../extensions/sir-trevor.uploader');
 
 module.exports = {
 
@@ -19,7 +19,7 @@ module.exports = {
   },
 
   uploader: function(file, success, failure){
-    return FileUploader(this, file, success, failure);
+    return fileUploader(this, file, success, failure);
   }
 
 };

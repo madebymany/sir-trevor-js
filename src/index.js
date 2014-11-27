@@ -41,7 +41,7 @@ var SirTrevor = {
   toHTML: require('./to-html'),
 
   setDefaults: function(options) {
-    config.defaults = Object.assign(config.defaults, options || {});
+    Object.assign(SirTrevor.config.defaults, options || {});
   },
 
   getInstance: function(identifier) {
