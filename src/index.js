@@ -14,16 +14,16 @@ var SirTrevor = {
 
   EventBus: require('./event-bus'),
 
-  EditorStore: require('./extensions/sir-trevor.editor-store'),
-  Submittable: require('./extensions/sir-trevor.submittable'),
-  FileUploader: require('./extensions/sir-trevor.uploader'),
+  EditorStore: require('./extensions/editor-store'),
+  Submittable: require('./extensions/submittable'),
+  FileUploader: require('./extensions/file-uploader'),
 
   BlockMixins: require('./block_mixins'),
-  BlockPositioner: require('./block.positioner'),
-  BlockReorder: require('./block.reorder'),
-  BlockDeletion: require('./block.deletion'),
-  BlockValidations: require('./block.validations'),
-  BlockStore: require('./block.store'),
+  BlockPositioner: require('./block-positioner'),
+  BlockReorder: require('./block-reorder'),
+  BlockDeletion: require('./block-deletion'),
+  BlockValidations: require('./block-validations'),
+  BlockStore: require('./block-store'),
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),

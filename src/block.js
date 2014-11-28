@@ -9,9 +9,9 @@ var stToMarkdown = require('./to-markdown');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
-var BlockReorder = require('./block.reorder');
-var BlockDeletion = require('./block.deletion');
-var BlockPositioner = require('./block.positioner');
+var BlockReorder = require('./block-reorder');
+var BlockDeletion = require('./block-deletion');
+var BlockPositioner = require('./block-positioner');
 var Formatters = require('./formatters');
 var EventBus = require('./event-bus');
 
@@ -62,7 +62,7 @@ config.defaults.Block = {
   upload_options: upload_options
 };
 
-Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
+Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
     "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],

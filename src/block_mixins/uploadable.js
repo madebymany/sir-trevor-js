@@ -4,7 +4,7 @@ var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
-var fileUploader = require('../extensions/sir-trevor.uploader');
+var fileUploader = require('../extensions/file-uploader');
 
 module.exports = {
 

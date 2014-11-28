@@ -2255,7 +2255,7 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
 
 module.exports = BlockControl;
 
-},{"./blocks":69,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],52:[function(require,module,exports){
+},{"./blocks":68,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],52:[function(require,module,exports){
 "use strict";
 
 /*
@@ -2321,7 +2321,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
 
 module.exports = BlockControls;
 
-},{"./block-control":51,"./blocks":69,"./event-bus":76,"./events":77,"./function-bind":86,"./renderable":92}],53:[function(require,module,exports){
+},{"./block-control":51,"./blocks":68,"./event-bus":76,"./events":77,"./function-bind":86,"./renderable":92}],53:[function(require,module,exports){
 "use strict";
 
 var BlockDeletion = function() {
@@ -2346,6 +2346,329 @@ module.exports = BlockDeletion;
 },{"./function-bind":86,"./renderable":92}],54:[function(require,module,exports){
 "use strict";
 
+
+var EventBus = require('./event-bus');
+
+var template = [
+  "<div class='st-block-positioner__inner'>",
+  "<span class='st-block-positioner__selected-value'></span>",
+  "<select class='st-block-positioner__select'></select>",
+  "</div>"
+].join("\n");
+
+var BlockPositioner = function(block_element, instance_id) {
+  this.$block = block_element;
+  this.instanceID = instance_id;
+  this.total_blocks = 0;
+
+  this._ensureElement();
+  this._bindFunctions();
+
+  this.initialize();
+};
+
+Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./renderable'), {
+
+  bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
+
+  className: 'st-block-positioner',
+  visibleClass: 'st-block-positioner--is-visible',
+
+  initialize: function(){
+    this.$el.append(template);
+    this.$select = this.$('.st-block-positioner__select');
+
+    this.$select.on('change', this.onSelectChange);
+
+    EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
+  },
+
+  onBlockCountChange: function(new_count) {
+    if (new_count !== this.total_blocks) {
+      this.total_blocks = new_count;
+      this.renderPositionList();
+    }
+  },
+
+  onSelectChange: function() {
+    var val = this.$select.val();
+    if (val !== 0) {
+      EventBus.trigger(this.instanceID + ":blocks:change_position",
+                       this.$block, val, (val === 1 ? 'before' : 'after'));
+                       this.toggle();
+    }
+  },
+
+  renderPositionList: function() {
+    var inner = "<option value='0'>" + i18n.t("general:position") + "</option>";
+    for(var i = 1; i <= this.total_blocks; i++) {
+      inner += "<option value="+i+">"+i+"</option>";
+    }
+    this.$select.html(inner);
+  },
+
+  toggle: function() {
+    this.$select.val(0);
+    this.$el.toggleClass(this.visibleClass);
+  },
+
+  show: function(){
+    this.$el.addClass(this.visibleClass);
+  },
+
+  hide: function(){
+    this.$el.removeClass(this.visibleClass);
+  }
+
+});
+
+module.exports = BlockPositioner;
+
+},{"./event-bus":76,"./function-bind":86,"./renderable":92}],55:[function(require,module,exports){
+"use strict";
+
+var _ = require('./lodash');
+
+var EventBus = require('./event-bus');
+
+var BlockReorder = function(block_element) {
+  this.$block = block_element;
+  this.blockID = this.$block.attr('id');
+
+  this._ensureElement();
+  this._bindFunctions();
+
+  this.initialize();
+};
+
+Object.assign(BlockReorder.prototype, require('./function-bind'), require('./renderable'), {
+
+  bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+
+  className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
+  tagName: 'a',
+
+  attributes: function() {
+    return {
+      'html': 'reorder',
+      'draggable': 'true',
+      'data-icon': 'move'
+    };
+  },
+
+  initialize: function() {
+    this.$el.bind('mousedown touchstart', this.onMouseDown)
+    .bind('click', this.onClick)
+    .bind('dragstart', this.onDragStart)
+    .bind('dragend touchend', this.onDragEnd)
+    .bind('drag touchmove', this.onDrag);
+
+    this.$block.dropArea()
+    .bind('drop', this.onDrop);
+  },
+
+  onMouseDown: function() {
+    EventBus.trigger("block:reorder:down", this.blockID);
+  },
+
+  onDrop: function(ev) {
+    ev.preventDefault();
+
+    var dropped_on = this.$block,
+    item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
+    block = $('#' + item_id);
+
+    if (!_.isUndefined(item_id) &&
+        !_.isEmpty(block) &&
+          dropped_on.attr('id') !== item_id &&
+            dropped_on.attr('data-instance') === block.attr('data-instance')
+       ) {
+         dropped_on.after(block);
+       }
+       EventBus.trigger("block:reorder:dropped", item_id);
+  },
+
+  onDragStart: function(ev) {
+    var btn = $(ev.currentTarget).parent();
+
+    ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
+    ev.originalEvent.dataTransfer.setData('Text', this.blockID);
+
+    EventBus.trigger("block:reorder:dragstart", this.blockID);
+    this.$block.addClass('st-block--dragging');
+  },
+
+  onDragEnd: function(ev) {
+    EventBus.trigger("block:reorder:dragend", this.blockID);
+    this.$block.removeClass('st-block--dragging');
+  },
+
+  onDrag: function(ev){},
+
+  onClick: function() {
+  },
+
+  render: function() {
+    return this;
+  }
+
+});
+
+module.exports = BlockReorder;
+
+},{"./event-bus":76,"./function-bind":86,"./lodash":91,"./renderable":92}],56:[function(require,module,exports){
+"use strict";
+
+var _ = require('./lodash');
+var utils = require('./utils');
+
+var EventBus = require('./event-bus');
+
+module.exports = {
+
+  blockStorage: {},
+
+  createStore: function(blockData) {
+    this.blockStorage = {
+      type: utils.underscored(this.type),
+      data: blockData || {}
+    };
+  },
+
+  save: function() { this.toData(); },
+
+  saveAndReturnData: function() {
+    this.save();
+    return this.blockStorage;
+  },
+
+  saveAndGetData: function() {
+    var store = this.saveAndReturnData();
+    return store.data || store;
+  },
+
+  getData: function() {
+    return this.blockStorage.data;
+  },
+
+  setData: function(blockData) {
+    utils.log("Setting data for block " + this.blockID);
+    Object.assign(this.blockStorage.data, blockData || {});
+  },
+
+  setAndRetrieveData: function(blockData) {
+    this.setData(blockData);
+    return this.getData();
+  },
+
+  setAndLoadData: function(blockData) {
+    this.setData(blockData);
+    this.beforeLoadingData();
+  },
+
+  toData: function() {},
+  loadData: function() {},
+
+  beforeLoadingData: function() {
+    utils.log("loadData for " + this.blockID);
+    EventBus.trigger("block:loadData", this.blockID);
+    this.loadData(this.getData());
+  },
+
+  _loadData: function() {
+    utils.log("_loadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
+    this.beforeLoadingData();
+  },
+
+  checkAndLoadData: function() {
+    if (!_.isEmpty(this.getData())) {
+      this.beforeLoadingData();
+    }
+  }
+
+};
+
+},{"./event-bus":76,"./lodash":91,"./utils":96}],57:[function(require,module,exports){
+"use strict";
+
+var _ = require('./lodash');
+var utils = require('./utils');
+
+var bestNameFromField = function(field) {
+  var msg = field.attr("data-st-name") || field.attr("name");
+
+  if (!msg) {
+    msg = 'Field';
+  }
+
+  return utils.capitalize(msg);
+};
+
+module.exports = {
+
+  errors: [],
+
+  valid: function(){
+    this.performValidations();
+    return this.errors.length === 0;
+  },
+
+  // This method actually does the leg work
+  // of running our validators and custom validators
+  performValidations: function() {
+    this.resetErrors();
+
+    var required_fields = this.$('.st-required');
+    required_fields.each(function (i, f) {
+      this.validateField(f);
+    }.bind(this));
+    this.validations.forEach(this.runValidator, this);
+
+    this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
+  },
+
+  // Everything in here should be a function that returns true or false
+  validations: [],
+
+  validateField: function(field) {
+    field = $(field);
+
+    var content = field.attr('contenteditable') ? field.text() : field.val();
+
+    if (content.length === 0) {
+      this.setError(field, i18n.t("errors:block_empty",
+                                 { name: bestNameFromField(field) }));
+    }
+  },
+
+  runValidator: function(validator) {
+    if (!_.isUndefined(this[validator])) {
+      this[validator].call(this);
+    }
+  },
+
+  setError: function(field, reason) {
+    var $msg = this.addMessage(reason, "st-msg--error");
+    field.addClass('st-error');
+
+    this.errors.push({ field: field, reason: reason, msg: $msg });
+  },
+
+  resetErrors: function() {
+    this.errors.forEach(function(error){
+      error.field.removeClass('st-error');
+      error.msg.remove();
+    });
+
+    this.$messages.removeClass("st-block__messages--is-visible");
+    this.errors = [];
+  }
+
+};
+
+},{"./lodash":91,"./utils":96}],58:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var config = require('./config');
@@ -2355,9 +2678,9 @@ var stToMarkdown = require('./to-markdown');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
-var BlockReorder = require('./block.reorder');
-var BlockDeletion = require('./block.deletion');
-var BlockPositioner = require('./block.positioner');
+var BlockReorder = require('./block-reorder');
+var BlockDeletion = require('./block-deletion');
+var BlockPositioner = require('./block-positioner');
 var Formatters = require('./formatters');
 var EventBus = require('./event-bus');
 
@@ -2408,7 +2731,7 @@ config.defaults.Block = {
   upload_options: upload_options
 };
 
-Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
+Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
     "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
@@ -2715,330 +3038,7 @@ Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 
 module.exports = Block;
 
-},{"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.validations":58,"./block_mixins":63,"./config":74,"./event-bus":76,"./formatters":85,"./helpers/extend":88,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"spin.js":50}],55:[function(require,module,exports){
-"use strict";
-
-
-var EventBus = require('./event-bus');
-
-var template = [
-  "<div class='st-block-positioner__inner'>",
-  "<span class='st-block-positioner__selected-value'></span>",
-  "<select class='st-block-positioner__select'></select>",
-  "</div>"
-].join("\n");
-
-var BlockPositioner = function(block_element, instance_id) {
-  this.$block = block_element;
-  this.instanceID = instance_id;
-  this.total_blocks = 0;
-
-  this._ensureElement();
-  this._bindFunctions();
-
-  this.initialize();
-};
-
-Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./renderable'), {
-
-  bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
-
-  className: 'st-block-positioner',
-  visibleClass: 'st-block-positioner--is-visible',
-
-  initialize: function(){
-    this.$el.append(template);
-    this.$select = this.$('.st-block-positioner__select');
-
-    this.$select.on('change', this.onSelectChange);
-
-    EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
-  },
-
-  onBlockCountChange: function(new_count) {
-    if (new_count !== this.total_blocks) {
-      this.total_blocks = new_count;
-      this.renderPositionList();
-    }
-  },
-
-  onSelectChange: function() {
-    var val = this.$select.val();
-    if (val !== 0) {
-      EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val === 1 ? 'before' : 'after'));
-                       this.toggle();
-    }
-  },
-
-  renderPositionList: function() {
-    var inner = "<option value='0'>" + i18n.t("general:position") + "</option>";
-    for(var i = 1; i <= this.total_blocks; i++) {
-      inner += "<option value="+i+">"+i+"</option>";
-    }
-    this.$select.html(inner);
-  },
-
-  toggle: function() {
-    this.$select.val(0);
-    this.$el.toggleClass(this.visibleClass);
-  },
-
-  show: function(){
-    this.$el.addClass(this.visibleClass);
-  },
-
-  hide: function(){
-    this.$el.removeClass(this.visibleClass);
-  }
-
-});
-
-module.exports = BlockPositioner;
-
-},{"./event-bus":76,"./function-bind":86,"./renderable":92}],56:[function(require,module,exports){
-"use strict";
-
-var _ = require('./lodash');
-
-var EventBus = require('./event-bus');
-
-var BlockReorder = function(block_element) {
-  this.$block = block_element;
-  this.blockID = this.$block.attr('id');
-
-  this._ensureElement();
-  this._bindFunctions();
-
-  this.initialize();
-};
-
-Object.assign(BlockReorder.prototype, require('./function-bind'), require('./renderable'), {
-
-  bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
-
-  className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
-  tagName: 'a',
-
-  attributes: function() {
-    return {
-      'html': 'reorder',
-      'draggable': 'true',
-      'data-icon': 'move'
-    };
-  },
-
-  initialize: function() {
-    this.$el.bind('mousedown touchstart', this.onMouseDown)
-    .bind('click', this.onClick)
-    .bind('dragstart', this.onDragStart)
-    .bind('dragend touchend', this.onDragEnd)
-    .bind('drag touchmove', this.onDrag);
-
-    this.$block.dropArea()
-    .bind('drop', this.onDrop);
-  },
-
-  onMouseDown: function() {
-    EventBus.trigger("block:reorder:down", this.blockID);
-  },
-
-  onDrop: function(ev) {
-    ev.preventDefault();
-
-    var dropped_on = this.$block,
-    item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
-    block = $('#' + item_id);
-
-    if (!_.isUndefined(item_id) &&
-        !_.isEmpty(block) &&
-          dropped_on.attr('id') !== item_id &&
-            dropped_on.attr('data-instance') === block.attr('data-instance')
-       ) {
-         dropped_on.after(block);
-       }
-       EventBus.trigger("block:reorder:dropped", item_id);
-  },
-
-  onDragStart: function(ev) {
-    var btn = $(ev.currentTarget).parent();
-
-    ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-    ev.originalEvent.dataTransfer.setData('Text', this.blockID);
-
-    EventBus.trigger("block:reorder:dragstart", this.blockID);
-    this.$block.addClass('st-block--dragging');
-  },
-
-  onDragEnd: function(ev) {
-    EventBus.trigger("block:reorder:dragend", this.blockID);
-    this.$block.removeClass('st-block--dragging');
-  },
-
-  onDrag: function(ev){},
-
-  onClick: function() {
-  },
-
-  render: function() {
-    return this;
-  }
-
-});
-
-module.exports = BlockReorder;
-
-},{"./event-bus":76,"./function-bind":86,"./lodash":91,"./renderable":92}],57:[function(require,module,exports){
-"use strict";
-
-var _ = require('./lodash');
-var utils = require('./utils');
-
-var EventBus = require('./event-bus');
-
-module.exports = {
-
-  blockStorage: {},
-
-  createStore: function(blockData) {
-    this.blockStorage = {
-      type: utils.underscored(this.type),
-      data: blockData || {}
-    };
-  },
-
-  save: function() { this.toData(); },
-
-  saveAndReturnData: function() {
-    this.save();
-    return this.blockStorage;
-  },
-
-  saveAndGetData: function() {
-    var store = this.saveAndReturnData();
-    return store.data || store;
-  },
-
-  getData: function() {
-    return this.blockStorage.data;
-  },
-
-  setData: function(blockData) {
-    utils.log("Setting data for block " + this.blockID);
-    Object.assign(this.blockStorage.data, blockData || {});
-  },
-
-  setAndRetrieveData: function(blockData) {
-    this.setData(blockData);
-    return this.getData();
-  },
-
-  setAndLoadData: function(blockData) {
-    this.setData(blockData);
-    this.beforeLoadingData();
-  },
-
-  toData: function() {},
-  loadData: function() {},
-
-  beforeLoadingData: function() {
-    utils.log("loadData for " + this.blockID);
-    EventBus.trigger("block:loadData", this.blockID);
-    this.loadData(this.getData());
-  },
-
-  _loadData: function() {
-    utils.log("_loadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
-    this.beforeLoadingData();
-  },
-
-  checkAndLoadData: function() {
-    if (!_.isEmpty(this.getData())) {
-      this.beforeLoadingData();
-    }
-  }
-
-};
-
-},{"./event-bus":76,"./lodash":91,"./utils":96}],58:[function(require,module,exports){
-"use strict";
-
-var _ = require('./lodash');
-var utils = require('./utils');
-
-var bestNameFromField = function(field) {
-  var msg = field.attr("data-st-name") || field.attr("name");
-
-  if (!msg) {
-    msg = 'Field';
-  }
-
-  return utils.capitalize(msg);
-};
-
-module.exports = {
-
-  errors: [],
-
-  valid: function(){
-    this.performValidations();
-    return this.errors.length === 0;
-  },
-
-  // This method actually does the leg work
-  // of running our validators and custom validators
-  performValidations: function() {
-    this.resetErrors();
-
-    var required_fields = this.$('.st-required');
-    required_fields.each(function (i, f) {
-      this.validateField(f);
-    }.bind(this));
-    this.validations.forEach(this.runValidator, this);
-
-    this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
-  },
-
-  // Everything in here should be a function that returns true or false
-  validations: [],
-
-  validateField: function(field) {
-    field = $(field);
-
-    var content = field.attr('contenteditable') ? field.text() : field.val();
-
-    if (content.length === 0) {
-      this.setError(field, i18n.t("errors:block_empty",
-                                 { name: bestNameFromField(field) }));
-    }
-  },
-
-  runValidator: function(validator) {
-    if (!_.isUndefined(this[validator])) {
-      this[validator].call(this);
-    }
-  },
-
-  setError: function(field, reason) {
-    var $msg = this.addMessage(reason, "st-msg--error");
-    field.addClass('st-error');
-
-    this.errors.push({ field: field, reason: reason, msg: $msg });
-  },
-
-  resetErrors: function() {
-    this.errors.forEach(function(error){
-      error.field.removeClass('st-error');
-      error.msg.remove();
-    });
-
-    this.$messages.removeClass("st-block__messages--is-visible");
-    this.errors = [];
-  }
-
-};
-
-},{"./lodash":91,"./utils":96}],59:[function(require,module,exports){
+},{"./block-deletion":53,"./block-positioner":54,"./block-reorder":55,"./block-validations":57,"./block_mixins":63,"./config":74,"./event-bus":76,"./formatters":85,"./helpers/extend":88,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"spin.js":50}],59:[function(require,module,exports){
 "use strict";
 
 var utils = require('../utils');
@@ -3259,7 +3259,7 @@ var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
-var fileUploader = require('../extensions/sir-trevor.uploader');
+var fileUploader = require('../extensions/file-uploader');
 
 module.exports = {
 
@@ -3281,49 +3281,7 @@ module.exports = {
 
 };
 
-},{"../config":74,"../extensions/sir-trevor.uploader":80,"../lodash":91,"../utils":96,"./ajaxable":59}],66:[function(require,module,exports){
-"use strict";
-
-/*
-  Block Quote
-*/
-
-var _ = require('../lodash');
-
-var Block = require('../block');
-var stToHTML = require('../to-html');
-
-var template = _.template([
-  '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-  '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
-  '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
-  ' class="st-input-string st-required js-cite-input" type="text" />'
-].join("\n"));
-
-module.exports = Block.extend({
-
-  type: "quote",
-
-  title: function(){ return i18n.t('blocks:quote:title'); },
-
-  icon_name: 'quote',
-
-  editorHTML: function() {
-    return template(this);
-  },
-
-  loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
-    this.$('.js-cite-input').val(data.cite);
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/^(.+)$/mg,"> $1");
-  }
-
-});
-
-},{"../block":54,"../lodash":91,"../to-html":94}],67:[function(require,module,exports){
+},{"../config":74,"../extensions/file-uploader":79,"../lodash":91,"../utils":96,"./ajaxable":59}],66:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3348,7 +3306,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54,"../to-html":94}],68:[function(require,module,exports){
+},{"../block":58,"../to-html":94}],67:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3407,20 +3365,128 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54}],69:[function(require,module,exports){
+},{"../block":58}],68:[function(require,module,exports){
 "use strict";
 
 module.exports = {
   Text: require('./text'),
-  Quote: require('./block-quote'),
+  Quote: require('./quote'),
   Image: require('./image'),
   Heading: require('./heading'),
-  List: require('./unordered-list'),
+  List: require('./list'),
   Tweet: require('./tweet'),
   Video: require('./video'),
 };
 
-},{"./block-quote":66,"./heading":67,"./image":68,"./text":70,"./tweet":71,"./unordered-list":72,"./video":73}],70:[function(require,module,exports){
+},{"./heading":66,"./image":67,"./list":69,"./quote":70,"./text":71,"./tweet":72,"./video":73}],69:[function(require,module,exports){
+"use strict";
+
+/*
+   Unordered List
+   */
+
+var _ = require('../lodash');
+
+var Block = require('../block');
+var stToHTML = require('../to-html');
+
+var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
+
+module.exports = Block.extend({
+
+  type: 'list',
+
+  title: function() { return i18n.t('blocks:list:title'); },
+
+  icon_name: 'list',
+
+  editorHTML: function() {
+    return _.template(template, this);
+  },
+
+  loadData: function(data){
+    this.getTextBlock().html("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+  },
+
+  onBlockRender: function() {
+    this.checkForList = this.checkForList.bind(this);
+    this.getTextBlock().on('click keyup', this.checkForList);
+  },
+
+  checkForList: function() {
+    if (this.$('ul').length === 0) {
+      document.execCommand("insertUnorderedList", false, false);
+    }
+  },
+
+  toMarkdown: function(markdown) {
+    return markdown.replace(/<\/li>/mg,"\n")
+    .replace(/<\/?[^>]+(>|$)/g, "")
+    .replace(/^(.+)$/mg," - $1");
+  },
+
+  toHTML: function(html) {
+    html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+    .replace(/\n/mg, "");
+
+    return html;
+  },
+
+  onContentPasted: function(event, target) {
+    this.$('ul').html(
+      this.pastedMarkdownToHTML(target[0].innerHTML));
+    this.getTextBlock().caretToEnd();
+  },
+
+  isEmpty: function() {
+    return _.isEmpty(this.saveAndGetData().text);
+  }
+
+});
+
+},{"../block":58,"../lodash":91,"../to-html":94}],70:[function(require,module,exports){
+"use strict";
+
+/*
+  Block Quote
+*/
+
+var _ = require('../lodash');
+
+var Block = require('../block');
+var stToHTML = require('../to-html');
+
+var template = _.template([
+  '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
+  '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
+  '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
+  ' class="st-input-string st-required js-cite-input" type="text" />'
+].join("\n"));
+
+module.exports = Block.extend({
+
+  type: "quote",
+
+  title: function(){ return i18n.t('blocks:quote:title'); },
+
+  icon_name: 'quote',
+
+  editorHTML: function() {
+    return template(this);
+  },
+
+  loadData: function(data){
+    this.getTextBlock().html(stToHTML(data.text, this.type));
+    this.$('.js-cite-input').val(data.cite);
+  },
+
+  toMarkdown: function(markdown) {
+    return markdown.replace(/^(.+)$/mg,"> $1");
+  }
+
+});
+
+},{"../block":58,"../lodash":91,"../to-html":94}],71:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3445,7 +3511,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54,"../to-html":94}],71:[function(require,module,exports){
+},{"../block":58,"../to-html":94}],72:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3554,73 +3620,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54,"../lodash":91,"../utils":96}],72:[function(require,module,exports){
-"use strict";
-
-/*
-   Unordered List
-   */
-
-var _ = require('../lodash');
-
-var Block = require('../block');
-var stToHTML = require('../to-html');
-
-var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
-
-module.exports = Block.extend({
-
-  type: 'list',
-
-  title: function() { return i18n.t('blocks:list:title'); },
-
-  icon_name: 'list',
-
-  editorHTML: function() {
-    return _.template(template, this);
-  },
-
-  loadData: function(data){
-    this.getTextBlock().html("<ul>" + stToHTML(data.text, this.type) + "</ul>");
-  },
-
-  onBlockRender: function() {
-    this.checkForList = this.checkForList.bind(this);
-    this.getTextBlock().on('click keyup', this.checkForList);
-  },
-
-  checkForList: function() {
-    if (this.$('ul').length === 0) {
-      document.execCommand("insertUnorderedList", false, false);
-    }
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/<\/li>/mg,"\n")
-    .replace(/<\/?[^>]+(>|$)/g, "")
-    .replace(/^(.+)$/mg," - $1");
-  },
-
-  toHTML: function(html) {
-    html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-    .replace(/\n/mg, "");
-
-    return html;
-  },
-
-  onContentPasted: function(event, target) {
-    this.$('ul').html(
-      this.pastedMarkdownToHTML(target[0].innerHTML));
-    this.getTextBlock().caretToEnd();
-  },
-
-  isEmpty: function() {
-    return _.isEmpty(this.saveAndGetData().text);
-  }
-
-});
-
-},{"../block":54,"../lodash":91,"../to-html":94}],73:[function(require,module,exports){
+},{"../block":58,"../lodash":91,"../utils":96}],73:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3699,7 +3699,7 @@ module.exports = Block.extend({
 });
 
 
-},{"../block":54,"../lodash":91,"../utils":96}],74:[function(require,module,exports){
+},{"../block":58,"../lodash":91,"../utils":96}],74:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3758,7 +3758,7 @@ var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var editorStore = require('./extensions/sir-trevor.editor-store');
+var editorStore = require('./extensions/editor-store');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -4296,7 +4296,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
 module.exports = Editor;
 
-},{"./block-controls":52,"./blocks":69,"./config":74,"./event-bus":76,"./events":77,"./extensions/sir-trevor.editor-store":78,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./function-bind":86,"./lodash":91,"./utils":96}],76:[function(require,module,exports){
+},{"./block-controls":52,"./blocks":68,"./config":74,"./event-bus":76,"./events":77,"./extensions/editor-store":78,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./function-bind":86,"./lodash":91,"./utils":96}],76:[function(require,module,exports){
 "use strict";
 
 module.exports = Object.assign({}, require('./events'));
@@ -4378,6 +4378,64 @@ module.exports = function(editor, method, options) {
 };
 
 },{"../lodash":91,"../utils":96}],79:[function(require,module,exports){
+"use strict";
+
+/*
+*   Sir Trevor Uploader
+*   Generic Upload implementation that can be extended for blocks
+*/
+
+var _ = require('../lodash');
+var config = require('../config');
+var utils = require('../utils');
+
+module.exports = function(block, file, success, error) {
+
+  var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
+  var data = new FormData();
+
+  data.append('attachment[name]', file.name);
+  data.append('attachment[file]', file);
+  data.append('attachment[uid]', uid);
+
+  block.resetMessages();
+
+  var callbackSuccess = function(){
+    utils.log('Upload callback called');
+
+    if (!_.isUndefined(success) && _.isFunction(success)) {
+      success.apply(block, arguments);
+    }
+  };
+
+  var callbackError = function(){
+    utils.log('Upload callback error called');
+
+    if (!_.isUndefined(error) && _.isFunction(error)) {
+      error.apply(block, arguments);
+    }
+  };
+
+  var xhr = $.ajax({
+    url: config.defaults.uploadUrl,
+    data: data,
+    cache: false,
+    contentType: false,
+    processData: false,
+    dataType: 'json',
+    type: 'POST'
+  });
+
+  block.addQueuedItem(uid, xhr);
+
+  xhr.done(callbackSuccess)
+     .fail(callbackError)
+     .always(block.removeQueuedItem.bind(block, uid));
+
+  return xhr;
+};
+
+},{"../config":74,"../lodash":91,"../utils":96}],80:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4486,65 +4544,7 @@ Object.assign(submittable.prototype, {
 module.exports = submittable;
 
 
-},{"../event-bus":76,"../utils":96}],80:[function(require,module,exports){
-"use strict";
-
-/*
-*   Sir Trevor Uploader
-*   Generic Upload implementation that can be extended for blocks
-*/
-
-var _ = require('../lodash');
-var config = require('../config');
-var utils = require('../utils');
-
-module.exports = function(block, file, success, error) {
-
-  var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
-  var data = new FormData();
-
-  data.append('attachment[name]', file.name);
-  data.append('attachment[file]', file);
-  data.append('attachment[uid]', uid);
-
-  block.resetMessages();
-
-  var callbackSuccess = function(){
-    utils.log('Upload callback called');
-
-    if (!_.isUndefined(success) && _.isFunction(success)) {
-      success.apply(block, arguments);
-    }
-  };
-
-  var callbackError = function(){
-    utils.log('Upload callback error called');
-
-    if (!_.isUndefined(error) && _.isFunction(error)) {
-      error.apply(block, arguments);
-    }
-  };
-
-  var xhr = $.ajax({
-    url: config.defaults.uploadUrl,
-    data: data,
-    cache: false,
-    contentType: false,
-    processData: false,
-    dataType: 'json',
-    type: 'POST'
-  });
-
-  block.addQueuedItem(uid, xhr);
-
-  xhr.done(callbackSuccess)
-     .fail(callbackError)
-     .always(block.removeQueuedItem.bind(block, uid));
-
-  return xhr;
-};
-
-},{"../config":74,"../lodash":91,"../utils":96}],81:[function(require,module,exports){
+},{"../event-bus":76,"../utils":96}],81:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4641,7 +4641,7 @@ var config = require('./config');
 var utils = require('./utils');
 
 var EventBus = require('./event-bus');
-var Submittable = require('./extensions/sir-trevor.submittable');
+var Submittable = require('./extensions/submittable');
 
 var formBound = false; // Flag to tell us once we've bound our submit event
 
@@ -4677,7 +4677,7 @@ var FormEvents = {
 
 module.exports = FormEvents;
 
-},{"./config":74,"./event-bus":76,"./extensions/sir-trevor.submittable":79,"./utils":96}],83:[function(require,module,exports){
+},{"./config":74,"./event-bus":76,"./extensions/submittable":80,"./utils":96}],83:[function(require,module,exports){
 "use strict";
 
 /*
@@ -5065,16 +5065,16 @@ var SirTrevor = {
 
   EventBus: require('./event-bus'),
 
-  EditorStore: require('./extensions/sir-trevor.editor-store'),
-  Submittable: require('./extensions/sir-trevor.submittable'),
-  FileUploader: require('./extensions/sir-trevor.uploader'),
+  EditorStore: require('./extensions/editor-store'),
+  Submittable: require('./extensions/submittable'),
+  FileUploader: require('./extensions/file-uploader'),
 
   BlockMixins: require('./block_mixins'),
-  BlockPositioner: require('./block.positioner'),
-  BlockReorder: require('./block.reorder'),
-  BlockDeletion: require('./block.deletion'),
-  BlockValidations: require('./block.validations'),
-  BlockStore: require('./block.store'),
+  BlockPositioner: require('./block-positioner'),
+  BlockReorder: require('./block-reorder'),
+  BlockDeletion: require('./block-deletion'),
+  BlockValidations: require('./block-validations'),
+  BlockStore: require('./block-store'),
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),
@@ -5139,7 +5139,7 @@ Object.assign(SirTrevor, require('./form-events'));
 
 module.exports = SirTrevor;
 
-},{"./block":54,"./block-control":51,"./block-controls":52,"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.store":57,"./block.validations":58,"./block_mixins":63,"./blocks":69,"./config":74,"./editor":75,"./event-bus":76,"./extensions/sir-trevor.editor-store":78,"./extensions/sir-trevor.submittable":79,"./extensions/sir-trevor.uploader":80,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./formatter":84,"./formatters":85,"./helpers/event":87,"./locales":90,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"./vendor/array-includes":97}],90:[function(require,module,exports){
+},{"./block":58,"./block-control":51,"./block-controls":52,"./block-deletion":53,"./block-positioner":54,"./block-reorder":55,"./block-store":56,"./block-validations":57,"./block_mixins":63,"./blocks":68,"./config":74,"./editor":75,"./event-bus":76,"./extensions/editor-store":78,"./extensions/file-uploader":79,"./extensions/submittable":80,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./formatter":84,"./formatters":85,"./helpers/event":87,"./locales":90,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"./vendor/array-includes":97}],90:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5309,7 +5309,7 @@ module.exports = {
 var _ = require('./lodash');
 var utils = require('./utils');
 
-var BlockReorder = require('./block.reorder');
+var BlockReorder = require('./block-reorder');
 
 var SimpleBlock = function(data, instance_id) {
   this.createStore(data);
@@ -5322,7 +5322,7 @@ var SimpleBlock = function(data, instance_id) {
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block.store'), {
+Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block-store'), {
 
   focus : function() {},
 
@@ -5440,7 +5440,7 @@ SimpleBlock.extend = require('./helpers/extend');
 
 module.exports = SimpleBlock;
 
-},{"./block.reorder":56,"./block.store":57,"./events":77,"./function-bind":86,"./helpers/extend":88,"./lodash":91,"./renderable":92,"./utils":96}],94:[function(require,module,exports){
+},{"./block-reorder":55,"./block-store":56,"./events":77,"./function-bind":86,"./helpers/extend":88,"./lodash":91,"./renderable":92,"./utils":96}],94:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5533,7 +5533,7 @@ module.exports = function(markdown, type) {
   return html;
 };
 
-},{"./blocks":69,"./formatters":85,"./lodash":91,"./utils":96}],95:[function(require,module,exports){
+},{"./blocks":68,"./formatters":85,"./lodash":91,"./utils":96}],95:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5648,7 +5648,7 @@ module.exports = function(content, type) {
   return markdown;
 };
 
-},{"./blocks":69,"./config":74,"./formatters":85,"./lodash":91,"./utils":96}],96:[function(require,module,exports){
+},{"./blocks":68,"./config":74,"./formatters":85,"./lodash":91,"./utils":96}],96:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');

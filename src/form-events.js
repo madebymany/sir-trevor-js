@@ -4,7 +4,7 @@ var config = require('./config');
 var utils = require('./utils');
 
 var EventBus = require('./event-bus');
-var Submittable = require('./extensions/sir-trevor.submittable');
+var Submittable = require('./extensions/submittable');
 
 var formBound = false; // Flag to tell us once we've bound our submit event
 

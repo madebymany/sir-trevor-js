@@ -18,7 +18,7 @@ var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var editorStore = require('./extensions/sir-trevor.editor-store');
+var editorStore = require('./extensions/editor-store');
 
 var Editor = function(options) {
   this.initialize(options);

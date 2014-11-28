@@ -3,7 +3,7 @@
 var _ = require('./lodash');
 var utils = require('./utils');
 
-var BlockReorder = require('./block.reorder');
+var BlockReorder = require('./block-reorder');
 
 var SimpleBlock = function(data, instance_id) {
   this.createStore(data);
@@ -16,7 +16,7 @@ var SimpleBlock = function(data, instance_id) {
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block.store'), {
+Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block-store'), {
 
   focus : function() {},
 
