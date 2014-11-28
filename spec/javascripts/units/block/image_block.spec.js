@@ -1,3 +1,5 @@
+"use strict";
+
 describe('Image block', function() {
 
   var element, editor;

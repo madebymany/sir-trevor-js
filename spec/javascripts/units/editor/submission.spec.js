@@ -1,6 +1,8 @@
+"use strict";
+
 describe("Submission", function(){
 
-  var element, editor, block;
+  var element, editor;
 
   beforeEach(function(){
     SirTrevor.instances = [];

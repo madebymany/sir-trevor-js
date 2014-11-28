@@ -1,3 +1,5 @@
+"use strict";
+
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');
@@ -24,7 +26,7 @@ module.exports = {
     EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
-      return queued.name != name;
+      return queued.name !== name;
     });
   },
 

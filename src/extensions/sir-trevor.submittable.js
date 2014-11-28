@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * SirTrevor.Submittable
  * --

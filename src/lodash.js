@@ -1,3 +1,5 @@
+"use strict";
+
 exports.isEmpty = require('lodash.isempty');
 exports.isFunction = require('lodash.isfunction');
 exports.isObject = require('lodash.isobject');

@@ -1,3 +1,5 @@
+"use strict";
+
 /* Generic function binding utility, used by lots of our classes */
 
 module.exports = {

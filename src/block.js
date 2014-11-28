@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('./lodash');
 
 var config = require('./config');
@@ -18,6 +20,9 @@ var Spinner = require('spin.js');
 var Block = function(data, instance_id) {
   SimpleBlock.apply(this, arguments);
 };
+
+Block.prototype = Object.create(SimpleBlock.prototype);
+Block.prototype.constructor = Block;
 
 var delete_template = [
   "<div class='st-block__ui-delete-controls'>",
@@ -167,8 +172,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
     toData: function() {
       utils.log("toData for " + this.blockID);
 
-      var bl = this.$el,
-      dataObj = {};
+      var dataObj = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {

@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Store", function(){
 
   var element, editor, block;

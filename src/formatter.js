@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('./lodash');
 
 var Formatter = function(options){
@@ -22,10 +24,14 @@ Object.assign(Formatter.prototype, {
   initialize: function(){},
 
   _configure: function(options) {
-    if (this.options) options = Object.assign({}, this.options, options);
+    if (this.options) {
+      options = Object.assign({}, this.options, options);
+    }
     for (var i = 0, l = formatOptions.length; i < l; i++) {
       var attr = formatOptions[i];
-      if (options[attr]) this[attr] = options[attr];
+      if (options[attr]) {
+        this[attr] = options[attr];
+      }
     }
     this.options = options;
   },
@@ -40,16 +46,16 @@ Object.assign(Formatter.prototype, {
 
     block
     .on('keyup','.st-text-block', function(ev) {
-      if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
         ctrlDown = false;
       }
     })
     .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
-      if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
         ctrlDown = true;
       }
 
-      if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
+      if(ev.which === ev.data.formatter.keyCode && ctrlDown === true) {
         document.execCommand(ev.data.formatter.cmd, false, true);
         ev.preventDefault();
         ctrlDown = false;

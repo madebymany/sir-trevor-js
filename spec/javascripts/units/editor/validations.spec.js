@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Validations", function(){
 
   var element, editor, block;

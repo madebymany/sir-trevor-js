@@ -1,3 +1,5 @@
+"use strict";
+
 /*
    Unordered List
    */
@@ -50,9 +52,8 @@ module.exports = Block.extend({
   },
 
   onContentPasted: function(event, target) {
-    var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
-    list = this.$('ul').html(replace);
-
+    this.$('ul').html(
+      this.pastedMarkdownToHTML(target[0].innerHTML));
     this.getTextBlock().caretToEnd();
   },
 

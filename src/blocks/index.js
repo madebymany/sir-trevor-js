@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
   Text: require('./text'),
   Quote: require('./block-quote'),

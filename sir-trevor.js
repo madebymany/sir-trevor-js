@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-11-27
+ * 2014-11-28
  */
 
 
@@ -2222,6 +2222,8 @@ module.exports = uniqueId;
 }));
 
 },{}],51:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var Blocks = require('./blocks');
 
@@ -2254,6 +2256,8 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
 module.exports = BlockControl;
 
 },{"./blocks":69,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],52:[function(require,module,exports){
+"use strict";
+
 /*
  * SirTrevor Block Controls
  * --
@@ -2318,6 +2322,8 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
 module.exports = BlockControls;
 
 },{"./block-control":51,"./blocks":69,"./event-bus":76,"./events":77,"./function-bind":86,"./renderable":92}],53:[function(require,module,exports){
+"use strict";
+
 var BlockDeletion = function() {
   this._ensureElement();
   this._bindFunctions();
@@ -2338,6 +2344,8 @@ Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./re
 module.exports = BlockDeletion;
 
 },{"./function-bind":86,"./renderable":92}],54:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var config = require('./config');
@@ -2358,6 +2366,9 @@ var Spinner = require('spin.js');
 var Block = function(data, instance_id) {
   SimpleBlock.apply(this, arguments);
 };
+
+Block.prototype = Object.create(SimpleBlock.prototype);
+Block.prototype.constructor = Block;
 
 var delete_template = [
   "<div class='st-block__ui-delete-controls'>",
@@ -2507,8 +2518,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
     toData: function() {
       utils.log("toData for " + this.blockID);
 
-      var bl = this.$el,
-      dataObj = {};
+      var dataObj = {};
 
       /* Simple to start. Add conditions later */
       if (this.hasTextBlock()) {
@@ -2706,6 +2716,8 @@ Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 module.exports = Block;
 
 },{"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.validations":58,"./block_mixins":63,"./config":74,"./event-bus":76,"./formatters":85,"./helpers/extend":88,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"spin.js":50}],55:[function(require,module,exports){
+"use strict";
+
 
 var EventBus = require('./event-bus');
 
@@ -2744,7 +2756,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   },
 
   onBlockCountChange: function(new_count) {
-    if (new_count != this.total_blocks) {
+    if (new_count !== this.total_blocks) {
       this.total_blocks = new_count;
       this.renderPositionList();
     }
@@ -2754,7 +2766,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
     var val = this.$select.val();
     if (val !== 0) {
       EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val == 1 ? 'before' : 'after'));
+                       this.$block, val, (val === 1 ? 'before' : 'after'));
                        this.toggle();
     }
   },
@@ -2785,6 +2797,8 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 module.exports = BlockPositioner;
 
 },{"./event-bus":76,"./function-bind":86,"./renderable":92}],56:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
@@ -2838,8 +2852,8 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-            dropped_on.attr('data-instance') == block.attr('data-instance')
+          dropped_on.attr('id') !== item_id &&
+            dropped_on.attr('data-instance') === block.attr('data-instance')
        ) {
          dropped_on.after(block);
        }
@@ -2875,6 +2889,8 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 module.exports = BlockReorder;
 
 },{"./event-bus":76,"./function-bind":86,"./lodash":91,"./renderable":92}],57:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -2945,6 +2961,8 @@ module.exports = {
 };
 
 },{"./event-bus":76,"./lodash":91,"./utils":96}],58:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -3021,6 +3039,8 @@ module.exports = {
 };
 
 },{"./lodash":91,"./utils":96}],59:[function(require,module,exports){
+"use strict";
+
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');
@@ -3047,7 +3067,7 @@ module.exports = {
     EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
-      return queued.name != name;
+      return queued.name !== name;
     });
   },
 
@@ -3065,6 +3085,8 @@ module.exports = {
 };
 
 },{"../event-bus":76,"../utils":96}],60:[function(require,module,exports){
+"use strict";
+
 var utils = require('../utils');
 
 module.exports = {
@@ -3098,6 +3120,8 @@ module.exports = {
 };
 
 },{"../utils":96}],61:[function(require,module,exports){
+"use strict";
+
 /* Adds drop functionaltiy to this block */
 
 var _ = require('../lodash');
@@ -3135,8 +3159,7 @@ module.exports = {
     e = e.originalEvent;
 
     var el = $(e.target),
-        types = e.dataTransfer.types,
-        type, data = [];
+        types = e.dataTransfer.types;
 
     el.removeClass('st-dropzone--dragover');
 
@@ -3158,6 +3181,8 @@ module.exports = {
 };
 
 },{"../config":74,"../event-bus":76,"../lodash":91,"../utils":96}],62:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 
 module.exports = {
@@ -3191,6 +3216,8 @@ module.exports = {
 };
 
 },{"../lodash":91,"./ajaxable":59}],63:[function(require,module,exports){
+"use strict";
+
 module.exports = {
   Ajaxable: require('./ajaxable.js'),
   Controllable: require('./controllable.js'),
@@ -3201,6 +3228,8 @@ module.exports = {
 };
 
 },{"./ajaxable.js":59,"./controllable.js":60,"./droppable.js":61,"./fetchable.js":62,"./pastable.js":64,"./uploadable.js":65}],64:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
@@ -3224,11 +3253,13 @@ module.exports = {
 };
 
 },{"../config":74,"../lodash":91,"../utils":96}],65:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
-var FileUploader = require('../extensions/sir-trevor.uploader');
+var fileUploader = require('../extensions/sir-trevor.uploader');
 
 module.exports = {
 
@@ -3245,12 +3276,14 @@ module.exports = {
   },
 
   uploader: function(file, success, failure){
-    return FileUploader(this, file, success, failure);
+    return fileUploader(this, file, success, failure);
   }
 
 };
 
 },{"../config":74,"../extensions/sir-trevor.uploader":80,"../lodash":91,"../utils":96,"./ajaxable":59}],66:[function(require,module,exports){
+"use strict";
+
 /*
   Block Quote
 */
@@ -3291,6 +3324,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../lodash":91,"../to-html":94}],67:[function(require,module,exports){
+"use strict";
+
 /*
   Heading Block
 */
@@ -3314,6 +3349,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../to-html":94}],68:[function(require,module,exports){
+"use strict";
+
 /*
   Simple Image Block
 */
@@ -3371,6 +3408,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54}],69:[function(require,module,exports){
+"use strict";
+
 module.exports = {
   Text: require('./text'),
   Quote: require('./block-quote'),
@@ -3382,6 +3421,8 @@ module.exports = {
 };
 
 },{"./block-quote":66,"./heading":67,"./image":68,"./text":70,"./tweet":71,"./unordered-list":72,"./video":73}],70:[function(require,module,exports){
+"use strict";
+
 /*
   Text Block
 */
@@ -3405,6 +3446,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../to-html":94}],71:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var utils = require('../utils');
 
@@ -3512,6 +3555,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../lodash":91,"../utils":96}],72:[function(require,module,exports){
+"use strict";
+
 /*
    Unordered List
    */
@@ -3564,9 +3609,8 @@ module.exports = Block.extend({
   },
 
   onContentPasted: function(event, target) {
-    var replace = this.pastedMarkdownToHTML(target[0].innerHTML),
-    list = this.$('ul').html(replace);
-
+    this.$('ul').html(
+      this.pastedMarkdownToHTML(target[0].innerHTML));
     this.getTextBlock().caretToEnd();
   },
 
@@ -3577,6 +3621,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../lodash":91,"../to-html":94}],73:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var utils = require('../utils');
 
@@ -3654,6 +3700,8 @@ module.exports = Block.extend({
 
 
 },{"../block":54,"../lodash":91,"../utils":96}],74:[function(require,module,exports){
+"use strict";
+
 module.exports = {
   debug: false,
   skipValidation: false,
@@ -3690,6 +3738,8 @@ module.exports = {
 };
 
 },{}],75:[function(require,module,exports){
+"use strict";
+
 /*
  * Sir Trevor Editor
  * --
@@ -3708,7 +3758,7 @@ var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var EditorStore = require('./extensions/sir-trevor.editor-store');
+var editorStore = require('./extensions/sir-trevor.editor-store');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -3823,7 +3873,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Remove instance
     config.instances = config.instances.filter(function(instance) {
-      return instance.ID != this.ID;
+      return instance.ID !== this.ID;
     }, this);
 
     // Clear the store
@@ -3866,7 +3916,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   store: function(method, options){
-    return EditorStore(this, method, options || {});
+    return editorStore(this, method, options || {});
   },
 
   /* Create an instance of a block from an available type.  We have to check
@@ -3904,7 +3954,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);
 
-    if(!data) block.focus();
+    if(!data) {
+      block.focus();
+    }
 
     EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
     utils.log("Block created of type " + type);
@@ -3950,7 +4002,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     var blockPosition = this.getBlockPosition($block);
     var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
-    var blockByPosition = this.getBlockPosition($blockBy);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -4019,7 +4070,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.blockCounts[type] = this.blockCounts[type] - 1;
     this.blocks = this.blocks.filter(function(item) {
-      return item.blockID != block.blockID;
+      return item.blockID !== block.blockID;
     });
     this.stopListening(block);
 
@@ -4081,7 +4132,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.$wrapper.find('.st-block').each(function(index, block) {
       var _block = this.blocks.find(function(b) {
-        return (b.blockID == $(block).attr('id'));
+        return (b.blockID === $(block).attr('id'));
       });
 
       if (_.isUndefined(_block)) { return false; }
@@ -4162,12 +4213,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   findBlockById: function(block_id) {
-    return this.blocks.find(function(b) { return b.blockID == block_id; });
+    return this.blocks.find(function(b) { return b.blockID === block_id; });
   },
 
   getBlocksByType: function(block_type) {
     return this.blocks.filter(function(b) {
-      return utils.classify(b.type) == block_type;
+      return utils.classify(b.type) === block_type;
     });
   },
 
@@ -4246,12 +4297,18 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 module.exports = Editor;
 
 },{"./block-controls":52,"./blocks":69,"./config":74,"./event-bus":76,"./events":77,"./extensions/sir-trevor.editor-store":78,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./function-bind":86,"./lodash":91,"./utils":96}],76:[function(require,module,exports){
+"use strict";
+
 module.exports = Object.assign({}, require('./events'));
 
 },{"./events":77}],77:[function(require,module,exports){
+"use strict";
+
 module.exports = require('eventablejs');
 
 },{"eventablejs":2}],78:[function(require,module,exports){
+"use strict";
+
 /*
  * Sir Trevor Editor Store
  * By default we store the complete data on the instances $el
@@ -4321,6 +4378,8 @@ module.exports = function(editor, method, options) {
 };
 
 },{"../lodash":91,"../utils":96}],79:[function(require,module,exports){
+"use strict";
+
 /*
  * SirTrevor.Submittable
  * --
@@ -4428,6 +4487,8 @@ module.exports = submittable;
 
 
 },{"../event-bus":76,"../utils":96}],80:[function(require,module,exports){
+"use strict";
+
 /*
 *   Sir Trevor Uploader
 *   Generic Upload implementation that can be extended for blocks
@@ -4484,6 +4545,8 @@ module.exports = function(block, file, success, error) {
 };
 
 },{"../config":74,"../lodash":91,"../utils":96}],81:[function(require,module,exports){
+"use strict";
+
 /*
    SirTrevor Floating Block Controls
    --
@@ -4535,8 +4598,8 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-            this.instance_id == block.attr('data-instance')
+          dropped_on.attr('id') !== item_id &&
+            this.instance_id === block.attr('data-instance')
        ) {
          dropped_on.after(block);
        }
@@ -4572,6 +4635,8 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 module.exports = FloatingBlockControls;
 
 },{"./event-bus":76,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],82:[function(require,module,exports){
+"use strict";
+
 var config = require('./config');
 var utils = require('./utils');
 
@@ -4583,7 +4648,7 @@ var formBound = false; // Flag to tell us once we've bound our submit event
 var FormEvents = {
   bindFormSubmit: function(form) {
     if (!formBound) {
-      new Submittable(form);
+      this.submittable = new Submittable(form);
       form.on('submit.sirtrevor', this.onFormSubmit);
       formBound = true;
     }
@@ -4613,6 +4678,8 @@ var FormEvents = {
 module.exports = FormEvents;
 
 },{"./config":74,"./event-bus":76,"./extensions/sir-trevor.submittable":79,"./utils":96}],83:[function(require,module,exports){
+"use strict";
+
 /*
    Format Bar
    --
@@ -4703,7 +4770,9 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
     var btn = $(ev.target),
     format = Formatters[btn.attr('data-type')];
 
-    if (_.isUndefined(format)) return false;
+    if (_.isUndefined(format)) {
+      return false;
+    }
 
     // Do we have a click function defined on this formatter?
     if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
@@ -4722,6 +4791,8 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 module.exports = FormatBar;
 
 },{"./config":74,"./events":77,"./formatters":85,"./function-bind":86,"./lodash":91,"./renderable":92}],84:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var Formatter = function(options){
@@ -4746,10 +4817,14 @@ Object.assign(Formatter.prototype, {
   initialize: function(){},
 
   _configure: function(options) {
-    if (this.options) options = Object.assign({}, this.options, options);
+    if (this.options) {
+      options = Object.assign({}, this.options, options);
+    }
     for (var i = 0, l = formatOptions.length; i < l; i++) {
       var attr = formatOptions[i];
-      if (options[attr]) this[attr] = options[attr];
+      if (options[attr]) {
+        this[attr] = options[attr];
+      }
     }
     this.options = options;
   },
@@ -4764,16 +4839,16 @@ Object.assign(Formatter.prototype, {
 
     block
     .on('keyup','.st-text-block', function(ev) {
-      if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
         ctrlDown = false;
       }
     })
     .on('keydown','.st-text-block', { formatter: formatter }, function(ev) {
-      if(ev.which == 17 || ev.which == 224 || ev.which == 91) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
         ctrlDown = true;
       }
 
-      if(ev.which == ev.data.formatter.keyCode && ctrlDown === true) {
+      if(ev.which === ev.data.formatter.keyCode && ctrlDown === true) {
         document.execCommand(ev.data.formatter.cmd, false, true);
         ev.preventDefault();
         ctrlDown = false;
@@ -4788,6 +4863,8 @@ Formatter.extend = require('./helpers/extend');
 module.exports = Formatter;
 
 },{"./helpers/extend":88,"./lodash":91}],85:[function(require,module,exports){
+"use strict";
+
 /* Our base formatters */
 
 var Formatter = require('./formatter');
@@ -4815,7 +4892,7 @@ var Link = Formatter.extend({
 
   onClick: function() {
 
-    var link = prompt(i18n.t("general:link")),
+    var link = window.prompt(i18n.t("general:link")),
     link_regex = /((ftp|http|https):\/\/.)|mailto(?=\:[-\.\w]+@)/;
 
     if(link && link.length > 0) {
@@ -4838,7 +4915,7 @@ var Link = Formatter.extend({
       .parentNode;
     }
 
-    return (node && node.nodeName == "A");
+    return (node && node.nodeName === "A");
   }
 });
 
@@ -4856,6 +4933,8 @@ exports.Link = new Link();
 exports.Unlink = new UnLink();
 
 },{"./formatter":84}],86:[function(require,module,exports){
+"use strict";
+
 /* Generic function binding utility, used by lots of our classes */
 
 module.exports = {
@@ -4869,6 +4948,8 @@ module.exports = {
 
 
 },{}],87:[function(require,module,exports){
+"use strict";
+
 /*
  * Drop Area Plugin from @maccman
  * http://blog.alexmaccaw.com/svbtle-image-uploading
@@ -4922,6 +5003,8 @@ $.fn.caretToEnd = function(){
 
 
 },{}],88:[function(require,module,exports){
+"use strict";
+
 /*
   Backbone Inheritence 
   --
@@ -4954,7 +5037,9 @@ module.exports = function(protoProps, staticProps) {
 
   // Add prototype properties (instance properties) to the subclass,
   // if supplied.
-  if (protoProps) Object.assign(child.prototype, protoProps);
+  if (protoProps) {
+    Object.assign(child.prototype, protoProps);
+  }
 
   // Set a convenience property in case the parent's prototype is needed
   // later.
@@ -4964,6 +5049,8 @@ module.exports = function(protoProps, staticProps) {
 };
 
 },{}],89:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 require('./helpers/event'); // extends jQuery itself
@@ -5007,7 +5094,7 @@ var SirTrevor = {
   toHTML: require('./to-html'),
 
   setDefaults: function(options) {
-    config.defaults = Object.assign(config.defaults, options || {});
+    Object.assign(SirTrevor.config.defaults, options || {});
   },
 
   getInstance: function(identifier) {
@@ -5053,6 +5140,8 @@ Object.assign(SirTrevor, require('./form-events'));
 module.exports = SirTrevor;
 
 },{"./block":54,"./block-control":51,"./block-controls":52,"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.store":57,"./block.validations":58,"./block_mixins":63,"./blocks":69,"./config":74,"./editor":75,"./event-bus":76,"./extensions/sir-trevor.editor-store":78,"./extensions/sir-trevor.submittable":79,"./extensions/sir-trevor.uploader":80,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./formatter":84,"./formatters":85,"./helpers/event":87,"./locales":90,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"./vendor/array-includes":97}],90:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
@@ -5153,6 +5242,8 @@ if (window.i18n === undefined || window.i18n.init === undefined) {
 module.exports = Locales;
 
 },{"./config":74,"./lodash":91,"./utils":96}],91:[function(require,module,exports){
+"use strict";
+
 exports.isEmpty = require('lodash.isempty');
 exports.isFunction = require('lodash.isfunction');
 exports.isObject = require('lodash.isobject');
@@ -5163,6 +5254,8 @@ exports.template = require('lodash.template');
 exports.uniqueId = require('lodash.uniqueid');
 
 },{"lodash.isempty":3,"lodash.isfunction":27,"lodash.isobject":28,"lodash.isstring":30,"lodash.isundefined":31,"lodash.result":32,"lodash.template":33,"lodash.uniqueid":49}],92:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 module.exports = {
@@ -5211,6 +5304,8 @@ module.exports = {
 
 
 },{"./lodash":91}],93:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -5302,7 +5397,9 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   _withUIComponent: function(component, className, callback) {
     this.$ui.append(component.render().$el);
-    if (className && callback) this.$ui.on('click', className, callback);
+    if (className && callback) {
+      this.$ui.on('click', className, callback);
+    }
   },
 
   _initUI : function() {
@@ -5344,6 +5441,8 @@ SimpleBlock.extend = require('./helpers/extend');
 module.exports = SimpleBlock;
 
 },{"./block.reorder":56,"./block.store":57,"./events":77,"./function-bind":86,"./helpers/extend":88,"./lodash":91,"./renderable":92,"./utils":96}],94:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -5435,6 +5534,8 @@ module.exports = function(markdown, type) {
 };
 
 },{"./blocks":69,"./formatters":85,"./lodash":91,"./utils":96}],95:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
@@ -5548,6 +5649,8 @@ module.exports = function(content, type) {
 };
 
 },{"./blocks":69,"./config":74,"./formatters":85,"./lodash":91,"./utils":96}],96:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 
@@ -5565,7 +5668,9 @@ var utils = {
   },
 
   titleize: function(str){
-    if (str === null) return '';
+    if (str === null) {
+      return '';
+    }
     str  = String(str).toLowerCase();
     return str.replace(/(?:^|\s|-)\S/g, function(c){ return c.toUpperCase(); });
   },
@@ -5599,6 +5704,10 @@ var utils = {
 module.exports = utils;
 
 },{"./config":74,"./lodash":91}],97:[function(require,module,exports){
+"use strict";
+
+// jshint freeze: false
+
 if (![].includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
     if (this === undefined || this === null) {
@@ -5615,7 +5724,9 @@ if (![].includes) {
       k = n;
     } else {
       k = len + n;
-      if (k < 0) k = 0;
+      if (k < 0) {
+        k = 0;
+      }
     }
     while (k < len) {
       var currentElement = O[k];

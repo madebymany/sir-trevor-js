@@ -1,3 +1,5 @@
+"use strict";
+
 describe("toHTML", function(){
 
   it("converts links to HTML", function(){
@@ -102,7 +104,7 @@ describe("toHTML", function(){
     var md = "Hand-crafted",
         html = SirTrevor.toHTML(md, "Text");
 
-    expect(html).toBe("<div>Hand\-crafted</div>");
+    expect(html).toBe("<div>Hand-crafted</div>");
   });
 
   it("strips newlines in bold tags", function(){
@@ -137,7 +139,7 @@ describe("toHTML", function(){
     var md = "_Test\\_",
         html = SirTrevor.toHTML(md, "Text");
 
-    expect(html).toBe("<div>_Test\_</div>");
+    expect(html).toBe("<div>_Test_</div>");
   });
 
   it("strips preceding spaces in bold tags", function(){

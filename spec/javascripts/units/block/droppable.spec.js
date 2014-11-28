@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Droppable Block", function(){
 
   var element, editor, block;

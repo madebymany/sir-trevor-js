@@ -1,3 +1,5 @@
+"use strict";
+
 /*
    SirTrevor Floating Block Controls
    --
@@ -49,8 +51,8 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.attr('id') != item_id &&
-            this.instance_id == block.attr('data-instance')
+          dropped_on.attr('id') !== item_id &&
+            this.instance_id === block.attr('data-instance')
        ) {
          dropped_on.after(block);
        }

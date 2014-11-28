@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require('./config');
 var utils = require('./utils');
 
@@ -9,7 +11,7 @@ var formBound = false; // Flag to tell us once we've bound our submit event
 var FormEvents = {
   bindFormSubmit: function(form) {
     if (!formBound) {
-      new Submittable(form);
+      this.submittable = new Submittable(form);
       form.on('submit.sirtrevor', this.onFormSubmit);
       formBound = true;
     }

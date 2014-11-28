@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * Drop Area Plugin from @maccman
  * http://blog.alexmaccaw.com/svbtle-image-uploading

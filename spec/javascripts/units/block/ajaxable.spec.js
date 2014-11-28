@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Ajaxable Block", function() {
 
   var QueuedObject;
@@ -16,7 +18,7 @@ describe("Ajaxable Block", function() {
 
     it("should have the item in the queue", function() {
       var item = _.find(QueuedObject._queued, function(q) {
-        return q.name == "12345";
+        return q.name === "12345";
       });
 
       expect(item).toBeDefined();
@@ -38,7 +40,7 @@ describe("Ajaxable Block", function() {
 
     it("should no longer have the item in the queue", function() {
       var item = _.find(QueuedObject._queued, function(q) {
-        return q.name == "12345";
+        return q.name === "12345";
       });
 
       expect(item).not.toBeDefined();

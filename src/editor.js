@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * Sir Trevor Editor
  * --
@@ -16,7 +18,7 @@ var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var EditorStore = require('./extensions/sir-trevor.editor-store');
+var editorStore = require('./extensions/sir-trevor.editor-store');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -131,7 +133,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Remove instance
     config.instances = config.instances.filter(function(instance) {
-      return instance.ID != this.ID;
+      return instance.ID !== this.ID;
     }, this);
 
     // Clear the store
@@ -174,7 +176,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   store: function(method, options){
-    return EditorStore(this, method, options || {});
+    return editorStore(this, method, options || {});
   },
 
   /* Create an instance of a block from an available type.  We have to check
@@ -212,7 +214,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.blocks.push(block);
     this._incrementBlockTypeCount(type);
 
-    if(!data) block.focus();
+    if(!data) {
+      block.focus();
+    }
 
     EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
     utils.log("Block created of type " + type);
@@ -258,7 +262,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     var blockPosition = this.getBlockPosition($block);
     var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
-    var blockByPosition = this.getBlockPosition($blockBy);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -327,7 +330,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.blockCounts[type] = this.blockCounts[type] - 1;
     this.blocks = this.blocks.filter(function(item) {
-      return item.blockID != block.blockID;
+      return item.blockID !== block.blockID;
     });
     this.stopListening(block);
 
@@ -389,7 +392,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.$wrapper.find('.st-block').each(function(index, block) {
       var _block = this.blocks.find(function(b) {
-        return (b.blockID == $(block).attr('id'));
+        return (b.blockID === $(block).attr('id'));
       });
 
       if (_.isUndefined(_block)) { return false; }
@@ -470,12 +473,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   findBlockById: function(block_id) {
-    return this.blocks.find(function(b) { return b.blockID == block_id; });
+    return this.blocks.find(function(b) { return b.blockID === block_id; });
   },
 
   getBlocksByType: function(block_type) {
     return this.blocks.filter(function(b) {
-      return utils.classify(b.type) == block_type;
+      return utils.classify(b.type) === block_type;
     });
   },
 

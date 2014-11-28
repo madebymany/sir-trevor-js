@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 *   Sir Trevor Uploader
 *   Generic Upload implementation that can be extended for blocks

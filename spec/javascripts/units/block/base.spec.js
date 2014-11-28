@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Block", function(){
 
   var element, editor, block, block_two, block_three;

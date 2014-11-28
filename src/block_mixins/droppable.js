@@ -1,3 +1,5 @@
+"use strict";
+
 /* Adds drop functionaltiy to this block */
 
 var _ = require('../lodash');
@@ -35,8 +37,7 @@ module.exports = {
     e = e.originalEvent;
 
     var el = $(e.target),
-        types = e.dataTransfer.types,
-        type, data = [];
+        types = e.dataTransfer.types;
 
     el.removeClass('st-dropzone--dragover');
 

@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -89,7 +91,9 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   _withUIComponent: function(component, className, callback) {
     this.$ui.append(component.render().$el);
-    if (className && callback) this.$ui.on('click', className, callback);
+    if (className && callback) {
+      this.$ui.on('click', className, callback);
+    }
   },
 
   _initUI : function() {

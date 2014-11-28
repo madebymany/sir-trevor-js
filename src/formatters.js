@@ -1,3 +1,5 @@
+"use strict";
+
 /* Our base formatters */
 
 var Formatter = require('./formatter');
@@ -25,7 +27,7 @@ var Link = Formatter.extend({
 
   onClick: function() {
 
-    var link = prompt(i18n.t("general:link")),
+    var link = window.prompt(i18n.t("general:link")),
     link_regex = /((ftp|http|https):\/\/.)|mailto(?=\:[-\.\w]+@)/;
 
     if(link && link.length > 0) {
@@ -48,7 +50,7 @@ var Link = Formatter.extend({
       .parentNode;
     }
 
-    return (node && node.nodeName == "A");
+    return (node && node.nodeName === "A");
   }
 });
 

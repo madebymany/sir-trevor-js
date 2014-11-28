@@ -1,3 +1,7 @@
+"use strict";
+
+// jshint freeze: false
+
 if (![].includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
     if (this === undefined || this === null) {
@@ -14,7 +18,9 @@ if (![].includes) {
       k = n;
     } else {
       k = len + n;
-      if (k < 0) k = 0;
+      if (k < 0) {
+        k = 0;
+      }
     }
     while (k < len) {
       var currentElement = O[k];

@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Controllable Block", function(){
 
   var element, editor, block, testHandler;
