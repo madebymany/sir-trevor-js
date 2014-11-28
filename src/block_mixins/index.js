@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = {
   Ajaxable: require('./ajaxable.js'),
   Controllable: require('./controllable.js'),

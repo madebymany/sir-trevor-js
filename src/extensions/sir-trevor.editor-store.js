@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * Sir Trevor Editor Store
  * By default we store the complete data on the instances $el

@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Creating blocks on the Editor", function(){
 
   var element, editor;
@@ -12,7 +14,8 @@ describe("Creating blocks on the Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      block = new SirTrevor.Block();
+      // create a block
+      var block = new SirTrevor.Block();
 
       spyOn(SirTrevor.Blocks, 'Text').and.returnValue(block);
       spyOn(SirTrevor.EventBus, 'trigger');

@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * Sir Trevor Editor
  * --

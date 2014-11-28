@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Removing blocks on the Editor", function(){
 
   var element, editor;

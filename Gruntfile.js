@@ -1,4 +1,8 @@
-/*global module:false*/
+/* global module:false */
+
+require('es5-shim');
+require('es6-shim');
+
 module.exports = function(grunt) {
 
   var banner = [
@@ -11,6 +15,37 @@ module.exports = function(grunt) {
     ' * <%= grunt.template.today("yyyy-mm-dd") %>',
     ' */\n\n',
   ].join("\n");
+
+  var jsHintDefaultOptions = {
+    // Errors
+    bitwise: true,
+    camelcase: false,
+    curly: true,
+    eqeqeq: true,
+    forin: true,
+    freeze: true,
+    immed: true,
+    indent: 2,
+    latedef: true,
+    newcap: true,
+    noarg: true,
+    nonbsp: true,
+    nonew: true,
+    strict: true,
+    maxparams: 4,
+    maxdepth: 3,
+    maxcomplexity: 13, // this is quite complex, would be good to reduce
+    undef: true,
+    unused: 'vars',
+
+    // Relax
+    eqnull: true,
+
+    // Envs
+    browser: true,
+    jquery: true,
+    node: true,
+  }
 
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-karma');
@@ -72,42 +107,32 @@ module.exports = function(grunt) {
     },
 
     jshint: {
-      all: ['index.js', 'src/**/*.js'],
+      lib: {
+        src: ['index.js', 'src/**/*.js'],
+        options: Object.assign({
+          globals: {
+            i18n: true,
+            webkitURL: true,
+          },
+        }, jsHintDefaultOptions),
+      },
 
-      options: {
-        // Errors
-        bitwise: true,
-        camelcase: false,
-        curly: true,
-        eqeqeq: true,
-        forin: true,
-        freeze: true,
-        immed: true,
-        indent: 2,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        nonbsp: true,
-        nonew: true,
-        strict: false,
-        maxparams: 4,
-        maxdepth: 3,
-        maxcomplexity: 13, // this is quite complex, would be good to reduce
-        undef: true,
-        unused: 'vars',
-
-        // Relax
-        eqnull: true,
-
-        // Envs
-        browser: true,
-        jquery: true,
-        node: true,
-
-        globals: {
-          i18n: true,
-          webkitURL: true
-        },
+      tests: {
+        src: ['spec/**/*.js'],
+        options: Object.assign({
+          globals: {
+            _: true,
+            SirTrevor: true,
+            i18n: true,
+            webkitURL: true,
+            jasmine: true,
+            describe: true,
+            expect: true,
+            it: true,
+            spyOn: true,
+            beforeEach: true,
+          },
+        }, jsHintDefaultOptions),
       },
     },
 

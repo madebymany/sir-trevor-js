@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('./lodash');
 
 require('./helpers/event'); // extends jQuery itself

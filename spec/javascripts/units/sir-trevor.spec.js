@@ -1,3 +1,5 @@
+"use strict";
+
 describe("SirTrevor", function(){
 
   describe("setBlockOptions", function(){

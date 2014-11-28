@@ -1,5 +1,7 @@
+"use strict";
+
 describe("Validation", function(){
-  var element, editor, block, block_two;
+  var element, editor, block;
 
   beforeEach(function(){
     element = $("<textarea>");
@@ -10,7 +12,6 @@ describe("Validation", function(){
   describe("valid", function(){
 
     beforeEach(function(){
-      var originalPerform = block.performValidations;
       block.performValidations = function(){};
 
       spyOn(block, "performValidations");

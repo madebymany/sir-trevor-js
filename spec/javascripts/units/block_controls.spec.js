@@ -1,3 +1,5 @@
+"use strict";
+
 describe("BlockControls", function(){
 
   describe("creating a new instance", function(){

@@ -1,3 +1,5 @@
+"use strict";
+
 /* Our base formatters */
 
 var Formatter = require('./formatter');

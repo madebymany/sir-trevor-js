@@ -1,3 +1,5 @@
+"use strict";
+
 /*
    Format Bar
    --

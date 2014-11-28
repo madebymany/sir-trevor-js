@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Uploadable Block", function(){
 
   var element, editor, block;

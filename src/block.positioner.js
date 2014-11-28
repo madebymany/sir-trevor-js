@@ -1,3 +1,5 @@
+"use strict";
+
 
 var EventBus = require('./event-bus');
 

@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-11-27
+ * 2014-11-28
  */
 
 
@@ -2222,6 +2222,8 @@ module.exports = uniqueId;
 }));
 
 },{}],51:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var Blocks = require('./blocks');
 
@@ -2254,6 +2256,8 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
 module.exports = BlockControl;
 
 },{"./blocks":69,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],52:[function(require,module,exports){
+"use strict";
+
 /*
  * SirTrevor Block Controls
  * --
@@ -2318,6 +2322,8 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
 module.exports = BlockControls;
 
 },{"./block-control":51,"./blocks":69,"./event-bus":76,"./events":77,"./function-bind":86,"./renderable":92}],53:[function(require,module,exports){
+"use strict";
+
 var BlockDeletion = function() {
   this._ensureElement();
   this._bindFunctions();
@@ -2338,6 +2344,8 @@ Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./re
 module.exports = BlockDeletion;
 
 },{"./function-bind":86,"./renderable":92}],54:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var config = require('./config');
@@ -2358,6 +2366,9 @@ var Spinner = require('spin.js');
 var Block = function(data, instance_id) {
   SimpleBlock.apply(this, arguments);
 };
+
+Block.prototype = Object.create(SimpleBlock.prototype);
+Block.prototype.constructor = Block;
 
 var delete_template = [
   "<div class='st-block__ui-delete-controls'>",
@@ -2705,6 +2716,8 @@ Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 module.exports = Block;
 
 },{"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.validations":58,"./block_mixins":63,"./config":74,"./event-bus":76,"./formatters":85,"./helpers/extend":88,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"spin.js":50}],55:[function(require,module,exports){
+"use strict";
+
 
 var EventBus = require('./event-bus');
 
@@ -2784,6 +2797,8 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 module.exports = BlockPositioner;
 
 },{"./event-bus":76,"./function-bind":86,"./renderable":92}],56:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
@@ -2874,6 +2889,8 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 module.exports = BlockReorder;
 
 },{"./event-bus":76,"./function-bind":86,"./lodash":91,"./renderable":92}],57:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -2944,6 +2961,8 @@ module.exports = {
 };
 
 },{"./event-bus":76,"./lodash":91,"./utils":96}],58:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -3020,6 +3039,8 @@ module.exports = {
 };
 
 },{"./lodash":91,"./utils":96}],59:[function(require,module,exports){
+"use strict";
+
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');
@@ -3064,6 +3085,8 @@ module.exports = {
 };
 
 },{"../event-bus":76,"../utils":96}],60:[function(require,module,exports){
+"use strict";
+
 var utils = require('../utils');
 
 module.exports = {
@@ -3097,6 +3120,8 @@ module.exports = {
 };
 
 },{"../utils":96}],61:[function(require,module,exports){
+"use strict";
+
 /* Adds drop functionaltiy to this block */
 
 var _ = require('../lodash');
@@ -3156,6 +3181,8 @@ module.exports = {
 };
 
 },{"../config":74,"../event-bus":76,"../lodash":91,"../utils":96}],62:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 
 module.exports = {
@@ -3189,6 +3216,8 @@ module.exports = {
 };
 
 },{"../lodash":91,"./ajaxable":59}],63:[function(require,module,exports){
+"use strict";
+
 module.exports = {
   Ajaxable: require('./ajaxable.js'),
   Controllable: require('./controllable.js'),
@@ -3199,6 +3228,8 @@ module.exports = {
 };
 
 },{"./ajaxable.js":59,"./controllable.js":60,"./droppable.js":61,"./fetchable.js":62,"./pastable.js":64,"./uploadable.js":65}],64:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
@@ -3222,6 +3253,8 @@ module.exports = {
 };
 
 },{"../config":74,"../lodash":91,"../utils":96}],65:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
@@ -3249,6 +3282,8 @@ module.exports = {
 };
 
 },{"../config":74,"../extensions/sir-trevor.uploader":80,"../lodash":91,"../utils":96,"./ajaxable":59}],66:[function(require,module,exports){
+"use strict";
+
 /*
   Block Quote
 */
@@ -3289,6 +3324,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../lodash":91,"../to-html":94}],67:[function(require,module,exports){
+"use strict";
+
 /*
   Heading Block
 */
@@ -3312,6 +3349,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../to-html":94}],68:[function(require,module,exports){
+"use strict";
+
 /*
   Simple Image Block
 */
@@ -3369,6 +3408,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54}],69:[function(require,module,exports){
+"use strict";
+
 module.exports = {
   Text: require('./text'),
   Quote: require('./block-quote'),
@@ -3380,6 +3421,8 @@ module.exports = {
 };
 
 },{"./block-quote":66,"./heading":67,"./image":68,"./text":70,"./tweet":71,"./unordered-list":72,"./video":73}],70:[function(require,module,exports){
+"use strict";
+
 /*
   Text Block
 */
@@ -3403,6 +3446,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../to-html":94}],71:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var utils = require('../utils');
 
@@ -3510,6 +3555,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../lodash":91,"../utils":96}],72:[function(require,module,exports){
+"use strict";
+
 /*
    Unordered List
    */
@@ -3574,6 +3621,8 @@ module.exports = Block.extend({
 });
 
 },{"../block":54,"../lodash":91,"../to-html":94}],73:[function(require,module,exports){
+"use strict";
+
 var _ = require('../lodash');
 var utils = require('../utils');
 
@@ -3651,6 +3700,8 @@ module.exports = Block.extend({
 
 
 },{"../block":54,"../lodash":91,"../utils":96}],74:[function(require,module,exports){
+"use strict";
+
 module.exports = {
   debug: false,
   skipValidation: false,
@@ -3687,6 +3738,8 @@ module.exports = {
 };
 
 },{}],75:[function(require,module,exports){
+"use strict";
+
 /*
  * Sir Trevor Editor
  * --
@@ -4244,12 +4297,18 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 module.exports = Editor;
 
 },{"./block-controls":52,"./blocks":69,"./config":74,"./event-bus":76,"./events":77,"./extensions/sir-trevor.editor-store":78,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./function-bind":86,"./lodash":91,"./utils":96}],76:[function(require,module,exports){
+"use strict";
+
 module.exports = Object.assign({}, require('./events'));
 
 },{"./events":77}],77:[function(require,module,exports){
+"use strict";
+
 module.exports = require('eventablejs');
 
 },{"eventablejs":2}],78:[function(require,module,exports){
+"use strict";
+
 /*
  * Sir Trevor Editor Store
  * By default we store the complete data on the instances $el
@@ -4319,6 +4378,8 @@ module.exports = function(editor, method, options) {
 };
 
 },{"../lodash":91,"../utils":96}],79:[function(require,module,exports){
+"use strict";
+
 /*
  * SirTrevor.Submittable
  * --
@@ -4426,6 +4487,8 @@ module.exports = submittable;
 
 
 },{"../event-bus":76,"../utils":96}],80:[function(require,module,exports){
+"use strict";
+
 /*
 *   Sir Trevor Uploader
 *   Generic Upload implementation that can be extended for blocks
@@ -4482,6 +4545,8 @@ module.exports = function(block, file, success, error) {
 };
 
 },{"../config":74,"../lodash":91,"../utils":96}],81:[function(require,module,exports){
+"use strict";
+
 /*
    SirTrevor Floating Block Controls
    --
@@ -4570,6 +4635,8 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 module.exports = FloatingBlockControls;
 
 },{"./event-bus":76,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],82:[function(require,module,exports){
+"use strict";
+
 var config = require('./config');
 var utils = require('./utils');
 
@@ -4611,6 +4678,8 @@ var FormEvents = {
 module.exports = FormEvents;
 
 },{"./config":74,"./event-bus":76,"./extensions/sir-trevor.submittable":79,"./utils":96}],83:[function(require,module,exports){
+"use strict";
+
 /*
    Format Bar
    --
@@ -4722,6 +4791,8 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 module.exports = FormatBar;
 
 },{"./config":74,"./events":77,"./formatters":85,"./function-bind":86,"./lodash":91,"./renderable":92}],84:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 var Formatter = function(options){
@@ -4792,6 +4863,8 @@ Formatter.extend = require('./helpers/extend');
 module.exports = Formatter;
 
 },{"./helpers/extend":88,"./lodash":91}],85:[function(require,module,exports){
+"use strict";
+
 /* Our base formatters */
 
 var Formatter = require('./formatter');
@@ -4860,6 +4933,8 @@ exports.Link = new Link();
 exports.Unlink = new UnLink();
 
 },{"./formatter":84}],86:[function(require,module,exports){
+"use strict";
+
 /* Generic function binding utility, used by lots of our classes */
 
 module.exports = {
@@ -4873,6 +4948,8 @@ module.exports = {
 
 
 },{}],87:[function(require,module,exports){
+"use strict";
+
 /*
  * Drop Area Plugin from @maccman
  * http://blog.alexmaccaw.com/svbtle-image-uploading
@@ -4926,6 +5003,8 @@ $.fn.caretToEnd = function(){
 
 
 },{}],88:[function(require,module,exports){
+"use strict";
+
 /*
   Backbone Inheritence 
   --
@@ -4970,6 +5049,8 @@ module.exports = function(protoProps, staticProps) {
 };
 
 },{}],89:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 require('./helpers/event'); // extends jQuery itself
@@ -5059,6 +5140,8 @@ Object.assign(SirTrevor, require('./form-events'));
 module.exports = SirTrevor;
 
 },{"./block":54,"./block-control":51,"./block-controls":52,"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.store":57,"./block.validations":58,"./block_mixins":63,"./blocks":69,"./config":74,"./editor":75,"./event-bus":76,"./extensions/sir-trevor.editor-store":78,"./extensions/sir-trevor.submittable":79,"./extensions/sir-trevor.uploader":80,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./formatter":84,"./formatters":85,"./helpers/event":87,"./locales":90,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"./vendor/array-includes":97}],90:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
@@ -5159,6 +5242,8 @@ if (window.i18n === undefined || window.i18n.init === undefined) {
 module.exports = Locales;
 
 },{"./config":74,"./lodash":91,"./utils":96}],91:[function(require,module,exports){
+"use strict";
+
 exports.isEmpty = require('lodash.isempty');
 exports.isFunction = require('lodash.isfunction');
 exports.isObject = require('lodash.isobject');
@@ -5169,6 +5254,8 @@ exports.template = require('lodash.template');
 exports.uniqueId = require('lodash.uniqueid');
 
 },{"lodash.isempty":3,"lodash.isfunction":27,"lodash.isobject":28,"lodash.isstring":30,"lodash.isundefined":31,"lodash.result":32,"lodash.template":33,"lodash.uniqueid":49}],92:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 
 module.exports = {
@@ -5217,6 +5304,8 @@ module.exports = {
 
 
 },{"./lodash":91}],93:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -5352,6 +5441,8 @@ SimpleBlock.extend = require('./helpers/extend');
 module.exports = SimpleBlock;
 
 },{"./block.reorder":56,"./block.store":57,"./events":77,"./function-bind":86,"./helpers/extend":88,"./lodash":91,"./renderable":92,"./utils":96}],94:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var utils = require('./utils');
 
@@ -5443,6 +5534,8 @@ module.exports = function(markdown, type) {
 };
 
 },{"./blocks":69,"./formatters":85,"./lodash":91,"./utils":96}],95:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
@@ -5556,6 +5649,8 @@ module.exports = function(content, type) {
 };
 
 },{"./blocks":69,"./config":74,"./formatters":85,"./lodash":91,"./utils":96}],96:[function(require,module,exports){
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 
@@ -5609,6 +5704,8 @@ var utils = {
 module.exports = utils;
 
 },{"./config":74,"./lodash":91}],97:[function(require,module,exports){
+"use strict";
+
 // jshint freeze: false
 
 if (![].includes) {

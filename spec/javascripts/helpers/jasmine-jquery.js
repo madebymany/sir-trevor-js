@@ -1,3 +1,5 @@
+// jshint ignore: start
+
 /*!
 Jasmine-jQuery: a set of jQuery helpers for Jasmine tests.
 
@@ -811,3 +813,5 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     return jasmine.getJSONFixtures().proxyCallTo_('read', arguments)[url]
   }
 }(window, window.jasmine, require('jquery'));
+
+// jshint ignore: end

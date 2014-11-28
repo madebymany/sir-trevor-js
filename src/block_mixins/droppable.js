@@ -1,3 +1,5 @@
+"use strict";
+
 /* Adds drop functionaltiy to this block */
 
 var _ = require('../lodash');

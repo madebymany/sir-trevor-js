@@ -1,3 +1,5 @@
+"use strict";
+
 describe("toMarkdown", function(){
 
   it("converts links to markdown", function(){

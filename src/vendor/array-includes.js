@@ -1,3 +1,5 @@
+"use strict";
+
 // jshint freeze: false
 
 if (![].includes) {

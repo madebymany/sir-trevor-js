@@ -1,3 +1,5 @@
+"use strict";
+
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');

@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Pastable Block", function(){
 
   var element, editor, block;

@@ -1,3 +1,5 @@
+"use strict";
+
 describe("SirTrevor.Submittable", function() {
 
   var submittable;

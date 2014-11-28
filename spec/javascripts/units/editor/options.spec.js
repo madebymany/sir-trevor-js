@@ -1,3 +1,5 @@
+"use strict";
+
 describe("Editor with options", function(){
 
   var element, editor;
