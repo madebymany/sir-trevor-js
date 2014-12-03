@@ -48,9 +48,9 @@
   display:none
 }
 
-.st-outer--is-reordering .st-block.st-drag-over:after,
-.st-outer--is-reordering .st-block.st-drag-over:last-child:after,
-.st-outer--is-reordering .st-block-controls__top.st-drag-over:before {
+.st-block.st-drag-over:after,
+.st-block.st-drag-over:last-child:after,
+.st-block-controls__top.st-drag-over:before {
   font-family:inherit;
   content: "Drop block here";
   text-align: center;
@@ -71,7 +71,7 @@
 .st-text-block--heading {
   line-height: 1.1;
   font-size: 2.2em;
-  min-height: 0;
+  min-height: auto;
   font-weight: 700;
 }
 

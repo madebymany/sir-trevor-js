@@ -1,8 +1,5 @@
 "use strict";
 
-
-var EventBus = require('./event-bus');
-
 var template = [
   "<div class='st-block-positioner__inner'>",
   "<span class='st-block-positioner__selected-value'></span>",
@@ -10,10 +7,9 @@ var template = [
   "</div>"
 ].join("\n");
 
-var BlockPositioner = function(block_element, instance_id) {
+var BlockPositioner = function(block_element, mediator) {
+  this.mediator = mediator;
   this.$block = block_element;
-  this.instanceID = instance_id;
-  this.total_blocks = 0;
 
   this._ensureElement();
   this._bindFunctions();
@@ -22,6 +18,8 @@ var BlockPositioner = function(block_element, instance_id) {
 };
 
 Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./renderable'), {
+
+  total_blocks: 0,
 
   bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
@@ -34,7 +32,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 
     this.$select.on('change', this.onSelectChange);
 
-    EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
+    this.mediator.on("blocks:countUpdate", this.onBlockCountChange);
   },
 
   onBlockCountChange: function(new_count) {
@@ -47,9 +45,10 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   onSelectChange: function() {
     var val = this.$select.val();
     if (val !== 0) {
-      EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val === 1 ? 'before' : 'after'));
-                       this.toggle();
+      this.mediator.trigger(
+        "blocks:changePosition", this.$block, val,
+        (val === 1 ? 'before' : 'after'));
+      this.toggle();
     }
   },
 

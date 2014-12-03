@@ -23,7 +23,7 @@ module.exports = function(markdown, type) {
   }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-    return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
+    return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
   });
 
   // This may seem crazy, but because JS doesn't have a look behind,
@@ -33,10 +33,10 @@ module.exports = function(markdown, type) {
   html = utils.reverse(
            utils.reverse(html)
            .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-              return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
+              return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
            })
            .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-              return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
+              return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
            })
           );
 
@@ -65,12 +65,12 @@ module.exports = function(markdown, type) {
   }
 
   if (shouldWrap) {
-    html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\r?\n/gm, "</div><div>");
+    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+    html = html.replace(/\n/gm, "</div><div>");
   }
 
   html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-             .replace(/\r?\n/g, "<br>")
+             .replace(/\n/g, "<br>")
              .replace(/\*\*/, "")
              .replace(/__/, "");  // Cleanup any markdown characters left
 

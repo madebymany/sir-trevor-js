@@ -1,10 +1,5 @@
 "use strict";
 
-/*
-  Simple Image Block
-*/
-
-
 var Block = require('../block');
 
 module.exports = Block.extend({
@@ -30,16 +25,6 @@ module.exports = Block.extend({
     }).bind(this));
   },
 
-  onUploadSuccess : function(data) {
-    this.setData(data);
-    this.ready();
-  },
-
-  onUploadError : function(jqXHR, status, errorThrown){
-    this.addMessage(i18n.t('blocks:image:upload_error'));
-    this.ready();
-  },
-
   onDrop: function(transferData){
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
@@ -51,7 +36,17 @@ module.exports = Block.extend({
       this.$inputs.hide();
       this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
-      this.uploader(file, this.onUploadSuccess, this.onUploadError);
+      this.uploader(
+        file,
+        function(data) {
+          this.setData(data);
+          this.ready();
+        },
+        function(error) {
+          this.addMessage(i18n.t('blocks:image:upload_error'));
+          this.ready();
+        }
+      );
     }
   }
 });

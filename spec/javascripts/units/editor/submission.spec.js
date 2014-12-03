@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Submission", function(){
+describe("Editor:Submission", function(){
 
   var element, editor;
 
@@ -13,10 +13,9 @@ describe("Submission", function(){
   });
 
   it("calls reset and save on the store", function(){
-    spyOn(editor, "store");
+    spyOn(editor.store, "reset");
     editor.onFormSubmit();
-    // Store gets called twice
-    expect(editor.store.calls.argsFor(0)).toEqual(["reset"]);
+    expect(editor.store.reset).toHaveBeenCalled();
   });
 
   it("calls the validateBlocks method", function(){
@@ -26,16 +25,16 @@ describe("Submission", function(){
   });
 
   it("calls the validateBlockTypesExist method", function(){
-    spyOn(editor, "validateBlockTypesExist");
+    spyOn(editor.block_manager, "validateBlockTypesExist");
     editor.onFormSubmit();
-    expect(editor.validateBlockTypesExist).toHaveBeenCalled();
+    expect(editor.block_manager.validateBlockTypesExist).toHaveBeenCalled();
   });
 
-  it("calls save on the store", function(){
-    spyOn(editor, "store");
+  it("calls toString on the store", function(){
+    spyOn(editor.store, "toString");
     editor.onFormSubmit();
     // Store gets called twice
-    expect(editor.store.calls.argsFor(1)).toEqual(["save"]);
+    expect(editor.store.toString).toHaveBeenCalled();
   });
 
 });

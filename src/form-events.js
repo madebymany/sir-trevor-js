@@ -4,24 +4,28 @@ var config = require('./config');
 var utils = require('./utils');
 
 var EventBus = require('./event-bus');
-var Submittable = require('./extensions/sir-trevor.submittable');
+var Submittable = require('./extensions/submittable');
 
 var formBound = false; // Flag to tell us once we've bound our submit event
 
 var FormEvents = {
   bindFormSubmit: function(form) {
     if (!formBound) {
-      this.submittable = new Submittable(form);
-      form.on('submit.sirtrevor', this.onFormSubmit);
+      // XXX: should we have a formBound and submittable per-editor?
+      // telling JSHint to ignore as it'll complain we shouldn't be creating
+      // a new object, but otherwise `this` won't be set in the Submittable
+      // initialiser. Bit weird.
+      new Submittable(form); // jshint ignore:line
+      form.bind('submit', this.onFormSubmit);
       formBound = true;
     }
   },
 
-  onBeforeSubmit: function(should_validate) {
+  onBeforeSubmit: function(shouldValidate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
     config.instances.forEach(function(inst, i) {
-      errors += inst.onFormSubmit(should_validate);
+      errors += inst.onFormSubmit(shouldValidate);
     });
     utils.log("Total errors: " + errors);
 

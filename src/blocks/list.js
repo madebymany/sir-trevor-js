@@ -1,9 +1,5 @@
 "use strict";
 
-/*
-   Unordered List
-   */
-
 var _ = require('../lodash');
 
 var Block = require('../block');
@@ -30,6 +26,7 @@ module.exports = Block.extend({
   onBlockRender: function() {
     this.checkForList = this.checkForList.bind(this);
     this.getTextBlock().on('click keyup', this.checkForList);
+    this.focus();
   },
 
   checkForList: function() {
@@ -40,13 +37,13 @@ module.exports = Block.extend({
 
   toMarkdown: function(markdown) {
     return markdown.replace(/<\/li>/mg,"\n")
-    .replace(/<\/?[^>]+(>|$)/g, "")
-    .replace(/^(.+)$/mg," - $1");
+                   .replace(/<\/?[^>]+(>|$)/g, "")
+                   .replace(/^(.+)$/mg," - $1");
   },
 
   toHTML: function(html) {
     html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-    .replace(/\n/mg, "");
+               .replace(/\n/mg, "");
 
     return html;
   },
@@ -58,7 +55,7 @@ module.exports = Block.extend({
   },
 
   isEmpty: function() {
-    return _.isEmpty(this.saveAndGetData().text);
+    return _.isEmpty(this.getBlockData().text);
   }
 
 });

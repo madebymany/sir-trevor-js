@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Store", function(){
+describe("Block:Store", function(){
 
   var element, editor, block;
 
@@ -12,7 +12,7 @@ describe("Store", function(){
   describe("create", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
     });
 
     it("creates the data in the block store", function(){
@@ -25,14 +25,14 @@ describe("Store", function(){
 
   });
 
-  describe("getData", function(){
+  describe("_getData", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
     });
 
     it("should retrieve the data", function(){
-      expect(block.getData().text).toBe("Test");
+      expect(block._getData().text).toBe("Test");
     });
 
   });
@@ -40,17 +40,17 @@ describe("Store", function(){
   describe("setData", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
     });
 
     it("should set the data on the block", function(){
       block.setData({ text: "Boom" });
-      expect(block.getData().text).toBe("Boom");
+      expect(block._getData().text).toBe("Boom");
     });
 
     it("should save the data, even if none is given", function(){
       block.setData({ text: '' });
-      expect(block.getData().text).toBe('');
+      expect(block._getData().text).toBe('');
     });
 
   });
@@ -58,13 +58,13 @@ describe("Store", function(){
   describe("save", function(){
 
     beforeEach(function() {
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID);
-      spyOn(block, 'toData');
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
+      spyOn(block, '_serializeData');
     });
 
-    it("calls toData on save", function(){
+    it("calls _serializeData on save", function(){
       block.save();
-      expect(block.toData).toHaveBeenCalled();
+      expect(block._serializeData).toHaveBeenCalled();
     });
 
   });

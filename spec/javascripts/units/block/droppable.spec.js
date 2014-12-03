@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Droppable Block", function(){
+describe("Block:Droppable Block", function(){
 
   var element, editor, block;
 
@@ -12,7 +12,7 @@ describe("Droppable Block", function(){
       droppable: true
     });
 
-    block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID);
+    block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID, editor.mediator);
   });
 
   describe("render", function(){

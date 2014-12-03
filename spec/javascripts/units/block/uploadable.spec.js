@@ -1,6 +1,6 @@
 "use strict";
 
-describe("Uploadable Block", function(){
+describe("Block:Uploadable Block", function(){
 
   var element, editor, block;
 
@@ -12,7 +12,7 @@ describe("Uploadable Block", function(){
       uploadable: true
     });
 
-    block = new SirTrevor.Blocks.UploadableBlock({}, editor.ID);
+    block = new SirTrevor.Blocks.UploadableBlock({}, editor.ID, editor.mediator);
   });
 
   describe("render", function(){

@@ -58,7 +58,7 @@ var Locales = {
   }
 };
 
-if (window.i18n === undefined || window.i18n.init === undefined) {
+if (window.i18n === undefined) {
   // Minimal i18n stub that only reads the English strings
   utils.log("Using i18n stub");
   window.i18n = {

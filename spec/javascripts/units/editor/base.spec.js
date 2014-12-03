@@ -80,7 +80,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.blocks = [
+      editor.block_manager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -101,7 +101,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.blocks = [
+      editor.block_manager.blocks = [
         { type: "Text" },
         { type: "Image" }
       ];
@@ -117,7 +117,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.blocks = [
+      editor.block_manager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -125,17 +125,6 @@ describe("Editor", function(){
 
     it("returns all the blocks of the type", function(){
       expect(editor.getBlocksByIDs([1]).length).toBe(1);
-    });
-  });
-
-  describe("Internationalization", function(){
-    beforeEach(function(){
-      editor = new SirTrevor.Editor({ el: element, required: ['Text'] });
-    });
-
-    it("correctly sets the English text as default", function(){
-        editor.validateBlockTypesExist(true);
-        expect(editor.errors).toEqual([{text: "You must have a block of type Text"}]);
     });
   });
 });

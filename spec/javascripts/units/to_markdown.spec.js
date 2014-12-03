@@ -23,35 +23,35 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("\\[[1](http://google.com)\\]");
   });
 
-  it("coverts bold to markdown", function(){
+  it("converts bold to markdown", function(){
     var html = "<strong>testing</strong>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("**testing**");
   });
 
-  it("coverts bold tags without closing tags to markdown", function(){
+  it("converts bold tags without closing tags to markdown", function(){
     var html = "<strong>testing</strong><strong>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("**testing**");
   });
 
-  it("coverts italic to markdown", function(){
+  it("converts italic to markdown", function(){
     var html = "<em>testing</em>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("_testing_");
   });
 
-  it("coverts paragraphs to newlines", function(){
+  it("converts paragraphs to newlines", function(){
     var html = "<p>testing</p>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("testing\n\n");
   });
 
-  it("coverts br's to newlines", function(){
+  it("converts br's to newlines", function(){
     var html = "testing<br>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
@@ -100,7 +100,7 @@ describe("toMarkdown", function(){
     expect(markdown).toBe("Yolo");
   });
 
-  it("coverts a complex piece of text correctly", function(){
+  it("converts a complex piece of text correctly", function(){
     var html = "<p><a href=\"#\">Hello</a> this is my <strong>amazing <em>piece</em></strong> <em>I think</em> that <strong>it should</strong> be able to be convereted correctly.</p>",
         markdown = SirTrevor.toMarkdown(html, "Text");
 
@@ -168,24 +168,6 @@ describe("toMarkdown", function(){
         markdown = SirTrevor.toMarkdown(html, "Text");
 
     expect(markdown).toBe("[test](test)");
-  });
-
-  it("strips all tags if aggresiveHTMLStrip is true", function() {
-    SirTrevor.config.defaults.toMarkdown.aggresiveHTMLStrip = true;
-
-    var html = "x < 4. y > 5.",
-        markdown = SirTrevor.toMarkdown(html, "Text");
-
-    expect(markdown).toBe("x  5.");
-  });
-
-  it("leaves < & > alone if aggresiveHTMLStrip is false", function(){
-    SirTrevor.config.defaults.toMarkdown.aggresiveHTMLStrip = false;
-
-    var html = "x < 4. y > 5.",
-        markdown = SirTrevor.toMarkdown(html, "Text");
-
-    expect(markdown).toBe("x < 4. y > 5.");
   });
 
 });

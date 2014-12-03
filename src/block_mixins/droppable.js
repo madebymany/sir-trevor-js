@@ -18,7 +18,8 @@ module.exports = {
 
     this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
-    var drop_html = $(_.template(this.drop_options.html)({ block: this, _: _ }));
+    var drop_html = $(_.template(this.drop_options.html,
+                                 { block: this, _: _ }));
 
     this.$editor.hide();
     this.$inputs.append(drop_html);

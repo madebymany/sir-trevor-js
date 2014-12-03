@@ -14,19 +14,19 @@ var utils = require('../utils');
 
 var EventBus = require('../event-bus');
 
-var submittable = function($form) {
+var Submittable = function($form) {
   this.$form = $form;
   this.intialize();
 };
 
-Object.assign(submittable.prototype, {
+Object.assign(Submittable.prototype, {
 
   intialize: function(){
-    this.$submitBtn = this.$form.find("input[type='submit']");
+    this.submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
 
-    this.$submitBtn.each(function(i, btn){
+    this.submitBtn.each(function(i, btn){
       btnTitles.push($(btn).attr('value'));
     });
 
@@ -37,12 +37,12 @@ Object.assign(submittable.prototype, {
   },
 
   setSubmitButton: function(e, message) {
-    this.$submitBtn.attr('value', message);
+    this.submitBtn.attr('value', message);
   },
 
   resetSubmitButton: function(){
     var titles = this.submitBtnTitles;
-    this.$submitBtn.each(function(index, item) {
+    this.submitBtn.each(function(index, item) {
       $(item).attr('value', titles[index]);
     });
   },
@@ -73,14 +73,14 @@ Object.assign(submittable.prototype, {
 
   _disableSubmitButton: function(message){
     this.setSubmitButton(null, message || i18n.t("general:wait"));
-    this.$submitBtn
+    this.submitBtn
     .attr('disabled', 'disabled')
     .addClass('disabled');
   },
 
   _enableSubmitButton: function(){
     this.resetSubmitButton();
-    this.$submitBtn
+    this.submitBtn
     .removeAttr('disabled')
     .removeClass('disabled');
   },
@@ -103,5 +103,5 @@ Object.assign(submittable.prototype, {
 
 });
 
-module.exports = submittable;
+module.exports = Submittable;
 

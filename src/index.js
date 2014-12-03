@@ -2,6 +2,7 @@
 
 var _ = require('./lodash');
 
+require('es6-shim'); // bundling in for the moment as support is very rare
 require('./helpers/event'); // extends jQuery itself
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 
@@ -12,18 +13,20 @@ var SirTrevor = {
   log: require('./utils').log,
   Locales: require('./locales'),
 
+  Events: require('./events'),
   EventBus: require('./event-bus'),
 
-  EditorStore: require('./extensions/sir-trevor.editor-store'),
-  Submittable: require('./extensions/sir-trevor.submittable'),
-  FileUploader: require('./extensions/sir-trevor.uploader'),
+  EditorStore: require('./extensions/editor-store'),
+  Submittable: require('./extensions/submittable'),
+  FileUploader: require('./extensions/file-uploader'),
 
   BlockMixins: require('./block_mixins'),
-  BlockPositioner: require('./block.positioner'),
-  BlockReorder: require('./block.reorder'),
-  BlockDeletion: require('./block.deletion'),
-  BlockValidations: require('./block.validations'),
-  BlockStore: require('./block.store'),
+  BlockPositioner: require('./block-positioner'),
+  BlockReorder: require('./block-reorder'),
+  BlockDeletion: require('./block-deletion'),
+  BlockValidations: require('./block-validations'),
+  BlockStore: require('./block-store'),
+  BlockManager: require('./block-manager'),
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),

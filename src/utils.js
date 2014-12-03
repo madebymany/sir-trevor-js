@@ -32,6 +32,14 @@ var utils = {
     return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
   },
 
+  flatten: function(obj) {
+    var x = {};
+    (Array.isArray(obj) ? obj : Object.keys(obj)).forEach(function (i) {
+      x[i] = true;
+    });
+    return x;
+  },
+
   underscored: function(str){
     return str.trim().replace(/([a-z\d])([A-Z]+)/g, '$1_$2')
     .replace(/[-\s]+/g, '_').toLowerCase();

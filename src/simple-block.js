@@ -3,12 +3,13 @@
 var _ = require('./lodash');
 var utils = require('./utils');
 
-var BlockReorder = require('./block.reorder');
+var BlockReorder = require('./block-reorder');
 
-var SimpleBlock = function(data, instance_id) {
+var SimpleBlock = function(data, instance_id, mediator) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -16,7 +17,7 @@ var SimpleBlock = function(data, instance_id) {
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block.store'), {
+Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block-store'), {
 
   focus : function() {},
 
@@ -47,7 +48,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   type: '',
 
-  'class': function() {
+  class: function() {
     return utils.classify(this.type);
   },
 
@@ -110,7 +111,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   },
 
   addMessage: function(msg, additionalClass) {
-    var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
+    var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
     this.$messages.append($msg)
     .addClass('st-block__messages--is-visible');
     return $msg;

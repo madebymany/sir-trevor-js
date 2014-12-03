@@ -1,17 +1,2049 @@
 /*!
- * Sir Trevor JS v0.3.2
+ * Sir Trevor JS v0.4.0
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2014-11-28
+ * 2014-12-03
  */
 
 
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.SirTrevor=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 module.exports = require('./src/');
 
-},{"./src/":89}],2:[function(require,module,exports){
+},{"./src/":93}],2:[function(require,module,exports){
+(function (process){
+ /*!
+  * https://github.com/paulmillr/es6-shim
+  * @license es6-shim Copyright 2013-2014 by Paul Miller (http://paulmillr.com)
+  *   and contributors,  MIT License
+  * es6-shim: v0.21.0
+  * see https://github.com/paulmillr/es6-shim/blob/master/LICENSE
+  * Details and documentation:
+  * https://github.com/paulmillr/es6-shim/
+  */
+
+// UMD (Universal Module Definition)
+// see https://github.com/umdjs/umd/blob/master/returnExports.js
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(factory);
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like enviroments that support module.exports,
+    // like Node.
+    module.exports = factory();
+  } else {
+    // Browser globals (root is window)
+    root.returnExports = factory();
+  }
+}(this, function () {
+  'use strict';
+
+  var isCallableWithoutNew = function (func) {
+    try { func(); }
+    catch (e) { return false; }
+    return true;
+  };
+
+  var supportsSubclassing = function (C, f) {
+    /* jshint proto:true */
+    try {
+      var Sub = function () { C.apply(this, arguments); };
+      if (!Sub.__proto__) { return false; /* skip test on IE < 11 */ }
+      Object.setPrototypeOf(Sub, C);
+      Sub.prototype = Object.create(C.prototype, {
+        constructor: { value: C }
+      });
+      return f(Sub);
+    } catch (e) {
+      return false;
+    }
+  };
+
+  var arePropertyDescriptorsSupported = function () {
+    try {
+      Object.defineProperty({}, 'x', {});
+      return true;
+    } catch (e) { /* this is IE 8. */
+      return false;
+    }
+  };
+
+  var startsWithRejectsRegex = function () {
+    var rejectsRegex = false;
+    if (String.prototype.startsWith) {
+      try {
+        '/a/'.startsWith(/a/);
+      } catch (e) { /* this is spec compliant */
+        rejectsRegex = true;
+      }
+    }
+    return rejectsRegex;
+  };
+
+  /*jshint evil: true */
+  var getGlobal = new Function('return this;');
+  /*jshint evil: false */
+
+  var globals = getGlobal();
+  var global_isFinite = globals.isFinite;
+  var supportsDescriptors = !!Object.defineProperty && arePropertyDescriptorsSupported();
+  var startsWithIsCompliant = startsWithRejectsRegex();
+  var _slice = Array.prototype.slice;
+  var _indexOf = String.prototype.indexOf;
+  var _toString = Object.prototype.toString;
+  var _hasOwnProperty = Object.prototype.hasOwnProperty;
+  var ArrayIterator; // make our implementation private
+
+  var defineProperty = function (object, name, value, force) {
+    if (!force && name in object) { return; }
+    if (supportsDescriptors) {
+      Object.defineProperty(object, name, {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: value
+      });
+    } else {
+      object[name] = value;
+    }
+  };
+
+  // Define configurable, writable and non-enumerable props
+  // if they don’t exist.
+  var defineProperties = function (object, map) {
+    Object.keys(map).forEach(function (name) {
+      var method = map[name];
+      defineProperty(object, name, method, false);
+    });
+  };
+
+  // Simple shim for Object.create on ES3 browsers
+  // (unlike real shim, no attempt to support `prototype === null`)
+  var create = Object.create || function (prototype, properties) {
+    function Type() {}
+    Type.prototype = prototype;
+    var object = new Type();
+    if (typeof properties !== 'undefined') {
+      defineProperties(object, properties);
+    }
+    return object;
+  };
+
+  // This is a private name in the es6 spec, equal to '[Symbol.iterator]'
+  // we're going to use an arbitrary _-prefixed name to make our shims
+  // work properly with each other, even though we don't have full Iterator
+  // support.  That is, `Array.from(map.keys())` will work, but we don't
+  // pretend to export a "real" Iterator interface.
+  var $iterator$ = (typeof Symbol === 'function' && Symbol.iterator) || '_es6-shim iterator_';
+  // Firefox ships a partial implementation using the name @@iterator.
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=907077#c14
+  // So use that name if we detect it.
+  if (globals.Set && typeof new globals.Set()['@@iterator'] === 'function') {
+    $iterator$ = '@@iterator';
+  }
+  var addIterator = function (prototype, impl) {
+    if (!impl) { impl = function iterator() { return this; }; }
+    var o = {};
+    o[$iterator$] = impl;
+    defineProperties(prototype, o);
+    /* jshint notypeof: true */
+    if (!prototype[$iterator$] && typeof $iterator$ === 'symbol') {
+      // implementations are buggy when $iterator$ is a Symbol
+      prototype[$iterator$] = impl;
+    }
+  };
+
+  // taken directly from https://github.com/ljharb/is-arguments/blob/master/index.js
+  // can be replaced with require('is-arguments') if we ever use a build process instead
+  var isArguments = function isArguments(value) {
+    var str = _toString.call(value);
+    var result = str === '[object Arguments]';
+    if (!result) {
+      result = str !== '[object Array]' &&
+        value !== null &&
+        typeof value === 'object' &&
+        typeof value.length === 'number' &&
+        value.length >= 0 &&
+        _toString.call(value.callee) === '[object Function]';
+    }
+    return result;
+  };
+
+  var emulateES6construct = function (o) {
+    if (!ES.TypeIsObject(o)) { throw new TypeError('bad object'); }
+    // es5 approximation to es6 subclass semantics: in es6, 'new Foo'
+    // would invoke Foo.@@create to allocation/initialize the new object.
+    // In es5 we just get the plain object.  So if we detect an
+    // uninitialized object, invoke o.constructor.@@create
+    if (!o._es6construct) {
+      if (o.constructor && ES.IsCallable(o.constructor['@@create'])) {
+        o = o.constructor['@@create'](o);
+      }
+      defineProperties(o, { _es6construct: true });
+    }
+    return o;
+  };
+
+  var ES = {
+    CheckObjectCoercible: function (x, optMessage) {
+      /* jshint eqnull:true */
+      if (x == null) {
+        throw new TypeError(optMessage || 'Cannot call method on ' + x);
+      }
+      return x;
+    },
+
+    TypeIsObject: function (x) {
+      /* jshint eqnull:true */
+      // this is expensive when it returns false; use this function
+      // when you expect it to return true in the common case.
+      return x != null && Object(x) === x;
+    },
+
+    ToObject: function (o, optMessage) {
+      return Object(ES.CheckObjectCoercible(o, optMessage));
+    },
+
+    IsCallable: function (x) {
+      return typeof x === 'function' &&
+        // some versions of IE say that typeof /abc/ === 'function'
+        _toString.call(x) === '[object Function]';
+    },
+
+    ToInt32: function (x) {
+      return x >> 0;
+    },
+
+    ToUint32: function (x) {
+      return x >>> 0;
+    },
+
+    ToInteger: function (value) {
+      var number = +value;
+      if (Number.isNaN(number)) { return 0; }
+      if (number === 0 || !Number.isFinite(number)) { return number; }
+      return (number > 0 ? 1 : -1) * Math.floor(Math.abs(number));
+    },
+
+    ToLength: function (value) {
+      var len = ES.ToInteger(value);
+      if (len <= 0) { return 0; } // includes converting -0 to +0
+      if (len > Number.MAX_SAFE_INTEGER) { return Number.MAX_SAFE_INTEGER; }
+      return len;
+    },
+
+    SameValue: function (a, b) {
+      if (a === b) {
+        // 0 === -0, but they are not identical.
+        if (a === 0) { return 1 / a === 1 / b; }
+        return true;
+      }
+      return Number.isNaN(a) && Number.isNaN(b);
+    },
+
+    SameValueZero: function (a, b) {
+      // same as SameValue except for SameValueZero(+0, -0) == true
+      return (a === b) || (Number.isNaN(a) && Number.isNaN(b));
+    },
+
+    IsIterable: function (o) {
+      return ES.TypeIsObject(o) &&
+        (typeof o[$iterator$] !== 'undefined' || isArguments(o));
+    },
+
+    GetIterator: function (o) {
+      if (isArguments(o)) {
+        // special case support for `arguments`
+        return new ArrayIterator(o, 'value');
+      }
+      var itFn = o[$iterator$];
+      if (!ES.IsCallable(itFn)) {
+        throw new TypeError('value is not an iterable');
+      }
+      var it = itFn.call(o);
+      if (!ES.TypeIsObject(it)) {
+        throw new TypeError('bad iterator');
+      }
+      return it;
+    },
+
+    IteratorNext: function (it) {
+      var result = arguments.length > 1 ? it.next(arguments[1]) : it.next();
+      if (!ES.TypeIsObject(result)) {
+        throw new TypeError('bad iterator');
+      }
+      return result;
+    },
+
+    Construct: function (C, args) {
+      // CreateFromConstructor
+      var obj;
+      if (ES.IsCallable(C['@@create'])) {
+        obj = C['@@create']();
+      } else {
+        // OrdinaryCreateFromConstructor
+        obj = create(C.prototype || null);
+      }
+      // Mark that we've used the es6 construct path
+      // (see emulateES6construct)
+      defineProperties(obj, { _es6construct: true });
+      // Call the constructor.
+      var result = C.apply(obj, args);
+      return ES.TypeIsObject(result) ? result : obj;
+    }
+  };
+
+  var numberConversion = (function () {
+    // from https://github.com/inexorabletash/polyfill/blob/master/typedarray.js#L176-L266
+    // with permission and license, per https://twitter.com/inexorabletash/status/372206509540659200
+
+    function roundToEven(n) {
+      var w = Math.floor(n), f = n - w;
+      if (f < 0.5) {
+        return w;
+      }
+      if (f > 0.5) {
+        return w + 1;
+      }
+      return w % 2 ? w + 1 : w;
+    }
+
+    function packIEEE754(v, ebits, fbits) {
+      var bias = (1 << (ebits - 1)) - 1,
+        s, e, f,
+        i, bits, str, bytes;
+
+      // Compute sign, exponent, fraction
+      if (v !== v) {
+        // NaN
+        // http://dev.w3.org/2006/webapi/WebIDL/#es-type-mapping
+        e = (1 << ebits) - 1;
+        f = Math.pow(2, fbits - 1);
+        s = 0;
+      } else if (v === Infinity || v === -Infinity) {
+        e = (1 << ebits) - 1;
+        f = 0;
+        s = (v < 0) ? 1 : 0;
+      } else if (v === 0) {
+        e = 0;
+        f = 0;
+        s = (1 / v === -Infinity) ? 1 : 0;
+      } else {
+        s = v < 0;
+        v = Math.abs(v);
+
+        if (v >= Math.pow(2, 1 - bias)) {
+          e = Math.min(Math.floor(Math.log(v) / Math.LN2), 1023);
+          f = roundToEven(v / Math.pow(2, e) * Math.pow(2, fbits));
+          if (f / Math.pow(2, fbits) >= 2) {
+            e = e + 1;
+            f = 1;
+          }
+          if (e > bias) {
+            // Overflow
+            e = (1 << ebits) - 1;
+            f = 0;
+          } else {
+            // Normal
+            e = e + bias;
+            f = f - Math.pow(2, fbits);
+          }
+        } else {
+          // Subnormal
+          e = 0;
+          f = roundToEven(v / Math.pow(2, 1 - bias - fbits));
+        }
+      }
+
+      // Pack sign, exponent, fraction
+      bits = [];
+      for (i = fbits; i; i -= 1) {
+        bits.push(f % 2 ? 1 : 0);
+        f = Math.floor(f / 2);
+      }
+      for (i = ebits; i; i -= 1) {
+        bits.push(e % 2 ? 1 : 0);
+        e = Math.floor(e / 2);
+      }
+      bits.push(s ? 1 : 0);
+      bits.reverse();
+      str = bits.join('');
+
+      // Bits to bytes
+      bytes = [];
+      while (str.length) {
+        bytes.push(parseInt(str.slice(0, 8), 2));
+        str = str.slice(8);
+      }
+      return bytes;
+    }
+
+    function unpackIEEE754(bytes, ebits, fbits) {
+      // Bytes to bits
+      var bits = [], i, j, b, str,
+          bias, s, e, f;
+
+      for (i = bytes.length; i; i -= 1) {
+        b = bytes[i - 1];
+        for (j = 8; j; j -= 1) {
+          bits.push(b % 2 ? 1 : 0);
+          b = b >> 1;
+        }
+      }
+      bits.reverse();
+      str = bits.join('');
+
+      // Unpack sign, exponent, fraction
+      bias = (1 << (ebits - 1)) - 1;
+      s = parseInt(str.slice(0, 1), 2) ? -1 : 1;
+      e = parseInt(str.slice(1, 1 + ebits), 2);
+      f = parseInt(str.slice(1 + ebits), 2);
+
+      // Produce number
+      if (e === (1 << ebits) - 1) {
+        return f !== 0 ? NaN : s * Infinity;
+      } else if (e > 0) {
+        // Normalized
+        return s * Math.pow(2, e - bias) * (1 + f / Math.pow(2, fbits));
+      } else if (f !== 0) {
+        // Denormalized
+        return s * Math.pow(2, -(bias - 1)) * (f / Math.pow(2, fbits));
+      } else {
+        return s < 0 ? -0 : 0;
+      }
+    }
+
+    function unpackFloat64(b) { return unpackIEEE754(b, 11, 52); }
+    function packFloat64(v) { return packIEEE754(v, 11, 52); }
+    function unpackFloat32(b) { return unpackIEEE754(b, 8, 23); }
+    function packFloat32(v) { return packIEEE754(v, 8, 23); }
+
+    var conversions = {
+      toFloat32: function (num) { return unpackFloat32(packFloat32(num)); }
+    };
+    if (typeof Float32Array !== 'undefined') {
+      var float32array = new Float32Array(1);
+      conversions.toFloat32 = function (num) {
+        float32array[0] = num;
+        return float32array[0];
+      };
+    }
+    return conversions;
+  }());
+
+  defineProperties(String, {
+    fromCodePoint: function fromCodePoint(_) { // length = 1
+      var result = [];
+      var next;
+      for (var i = 0, length = arguments.length; i < length; i++) {
+        next = Number(arguments[i]);
+        if (!ES.SameValue(next, ES.ToInteger(next)) || next < 0 || next > 0x10FFFF) {
+          throw new RangeError('Invalid code point ' + next);
+        }
+
+        if (next < 0x10000) {
+          result.push(String.fromCharCode(next));
+        } else {
+          next -= 0x10000;
+          result.push(String.fromCharCode((next >> 10) + 0xD800));
+          result.push(String.fromCharCode((next % 0x400) + 0xDC00));
+        }
+      }
+      return result.join('');
+    },
+
+    raw: function raw(callSite) { // raw.length===1
+      var cooked = ES.ToObject(callSite, 'bad callSite');
+      var rawValue = cooked.raw;
+      var rawString = ES.ToObject(rawValue, 'bad raw value');
+      var len = rawString.length;
+      var literalsegments = ES.ToLength(len);
+      if (literalsegments <= 0) {
+        return '';
+      }
+
+      var stringElements = [];
+      var nextIndex = 0;
+      var nextKey, next, nextSeg, nextSub;
+      while (nextIndex < literalsegments) {
+        nextKey = String(nextIndex);
+        next = rawString[nextKey];
+        nextSeg = String(next);
+        stringElements.push(nextSeg);
+        if (nextIndex + 1 >= literalsegments) {
+          break;
+        }
+        next = nextIndex + 1 < arguments.length ? arguments[nextIndex + 1] : '';
+        nextSub = String(next);
+        stringElements.push(nextSub);
+        nextIndex++;
+      }
+      return stringElements.join('');
+    }
+  });
+
+  // Firefox 31 reports this function's length as 0
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1062484
+  if (String.fromCodePoint.length !== 1) {
+    var originalFromCodePoint = String.fromCodePoint;
+    defineProperty(String, 'fromCodePoint', function (_) { return originalFromCodePoint.apply(this, arguments); }, true);
+  }
+
+  var StringShims = {
+    // Fast repeat, uses the `Exponentiation by squaring` algorithm.
+    // Perf: http://jsperf.com/string-repeat2/2
+    repeat: (function () {
+      var repeat = function (s, times) {
+        if (times < 1) { return ''; }
+        if (times % 2) { return repeat(s, times - 1) + s; }
+        var half = repeat(s, times / 2);
+        return half + half;
+      };
+
+      return function (times) {
+        var thisStr = String(ES.CheckObjectCoercible(this));
+        times = ES.ToInteger(times);
+        if (times < 0 || times === Infinity) {
+          throw new RangeError('Invalid String#repeat value');
+        }
+        return repeat(thisStr, times);
+      };
+    })(),
+
+    startsWith: function (searchStr) {
+      var thisStr = String(ES.CheckObjectCoercible(this));
+      if (_toString.call(searchStr) === '[object RegExp]') {
+        throw new TypeError('Cannot call method "startsWith" with a regex');
+      }
+      searchStr = String(searchStr);
+      var startArg = arguments.length > 1 ? arguments[1] : void 0;
+      var start = Math.max(ES.ToInteger(startArg), 0);
+      return thisStr.slice(start, start + searchStr.length) === searchStr;
+    },
+
+    endsWith: function (searchStr) {
+      var thisStr = String(ES.CheckObjectCoercible(this));
+      if (_toString.call(searchStr) === '[object RegExp]') {
+        throw new TypeError('Cannot call method "endsWith" with a regex');
+      }
+      searchStr = String(searchStr);
+      var thisLen = thisStr.length;
+      var posArg = arguments.length > 1 ? arguments[1] : void 0;
+      var pos = typeof posArg === 'undefined' ? thisLen : ES.ToInteger(posArg);
+      var end = Math.min(Math.max(pos, 0), thisLen);
+      return thisStr.slice(end - searchStr.length, end) === searchStr;
+    },
+
+    includes: function includes(searchString) {
+      var position = arguments.length > 1 ? arguments[1] : void 0;
+      // Somehow this trick makes method 100% compat with the spec.
+      return _indexOf.call(this, searchString, position) !== -1;
+    },
+
+    codePointAt: function (pos) {
+      var thisStr = String(ES.CheckObjectCoercible(this));
+      var position = ES.ToInteger(pos);
+      var length = thisStr.length;
+      if (position < 0 || position >= length) { return; }
+      var first = thisStr.charCodeAt(position);
+      var isEnd = (position + 1 === length);
+      if (first < 0xD800 || first > 0xDBFF || isEnd) { return first; }
+      var second = thisStr.charCodeAt(position + 1);
+      if (second < 0xDC00 || second > 0xDFFF) { return first; }
+      return ((first - 0xD800) * 1024) + (second - 0xDC00) + 0x10000;
+    }
+  };
+  defineProperties(String.prototype, StringShims);
+
+  var hasStringTrimBug = '\u0085'.trim().length !== 1;
+  if (hasStringTrimBug) {
+    var originalStringTrim = String.prototype.trim;
+    delete String.prototype.trim;
+    // whitespace from: http://es5.github.io/#x15.5.4.20
+    // implementation from https://github.com/es-shims/es5-shim/blob/v3.4.0/es5-shim.js#L1304-L1324
+    var ws = [
+      '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u2003',
+      '\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\u2028',
+      '\u2029\uFEFF'
+    ].join('');
+    var trimRegexp = new RegExp('(^[' + ws + ']+)|([' + ws + ']+$)', 'g');
+    defineProperties(String.prototype, {
+      trim: function () {
+        if (typeof this === 'undefined' || this === null) {
+          throw new TypeError("can't convert " + this + ' to object');
+        }
+        return String(this).replace(trimRegexp, '');
+      }
+    });
+  }
+
+  // see https://people.mozilla.org/~jorendorff/es6-draft.html#sec-string.prototype-@@iterator
+  var StringIterator = function (s) {
+    this._s = String(ES.CheckObjectCoercible(s));
+    this._i = 0;
+  };
+  StringIterator.prototype.next = function () {
+    var s = this._s, i = this._i;
+    if (typeof s === 'undefined' || i >= s.length) {
+      this._s = void 0;
+      return { value: void 0, done: true };
+    }
+    var first = s.charCodeAt(i), second, len;
+    if (first < 0xD800 || first > 0xDBFF || (i + 1) == s.length) {
+      len = 1;
+    } else {
+      second = s.charCodeAt(i + 1);
+      len = (second < 0xDC00 || second > 0xDFFF) ? 1 : 2;
+    }
+    this._i = i + len;
+    return { value: s.substr(i, len), done: false };
+  };
+  addIterator(StringIterator.prototype);
+  addIterator(String.prototype, function () {
+    return new StringIterator(this);
+  });
+
+  if (!startsWithIsCompliant) {
+    // Firefox has a noncompliant startsWith implementation
+    String.prototype.startsWith = StringShims.startsWith;
+    String.prototype.endsWith = StringShims.endsWith;
+  }
+
+  var ArrayShims = {
+    from: function (iterable) {
+      var mapFn = arguments.length > 1 ? arguments[1] : void 0;
+
+      var list = ES.ToObject(iterable, 'bad iterable');
+      if (typeof mapFn !== 'undefined' && !ES.IsCallable(mapFn)) {
+        throw new TypeError('Array.from: when provided, the second argument must be a function');
+      }
+
+      var hasThisArg = arguments.length > 2;
+      var thisArg = hasThisArg ? arguments[2] : void 0;
+
+      var usingIterator = ES.IsIterable(list);
+      // does the spec really mean that Arrays should use ArrayIterator?
+      // https://bugs.ecmascript.org/show_bug.cgi?id=2416
+      //if (Array.isArray(list)) { usingIterator=false; }
+
+      var length;
+      var result, i, value;
+      if (usingIterator) {
+        i = 0;
+        result = ES.IsCallable(this) ? Object(new this()) : [];
+        var it = usingIterator ? ES.GetIterator(list) : null;
+        var iterationValue;
+
+        do {
+          iterationValue = ES.IteratorNext(it);
+          if (!iterationValue.done) {
+            value = iterationValue.value;
+            if (mapFn) {
+              result[i] = hasThisArg ? mapFn.call(thisArg, value, i) : mapFn(value, i);
+            } else {
+              result[i] = value;
+            }
+            i += 1;
+          }
+        } while (!iterationValue.done);
+        length = i;
+      } else {
+        length = ES.ToLength(list.length);
+        result = ES.IsCallable(this) ? Object(new this(length)) : new Array(length);
+        for (i = 0; i < length; ++i) {
+          value = list[i];
+          if (mapFn) {
+            result[i] = hasThisArg ? mapFn.call(thisArg, value, i) : mapFn(value, i);
+          } else {
+            result[i] = value;
+          }
+        }
+      }
+
+      result.length = length;
+      return result;
+    },
+
+    of: function () {
+      return Array.from(arguments);
+    }
+  };
+  defineProperties(Array, ArrayShims);
+
+  var arrayFromSwallowsNegativeLengths = function () {
+    try {
+      return Array.from({ length: -1 }).length === 0;
+    } catch (e) {
+      return false;
+    }
+  };
+  // Fixes a Firefox bug in v32
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1063993
+  if (!arrayFromSwallowsNegativeLengths()) {
+    defineProperty(Array, 'from', ArrayShims.from, true);
+  }
+
+  // Our ArrayIterator is private; see
+  // https://github.com/paulmillr/es6-shim/issues/252
+  ArrayIterator = function (array, kind) {
+      this.i = 0;
+      this.array = array;
+      this.kind = kind;
+  };
+
+  defineProperties(ArrayIterator.prototype, {
+    next: function () {
+      var i = this.i, array = this.array;
+      if (!(this instanceof ArrayIterator)) {
+        throw new TypeError('Not an ArrayIterator');
+      }
+      if (typeof array !== 'undefined') {
+        var len = ES.ToLength(array.length);
+        for (; i < len; i++) {
+          var kind = this.kind;
+          var retval;
+          if (kind === 'key') {
+            retval = i;
+          } else if (kind === 'value') {
+            retval = array[i];
+          } else if (kind === 'entry') {
+            retval = [i, array[i]];
+          }
+          this.i = i + 1;
+          return { value: retval, done: false };
+        }
+      }
+      this.array = void 0;
+      return { value: void 0, done: true };
+    }
+  });
+  addIterator(ArrayIterator.prototype);
+
+  var ArrayPrototypeShims = {
+    copyWithin: function (target, start) {
+      var end = arguments[2]; // copyWithin.length must be 2
+      var o = ES.ToObject(this);
+      var len = ES.ToLength(o.length);
+      target = ES.ToInteger(target);
+      start = ES.ToInteger(start);
+      var to = target < 0 ? Math.max(len + target, 0) : Math.min(target, len);
+      var from = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
+      end = typeof end === 'undefined' ? len : ES.ToInteger(end);
+      var fin = end < 0 ? Math.max(len + end, 0) : Math.min(end, len);
+      var count = Math.min(fin - from, len - to);
+      var direction = 1;
+      if (from < to && to < (from + count)) {
+        direction = -1;
+        from += count - 1;
+        to += count - 1;
+      }
+      while (count > 0) {
+        if (_hasOwnProperty.call(o, from)) {
+          o[to] = o[from];
+        } else {
+          delete o[from];
+        }
+        from += direction;
+        to += direction;
+        count -= 1;
+      }
+      return o;
+    },
+
+    fill: function (value) {
+      var start = arguments.length > 1 ? arguments[1] : void 0;
+      var end = arguments.length > 2 ? arguments[2] : void 0;
+      var O = ES.ToObject(this);
+      var len = ES.ToLength(O.length);
+      start = ES.ToInteger(typeof start === 'undefined' ? 0 : start);
+      end = ES.ToInteger(typeof end === 'undefined' ? len : end);
+
+      var relativeStart = start < 0 ? Math.max(len + start, 0) : Math.min(start, len);
+      var relativeEnd = end < 0 ? len + end : end;
+
+      for (var i = relativeStart; i < len && i < relativeEnd; ++i) {
+        O[i] = value;
+      }
+      return O;
+    },
+
+    find: function find(predicate) {
+      var list = ES.ToObject(this);
+      var length = ES.ToLength(list.length);
+      if (!ES.IsCallable(predicate)) {
+        throw new TypeError('Array#find: predicate must be a function');
+      }
+      var thisArg = arguments.length > 1 ? arguments[1] : null;
+      for (var i = 0, value; i < length; i++) {
+        value = list[i];
+        if (thisArg) {
+          if (predicate.call(thisArg, value, i, list)) { return value; }
+        } else {
+          if (predicate(value, i, list)) { return value; }
+        }
+      }
+      return;
+    },
+
+    findIndex: function findIndex(predicate) {
+      var list = ES.ToObject(this);
+      var length = ES.ToLength(list.length);
+      if (!ES.IsCallable(predicate)) {
+        throw new TypeError('Array#findIndex: predicate must be a function');
+      }
+      var thisArg = arguments.length > 1 ? arguments[1] : null;
+      for (var i = 0; i < length; i++) {
+        if (thisArg) {
+          if (predicate.call(thisArg, list[i], i, list)) { return i; }
+        } else {
+          if (predicate(list[i], i, list)) { return i; }
+        }
+      }
+      return -1;
+    },
+
+    keys: function () {
+      return new ArrayIterator(this, 'key');
+    },
+
+    values: function () {
+      return new ArrayIterator(this, 'value');
+    },
+
+    entries: function () {
+      return new ArrayIterator(this, 'entry');
+    }
+  };
+  // Safari 7.1 defines Array#keys and Array#entries natively,
+  // but the resulting ArrayIterator objects don't have a "next" method.
+  if (Array.prototype.keys && !ES.IsCallable([1].keys().next)) {
+    delete Array.prototype.keys;
+  }
+  if (Array.prototype.entries && !ES.IsCallable([1].entries().next)) {
+    delete Array.prototype.entries;
+  }
+
+  // Chrome 38 defines Array#keys and Array#entries, and Array#@@iterator, but not Array#values
+  if (Array.prototype.keys && Array.prototype.entries && !Array.prototype.values && Array.prototype[$iterator$]) {
+    defineProperties(Array.prototype, {
+      values: Array.prototype[$iterator$]
+    });
+  }
+  defineProperties(Array.prototype, ArrayPrototypeShims);
+
+  addIterator(Array.prototype, function () { return this.values(); });
+  // Chrome defines keys/values/entries on Array, but doesn't give us
+  // any way to identify its iterator.  So add our own shimmed field.
+  if (Object.getPrototypeOf) {
+    addIterator(Object.getPrototypeOf([].values()));
+  }
+
+  var maxSafeInteger = Math.pow(2, 53) - 1;
+  defineProperties(Number, {
+    MAX_SAFE_INTEGER: maxSafeInteger,
+    MIN_SAFE_INTEGER: -maxSafeInteger,
+    EPSILON: 2.220446049250313e-16,
+
+    parseInt: globals.parseInt,
+    parseFloat: globals.parseFloat,
+
+    isFinite: function (value) {
+      return typeof value === 'number' && global_isFinite(value);
+    },
+
+    isInteger: function (value) {
+      return Number.isFinite(value) &&
+        ES.ToInteger(value) === value;
+    },
+
+    isSafeInteger: function (value) {
+      return Number.isInteger(value) && Math.abs(value) <= Number.MAX_SAFE_INTEGER;
+    },
+
+    isNaN: function (value) {
+      // NaN !== NaN, but they are identical.
+      // NaNs are the only non-reflexive value, i.e., if x !== x,
+      // then x is NaN.
+      // isNaN is broken: it converts its argument to number, so
+      // isNaN('foo') => true
+      return value !== value;
+    }
+
+  });
+
+  // Work around bugs in Array#find and Array#findIndex -- early
+  // implementations skipped holes in sparse arrays. (Note that the
+  // implementations of find/findIndex indirectly use shimmed
+  // methods of Number, so this test has to happen down here.)
+  if (![, 1].find(function (item, idx) { return idx === 0; })) {
+    defineProperty(Array.prototype, 'find', ArrayPrototypeShims.find, true);
+  }
+  if ([, 1].findIndex(function (item, idx) { return idx === 0; }) !== 0) {
+    defineProperty(Array.prototype, 'findIndex', ArrayPrototypeShims.findIndex, true);
+  }
+
+  if (supportsDescriptors) {
+    defineProperties(Object, {
+      getPropertyDescriptor: function (subject, name) {
+        var pd = Object.getOwnPropertyDescriptor(subject, name);
+        var proto = Object.getPrototypeOf(subject);
+        while (typeof pd === 'undefined' && proto !== null) {
+          pd = Object.getOwnPropertyDescriptor(proto, name);
+          proto = Object.getPrototypeOf(proto);
+        }
+        return pd;
+      },
+
+      getPropertyNames: function (subject) {
+        var result = Object.getOwnPropertyNames(subject);
+        var proto = Object.getPrototypeOf(subject);
+
+        var addProperty = function (property) {
+          if (result.indexOf(property) === -1) {
+            result.push(property);
+          }
+        };
+
+        while (proto !== null) {
+          Object.getOwnPropertyNames(proto).forEach(addProperty);
+          proto = Object.getPrototypeOf(proto);
+        }
+        return result;
+      }
+    });
+
+    defineProperties(Object, {
+      // 19.1.3.1
+      assign: function (target, source) {
+        if (!ES.TypeIsObject(target)) {
+          throw new TypeError('target must be an object');
+        }
+        return Array.prototype.reduce.call(arguments, function (target, source) {
+          return Object.keys(Object(source)).reduce(function (target, key) {
+            target[key] = source[key];
+            return target;
+          }, target);
+        });
+      },
+
+      is: function (a, b) {
+        return ES.SameValue(a, b);
+      },
+
+      // 19.1.3.9
+      // shim from https://gist.github.com/WebReflection/5593554
+      setPrototypeOf: (function (Object, magic) {
+        var set;
+
+        var checkArgs = function (O, proto) {
+          if (!ES.TypeIsObject(O)) {
+            throw new TypeError('cannot set prototype on a non-object');
+          }
+          if (!(proto === null || ES.TypeIsObject(proto))) {
+            throw new TypeError('can only set prototype to an object or null' + proto);
+          }
+        };
+
+        var setPrototypeOf = function (O, proto) {
+          checkArgs(O, proto);
+          set.call(O, proto);
+          return O;
+        };
+
+        try {
+          // this works already in Firefox and Safari
+          set = Object.getOwnPropertyDescriptor(Object.prototype, magic).set;
+          set.call({}, null);
+        } catch (e) {
+          if (Object.prototype !== {}[magic]) {
+            // IE < 11 cannot be shimmed
+            return;
+          }
+          // probably Chrome or some old Mobile stock browser
+          set = function (proto) {
+            this[magic] = proto;
+          };
+          // please note that this will **not** work
+          // in those browsers that do not inherit
+          // __proto__ by mistake from Object.prototype
+          // in these cases we should probably throw an error
+          // or at least be informed about the issue
+          setPrototypeOf.polyfill = setPrototypeOf(
+            setPrototypeOf({}, null),
+            Object.prototype
+          ) instanceof Object;
+          // setPrototypeOf.polyfill === true means it works as meant
+          // setPrototypeOf.polyfill === false means it's not 100% reliable
+          // setPrototypeOf.polyfill === undefined
+          // or
+          // setPrototypeOf.polyfill ==  null means it's not a polyfill
+          // which means it works as expected
+          // we can even delete Object.prototype.__proto__;
+        }
+        return setPrototypeOf;
+      })(Object, '__proto__')
+    });
+  }
+
+  // Workaround bug in Opera 12 where setPrototypeOf(x, null) doesn't work,
+  // but Object.create(null) does.
+  if (Object.setPrototypeOf && Object.getPrototypeOf &&
+      Object.getPrototypeOf(Object.setPrototypeOf({}, null)) !== null &&
+      Object.getPrototypeOf(Object.create(null)) === null) {
+    (function () {
+      var FAKENULL = Object.create(null);
+      var gpo = Object.getPrototypeOf, spo = Object.setPrototypeOf;
+      Object.getPrototypeOf = function (o) {
+        var result = gpo(o);
+        return result === FAKENULL ? null : result;
+      };
+      Object.setPrototypeOf = function (o, p) {
+        if (p === null) { p = FAKENULL; }
+        return spo(o, p);
+      };
+      Object.setPrototypeOf.polyfill = false;
+    })();
+  }
+
+  try {
+    Object.keys('foo');
+  } catch (e) {
+    var originalObjectKeys = Object.keys;
+    Object.keys = function (obj) {
+      return originalObjectKeys(ES.ToObject(obj));
+    };
+  }
+
+  var MathShims = {
+    acosh: function (value) {
+      value = Number(value);
+      if (Number.isNaN(value) || value < 1) { return NaN; }
+      if (value === 1) { return 0; }
+      if (value === Infinity) { return value; }
+      return Math.log(value + Math.sqrt(value * value - 1));
+    },
+
+    asinh: function (value) {
+      value = Number(value);
+      if (value === 0 || !global_isFinite(value)) {
+        return value;
+      }
+      return value < 0 ? -Math.asinh(-value) : Math.log(value + Math.sqrt(value * value + 1));
+    },
+
+    atanh: function (value) {
+      value = Number(value);
+      if (Number.isNaN(value) || value < -1 || value > 1) {
+        return NaN;
+      }
+      if (value === -1) { return -Infinity; }
+      if (value === 1) { return Infinity; }
+      if (value === 0) { return value; }
+      return 0.5 * Math.log((1 + value) / (1 - value));
+    },
+
+    cbrt: function (value) {
+      value = Number(value);
+      if (value === 0) { return value; }
+      var negate = value < 0, result;
+      if (negate) { value = -value; }
+      result = Math.pow(value, 1 / 3);
+      return negate ? -result : result;
+    },
+
+    clz32: function (value) {
+      // See https://bugs.ecmascript.org/show_bug.cgi?id=2465
+      value = Number(value);
+      var number = ES.ToUint32(value);
+      if (number === 0) {
+        return 32;
+      }
+      return 32 - (number).toString(2).length;
+    },
+
+    cosh: function (value) {
+      value = Number(value);
+      if (value === 0) { return 1; } // +0 or -0
+      if (Number.isNaN(value)) { return NaN; }
+      if (!global_isFinite(value)) { return Infinity; }
+      if (value < 0) { value = -value; }
+      if (value > 21) { return Math.exp(value) / 2; }
+      return (Math.exp(value) + Math.exp(-value)) / 2;
+    },
+
+    expm1: function (value) {
+      value = Number(value);
+      if (value === -Infinity) { return -1; }
+      if (!global_isFinite(value) || value === 0) { return value; }
+      return Math.exp(value) - 1;
+    },
+
+    hypot: function (x, y) {
+      var anyNaN = false;
+      var allZero = true;
+      var anyInfinity = false;
+      var numbers = [];
+      Array.prototype.every.call(arguments, function (arg) {
+        var num = Number(arg);
+        if (Number.isNaN(num)) {
+          anyNaN = true;
+        } else if (num === Infinity || num === -Infinity) {
+          anyInfinity = true;
+        } else if (num !== 0) {
+          allZero = false;
+        }
+        if (anyInfinity) {
+          return false;
+        } else if (!anyNaN) {
+          numbers.push(Math.abs(num));
+        }
+        return true;
+      });
+      if (anyInfinity) { return Infinity; }
+      if (anyNaN) { return NaN; }
+      if (allZero) { return 0; }
+
+      numbers.sort(function (a, b) { return b - a; });
+      var largest = numbers[0];
+      var divided = numbers.map(function (number) { return number / largest; });
+      var sum = divided.reduce(function (sum, number) { return sum += number * number; }, 0);
+      return largest * Math.sqrt(sum);
+    },
+
+    log2: function (value) {
+      return Math.log(value) * Math.LOG2E;
+    },
+
+    log10: function (value) {
+      return Math.log(value) * Math.LOG10E;
+    },
+
+    log1p: function (value) {
+      value = Number(value);
+      if (value < -1 || Number.isNaN(value)) { return NaN; }
+      if (value === 0 || value === Infinity) { return value; }
+      if (value === -1) { return -Infinity; }
+      var result = 0;
+      var n = 50;
+
+      if (value < 0 || value > 1) { return Math.log(1 + value); }
+      for (var i = 1; i < n; i++) {
+        if ((i % 2) === 0) {
+          result -= Math.pow(value, i) / i;
+        } else {
+          result += Math.pow(value, i) / i;
+        }
+      }
+
+      return result;
+    },
+
+    sign: function (value) {
+      var number = +value;
+      if (number === 0) { return number; }
+      if (Number.isNaN(number)) { return number; }
+      return number < 0 ? -1 : 1;
+    },
+
+    sinh: function (value) {
+      value = Number(value);
+      if (!global_isFinite(value) || value === 0) { return value; }
+      return (Math.exp(value) - Math.exp(-value)) / 2;
+    },
+
+    tanh: function (value) {
+      value = Number(value);
+      if (Number.isNaN(value) || value === 0) { return value; }
+      if (value === Infinity) { return 1; }
+      if (value === -Infinity) { return -1; }
+      return (Math.exp(value) - Math.exp(-value)) / (Math.exp(value) + Math.exp(-value));
+    },
+
+    trunc: function (value) {
+      var number = Number(value);
+      return number < 0 ? -Math.floor(-number) : Math.floor(number);
+    },
+
+    imul: function (x, y) {
+      // taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul
+      x = ES.ToUint32(x);
+      y = ES.ToUint32(y);
+      var ah  = (x >>> 16) & 0xffff;
+      var al = x & 0xffff;
+      var bh  = (y >>> 16) & 0xffff;
+      var bl = y & 0xffff;
+      // the shift by 0 fixes the sign on the high part
+      // the final |0 converts the unsigned value into a signed value
+      return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0)|0);
+    },
+
+    fround: function (x) {
+      if (x === 0 || x === Infinity || x === -Infinity || Number.isNaN(x)) {
+        return x;
+      }
+      var num = Number(x);
+      return numberConversion.toFloat32(num);
+    }
+  };
+  defineProperties(Math, MathShims);
+
+  if (Math.imul(0xffffffff, 5) !== -5) {
+    // Safari 6.1, at least, reports "0" for this value
+    Math.imul = MathShims.imul;
+  }
+
+  // Promises
+  // Simplest possible implementation; use a 3rd-party library if you
+  // want the best possible speed and/or long stack traces.
+  var PromiseShim = (function () {
+
+    var Promise, Promise$prototype;
+
+    ES.IsPromise = function (promise) {
+      if (!ES.TypeIsObject(promise)) {
+        return false;
+      }
+      if (!promise._promiseConstructor) {
+        // _promiseConstructor is a bit more unique than _status, so we'll
+        // check that instead of the [[PromiseStatus]] internal field.
+        return false;
+      }
+      if (typeof promise._status === 'undefined') {
+        return false; // uninitialized
+      }
+      return true;
+    };
+
+    // "PromiseCapability" in the spec is what most promise implementations
+    // call a "deferred".
+    var PromiseCapability = function (C) {
+      if (!ES.IsCallable(C)) {
+        throw new TypeError('bad promise constructor');
+      }
+      var capability = this;
+      var resolver = function (resolve, reject) {
+        capability.resolve = resolve;
+        capability.reject = reject;
+      };
+      capability.promise = ES.Construct(C, [resolver]);
+      // see https://bugs.ecmascript.org/show_bug.cgi?id=2478
+      if (!capability.promise._es6construct) {
+        throw new TypeError('bad promise constructor');
+      }
+      if (!(ES.IsCallable(capability.resolve) &&
+            ES.IsCallable(capability.reject))) {
+        throw new TypeError('bad promise constructor');
+      }
+    };
+
+    // find an appropriate setImmediate-alike
+    var setTimeout = globals.setTimeout;
+    var makeZeroTimeout;
+    if (typeof window !== 'undefined' && ES.IsCallable(window.postMessage)) {
+      makeZeroTimeout = function () {
+        // from http://dbaron.org/log/20100309-faster-timeouts
+        var timeouts = [];
+        var messageName = 'zero-timeout-message';
+        var setZeroTimeout = function (fn) {
+          timeouts.push(fn);
+          window.postMessage(messageName, '*');
+        };
+        var handleMessage = function (event) {
+          if (event.source == window && event.data == messageName) {
+            event.stopPropagation();
+            if (timeouts.length === 0) { return; }
+            var fn = timeouts.shift();
+            fn();
+          }
+        };
+        window.addEventListener('message', handleMessage, true);
+        return setZeroTimeout;
+      };
+    }
+    var makePromiseAsap = function () {
+      // An efficient task-scheduler based on a pre-existing Promise
+      // implementation, which we can use even if we override the
+      // global Promise below (in order to workaround bugs)
+      // https://github.com/Raynos/observ-hash/issues/2#issuecomment-35857671
+      var P = globals.Promise;
+      return P && P.resolve && function (task) {
+        return P.resolve().then(task);
+      };
+    };
+    var enqueue = ES.IsCallable(globals.setImmediate) ?
+      globals.setImmediate.bind(globals) :
+      typeof process === 'object' && process.nextTick ? process.nextTick :
+      makePromiseAsap() ||
+      (ES.IsCallable(makeZeroTimeout) ? makeZeroTimeout() :
+      function (task) { setTimeout(task, 0); }); // fallback
+
+    var triggerPromiseReactions = function (reactions, x) {
+      reactions.forEach(function (reaction) {
+        enqueue(function () {
+          // PromiseReactionTask
+          var handler = reaction.handler;
+          var capability = reaction.capability;
+          var resolve = capability.resolve;
+          var reject = capability.reject;
+          try {
+            var result = handler(x);
+            if (result === capability.promise) {
+              throw new TypeError('self resolution');
+            }
+            var updateResult =
+              updatePromiseFromPotentialThenable(result, capability);
+            if (!updateResult) {
+              resolve(result);
+            }
+          } catch (e) {
+            reject(e);
+          }
+        });
+      });
+    };
+
+    var updatePromiseFromPotentialThenable = function (x, capability) {
+      if (!ES.TypeIsObject(x)) {
+        return false;
+      }
+      var resolve = capability.resolve;
+      var reject = capability.reject;
+      try {
+        var then = x.then; // only one invocation of accessor
+        if (!ES.IsCallable(then)) { return false; }
+        then.call(x, resolve, reject);
+      } catch (e) {
+        reject(e);
+      }
+      return true;
+    };
+
+    var promiseResolutionHandler = function (promise, onFulfilled, onRejected) {
+      return function (x) {
+        if (x === promise) {
+          return onRejected(new TypeError('self resolution'));
+        }
+        var C = promise._promiseConstructor;
+        var capability = new PromiseCapability(C);
+        var updateResult = updatePromiseFromPotentialThenable(x, capability);
+        if (updateResult) {
+          return capability.promise.then(onFulfilled, onRejected);
+        } else {
+          return onFulfilled(x);
+        }
+      };
+    };
+
+    Promise = function (resolver) {
+      var promise = this;
+      promise = emulateES6construct(promise);
+      if (!promise._promiseConstructor) {
+        // we use _promiseConstructor as a stand-in for the internal
+        // [[PromiseStatus]] field; it's a little more unique.
+        throw new TypeError('bad promise');
+      }
+      if (typeof promise._status !== 'undefined') {
+        throw new TypeError('promise already initialized');
+      }
+      // see https://bugs.ecmascript.org/show_bug.cgi?id=2482
+      if (!ES.IsCallable(resolver)) {
+        throw new TypeError('not a valid resolver');
+      }
+      promise._status = 'unresolved';
+      promise._resolveReactions = [];
+      promise._rejectReactions = [];
+
+      var resolve = function (resolution) {
+        if (promise._status !== 'unresolved') { return; }
+        var reactions = promise._resolveReactions;
+        promise._result = resolution;
+        promise._resolveReactions = void 0;
+        promise._rejectReactions = void 0;
+        promise._status = 'has-resolution';
+        triggerPromiseReactions(reactions, resolution);
+      };
+      var reject = function (reason) {
+        if (promise._status !== 'unresolved') { return; }
+        var reactions = promise._rejectReactions;
+        promise._result = reason;
+        promise._resolveReactions = void 0;
+        promise._rejectReactions = void 0;
+        promise._status = 'has-rejection';
+        triggerPromiseReactions(reactions, reason);
+      };
+      try {
+        resolver(resolve, reject);
+      } catch (e) {
+        reject(e);
+      }
+      return promise;
+    };
+    Promise$prototype = Promise.prototype;
+    defineProperties(Promise, {
+      '@@create': function (obj) {
+        var constructor = this;
+        // AllocatePromise
+        // The `obj` parameter is a hack we use for es5
+        // compatibility.
+        var prototype = constructor.prototype || Promise$prototype;
+        obj = obj || create(prototype);
+        defineProperties(obj, {
+          _status: void 0,
+          _result: void 0,
+          _resolveReactions: void 0,
+          _rejectReactions: void 0,
+          _promiseConstructor: void 0
+        });
+        obj._promiseConstructor = constructor;
+        return obj;
+      }
+    });
+
+    var _promiseAllResolver = function (index, values, capability, remaining) {
+      var done = false;
+      return function (x) {
+        if (done) { return; } // protect against being called multiple times
+        done = true;
+        values[index] = x;
+        if ((--remaining.count) === 0) {
+          var resolve = capability.resolve;
+          resolve(values); // call w/ this===undefined
+        }
+      };
+    };
+
+    Promise.all = function (iterable) {
+      var C = this;
+      var capability = new PromiseCapability(C);
+      var resolve = capability.resolve;
+      var reject = capability.reject;
+      try {
+        if (!ES.IsIterable(iterable)) {
+          throw new TypeError('bad iterable');
+        }
+        var it = ES.GetIterator(iterable);
+        var values = [], remaining = { count: 1 };
+        for (var index = 0; ; index++) {
+          var next = ES.IteratorNext(it);
+          if (next.done) {
+            break;
+          }
+          var nextPromise = C.resolve(next.value);
+          var resolveElement = _promiseAllResolver(
+            index, values, capability, remaining
+          );
+          remaining.count++;
+          nextPromise.then(resolveElement, capability.reject);
+        }
+        if ((--remaining.count) === 0) {
+          resolve(values); // call w/ this===undefined
+        }
+      } catch (e) {
+        reject(e);
+      }
+      return capability.promise;
+    };
+
+    Promise.race = function (iterable) {
+      var C = this;
+      var capability = new PromiseCapability(C);
+      var resolve = capability.resolve;
+      var reject = capability.reject;
+      try {
+        if (!ES.IsIterable(iterable)) {
+          throw new TypeError('bad iterable');
+        }
+        var it = ES.GetIterator(iterable);
+        while (true) {
+          var next = ES.IteratorNext(it);
+          if (next.done) {
+            // If iterable has no items, resulting promise will never
+            // resolve; see:
+            // https://github.com/domenic/promises-unwrapping/issues/75
+            // https://bugs.ecmascript.org/show_bug.cgi?id=2515
+            break;
+          }
+          var nextPromise = C.resolve(next.value);
+          nextPromise.then(resolve, reject);
+        }
+      } catch (e) {
+        reject(e);
+      }
+      return capability.promise;
+    };
+
+    Promise.reject = function (reason) {
+      var C = this;
+      var capability = new PromiseCapability(C);
+      var reject = capability.reject;
+      reject(reason); // call with this===undefined
+      return capability.promise;
+    };
+
+    Promise.resolve = function (v) {
+      var C = this;
+      if (ES.IsPromise(v)) {
+        var constructor = v._promiseConstructor;
+        if (constructor === C) { return v; }
+      }
+      var capability = new PromiseCapability(C);
+      var resolve = capability.resolve;
+      resolve(v); // call with this===undefined
+      return capability.promise;
+    };
+
+    Promise.prototype['catch'] = function (onRejected) {
+      return this.then(void 0, onRejected);
+    };
+
+    Promise.prototype.then = function (onFulfilled, onRejected) {
+      var promise = this;
+      if (!ES.IsPromise(promise)) { throw new TypeError('not a promise'); }
+      // this.constructor not this._promiseConstructor; see
+      // https://bugs.ecmascript.org/show_bug.cgi?id=2513
+      var C = this.constructor;
+      var capability = new PromiseCapability(C);
+      if (!ES.IsCallable(onRejected)) {
+        onRejected = function (e) { throw e; };
+      }
+      if (!ES.IsCallable(onFulfilled)) {
+        onFulfilled = function (x) { return x; };
+      }
+      var resolutionHandler =
+        promiseResolutionHandler(promise, onFulfilled, onRejected);
+      var resolveReaction =
+        { capability: capability, handler: resolutionHandler };
+      var rejectReaction =
+        { capability: capability, handler: onRejected };
+      switch (promise._status) {
+      case 'unresolved':
+        promise._resolveReactions.push(resolveReaction);
+        promise._rejectReactions.push(rejectReaction);
+        break;
+      case 'has-resolution':
+        triggerPromiseReactions([resolveReaction], promise._result);
+        break;
+      case 'has-rejection':
+        triggerPromiseReactions([rejectReaction], promise._result);
+        break;
+      default:
+        throw new TypeError('unexpected');
+      }
+      return capability.promise;
+    };
+
+    return Promise;
+  })();
+
+  // Chrome's native Promise has extra methods that it shouldn't have. Let's remove them.
+  if (globals.Promise) {
+    delete globals.Promise.accept;
+    delete globals.Promise.defer;
+    delete globals.Promise.prototype.chain;
+  }
+
+  // export the Promise constructor.
+  defineProperties(globals, { Promise: PromiseShim });
+  // In Chrome 33 (and thereabouts) Promise is defined, but the
+  // implementation is buggy in a number of ways.  Let's check subclassing
+  // support to see if we have a buggy implementation.
+  var promiseSupportsSubclassing = supportsSubclassing(globals.Promise, function (S) {
+    return S.resolve(42) instanceof S;
+  });
+  var promiseIgnoresNonFunctionThenCallbacks = (function () {
+    try {
+      globals.Promise.reject(42).then(null, 5).then(null, function () {});
+      return true;
+    } catch (ex) {
+      return false;
+    }
+  }());
+  var promiseRequiresObjectContext = (function () {
+    try { Promise.call(3, function () {}); } catch (e) { return true; }
+    return false;
+  }());
+  if (!promiseSupportsSubclassing || !promiseIgnoresNonFunctionThenCallbacks || !promiseRequiresObjectContext) {
+    globals.Promise = PromiseShim;
+  }
+
+  // Map and Set require a true ES5 environment
+  // Their fast path also requires that the environment preserve
+  // property insertion order, which is not guaranteed by the spec.
+  var testOrder = function (a) {
+    var b = Object.keys(a.reduce(function (o, k) {
+      o[k] = true;
+      return o;
+    }, {}));
+    return a.join(':') === b.join(':');
+  };
+  var preservesInsertionOrder = testOrder(['z', 'a', 'bb']);
+  // some engines (eg, Chrome) only preserve insertion order for string keys
+  var preservesNumericInsertionOrder = testOrder(['z', 1, 'a', '3', 2]);
+
+  if (supportsDescriptors) {
+
+    var fastkey = function fastkey(key) {
+      if (!preservesInsertionOrder) {
+        return null;
+      }
+      var type = typeof key;
+      if (type === 'string') {
+        return '$' + key;
+      } else if (type === 'number') {
+        // note that -0 will get coerced to "0" when used as a property key
+        if (!preservesNumericInsertionOrder) {
+          return 'n' + key;
+        }
+        return key;
+      }
+      return null;
+    };
+
+    var emptyObject = function emptyObject() {
+      // accomodate some older not-quite-ES5 browsers
+      return Object.create ? Object.create(null) : {};
+    };
+
+    var collectionShims = {
+      Map: (function () {
+
+        var empty = {};
+
+        function MapEntry(key, value) {
+          this.key = key;
+          this.value = value;
+          this.next = null;
+          this.prev = null;
+        }
+
+        MapEntry.prototype.isRemoved = function () {
+          return this.key === empty;
+        };
+
+        function MapIterator(map, kind) {
+          this.head = map._head;
+          this.i = this.head;
+          this.kind = kind;
+        }
+
+        MapIterator.prototype = {
+          next: function () {
+            var i = this.i, kind = this.kind, head = this.head, result;
+            if (typeof this.i === 'undefined') {
+              return { value: void 0, done: true };
+            }
+            while (i.isRemoved() && i !== head) {
+              // back up off of removed entries
+              i = i.prev;
+            }
+            // advance to next unreturned element.
+            while (i.next !== head) {
+              i = i.next;
+              if (!i.isRemoved()) {
+                if (kind === 'key') {
+                  result = i.key;
+                } else if (kind === 'value') {
+                  result = i.value;
+                } else {
+                  result = [i.key, i.value];
+                }
+                this.i = i;
+                return { value: result, done: false };
+              }
+            }
+            // once the iterator is done, it is done forever.
+            this.i = void 0;
+            return { value: void 0, done: true };
+          }
+        };
+        addIterator(MapIterator.prototype);
+
+        function Map(iterable) {
+          var map = this;
+          if (!ES.TypeIsObject(map)) {
+            throw new TypeError('Map does not accept arguments when called as a function');
+          }
+          map = emulateES6construct(map);
+          if (!map._es6map) {
+            throw new TypeError('bad map');
+          }
+
+          var head = new MapEntry(null, null);
+          // circular doubly-linked list.
+          head.next = head.prev = head;
+
+          defineProperties(map, {
+            _head: head,
+            _storage: emptyObject(),
+            _size: 0
+          });
+
+          // Optionally initialize map from iterable
+          if (typeof iterable !== 'undefined' && iterable !== null) {
+            var it = ES.GetIterator(iterable);
+            var adder = map.set;
+            if (!ES.IsCallable(adder)) { throw new TypeError('bad map'); }
+            while (true) {
+              var next = ES.IteratorNext(it);
+              if (next.done) { break; }
+              var nextItem = next.value;
+              if (!ES.TypeIsObject(nextItem)) {
+                throw new TypeError('expected iterable of pairs');
+              }
+              adder.call(map, nextItem[0], nextItem[1]);
+            }
+          }
+          return map;
+        }
+        var Map$prototype = Map.prototype;
+        defineProperties(Map, {
+          '@@create': function (obj) {
+            var constructor = this;
+            var prototype = constructor.prototype || Map$prototype;
+            obj = obj || create(prototype);
+            defineProperties(obj, { _es6map: true });
+            return obj;
+          }
+        });
+
+        Object.defineProperty(Map.prototype, 'size', {
+          configurable: true,
+          enumerable: false,
+          get: function () {
+            if (typeof this._size === 'undefined') {
+              throw new TypeError('size method called on incompatible Map');
+            }
+            return this._size;
+          }
+        });
+
+        defineProperties(Map.prototype, {
+          get: function (key) {
+            var fkey = fastkey(key);
+            if (fkey !== null) {
+              // fast O(1) path
+              var entry = this._storage[fkey];
+              if (entry) {
+                return entry.value;
+              } else {
+                return;
+              }
+            }
+            var head = this._head, i = head;
+            while ((i = i.next) !== head) {
+              if (ES.SameValueZero(i.key, key)) {
+                return i.value;
+              }
+            }
+            return;
+          },
+
+          has: function (key) {
+            var fkey = fastkey(key);
+            if (fkey !== null) {
+              // fast O(1) path
+              return typeof this._storage[fkey] !== 'undefined';
+            }
+            var head = this._head, i = head;
+            while ((i = i.next) !== head) {
+              if (ES.SameValueZero(i.key, key)) {
+                return true;
+              }
+            }
+            return false;
+          },
+
+          set: function (key, value) {
+            var head = this._head, i = head, entry;
+            var fkey = fastkey(key);
+            if (fkey !== null) {
+              // fast O(1) path
+              if (typeof this._storage[fkey] !== 'undefined') {
+                this._storage[fkey].value = value;
+                return this;
+              } else {
+                entry = this._storage[fkey] = new MapEntry(key, value);
+                i = head.prev;
+                // fall through
+              }
+            }
+            while ((i = i.next) !== head) {
+              if (ES.SameValueZero(i.key, key)) {
+                i.value = value;
+                return this;
+              }
+            }
+            entry = entry || new MapEntry(key, value);
+            if (ES.SameValue(-0, key)) {
+              entry.key = +0; // coerce -0 to +0 in entry
+            }
+            entry.next = this._head;
+            entry.prev = this._head.prev;
+            entry.prev.next = entry;
+            entry.next.prev = entry;
+            this._size += 1;
+            return this;
+          },
+
+          'delete': function (key) {
+            var head = this._head, i = head;
+            var fkey = fastkey(key);
+            if (fkey !== null) {
+              // fast O(1) path
+              if (typeof this._storage[fkey] === 'undefined') {
+                return false;
+              }
+              i = this._storage[fkey].prev;
+              delete this._storage[fkey];
+              // fall through
+            }
+            while ((i = i.next) !== head) {
+              if (ES.SameValueZero(i.key, key)) {
+                i.key = i.value = empty;
+                i.prev.next = i.next;
+                i.next.prev = i.prev;
+                this._size -= 1;
+                return true;
+              }
+            }
+            return false;
+          },
+
+          clear: function () {
+            this._size = 0;
+            this._storage = emptyObject();
+            var head = this._head, i = head, p = i.next;
+            while ((i = p) !== head) {
+              i.key = i.value = empty;
+              p = i.next;
+              i.next = i.prev = head;
+            }
+            head.next = head.prev = head;
+          },
+
+          keys: function () {
+            return new MapIterator(this, 'key');
+          },
+
+          values: function () {
+            return new MapIterator(this, 'value');
+          },
+
+          entries: function () {
+            return new MapIterator(this, 'key+value');
+          },
+
+          forEach: function (callback) {
+            var context = arguments.length > 1 ? arguments[1] : null;
+            var it = this.entries();
+            for (var entry = it.next(); !entry.done; entry = it.next()) {
+              if (context) {
+                callback.call(context, entry.value[1], entry.value[0], this);
+              } else {
+                callback(entry.value[1], entry.value[0], this);
+              }
+            }
+          }
+        });
+        addIterator(Map.prototype, function () { return this.entries(); });
+
+        return Map;
+      })(),
+
+      Set: (function () {
+        // Creating a Map is expensive.  To speed up the common case of
+        // Sets containing only string or numeric keys, we use an object
+        // as backing storage and lazily create a full Map only when
+        // required.
+        var SetShim = function Set(iterable) {
+          var set = this;
+          if (!ES.TypeIsObject(set)) {
+            throw new TypeError('Set does not accept arguments when called as a function');
+          }
+          set = emulateES6construct(set);
+          if (!set._es6set) {
+            throw new TypeError('bad set');
+          }
+
+          defineProperties(set, {
+            '[[SetData]]': null,
+            _storage: emptyObject()
+          });
+
+          // Optionally initialize map from iterable
+          if (typeof iterable !== 'undefined' && iterable !== null) {
+            var it = ES.GetIterator(iterable);
+            var adder = set.add;
+            if (!ES.IsCallable(adder)) { throw new TypeError('bad set'); }
+            while (true) {
+              var next = ES.IteratorNext(it);
+              if (next.done) { break; }
+              var nextItem = next.value;
+              adder.call(set, nextItem);
+            }
+          }
+          return set;
+        };
+        var Set$prototype = SetShim.prototype;
+        defineProperties(SetShim, {
+          '@@create': function (obj) {
+            var constructor = this;
+            var prototype = constructor.prototype || Set$prototype;
+            obj = obj || create(prototype);
+            defineProperties(obj, { _es6set: true });
+            return obj;
+          }
+        });
+
+        // Switch from the object backing storage to a full Map.
+        var ensureMap = function ensureMap(set) {
+          if (!set['[[SetData]]']) {
+            var m = set['[[SetData]]'] = new collectionShims.Map();
+            Object.keys(set._storage).forEach(function (k) {
+              // fast check for leading '$'
+              if (k.charCodeAt(0) === 36) {
+                k = k.slice(1);
+              } else if (k.charAt(0) === 'n') {
+                k = +k.slice(1);
+              } else {
+                k = +k;
+              }
+              m.set(k, k);
+            });
+            set._storage = null; // free old backing storage
+          }
+        };
+
+        Object.defineProperty(SetShim.prototype, 'size', {
+          configurable: true,
+          enumerable: false,
+          get: function () {
+            if (typeof this._storage === 'undefined') {
+              // https://github.com/paulmillr/es6-shim/issues/176
+              throw new TypeError('size method called on incompatible Set');
+            }
+            ensureMap(this);
+            return this['[[SetData]]'].size;
+          }
+        });
+
+        defineProperties(SetShim.prototype, {
+          has: function (key) {
+            var fkey;
+            if (this._storage && (fkey = fastkey(key)) !== null) {
+              return !!this._storage[fkey];
+            }
+            ensureMap(this);
+            return this['[[SetData]]'].has(key);
+          },
+
+          add: function (key) {
+            var fkey;
+            if (this._storage && (fkey = fastkey(key)) !== null) {
+              this._storage[fkey] = true;
+              return this;
+            }
+            ensureMap(this);
+            this['[[SetData]]'].set(key, key);
+            return this;
+          },
+
+          'delete': function (key) {
+            var fkey;
+            if (this._storage && (fkey = fastkey(key)) !== null) {
+              var hasFKey = _hasOwnProperty.call(this._storage, fkey);
+              return (delete this._storage[fkey]) && hasFKey;
+            }
+            ensureMap(this);
+            return this['[[SetData]]']['delete'](key);
+          },
+
+          clear: function () {
+            if (this._storage) {
+              this._storage = emptyObject();
+              return;
+            }
+            return this['[[SetData]]'].clear();
+          },
+
+          values: function () {
+            ensureMap(this);
+            return this['[[SetData]]'].values();
+          },
+
+          entries: function () {
+            ensureMap(this);
+            return this['[[SetData]]'].entries();
+          },
+
+          forEach: function (callback) {
+            var context = arguments.length > 1 ? arguments[1] : null;
+            var entireSet = this;
+            ensureMap(entireSet);
+            this['[[SetData]]'].forEach(function (value, key) {
+              if (context) {
+                callback.call(context, key, key, entireSet);
+              } else {
+                callback(key, key, entireSet);
+              }
+            });
+          }
+        });
+        defineProperty(SetShim, 'keys', SetShim.values, true);
+        addIterator(SetShim.prototype, function () { return this.values(); });
+
+        return SetShim;
+      })()
+    };
+    defineProperties(globals, collectionShims);
+
+    if (globals.Map || globals.Set) {
+      /*
+        - In Firefox < 23, Map#size is a function.
+        - In all current Firefox, Set#entries/keys/values & Map#clear do not exist
+        - https://bugzilla.mozilla.org/show_bug.cgi?id=869996
+        - In Firefox 24, Map and Set do not implement forEach
+        - In Firefox 25 at least, Map and Set are callable without "new"
+      */
+      if (
+        typeof globals.Map.prototype.clear !== 'function' ||
+        new globals.Set().size !== 0 ||
+        new globals.Map().size !== 0 ||
+        typeof globals.Map.prototype.keys !== 'function' ||
+        typeof globals.Set.prototype.keys !== 'function' ||
+        typeof globals.Map.prototype.forEach !== 'function' ||
+        typeof globals.Set.prototype.forEach !== 'function' ||
+        isCallableWithoutNew(globals.Map) ||
+        isCallableWithoutNew(globals.Set) ||
+        !supportsSubclassing(globals.Map, function (M) {
+          var m = new M([]);
+          // Firefox 32 is ok with the instantiating the subclass but will
+          // throw when the map is used.
+          m.set(42, 42);
+          return m instanceof M;
+        })
+      ) {
+        globals.Map = collectionShims.Map;
+        globals.Set = collectionShims.Set;
+      }
+    }
+    if (globals.Set.prototype.keys !== globals.Set.prototype.values) {
+      defineProperty(globals.Set.prototype, 'keys', globals.Set.prototype.values, true);
+    }
+    // Shim incomplete iterator implementations.
+    addIterator(Object.getPrototypeOf((new globals.Map()).keys()));
+    addIterator(Object.getPrototypeOf((new globals.Set()).keys()));
+  }
+
+  return globals;
+}));
+
+
+}).call(this,require('_process'))
+},{"_process":4}],3:[function(require,module,exports){
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as a module.
@@ -220,7 +2252,95 @@ module.exports = require('./src/');
 
 }));
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canMutationObserver = typeof window !== 'undefined'
+    && window.MutationObserver;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    var queue = [];
+
+    if (canMutationObserver) {
+        var hiddenDiv = document.createElement("div");
+        var observer = new MutationObserver(function () {
+            var queueList = queue.slice();
+            queue.length = 0;
+            queueList.forEach(function (fn) {
+                fn();
+            });
+        });
+
+        observer.observe(hiddenDiv, { attributes: true });
+
+        return function nextTick(fn) {
+            if (!queue.length) {
+                hiddenDiv.setAttribute('yes', 'no');
+            }
+            queue.push(fn);
+        };
+    }
+
+    if (canPost) {
+        window.addEventListener('message', function (ev) {
+            var source = ev.source;
+            if ((source === window || source === null) && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],5:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -285,7 +2405,7 @@ function isEmpty(value) {
 
 module.exports = isEmpty;
 
-},{"lodash.forown":4,"lodash.isfunction":27}],4:[function(require,module,exports){
+},{"lodash.forown":6,"lodash.isfunction":29}],6:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -337,7 +2457,7 @@ var forOwn = function(collection, callback, thisArg) {
 
 module.exports = forOwn;
 
-},{"lodash._basecreatecallback":5,"lodash._objecttypes":23,"lodash.keys":24}],5:[function(require,module,exports){
+},{"lodash._basecreatecallback":7,"lodash._objecttypes":25,"lodash.keys":26}],7:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -419,7 +2539,7 @@ function baseCreateCallback(func, thisArg, argCount) {
 
 module.exports = baseCreateCallback;
 
-},{"lodash._setbinddata":6,"lodash.bind":9,"lodash.identity":20,"lodash.support":21}],6:[function(require,module,exports){
+},{"lodash._setbinddata":8,"lodash.bind":11,"lodash.identity":22,"lodash.support":23}],8:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -464,7 +2584,7 @@ var setBindData = !defineProperty ? noop : function(func, value) {
 
 module.exports = setBindData;
 
-},{"lodash._isnative":7,"lodash.noop":8}],7:[function(require,module,exports){
+},{"lodash._isnative":9,"lodash.noop":10}],9:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -500,7 +2620,7 @@ function isNative(value) {
 
 module.exports = isNative;
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -528,7 +2648,7 @@ function noop() {
 
 module.exports = noop;
 
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -570,7 +2690,7 @@ function bind(func, thisArg) {
 
 module.exports = bind;
 
-},{"lodash._createwrapper":10,"lodash._slice":19}],10:[function(require,module,exports){
+},{"lodash._createwrapper":12,"lodash._slice":21}],12:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -678,7 +2798,7 @@ function createWrapper(func, bitmask, partialArgs, partialRightArgs, thisArg, ar
 
 module.exports = createWrapper;
 
-},{"lodash._basebind":11,"lodash._basecreatewrapper":15,"lodash._slice":19,"lodash.isfunction":27}],11:[function(require,module,exports){
+},{"lodash._basebind":13,"lodash._basecreatewrapper":17,"lodash._slice":21,"lodash.isfunction":29}],13:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -742,7 +2862,7 @@ function baseBind(bindData) {
 
 module.exports = baseBind;
 
-},{"lodash._basecreate":12,"lodash._setbinddata":6,"lodash._slice":19,"lodash.isobject":28}],12:[function(require,module,exports){
+},{"lodash._basecreate":14,"lodash._setbinddata":8,"lodash._slice":21,"lodash.isobject":30}],14:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -788,11 +2908,11 @@ if (!nativeCreate) {
 module.exports = baseCreate;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._isnative":13,"lodash.isobject":28,"lodash.noop":14}],13:[function(require,module,exports){
-module.exports=require(7)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":7}],14:[function(require,module,exports){
-module.exports=require(8)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":8}],15:[function(require,module,exports){
+},{"lodash._isnative":15,"lodash.isobject":30,"lodash.noop":16}],15:[function(require,module,exports){
+module.exports=require(9)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":9}],16:[function(require,module,exports){
+module.exports=require(10)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":10}],17:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -872,13 +2992,13 @@ function baseCreateWrapper(bindData) {
 
 module.exports = baseCreateWrapper;
 
-},{"lodash._basecreate":16,"lodash._setbinddata":6,"lodash._slice":19,"lodash.isobject":28}],16:[function(require,module,exports){
-module.exports=require(12)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":12,"lodash._isnative":17,"lodash.isobject":28,"lodash.noop":18}],17:[function(require,module,exports){
-module.exports=require(7)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":7}],18:[function(require,module,exports){
-module.exports=require(8)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":8}],19:[function(require,module,exports){
+},{"lodash._basecreate":18,"lodash._setbinddata":8,"lodash._slice":21,"lodash.isobject":30}],18:[function(require,module,exports){
+module.exports=require(14)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash.bind/node_modules/lodash._createwrapper/node_modules/lodash._basebind/node_modules/lodash._basecreate/index.js":14,"lodash._isnative":19,"lodash.isobject":30,"lodash.noop":20}],19:[function(require,module,exports){
+module.exports=require(9)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":9}],20:[function(require,module,exports){
+module.exports=require(10)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash.noop/index.js":10}],21:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -918,7 +3038,7 @@ function slice(array, start, end) {
 
 module.exports = slice;
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -948,7 +3068,7 @@ function identity(value) {
 
 module.exports = identity;
 
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 (function (global){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
@@ -992,9 +3112,9 @@ support.funcNames = typeof Function.name == 'string';
 module.exports = support;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash._isnative":22}],22:[function(require,module,exports){
-module.exports=require(7)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":7}],23:[function(require,module,exports){
+},{"lodash._isnative":24}],24:[function(require,module,exports){
+module.exports=require(9)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":9}],25:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1016,7 +3136,7 @@ var objectTypes = {
 
 module.exports = objectTypes;
 
-},{}],24:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1054,9 +3174,9 @@ var keys = !nativeKeys ? shimKeys : function(object) {
 
 module.exports = keys;
 
-},{"lodash._isnative":25,"lodash._shimkeys":26,"lodash.isobject":28}],25:[function(require,module,exports){
-module.exports=require(7)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":7}],26:[function(require,module,exports){
+},{"lodash._isnative":27,"lodash._shimkeys":28,"lodash.isobject":30}],27:[function(require,module,exports){
+module.exports=require(9)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":9}],28:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1096,7 +3216,7 @@ var shimKeys = function(object) {
 
 module.exports = shimKeys;
 
-},{"lodash._objecttypes":23}],27:[function(require,module,exports){
+},{"lodash._objecttypes":25}],29:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1125,7 +3245,7 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{}],28:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1166,9 +3286,9 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{"lodash._objecttypes":29}],29:[function(require,module,exports){
-module.exports=require(23)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._objecttypes/index.js":23}],30:[function(require,module,exports){
+},{"lodash._objecttypes":31}],31:[function(require,module,exports){
+module.exports=require(25)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._objecttypes/index.js":25}],32:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1207,7 +3327,7 @@ function isString(value) {
 
 module.exports = isString;
 
-},{}],31:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1236,7 +3356,7 @@ function isUndefined(value) {
 
 module.exports = isUndefined;
 
-},{}],32:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1283,7 +3403,7 @@ function result(object, key) {
 
 module.exports = result;
 
-},{"lodash.isfunction":27}],33:[function(require,module,exports){
+},{"lodash.isfunction":29}],35:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1501,7 +3621,7 @@ function template(text, data, options) {
 
 module.exports = template;
 
-},{"lodash._escapestringchar":34,"lodash._reinterpolate":35,"lodash.defaults":36,"lodash.escape":38,"lodash.keys":43,"lodash.templatesettings":47,"lodash.values":48}],34:[function(require,module,exports){
+},{"lodash._escapestringchar":36,"lodash._reinterpolate":37,"lodash.defaults":38,"lodash.escape":40,"lodash.keys":45,"lodash.templatesettings":49,"lodash.values":50}],36:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1536,7 +3656,7 @@ function escapeStringChar(match) {
 
 module.exports = escapeStringChar;
 
-},{}],35:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1551,7 +3671,7 @@ var reInterpolate = /<%=([\s\S]+?)%>/g;
 
 module.exports = reInterpolate;
 
-},{}],36:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1607,9 +3727,9 @@ var defaults = function(object, source, guard) {
 
 module.exports = defaults;
 
-},{"lodash._objecttypes":37,"lodash.keys":43}],37:[function(require,module,exports){
-module.exports=require(23)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._objecttypes/index.js":23}],38:[function(require,module,exports){
+},{"lodash._objecttypes":39,"lodash.keys":45}],39:[function(require,module,exports){
+module.exports=require(25)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._objecttypes/index.js":25}],40:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1642,7 +3762,7 @@ function escape(string) {
 
 module.exports = escape;
 
-},{"lodash._escapehtmlchar":39,"lodash._reunescapedhtml":41,"lodash.keys":43}],39:[function(require,module,exports){
+},{"lodash._escapehtmlchar":41,"lodash._reunescapedhtml":43,"lodash.keys":45}],41:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1666,7 +3786,7 @@ function escapeHtmlChar(match) {
 
 module.exports = escapeHtmlChar;
 
-},{"lodash._htmlescapes":40}],40:[function(require,module,exports){
+},{"lodash._htmlescapes":42}],42:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1694,7 +3814,7 @@ var htmlEscapes = {
 
 module.exports = htmlEscapes;
 
-},{}],41:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1711,17 +3831,17 @@ var reUnescapedHtml = RegExp('[' + keys(htmlEscapes).join('') + ']', 'g');
 
 module.exports = reUnescapedHtml;
 
-},{"lodash._htmlescapes":42,"lodash.keys":43}],42:[function(require,module,exports){
-module.exports=require(40)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.template/node_modules/lodash.escape/node_modules/lodash._escapehtmlchar/node_modules/lodash._htmlescapes/index.js":40}],43:[function(require,module,exports){
-module.exports=require(24)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash.keys/index.js":24,"lodash._isnative":44,"lodash._shimkeys":45,"lodash.isobject":28}],44:[function(require,module,exports){
-module.exports=require(7)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":7}],45:[function(require,module,exports){
+},{"lodash._htmlescapes":44,"lodash.keys":45}],44:[function(require,module,exports){
+module.exports=require(42)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.template/node_modules/lodash.escape/node_modules/lodash._escapehtmlchar/node_modules/lodash._htmlescapes/index.js":42}],45:[function(require,module,exports){
 module.exports=require(26)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":26,"lodash._objecttypes":46}],46:[function(require,module,exports){
-module.exports=require(23)
-},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._objecttypes/index.js":23}],47:[function(require,module,exports){
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash.keys/index.js":26,"lodash._isnative":46,"lodash._shimkeys":47,"lodash.isobject":30}],46:[function(require,module,exports){
+module.exports=require(9)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._basecreatecallback/node_modules/lodash._setbinddata/node_modules/lodash._isnative/index.js":9}],47:[function(require,module,exports){
+module.exports=require(28)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash.keys/node_modules/lodash._shimkeys/index.js":28,"lodash._objecttypes":48}],48:[function(require,module,exports){
+module.exports=require(25)
+},{"/Users/dan/Development/sir-trevor-js/node_modules/lodash.isempty/node_modules/lodash.forown/node_modules/lodash._objecttypes/index.js":25}],49:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1796,7 +3916,7 @@ var templateSettings = {
 
 module.exports = templateSettings;
 
-},{"lodash._reinterpolate":35,"lodash.escape":38}],48:[function(require,module,exports){
+},{"lodash._reinterpolate":37,"lodash.escape":40}],50:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1834,7 +3954,7 @@ function values(object) {
 
 module.exports = values;
 
-},{"lodash.keys":43}],49:[function(require,module,exports){
+},{"lodash.keys":45}],51:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -1870,7 +3990,7 @@ function uniqueId(prefix) {
 
 module.exports = uniqueId;
 
-},{}],50:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 /**
  * Copyright (c) 2011-2014 Felix Gnass
  * Licensed under the MIT license
@@ -2221,15 +4341,14 @@ module.exports = uniqueId;
 
 }));
 
-},{}],51:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
 var Blocks = require('./blocks');
 
-var BlockControl = function(type, instance_scope) {
+var BlockControl = function(type) {
   this.type = type;
-  this.instance_scope = instance_scope;
   this.block_type = Blocks[this.type].prototype;
   this.can_be_rendered = this.block_type.toolbarEnabled;
 
@@ -2255,7 +4374,7 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
 
 module.exports = BlockControl;
 
-},{"./blocks":69,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],52:[function(require,module,exports){
+},{"./blocks":71,"./events":81,"./function-bind":90,"./lodash":95,"./renderable":97}],54:[function(require,module,exports){
 "use strict";
 
 /*
@@ -2264,32 +4383,41 @@ module.exports = BlockControl;
  * Gives an interface for adding new Sir Trevor blocks.
  */
 
+var _ = require('./lodash');
 
 var Blocks = require('./blocks');
 var BlockControl = require('./block-control');
 var EventBus = require('./event-bus');
 
-var BlockControls = function(available_types, instance_scope) {
-  this.instance_scope = instance_scope;
+var BlockControls = function(available_types, mediator) {
   this.available_types = available_types || [];
+  this.mediator = mediator;
+
   this._ensureElement();
   this._bindFunctions();
+  this._bindMediatedEvents();
+
   this.initialize();
 };
 
-Object.assign(BlockControls.prototype, require('./function-bind'), require('./renderable'), require('./events'), {
+Object.assign(BlockControls.prototype, require('./function-bind'), require('./mediated-events'), require('./renderable'), require('./events'), {
 
   bound: ['handleControlButtonClick'],
   block_controls: null,
 
   className: "st-block-controls",
+  eventNamespace: 'block-controls',
 
-  html: "<a class='st-icon st-icon--close'>" + i18n.t("general:close") + "</a>",
+  mediatedEvents: {
+    'render': 'renderInContainer',
+    'show': 'show',
+    'hide': 'hide'
+  },
 
   initialize: function() {
     for(var block_type in this.available_types) {
       if (Blocks.hasOwnProperty(block_type)) {
-        var block_control = new BlockControl(block_type, this.instance_scope);
+        var block_control = new BlockControl(block_type);
         if (block_control.can_be_rendered) {
           this.$el.append(block_control.render().$el);
         }
@@ -2297,6 +4425,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
     }
 
     this.$el.delegate('.st-block-control', 'click', this.handleControlButtonClick);
+    this.mediator.on('block-controls:show', this.renderInContainer);
   },
 
   show: function() {
@@ -2306,6 +4435,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
   },
 
   hide: function() {
+    this.removeCurrentContainer();
     this.$el.removeClass('st-block-controls--active');
 
     EventBus.trigger('block:controls:hidden');
@@ -2314,14 +4444,30 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./re
   handleControlButtonClick: function(e) {
     e.stopPropagation();
 
-    this.trigger('createBlock', $(e.currentTarget).attr('data-type'));
-  }
+    this.mediator.trigger('block:create', $(e.currentTarget).attr('data-type'));
+  },
 
+  renderInContainer: function(container) {
+    this.removeCurrentContainer();
+
+    container.append(this.$el.detach());
+    container.addClass('with-st-controls');
+
+    this.currentContainer = container;
+    this.show();
+  },
+
+  removeCurrentContainer: function() {
+    if (!_.isUndefined(this.currentContainer)) {
+      this.currentContainer.removeClass("with-st-controls");
+      this.currentContainer = undefined;
+    }
+  }
 });
 
 module.exports = BlockControls;
 
-},{"./block-control":51,"./blocks":69,"./event-bus":76,"./events":77,"./function-bind":86,"./renderable":92}],53:[function(require,module,exports){
+},{"./block-control":53,"./blocks":71,"./event-bus":80,"./events":81,"./function-bind":90,"./lodash":95,"./mediated-events":96,"./renderable":97}],55:[function(require,module,exports){
 "use strict";
 
 var BlockDeletion = function() {
@@ -2343,383 +4489,210 @@ Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./re
 
 module.exports = BlockDeletion;
 
-},{"./function-bind":86,"./renderable":92}],54:[function(require,module,exports){
+},{"./function-bind":90,"./renderable":97}],56:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
-
-var config = require('./config');
 var utils = require('./utils');
-var stToHTML = require('./to-html');
-var stToMarkdown = require('./to-markdown');
-var BlockMixins = require('./block_mixins');
+var config = require('./config');
 
-var SimpleBlock = require('./simple-block');
-var BlockReorder = require('./block.reorder');
-var BlockDeletion = require('./block.deletion');
-var BlockPositioner = require('./block.positioner');
-var Formatters = require('./formatters');
 var EventBus = require('./event-bus');
+var Blocks = require('./blocks');
 
-var Spinner = require('spin.js');
+var BlockManager = function(options, editorInstance, mediator) {
+  this.options = options;
+  this.instance_scope = editorInstance;
+  this.mediator = mediator;
 
-var Block = function(data, instance_id) {
-  SimpleBlock.apply(this, arguments);
+  this.blocks = [];
+  this.blockCounts = {};
+  this.blockTypes = {};
+
+  this._setBlocksTypes();
+  this._setRequired();
+  this._bindMediatedEvents();
+
+  this.initialize();
 };
 
-Block.prototype = Object.create(SimpleBlock.prototype);
-Block.prototype.constructor = Block;
+Object.assign(BlockManager.prototype, require('./function-bind'), require('./mediated-events'), require('./events'), {
 
-var delete_template = [
-  "<div class='st-block__ui-delete-controls'>",
-  "<label class='st-block__delete-label'>",
-  "<%= i18n.t('general:delete') %>",
-  "</label>",
-  "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
-  "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
-  "</div>"
-].join("\n");
+  eventNamespace: 'block',
 
-var drop_options = {
-  html: ['<div class="st-block__dropzone">',
-    '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
-    '</p></div>'].join('\n'),
-    re_render_on_reorder: false
-};
+  mediatedEvents: {
+    'create': 'createBlock',
+    'remove': 'removeBlock',
+    'rerender': 'rerenderBlock'
+  },
 
-var paste_options = {
-  html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
-    ' class="st-block__paste-input st-paste-block">'].join('')
-};
+  initialize: function() {},
 
-var upload_options = {
-  html: [
-    '<div class="st-block__upload-container">',
-    '<input type="file" type="st-file-upload">',
-    '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
-    '</div>'
-  ].join('\n')
-};
+  createBlock: function(type, data) {
+    type = utils.classify(type);
 
-config.defaults.Block = {
-  drop_options: drop_options,
-  paste_options: paste_options,
-  upload_options: upload_options
-};
+    // Run validations
+    if (!this.canCreateBlock(type)) { return; }
 
-Object.assign(Block.prototype, SimpleBlock.fn, require('./block.validations'), {
+    var block = new Blocks[type](data, this.instance_scope, this.mediator);
+    this.blocks.push(block);
 
-  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
-    "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender"],
+    this._incrementBlockTypeCount(type);
+    this.mediator.trigger('block:render', block);
 
-    className: 'st-block st-icon--add',
+    this.triggerBlockCountUpdate();
+    this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
-    attributes: function() {
-      return Object.assign(SimpleBlock.fn.attributes.call(this), {
-        'data-icon-after' : "add"
-      });
-    },
+    utils.log("Block created of type " + type);
+  },
 
-    icon_name: 'default',
+  removeBlock: function(blockID) {
+    var block = this.findBlockById(blockID),
+    type = utils.classify(block.type);
 
-    validationFailMsg: function() {
-      return i18n.t('errors:validation_fail', { type: this.title() });
-    },
+    this.mediator.trigger('block-controls:reset');
+    this.blocks = this.blocks.filter(function(item) {
+      return (item.blockID !== block.blockID);
+    });
 
-    editorHTML: '<div class="st-block__editor"></div>',
+    this._decrementBlockTypeCount(type);
+    this.triggerBlockCountUpdate();
+    this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
-    toolbarEnabled: true,
+    EventBus.trigger("block:remove");
+  },
 
-    droppable: false,
-    pastable: false,
-    uploadable: false,
-    fetchable: false,
-    ajaxable: false,
-
-    drop_options: {},
-    paste_options: {},
-    upload_options: {},
-
-    formattable: true,
-
-    _previousSelection: '',
-
-    initialize: function() {},
-
-    toMarkdown: function(markdown){ return markdown; },
-    toHTML: function(html){ return html; },
-
-    withMixin: function(mixin) {
-      if (!_.isObject(mixin)) { return; }
-
-      var initializeMethod = "initialize" + mixin.mixinName;
-
-      if (_.isUndefined(this[initializeMethod])) {
-        Object.assign(this, mixin);
-        this[initializeMethod]();
-      }
-    },
-
-    render: function() {
-      this.beforeBlockRender();
-      this._setBlockInner();
-
-      this.$editor = this.$inner.children().first();
-
-      if(this.droppable || this.pastable || this.uploadable) {
-        var input_html = $("<div>", { 'class': 'st-block__inputs' });
-        this.$inner.append(input_html);
-        this.$inputs = input_html;
-      }
-
-      if (this.hasTextBlock) { this._initTextBlocks(); }
-      if (this.droppable) { this.withMixin(BlockMixins.Droppable); }
-      if (this.pastable) { this.withMixin(BlockMixins.Pastable); }
-      if (this.uploadable) { this.withMixin(BlockMixins.Uploadable); }
-      if (this.fetchable) { this.withMixin(BlockMixins.Fetchable); }
-      if (this.controllable) { this.withMixin(BlockMixins.Controllable); }
-
-      if (this.formattable) { this._initFormatting(); }
-
-      this._blockPrepare();
-
-      return this;
-    },
-
-    remove: function() {
-      if (this.ajaxable) {
-        this.resolveAllInQueue();
-      }
-
-      this.$el.remove();
-    },
-
-    loading: function() {
-      if(!_.isUndefined(this.spinner)) { this.ready(); }
-
-      this.spinner = new Spinner(config.defaults.spinner);
-      this.spinner.spin(this.$el[0]);
-
-      this.$el.addClass('st--is-loading');
-    },
-
-    ready: function() {
-      this.$el.removeClass('st--is-loading');
-      if (!_.isUndefined(this.spinner)) {
-        this.spinner.stop();
-        delete this.spinner;
-      }
-    },
-
-    /* Generic toData implementation.
-     * Can be overwritten, although hopefully this will cover most situations
-     */
-    toData: function() {
-      utils.log("toData for " + this.blockID);
-
-      var dataObj = {};
-
-      /* Simple to start. Add conditions later */
-      if (this.hasTextBlock()) {
-        var content = this.getTextBlock().html();
-        if (content.length > 0) {
-          dataObj.text = stToMarkdown(content, this.type);
-        }
-      }
-
-      // Add any inputs to the data attr
-      if(this.$(':input').not('.st-paste-block').length > 0) {
-        this.$(':input').each(function(index,input){
-          if (input.getAttribute('name')) {
-            dataObj[input.getAttribute('name')] = input.value;
-          }
-        });
-      }
-
-      // Set
-      if(!_.isEmpty(dataObj)) {
-        this.setData(dataObj);
-      }
-    },
-
-    /* Generic implementation to tell us when the block is active */
-    focus: function() {
-      this.getTextBlock().focus();
-    },
-
-    blur: function() {
-      this.getTextBlock().blur();
-    },
-
-    onFocus: function() {
-      this.getTextBlock().bind('focus', this._onFocus);
-    },
-
-    onBlur: function() {
-      this.getTextBlock().bind('blur', this._onBlur);
-    },
-
-    /*
-     * Event handlers
-     */
-
-    _onFocus: function() {
-      this.trigger('blockFocus', this.$el);
-    },
-
-    _onBlur: function() {},
-
-    onDrop: function(dataTransferObj) {},
-
-    onDeleteClick: function(ev) {
-      ev.preventDefault();
-
-      var onDeleteConfirm = function(e) {
-        e.preventDefault();
-        this.trigger('removeBlock', this.blockID);
-      };
-
-      var onDeleteDeny = function(e) {
-        e.preventDefault();
-        this.$el.removeClass('st-block--delete-active');
-        $delete_el.remove();
-      };
-
-      if (this.isEmpty()) {
-        onDeleteConfirm.call(this, new Event('click'));
-        return;
-      }
-
-      this.$inner.append(_.template(delete_template));
-      this.$el.addClass('st-block--delete-active');
-
-      var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
-
-      this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
-                     onDeleteConfirm.bind(this))
-                     .on('click', '.st-block-ui-btn--deny-delete',
-                         onDeleteDeny.bind(this));
-    },
-
-    pastedMarkdownToHTML: function(content) {
-      return stToHTML(stToMarkdown(content, this.type), this.type);
-    },
-
-    onContentPasted: function(event, target){
-      target.html(this.pastedMarkdownToHTML(target[0].innerHTML));
-      this.getTextBlock().caretToEnd();
-    },
-
-    beforeLoadingData: function() {
-      this.loading();
-
-      if(this.droppable || this.uploadable || this.pastable) {
-        this.$editor.show();
-        this.$inputs.hide();
-      }
-
-      SimpleBlock.fn.beforeLoadingData.call(this);
-
-      this.ready();
-    },
-
-    _handleContentPaste: function(ev) {
-      setTimeout(this.onContentPasted.bind(this, ev, $(ev.currentTarget)), 0);
-    },
-
-    _getBlockClass: function() {
-      return 'st-block--' + this.className;
-    },
-
-    /*
-     * Init functions for adding functionality
-     */
-
-    _initUIComponents: function() {
-
-      var positioner = new BlockPositioner(this.$el, this.instanceID);
-
-      this._withUIComponent(
-        positioner, '.st-block-ui-btn--reorder', positioner.toggle
-      );
-
-      this._withUIComponent(
-        new BlockReorder(this.$el)
-      );
-
-      this._withUIComponent(
-        new BlockDeletion(), '.st-block-ui-btn--delete', this.onDeleteClick
-      );
-
-      this.onFocus();
-      this.onBlur();
-    },
-
-    _initFormatting: function() {
-      // Enable formatting keyboard input
-      var formatter;
-      for (var name in Formatters) {
-        if (Formatters.hasOwnProperty(name)) {
-          formatter = Formatters[name];
-          if (!_.isUndefined(formatter.keyCode)) {
-            formatter._bindToBlock(this.$el);
-          }
-        }
-      }
-    },
-
-    _initTextBlocks: function() {
-      this.getTextBlock()
-      .bind('paste', this._handleContentPaste)
-      .bind('keyup', this.getSelectionForFormatter)
-      .bind('mouseup', this.getSelectionForFormatter)
-      .bind('DOMNodeInserted', this.clearInsertedStyles);
-    },
-
-    getSelectionForFormatter: function() {
-      var block = this;
-      setTimeout(function() {
-        var selection = window.getSelection(),
-        selectionStr = selection.toString().trim(),
-        eventType = (selectionStr === '') ? 'hide' : 'position';
-
-        EventBus.trigger('formatter:' + eventType, block);
-      }, 1);
-    },
-
-    clearInsertedStyles: function(e) {
-      var target = e.target;
-      target.removeAttribute('style'); // Hacky fix for Chrome.
-    },
-
-    hasTextBlock: function() {
-      return this.getTextBlock().length > 0;
-    },
-
-    getTextBlock: function() {
-      if (_.isUndefined(this.text_block)) {
-        this.text_block = this.$('.st-text-block');
-      }
-
-      return this.text_block;
-    },
-
-    isEmpty: function() {
-      return _.isEmpty(this.saveAndGetData());
+  rerenderBlock: function(blockID) {
+    var block = this.findBlockById(blockID);
+    if (!_.isUndefined(block) && !block.isEmpty() &&
+        block.drop_options.re_render_on_reorder) {
+      block.beforeLoadingData();
     }
+  },
+
+  triggerBlockCountUpdate: function() {
+    this.mediator.trigger('block:countUpdate', this.blocks.length);
+  },
+
+  canCreateBlock: function(type) {
+    if(this.blockLimitReached()) {
+      utils.log("Cannot add any more blocks. Limit reached.");
+      return false;
+    }
+
+    if (!this.isBlockTypeAvailable(type)) {
+      utils.log("Block type not available " + type);
+      return false;
+    }
+
+    // Can we have another one of these blocks?
+    if (!this.canAddBlockType(type)) {
+      utils.log("Block Limit reached for type " + type);
+      return false;
+    }
+
+    return true;
+  },
+
+  validateBlockTypesExist: function(shouldValidate) {
+    if (config.skipValidation || !shouldValidate) { return false; }
+
+    (this.required || []).forEach(function(type, index) {
+      if (!this.isBlockTypeAvailable(type)) { return; }
+
+      if (this._getBlockTypeCount(type) === 0) {
+        utils.log("Failed validation on required block type " + type);
+        this.mediator.trigger('errors:add',
+                              { text: i18n.t("errors:type_missing", { type: type }) });
+
+      } else {
+        var blocks = this.getBlocksByType(type).filter(function(b) {
+          return !b.isEmpty();
+        });
+
+        if (blocks.length > 0) { return false; }
+
+        this.mediator.trigger('errors:add', {
+          text: i18n.t("errors:required_type_empty", {type: type})
+        });
+
+        utils.log("A required block type " + type + " is empty");
+      }
+    }, this);
+  },
+
+  findBlockById: function(blockID) {
+    return this.blocks.find(function(b) {
+      return b.blockID === blockID;
+    });
+  },
+
+  getBlocksByType: function(type) {
+    return this.blocks.filter(function(b) {
+      return utils.classify(b.type) === type;
+    });
+  },
+
+  getBlocksByIDs: function(block_ids) {
+    return this.blocks.filter(function(b) {
+      return block_ids.includes(b.blockID);
+    });
+  },
+
+  blockLimitReached: function() {
+    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
+  },
+
+  isBlockTypeAvailable: function(t) {
+    return !_.isUndefined(this.blockTypes[t]);
+  },
+
+  canAddBlockType: function(type) {
+    var block_type_limit = this._getBlockTypeLimit(type);
+    return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
+  },
+
+  _setBlocksTypes: function() {
+    this.blockTypes = utils.flatten(
+      _.isUndefined(this.options.blockTypes) ?
+      Blocks : this.options.blockTypes);
+  },
+
+  _setRequired: function() {
+    this.required = false;
+
+    if (Array.isArray(this.options.required) && !_.isEmpty(this.options.required)) {
+      this.required = this.options.required;
+    }
+  },
+
+  _incrementBlockTypeCount: function(type) {
+    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] + 1;
+  },
+
+  _decrementBlockTypeCount: function(type) {
+    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1 : this.blockCounts[type] - 1;
+  },
+
+  _getBlockTypeCount: function(type) {
+    return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
+  },
+
+  _blockLimitReached: function() {
+    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
+  },
+
+  _getBlockTypeLimit: function(t) {
+    if (!this.isBlockTypeAvailable(t)) { return 0; }
+    return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
+  }
 
 });
 
-Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
+module.exports = BlockManager;
 
-module.exports = Block;
 
-},{"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.validations":58,"./block_mixins":63,"./config":74,"./event-bus":76,"./formatters":85,"./helpers/extend":88,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"spin.js":50}],55:[function(require,module,exports){
+},{"./blocks":71,"./config":77,"./event-bus":80,"./events":81,"./function-bind":90,"./lodash":95,"./mediated-events":96,"./utils":101}],57:[function(require,module,exports){
 "use strict";
-
-
-var EventBus = require('./event-bus');
 
 var template = [
   "<div class='st-block-positioner__inner'>",
@@ -2728,10 +4701,9 @@ var template = [
   "</div>"
 ].join("\n");
 
-var BlockPositioner = function(block_element, instance_id) {
+var BlockPositioner = function(block_element, mediator) {
+  this.mediator = mediator;
   this.$block = block_element;
-  this.instanceID = instance_id;
-  this.total_blocks = 0;
 
   this._ensureElement();
   this._bindFunctions();
@@ -2740,6 +4712,8 @@ var BlockPositioner = function(block_element, instance_id) {
 };
 
 Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./renderable'), {
+
+  total_blocks: 0,
 
   bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
@@ -2752,7 +4726,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 
     this.$select.on('change', this.onSelectChange);
 
-    EventBus.on(this.instanceID + ":blocks:count_update", this.onBlockCountChange);
+    this.mediator.on("blocks:countUpdate", this.onBlockCountChange);
   },
 
   onBlockCountChange: function(new_count) {
@@ -2765,9 +4739,10 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   onSelectChange: function() {
     var val = this.$select.val();
     if (val !== 0) {
-      EventBus.trigger(this.instanceID + ":blocks:change_position",
-                       this.$block, val, (val === 1 ? 'before' : 'after'));
-                       this.toggle();
+      this.mediator.trigger(
+        "blocks:changePosition", this.$block, val,
+        (val === 1 ? 'before' : 'after'));
+      this.toggle();
     }
   },
 
@@ -2796,16 +4771,17 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 
 module.exports = BlockPositioner;
 
-},{"./event-bus":76,"./function-bind":86,"./renderable":92}],56:[function(require,module,exports){
+},{"./function-bind":90,"./renderable":97}],58:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
 
-var BlockReorder = function(block_element) {
+var BlockReorder = function(block_element, mediator) {
   this.$block = block_element;
   this.blockID = this.$block.attr('id');
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -2815,7 +4791,7 @@ var BlockReorder = function(block_element) {
 
 Object.assign(BlockReorder.prototype, require('./function-bind'), require('./renderable'), {
 
-  bound: ['onMouseDown', 'onClick', 'onDragStart', 'onDragEnd', 'onDrag', 'onDrop'],
+  bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrop'],
 
   className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
   tagName: 'a',
@@ -2830,17 +4806,20 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
   initialize: function() {
     this.$el.bind('mousedown touchstart', this.onMouseDown)
-    .bind('click', this.onClick)
-    .bind('dragstart', this.onDragStart)
-    .bind('dragend touchend', this.onDragEnd)
-    .bind('drag touchmove', this.onDrag);
+      .bind('dragstart', this.onDragStart)
+      .bind('dragend touchend', this.onDragEnd);
 
     this.$block.dropArea()
-    .bind('drop', this.onDrop);
+      .bind('drop', this.onDrop);
+  },
+
+  blockId: function() {
+    return this.$block.attr('id');
   },
 
   onMouseDown: function() {
-    EventBus.trigger("block:reorder:down", this.blockID);
+    this.mediator.trigger("block-controls:hide");
+    EventBus.trigger("block:reorder:down");
   },
 
   onDrop: function(ev) {
@@ -2850,34 +4829,29 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
     item_id = ev.originalEvent.dataTransfer.getData("text/plain"),
     block = $('#' + item_id);
 
-    if (!_.isUndefined(item_id) &&
-        !_.isEmpty(block) &&
-          dropped_on.attr('id') !== item_id &&
-            dropped_on.attr('data-instance') === block.attr('data-instance')
+    if (!_.isUndefined(item_id) && !_.isEmpty(block) &&
+        dropped_on.attr('id') !== item_id &&
+          dropped_on.attr('data-instance') === block.attr('data-instance')
        ) {
-         dropped_on.after(block);
-       }
-       EventBus.trigger("block:reorder:dropped", item_id);
+       dropped_on.after(block);
+     }
+     this.mediator.trigger("block:rerender", item_id);
+     EventBus.trigger("block:reorder:dropped", item_id);
   },
 
   onDragStart: function(ev) {
     var btn = $(ev.currentTarget).parent();
 
     ev.originalEvent.dataTransfer.setDragImage(this.$block[0], btn.position().left, btn.position().top);
-    ev.originalEvent.dataTransfer.setData('Text', this.blockID);
+    ev.originalEvent.dataTransfer.setData('Text', this.blockId());
 
-    EventBus.trigger("block:reorder:dragstart", this.blockID);
+    EventBus.trigger("block:reorder:dragstart");
     this.$block.addClass('st-block--dragging');
   },
 
   onDragEnd: function(ev) {
-    EventBus.trigger("block:reorder:dragend", this.blockID);
+    EventBus.trigger("block:reorder:dragend");
     this.$block.removeClass('st-block--dragging');
-  },
-
-  onDrag: function(ev){},
-
-  onClick: function() {
   },
 
   render: function() {
@@ -2888,7 +4862,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
 module.exports = BlockReorder;
 
-},{"./event-bus":76,"./function-bind":86,"./lodash":91,"./renderable":92}],57:[function(require,module,exports){
+},{"./event-bus":80,"./function-bind":90,"./lodash":95,"./renderable":97}],59:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -2898,8 +4872,14 @@ var EventBus = require('./event-bus');
 
 module.exports = {
 
+  /**
+   * Internal storage object for the block
+   */
   blockStorage: {},
 
+  /**
+   * Initialize the store, including the block type
+   */
   createStore: function(blockData) {
     this.blockStorage = {
       type: utils.underscored(this.type),
@@ -2907,30 +4887,38 @@ module.exports = {
     };
   },
 
-  save: function() { this.toData(); },
+  /**
+   * Serialize the block and save the data into the store
+   */
+  save: function() {
+    var data = this._serializeData();
 
-  saveAndReturnData: function() {
+    if (!_.isEmpty(data)) {
+      this.setData(data);
+    }
+  },
+
+  getData: function() {
     this.save();
     return this.blockStorage;
   },
 
-  saveAndGetData: function() {
-    var store = this.saveAndReturnData();
-    return store.data || store;
-  },
-
-  getData: function() {
+  getBlockData: function() {
+    this.save();
     return this.blockStorage.data;
   },
 
+  _getData: function() {
+    return this.blockStorage.data;
+  },
+
+  /**
+   * Set the block data.
+   * This is used by the save() method.
+   */
   setData: function(blockData) {
     utils.log("Setting data for block " + this.blockID);
     Object.assign(this.blockStorage.data, blockData || {});
-  },
-
-  setAndRetrieveData: function(blockData) {
-    this.setData(blockData);
-    return this.getData();
   },
 
   setAndLoadData: function(blockData) {
@@ -2938,13 +4926,13 @@ module.exports = {
     this.beforeLoadingData();
   },
 
-  toData: function() {},
+  _serializeData: function() {},
   loadData: function() {},
 
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);
-    EventBus.trigger("block:loadData", this.blockID);
-    this.loadData(this.getData());
+    EventBus.trigger("editor/block/loadData");
+    this.loadData(this._getData());
   },
 
   _loadData: function() {
@@ -2953,14 +4941,14 @@ module.exports = {
   },
 
   checkAndLoadData: function() {
-    if (!_.isEmpty(this.getData())) {
+    if (!_.isEmpty(this._getData())) {
       this.beforeLoadingData();
     }
   }
 
 };
 
-},{"./event-bus":76,"./lodash":91,"./utils":96}],58:[function(require,module,exports){
+},{"./event-bus":80,"./lodash":95,"./utils":101}],60:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -3038,12 +5026,388 @@ module.exports = {
 
 };
 
-},{"./lodash":91,"./utils":96}],59:[function(require,module,exports){
+},{"./lodash":95,"./utils":101}],61:[function(require,module,exports){
+"use strict";
+
+var _ = require('./lodash');
+
+var config = require('./config');
+var utils = require('./utils');
+var stToHTML = require('./to-html');
+var stToMarkdown = require('./to-markdown');
+var BlockMixins = require('./block_mixins');
+
+var SimpleBlock = require('./simple-block');
+var BlockReorder = require('./block-reorder');
+var BlockDeletion = require('./block-deletion');
+var BlockPositioner = require('./block-positioner');
+var Formatters = require('./formatters');
+var EventBus = require('./event-bus');
+
+var Spinner = require('spin.js');
+
+var Block = function(data, instance_id, mediator) {
+  SimpleBlock.apply(this, arguments);
+};
+
+Block.prototype = Object.create(SimpleBlock.prototype);
+Block.prototype.constructor = Block;
+
+var delete_template = [
+  "<div class='st-block__ui-delete-controls'>",
+  "<label class='st-block__delete-label'>",
+  "<%= i18n.t('general:delete') %>",
+  "</label>",
+  "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
+  "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
+  "</div>"
+].join("\n");
+
+var drop_options = {
+  html: ['<div class="st-block__dropzone">',
+    '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
+    '</p></div>'].join('\n'),
+    re_render_on_reorder: false
+};
+
+var paste_options = {
+  html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
+    ' class="st-block__paste-input st-paste-block">'].join('')
+};
+
+var upload_options = {
+  html: [
+    '<div class="st-block__upload-container">',
+    '<input type="file" type="st-file-upload">',
+    '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
+    '</div>'
+  ].join('\n')
+};
+
+config.defaults.Block = {
+  drop_options: drop_options,
+  paste_options: paste_options,
+  upload_options: upload_options
+};
+
+Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
+
+  bound: [
+    "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
+    "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender",
+  ],
+
+  className: 'st-block st-icon--add',
+
+  attributes: function() {
+    return Object.assign(SimpleBlock.fn.attributes.call(this), {
+      'data-icon-after' : "add"
+    });
+  },
+
+  icon_name: 'default',
+
+  validationFailMsg: function() {
+    return i18n.t('errors:validation_fail', { type: this.title() });
+  },
+
+  editorHTML: '<div class="st-block__editor"></div>',
+
+  toolbarEnabled: true,
+
+  availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
+    'ajaxable', 'controllable'],
+
+  droppable: false,
+  pastable: false,
+  uploadable: false,
+  fetchable: false,
+  ajaxable: false,
+
+  drop_options: {},
+  paste_options: {},
+  upload_options: {},
+
+  formattable: true,
+
+  _previousSelection: '',
+
+  initialize: function() {},
+
+  toMarkdown: function(markdown){ return markdown; },
+  toHTML: function(html){ return html; },
+
+  withMixin: function(mixin) {
+    if (!_.isObject(mixin)) { return; }
+
+    var initializeMethod = "initialize" + mixin.mixinName;
+
+    if (_.isUndefined(this[initializeMethod])) {
+      Object.assign(this, mixin);
+      this[initializeMethod]();
+    }
+  },
+
+  render: function() {
+    this.beforeBlockRender();
+    this._setBlockInner();
+
+    this.$editor = this.$inner.children().first();
+
+    if(this.droppable || this.pastable || this.uploadable) {
+      var input_html = $("<div>", { 'class': 'st-block__inputs' });
+      this.$inner.append(input_html);
+      this.$inputs = input_html;
+    }
+
+    if (this.hasTextBlock) { this._initTextBlocks(); }
+
+    this.availableMixins.forEach(function(mixin) {
+      if (this[mixin]) {
+        this.withMixin(BlockMixins[utils.classify(mixin)]);
+      }
+    }, this);
+
+    if (this.formattable) { this._initFormatting(); }
+
+    this._blockPrepare();
+
+    return this;
+  },
+
+  remove: function() {
+    if (this.ajaxable) {
+      this.resolveAllInQueue();
+    }
+
+    this.$el.remove();
+  },
+
+  loading: function() {
+    if(!_.isUndefined(this.spinner)) { this.ready(); }
+
+    this.spinner = new Spinner(config.defaults.spinner);
+    this.spinner.spin(this.$el[0]);
+
+    this.$el.addClass('st--is-loading');
+  },
+
+  ready: function() {
+    this.$el.removeClass('st--is-loading');
+    if (!_.isUndefined(this.spinner)) {
+      this.spinner.stop();
+      delete this.spinner;
+    }
+  },
+
+  /* Generic _serializeData implementation to serialize the block into a plain object.
+   * Can be overwritten, although hopefully this will cover most situations.
+   * If you want to get the data of your block use block.getBlockData()
+   */
+  _serializeData: function() {
+    utils.log("toData for " + this.blockID);
+
+    var data = {};
+
+    /* Simple to start. Add conditions later */
+    if (this.hasTextBlock()) {
+      var content = this.getTextBlock().html();
+      if (content.length > 0) {
+        data.text = stToMarkdown(content, this.type);
+      }
+    }
+
+    // Add any inputs to the data attr
+    if (this.$(':input').not('.st-paste-block').length > 0) {
+      this.$(':input').each(function(index,input){
+        if (input.getAttribute('name')) {
+          data[input.getAttribute('name')] = input.value;
+        }
+      });
+    }
+
+    return data;
+  },
+
+  /* Generic implementation to tell us when the block is active */
+  focus: function() {
+    this.getTextBlock().focus();
+  },
+
+  blur: function() {
+    this.getTextBlock().blur();
+  },
+
+  onFocus: function() {
+    this.getTextBlock().bind('focus', this._onFocus);
+  },
+
+  onBlur: function() {
+    this.getTextBlock().bind('blur', this._onBlur);
+  },
+
+  /*
+   * Event handlers
+   */
+
+  _onFocus: function() {
+    this.trigger('blockFocus', this.$el);
+  },
+
+  _onBlur: function() {},
+
+  onBlockRender: function() {
+    this.focus();
+  },
+
+  onDrop: function(dataTransferObj) {},
+
+  onDeleteClick: function(ev) {
+    ev.preventDefault();
+
+    var onDeleteConfirm = function(e) {
+      e.preventDefault();
+      this.mediator.trigger('block:remove', this.blockID);
+      this.remove();
+    };
+
+    var onDeleteDeny = function(e) {
+      e.preventDefault();
+      this.$el.removeClass('st-block--delete-active');
+      $delete_el.remove();
+    };
+
+    if (this.isEmpty()) {
+      onDeleteConfirm.call(this, new Event('click'));
+      return;
+    }
+
+    this.$inner.append(_.template(delete_template));
+    this.$el.addClass('st-block--delete-active');
+
+    var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
+
+    this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
+                   onDeleteConfirm.bind(this))
+                   .on('click', '.st-block-ui-btn--deny-delete',
+                       onDeleteDeny.bind(this));
+  },
+
+  pastedMarkdownToHTML: function(content) {
+    return stToHTML(stToMarkdown(content, this.type), this.type);
+  },
+
+  onContentPasted: function(event, target){
+    target.html(this.pastedMarkdownToHTML(target[0].innerHTML));
+    this.getTextBlock().caretToEnd();
+  },
+
+  beforeLoadingData: function() {
+    this.loading();
+
+    if(this.droppable || this.uploadable || this.pastable) {
+      this.$editor.show();
+      this.$inputs.hide();
+    }
+
+    SimpleBlock.fn.beforeLoadingData.call(this);
+
+    this.ready();
+  },
+
+  _handleContentPaste: function(ev) {
+    setTimeout(this.onContentPasted.bind(this, ev, $(ev.currentTarget)), 0);
+  },
+
+  _getBlockClass: function() {
+    return 'st-block--' + this.className;
+  },
+
+  /*
+   * Init functions for adding functionality
+   */
+
+  _initUIComponents: function() {
+
+    var positioner = new BlockPositioner(this.$el, this.mediator);
+
+    this._withUIComponent(positioner, '.st-block-ui-btn--reorder',
+                          positioner.toggle);
+
+    this._withUIComponent(new BlockReorder(this.$el, this.mediator));
+
+    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn--delete',
+                          this.onDeleteClick);
+
+    this.onFocus();
+    this.onBlur();
+  },
+
+  _initFormatting: function() {
+    // Enable formatting keyboard input
+    var formatter;
+    for (var name in Formatters) {
+      if (Formatters.hasOwnProperty(name)) {
+        formatter = Formatters[name];
+        if (!_.isUndefined(formatter.keyCode)) {
+          formatter._bindToBlock(this.$el);
+        }
+      }
+    }
+  },
+
+  _initTextBlocks: function() {
+    this.getTextBlock()
+    .bind('paste', this._handleContentPaste)
+    .bind('keyup', this.getSelectionForFormatter)
+    .bind('mouseup', this.getSelectionForFormatter)
+    .bind('DOMNodeInserted', this.clearInsertedStyles);
+  },
+
+  getSelectionForFormatter: function() {
+    var block = this;
+    setTimeout(function() {
+      var selection = window.getSelection(),
+          selectionStr = selection.toString().trim(),
+          en = 'formatter:' + ((selectionStr === '') ? 'hide' : 'position');
+
+      block.mediator.trigger(en, block);
+      EventBus.trigger(en, block);
+    }, 1);
+  },
+
+  clearInsertedStyles: function(e) {
+    var target = e.target;
+    target.removeAttribute('style'); // Hacky fix for Chrome.
+  },
+
+  hasTextBlock: function() {
+    return this.getTextBlock().length > 0;
+  },
+
+  getTextBlock: function() {
+    if (_.isUndefined(this.text_block)) {
+      this.text_block = this.$('.st-text-block');
+    }
+
+    return this.text_block;
+  },
+
+  isEmpty: function() {
+    return _.isEmpty(this.getBlockData());
+  }
+
+});
+
+Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
+
+module.exports = Block;
+
+},{"./block-deletion":55,"./block-positioner":57,"./block-reorder":58,"./block-validations":60,"./block_mixins":66,"./config":77,"./event-bus":80,"./formatters":89,"./helpers/extend":92,"./lodash":95,"./simple-block":98,"./to-html":99,"./to-markdown":100,"./utils":101,"spin.js":52}],62:[function(require,module,exports){
 "use strict";
 
 var utils = require('../utils');
-
-var EventBus = require('../event-bus');
 
 module.exports = {
 
@@ -3057,14 +5421,12 @@ module.exports = {
 
   addQueuedItem: function(name, deferred) {
     utils.log("Adding queued item for " + this.blockID + " called " + name);
-    EventBus.trigger("onUploadStart", this.blockID);
 
     this._queued.push({ name: name, deferred: deferred });
   },
 
   removeQueuedItem: function(name) {
     utils.log("Removing queued item for " + this.blockID + " called " + name);
-    EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
       return queued.name !== name;
@@ -3084,7 +5446,7 @@ module.exports = {
 
 };
 
-},{"../event-bus":76,"../utils":96}],60:[function(require,module,exports){
+},{"../utils":101}],63:[function(require,module,exports){
 "use strict";
 
 var utils = require('../utils');
@@ -3119,7 +5481,7 @@ module.exports = {
   }
 };
 
-},{"../utils":96}],61:[function(require,module,exports){
+},{"../utils":101}],64:[function(require,module,exports){
 "use strict";
 
 /* Adds drop functionaltiy to this block */
@@ -3140,7 +5502,8 @@ module.exports = {
 
     this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
-    var drop_html = $(_.template(this.drop_options.html)({ block: this, _: _ }));
+    var drop_html = $(_.template(this.drop_options.html,
+                                 { block: this, _: _ }));
 
     this.$editor.hide();
     this.$inputs.append(drop_html);
@@ -3180,7 +5543,7 @@ module.exports = {
 
 };
 
-},{"../config":74,"../event-bus":76,"../lodash":91,"../utils":96}],62:[function(require,module,exports){
+},{"../config":77,"../event-bus":80,"../lodash":95,"../utils":101}],65:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3215,7 +5578,7 @@ module.exports = {
 
 };
 
-},{"../lodash":91,"./ajaxable":59}],63:[function(require,module,exports){
+},{"../lodash":95,"./ajaxable":62}],66:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3227,7 +5590,7 @@ module.exports = {
   Uploadable: require('./uploadable.js'),
 };
 
-},{"./ajaxable.js":59,"./controllable.js":60,"./droppable.js":61,"./fetchable.js":62,"./pastable.js":64,"./uploadable.js":65}],64:[function(require,module,exports){
+},{"./ajaxable.js":62,"./controllable.js":63,"./droppable.js":64,"./fetchable.js":65,"./pastable.js":67,"./uploadable.js":68}],67:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3252,14 +5615,14 @@ module.exports = {
 
 };
 
-},{"../config":74,"../lodash":91,"../utils":96}],65:[function(require,module,exports){
+},{"../config":77,"../lodash":95,"../utils":101}],68:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
 var config = require('../config');
 var utils = require('../utils');
 
-var fileUploader = require('../extensions/sir-trevor.uploader');
+var fileUploader = require('../extensions/file-uploader');
 
 module.exports = {
 
@@ -3281,49 +5644,7 @@ module.exports = {
 
 };
 
-},{"../config":74,"../extensions/sir-trevor.uploader":80,"../lodash":91,"../utils":96,"./ajaxable":59}],66:[function(require,module,exports){
-"use strict";
-
-/*
-  Block Quote
-*/
-
-var _ = require('../lodash');
-
-var Block = require('../block');
-var stToHTML = require('../to-html');
-
-var template = _.template([
-  '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
-  '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
-  '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
-  ' class="st-input-string st-required js-cite-input" type="text" />'
-].join("\n"));
-
-module.exports = Block.extend({
-
-  type: "quote",
-
-  title: function(){ return i18n.t('blocks:quote:title'); },
-
-  icon_name: 'quote',
-
-  editorHTML: function() {
-    return template(this);
-  },
-
-  loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
-    this.$('.js-cite-input').val(data.cite);
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/^(.+)$/mg,"> $1");
-  }
-
-});
-
-},{"../block":54,"../lodash":91,"../to-html":94}],67:[function(require,module,exports){
+},{"../config":77,"../extensions/file-uploader":83,"../lodash":95,"../utils":101,"./ajaxable":62}],69:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3335,7 +5656,7 @@ var stToHTML = require('../to-html');
 
 module.exports = Block.extend({
 
-  type: 'heading',
+  type: 'Heading',
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
@@ -3348,13 +5669,8 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54,"../to-html":94}],68:[function(require,module,exports){
+},{"../block":61,"../to-html":99}],70:[function(require,module,exports){
 "use strict";
-
-/*
-  Simple Image Block
-*/
-
 
 var Block = require('../block');
 
@@ -3381,16 +5697,6 @@ module.exports = Block.extend({
     }).bind(this));
   },
 
-  onUploadSuccess : function(data) {
-    this.setData(data);
-    this.ready();
-  },
-
-  onUploadError : function(jqXHR, status, errorThrown){
-    this.addMessage(i18n.t('blocks:image:upload_error'));
-    this.ready();
-  },
-
   onDrop: function(transferData){
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
@@ -3402,25 +5708,140 @@ module.exports = Block.extend({
       this.$inputs.hide();
       this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
 
-      this.uploader(file, this.onUploadSuccess, this.onUploadError);
+      this.uploader(
+        file,
+        function(data) {
+          this.setData(data);
+          this.ready();
+        },
+        function(error) {
+          this.addMessage(i18n.t('blocks:image:upload_error'));
+          this.ready();
+        }
+      );
     }
   }
 });
 
-},{"../block":54}],69:[function(require,module,exports){
+},{"../block":61}],71:[function(require,module,exports){
 "use strict";
 
 module.exports = {
   Text: require('./text'),
-  Quote: require('./block-quote'),
+  Quote: require('./quote'),
   Image: require('./image'),
   Heading: require('./heading'),
-  List: require('./unordered-list'),
+  List: require('./list'),
   Tweet: require('./tweet'),
   Video: require('./video'),
 };
 
-},{"./block-quote":66,"./heading":67,"./image":68,"./text":70,"./tweet":71,"./unordered-list":72,"./video":73}],70:[function(require,module,exports){
+},{"./heading":69,"./image":70,"./list":72,"./quote":73,"./text":74,"./tweet":75,"./video":76}],72:[function(require,module,exports){
+"use strict";
+
+var _ = require('../lodash');
+
+var Block = require('../block');
+var stToHTML = require('../to-html');
+
+var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
+
+module.exports = Block.extend({
+
+  type: 'list',
+
+  title: function() { return i18n.t('blocks:list:title'); },
+
+  icon_name: 'list',
+
+  editorHTML: function() {
+    return _.template(template, this);
+  },
+
+  loadData: function(data){
+    this.getTextBlock().html("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+  },
+
+  onBlockRender: function() {
+    this.checkForList = this.checkForList.bind(this);
+    this.getTextBlock().on('click keyup', this.checkForList);
+    this.focus();
+  },
+
+  checkForList: function() {
+    if (this.$('ul').length === 0) {
+      document.execCommand("insertUnorderedList", false, false);
+    }
+  },
+
+  toMarkdown: function(markdown) {
+    return markdown.replace(/<\/li>/mg,"\n")
+                   .replace(/<\/?[^>]+(>|$)/g, "")
+                   .replace(/^(.+)$/mg," - $1");
+  },
+
+  toHTML: function(html) {
+    html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
+               .replace(/\n/mg, "");
+
+    return html;
+  },
+
+  onContentPasted: function(event, target) {
+    this.$('ul').html(
+      this.pastedMarkdownToHTML(target[0].innerHTML));
+    this.getTextBlock().caretToEnd();
+  },
+
+  isEmpty: function() {
+    return _.isEmpty(this.getBlockData().text);
+  }
+
+});
+
+},{"../block":61,"../lodash":95,"../to-html":99}],73:[function(require,module,exports){
+"use strict";
+
+/*
+  Block Quote
+*/
+
+var _ = require('../lodash');
+
+var Block = require('../block');
+var stToHTML = require('../to-html');
+
+var template = _.template([
+  '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
+  '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
+  '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
+  ' class="st-input-string st-required js-cite-input" type="text" />'
+].join("\n"));
+
+module.exports = Block.extend({
+
+  type: "quote",
+
+  title: function() { return i18n.t('blocks:quote:title'); },
+
+  icon_name: 'quote',
+
+  editorHTML: function() {
+    return template(this);
+  },
+
+  loadData: function(data){
+    this.getTextBlock().html(stToHTML(data.text, this.type));
+    this.$('.js-cite-input').val(data.cite);
+  },
+
+  toMarkdown: function(markdown) {
+    return markdown.replace(/^(.+)$/mg,"> $1");
+  }
+
+});
+
+},{"../block":61,"../lodash":95,"../to-html":99}],74:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3445,7 +5866,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54,"../to-html":94}],71:[function(require,module,exports){
+},{"../block":61,"../to-html":99}],75:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3554,73 +5975,7 @@ module.exports = Block.extend({
   }
 });
 
-},{"../block":54,"../lodash":91,"../utils":96}],72:[function(require,module,exports){
-"use strict";
-
-/*
-   Unordered List
-   */
-
-var _ = require('../lodash');
-
-var Block = require('../block');
-var stToHTML = require('../to-html');
-
-var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
-
-module.exports = Block.extend({
-
-  type: 'list',
-
-  title: function() { return i18n.t('blocks:list:title'); },
-
-  icon_name: 'list',
-
-  editorHTML: function() {
-    return _.template(template, this);
-  },
-
-  loadData: function(data){
-    this.getTextBlock().html("<ul>" + stToHTML(data.text, this.type) + "</ul>");
-  },
-
-  onBlockRender: function() {
-    this.checkForList = this.checkForList.bind(this);
-    this.getTextBlock().on('click keyup', this.checkForList);
-  },
-
-  checkForList: function() {
-    if (this.$('ul').length === 0) {
-      document.execCommand("insertUnorderedList", false, false);
-    }
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/<\/li>/mg,"\n")
-    .replace(/<\/?[^>]+(>|$)/g, "")
-    .replace(/^(.+)$/mg," - $1");
-  },
-
-  toHTML: function(html) {
-    html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
-    .replace(/\n/mg, "");
-
-    return html;
-  },
-
-  onContentPasted: function(event, target) {
-    this.$('ul').html(
-      this.pastedMarkdownToHTML(target[0].innerHTML));
-    this.getTextBlock().caretToEnd();
-  },
-
-  isEmpty: function() {
-    return _.isEmpty(this.saveAndGetData().text);
-  }
-
-});
-
-},{"../block":54,"../lodash":91,"../to-html":94}],73:[function(require,module,exports){
+},{"../block":61,"../lodash":95,"../utils":101}],76:[function(require,module,exports){
 "use strict";
 
 var _ = require('../lodash');
@@ -3699,13 +6054,13 @@ module.exports = Block.extend({
 });
 
 
-},{"../block":54,"../lodash":91,"../utils":96}],74:[function(require,module,exports){
+},{"../block":61,"../lodash":95,"../utils":101}],77:[function(require,module,exports){
 "use strict";
 
 module.exports = {
   debug: false,
   skipValidation: false,
-  version: "0.3.0",
+  version: "0.4.0",
   language: "en",
 
   instances: [],
@@ -3731,13 +6086,10 @@ module.exports = {
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
-    toMarkdown: {
-      aggresiveHTMLStrip: false
-    }
   }
 };
 
-},{}],75:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 "use strict";
 
 /*
@@ -3752,13 +6104,15 @@ var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
 
+var Events = require('./events');
 var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
-var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
+var BlockManager = require('./block-manager');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var editorStore = require('./extensions/sir-trevor.editor-store');
+var EditorStore = require('./extensions/editor-store');
+var ErrorHandler = require('./error-handler');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -3766,41 +6120,32 @@ var Editor = function(options) {
 
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
-  bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
-    'hideBlockControls', 'onNewBlockCreated', 'changeBlockPosition',
-    'onBlockDragStart', 'onBlockDragEnd', 'removeBlockDragOver',
-    'onBlockDropped', 'createBlock'], 
+  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
+    'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
+    'blockLimitReached'], 
 
   events: {
-    'block:reorder:down':       'hideBlockControls',
-    'block:reorder:dragstart':  'onBlockDragStart',
-    'block:reorder:dragend':    'onBlockDragEnd',
-    'block:content:dropped':    'removeBlockDragOver',
-    'block:reorder:dropped':    'onBlockDropped',
-    'block:create:new':         'onNewBlockCreated'
+    'block:reorder:dragend': 'removeBlockDragOver',
+    'block:content:dropped': 'removeBlockDragOver'
   },
 
   initialize: function(options) {
     utils.log("Init SirTrevor.Editor");
 
-    this.blockTypes = {};
-    this.blockCounts = {}; // Cached block type counts
-    this.blocks = []; // Block references
-    this.errors = [];
     this.options = Object.assign({}, config.defaults, options || {});
     this.ID = _.uniqueId('st-editor-');
 
     if (!this._ensureAndSetElements()) { return false; }
 
-    if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+    if(!_.isUndefined(this.options.onEditorRender) &&
+       _.isFunction(this.options.onEditorRender)) {
       this.onEditorRender = this.options.onEditorRender;
     }
 
-    this._setRequired();
-    this._setBlocksTypes();
-    this._bindFunctions();
+    // Mediated events for *this* Editor instance
+    this.mediator = Object.assign({}, Events);
 
-    this.store("create");
+    this._bindFunctions();
 
     config.instances.push(this);
 
@@ -3809,48 +6154,54 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     FormEvents.bindFormSubmit(this.$form);
   },
 
-  /* Build the Editor instance.
-   * Check to see if we've been passed JSON already, and if not try and create
-   * a default block. If we have JSON then we need to build all of our blocks
-   * from this.
+  /*
+   * Build the Editor instance.
+   * Check to see if we've been passed JSON already, and if not try and
+   * create a default block.
+   * If we have JSON then we need to build all of our blocks from this.
    */
   build: function() {
     this.$el.hide();
 
-    this.block_controls = new BlockControls(this.blockTypes, this.ID);
-    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID);
-    this.formatBar = new FormatBar(this.options.formatBar);
+    this.errorHandler = new ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
+    this.store = new EditorStore(this.$el.val(), this.mediator);
+    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
+    this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
+    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
 
-    this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-    this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
+    this.mediator.on('block:changePosition', this.changeBlockPosition);
+    this.mediator.on('block-controls:reset', this.resetBlockControls);
+    this.mediator.on('block:limitReached', this.blockLimitReached);
+    this.mediator.on('block:render', this.renderBlock);
+
+    this.dataStore = "Please use store.retrieve();";
 
     this._setEvents();
-
-    EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-    EventBus.on("formatter:position", this.formatBar.renderBySelection);
-    EventBus.on("formatter:hide", this.formatBar.hide);
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
     $(document.body).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
-    $(window).bind('click.sirtrevor', this.hideAllTheThings);
+    $(window).bind('click', this.hideAllTheThings);
 
-    var store = this.store("read");
-
-    if (store.data.length > 0) {
-      store.data.forEach(function(block){
-        utils.log('Creating: ' + block.type);
-        this.createBlock(block.type, block.data);
-      }, this);
-    } else if (this.options.defaultType !== false) {
-      this.createBlock(this.options.defaultType, {});
-    }
-
+    this.createBlocks();
     this.$wrapper.addClass('st-ready');
 
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
+    }
+  },
+
+  createBlocks: function() {
+    var store = this.store.retrieve();
+
+    if (store.data.length > 0) {
+      store.data.forEach(function(block) {
+        this.mediator.trigger('block:create', block.type, block.data);
+      }, this);
+    } else if (this.options.defaultType !== false) {
+      this.mediator.trigger('block:create', this.options.defaultType, {});
     }
   },
 
@@ -3862,14 +6213,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Destroy all blocks
     this.blocks.forEach(function(block) {
-      this.removeBlock(block.blockID);
+      this.mediator.trigger('block:remove', this.block.blockID);
     }, this);
 
     // Stop listening to events
+    this.mediator.stopListening();
     this.stopListening();
-
-    // Cleanup element
-    var el = this.$el.detach();
 
     // Remove instance
     config.instances = config.instances.filter(function(instance) {
@@ -3877,14 +6226,22 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }, this);
 
     // Clear the store
-    this.store("reset");
-
-    this.$outer.replaceWith(el);
+    this.store.reset();
+    this.$outer.replaceWith(this.$el.detach());
   },
 
   reinitialize: function(options) {
     this.destroy();
     this.initialize(options || this.options);
+  },
+
+  resetBlockControls: function() {
+    this.block_controls.renderInContainer(this.$wrapper);
+    this.block_controls.hide();
+  },
+
+  blockLimitReached: function(toggle) {
+    this.$wrapper.toggleClass('st--block-limit-reached', toggle);
   },
 
   _setEvents: function() {
@@ -3896,112 +6253,34 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   hideAllTheThings: function(e) {
     this.block_controls.hide();
     this.formatBar.hide();
-
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-  },
-
-  showBlockControls: function(container) {
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-
-    this.block_controls.show();
-
-    container.append(this.block_controls.$el.detach());
-    container.addClass('with-st-controls');
-
-    this.block_controls.current_container = container;
   },
 
   store: function(method, options){
-    return editorStore(this, method, options || {});
+    utils.log("The store method has been removed, please call store[methodName]");
+    return this.store[method].call(this, options || {});
   },
 
-  /* Create an instance of a block from an available type.  We have to check
-   * the number of blocks we're allowed to create before adding one and handle
-   * fails accordingly.  A block will have a reference to an Editor instance &
-   * the parent BlockType.  We also have to remember to store static counts for
-   * how many blocks we have, and keep a nice array of all the blocks
-   * available.
-   */
-  createBlock: function(type, data, render_at) {
-    type = utils.classify(type);
-
-    if(this._blockLimitReached()) {
-      utils.log("Cannot add any more blocks. Limit reached.");
-      return false;
-    }
-
-    if (!this._isBlockTypeAvailable(type)) {
-      utils.log("Block type not available " + type);
-      return false;
-    }
-
-    // Can we have another one of these blocks?
-    if (!this._canAddBlockType(type)) {
-      utils.log("Block Limit reached for type " + type);
-      return false;
-    }
-
-    var block = new Blocks[type](data, this.ID);
-
+  renderBlock: function(block) {
     this._renderInPosition(block.render().$el);
+    this.hideAllTheThings();
+    this.scrollTo(block.$el);
 
-    this.listenTo(block, 'removeBlock', this.removeBlock);
-
-    this.blocks.push(block);
-    this._incrementBlockTypeCount(type);
-
-    if(!data) {
-      block.focus();
-    }
-
-    EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
-    utils.log("Block created of type " + type);
     block.trigger("onRender");
-
-    this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
-    this.triggerBlockCountUpdate();
-  },
-
-  onNewBlockCreated: function(block) {
-    if (block.instanceID === this.ID) {
-      this.hideBlockControls();
-      this.scrollTo(block.$el);
-    }
   },
 
   scrollTo: function(element) {
     $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
   },
 
-  blockFocus: function(block) {
-    this.block_controls.current_container = null;
-  },
-
-  hideBlockControls: function() {
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-
-    this.block_controls.hide();
-  },
-
   removeBlockDragOver: function() {
     this.$outer.find('.st-drag-over').removeClass('st-drag-over');
-  },
-
-  triggerBlockCountUpdate: function() {
-    EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
   },
 
   changeBlockPosition: function($block, selectedPosition) {
     selectedPosition = selectedPosition - 1;
 
-    var blockPosition = this.getBlockPosition($block);
-    var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+    var blockPosition = this.getBlockPosition($block),
+    $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -4012,242 +6291,73 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
   },
 
-  onBlockDropped: function(block_id) {
-    this.hideAllTheThings();
-    var block = this.findBlockById(block_id);
-    if (!_.isUndefined(block) &&
-        !_.isEmpty(block.getData()) &&
-          block.drop_options.re_render_on_reorder) {
-      block.beforeLoadingData();
-    }
-  },
-
-  onBlockDragStart: function() {
-    this.hideBlockControls();
-    this.$wrapper.addClass("st-outer--is-reordering");
-  },
-
-  onBlockDragEnd: function() {
-    this.removeBlockDragOver();
-    this.$wrapper.removeClass("st-outer--is-reordering");
-  },
-
   _renderInPosition: function(block) {
-    if (this.block_controls.current_container) {
-      this.block_controls.current_container.after(block);
+    if (this.block_controls.currentContainer) {
+      this.block_controls.currentContainer.after(block);
     } else {
       this.$wrapper.append(block);
     }
   },
 
-  _incrementBlockTypeCount: function(type) {
-    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
-  },
-
-  _getBlockTypeCount: function(type) {
-    return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
-  },
-
-  _canAddBlockType: function(type) {
-    var block_type_limit = this._getBlockTypeLimit(type);
-
-    return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
-  },
-
-  _blockLimitReached: function() {
-    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
-  },
-
-  removeBlock: function(block_id) {
-    var block = this.findBlockById(block_id),
-    type = utils.classify(block.type),
-    controls = block.$el.find('.st-block-controls');
-
-    if (controls.length) {
-      this.block_controls.hide();
-      this.$wrapper.prepend(controls);
+  validateAndSaveBlock: function(block, shouldValidate) {
+    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+      utils.log("Block " + block.blockID + " failed validation");
+      return;
     }
 
-    this.blockCounts[type] = this.blockCounts[type] - 1;
-    this.blocks = this.blocks.filter(function(item) {
-      return item.blockID !== block.blockID;
-    });
-    this.stopListening(block);
-
-    block.remove();
-
-    EventBus.trigger("block:remove", block);
-    this.triggerBlockCountUpdate();
-
-    this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
+    var blockData = block.getData();
+    utils.log("Adding data for block " + block.blockID + " to block store:",
+              blockData);
+    this.store.addData(blockData);
   },
 
-  performValidations : function(block, should_validate) {
-    var errors = 0;
-
-    if (!config.skipValidation && should_validate) {
-      if(!block.valid()){
-        this.errors.push({ text: _.result(block, 'validationFailMsg') });
-        utils.log("Block " + block.blockID + " failed validation");
-        ++errors;
-      }
-    }
-
-    return errors;
-  },
-
-  saveBlockStateToStore: function(block) {
-    var store = block.saveAndReturnData();
-    if(store && !_.isEmpty(store.data)) {
-      utils.log("Adding data for block " + block.blockID + " to block store");
-      this.store("add", { data: store });
-    }
-  },
-
-  /* Handle a form submission of this Editor instance. Validate all of our
-   * blocks, and serialise all data onto the JSON objects
+  /*
+   * Handle a form submission of this Editor instance.
+   * Validate all of our blocks, and serialise all data onto the JSON objects
    */
-  onFormSubmit: function(should_validate) {
+  onFormSubmit: function(shouldValidate) {
     // if undefined or null or anything other than false - treat as true
-    should_validate = (should_validate === false) ? false : true;
+    shouldValidate = (shouldValidate === false) ? false : true;
 
     utils.log("Handling form submission for Editor " + this.ID);
 
-    this.removeErrors();
-    this.store("reset");
+    this.mediator.trigger('errors:reset');
+    this.store.reset();
 
-    this.validateBlocks(should_validate);
-    this.validateBlockTypesExist(should_validate);
+    this.validateBlocks(shouldValidate);
+    this.block_manager.validateBlockTypesExist(shouldValidate);
 
-    this.renderErrors();
-    this.store("save");
+    this.mediator.trigger('errors:render');
+    this.$el.val(this.store.toString());
 
-    return this.errors.length;
+    return this.errorHandler.errors.length;
   },
 
-  validateBlocks: function(should_validate) {
-    if (!this.required && (config.skipValidation && !should_validate)) {
-      return false;
-    }
-
-    this.$wrapper.find('.st-block').each(function(index, block) {
-      var _block = this.blocks.find(function(b) {
-        return (b.blockID === $(block).attr('id'));
-      });
-
-      if (_.isUndefined(_block)) { return false; }
-
-      // Find our block
-      this.performValidations(_block, should_validate);
-      this.saveBlockStateToStore(_block);
-    }.bind(this));
-  },
-
-  validateBlockTypesExist: function(should_validate) {
-    if (!this.required && (config.skipValidation && !should_validate)) {
-      return false;
-    }
-
-    var blockTypeIterator = function(type, index) {
-      if (!this._isBlockTypeAvailable(type)) { return; }
-
-      if (this._getBlockTypeCount(type) === 0) {
-        utils.log("Failed validation on required block type " + type);
-        this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
-      } else {
-        var blocks = this.getBlocksByType(type).filter(function(b) {
-          return !b.isEmpty();
-        });
-
-        if (blocks.length > 0) { return false; }
-
-        this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
-        utils.log("A required block type " + type + " is empty");
+  validateBlocks: function(shouldValidate) {
+    var self = this;
+    this.$wrapper.find('.st-block').each(function(idx, block) {
+      var _block = self.block_manager.findBlockById($(block).attr('id'));
+      if (!_.isUndefined(_block)) {
+        self.validateAndSaveBlock(_block, shouldValidate);
       }
-    };
-
-    if (Array.isArray(this.required)) {
-      this.required.forEach(blockTypeIterator, this);
-    }
-  },
-
-  renderErrors: function() {
-    if (this.errors.length === 0) { return false; }
-
-    if (_.isUndefined(this.$errors)) {
-      this.$errors = this._errorsContainer();
-    }
-
-    var str = "<ul>";
-
-    this.errors.forEach(function(error) {
-      str += '<li class="st-errors__msg">'+ error.text +'</li>';
     });
-
-    str += "</ul>";
-
-    this.$errors.append(str);
-    this.$errors.show();
-  },
-
-  _errorsContainer: function() {
-    if (_.isUndefined(this.options.errorsContainer)) {
-      var $container = $("<div>", {
-        'class': 'st-errors',
-        html: "<p>" + i18n.t("errors:title") + " </p>"
-      });
-
-      this.$outer.prepend($container);
-      return $container;
-    }
-
-    return $(this.options.errorsContainer);
-  },
-
-  removeErrors: function() {
-    if (this.errors.length === 0) { return false; }
-
-    this.$errors.hide().find('ul').html('');
-
-    this.errors = [];
   },
 
   findBlockById: function(block_id) {
-    return this.blocks.find(function(b) { return b.blockID === block_id; });
+    return this.block_manager.findBlockById(block_id);
   },
 
   getBlocksByType: function(block_type) {
-    return this.blocks.filter(function(b) {
-      return utils.classify(b.type) === block_type;
-    });
+    return this.block_manager.getBlocksByType(block_type);
   },
 
   getBlocksByIDs: function(block_ids) {
-    return this.blocks.filter(function(b) {
-      return block_ids.includes(b.blockID);
-    });
+    return this.block_manager.getBlocksByIDs(block_ids);
   },
 
   getBlockPosition: function($block) {
     return this.$wrapper.find('.st-block').index($block);
-  },
-
-  /* Get Block Type Limit
-   * --
-   * returns the limit for this block, which can be set on a per Editor
-   * instance, or on a global blockType scope. */
-  _getBlockTypeLimit: function(t) {
-    if (!this._isBlockTypeAvailable(t)) { return 0; }
-
-    return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
-  },
-
-  /* Availability helper methods
-   * --
-   * Checks if the object exists within the instance of the Editor. */
-
-  _isBlockTypeAvailable: function(t) {
-    return !_.isUndefined(this.blockTypes[t]);
   },
 
   _ensureAndSetElements: function() {
@@ -4270,43 +6380,93 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.$wrapper = this.$outer.find('.st-blocks');
 
     return true;
-  },
-
-  /* Set our blockTypes
-   * These will either be set on a per Editor instance, or set on a global scope.
-   */
-  _setBlocksTypes: function() {
-    this.blockTypes = {};
-    var keys = this.options.blockTypes || Object.keys(Blocks);
-    keys.forEach(function (k) {
-      this.blockTypes[k] = true;
-    }, this);
-  },
-
-  /* Get our required blocks (if any) */
-  _setRequired: function() {
-    if (Array.isArray(this.options.required) &&
-        !_.isEmpty(this.options.required)) {
-      this.required = this.options.required;
-    } else {
-      this.required = false;
-    }
   }
+
 });
 
 module.exports = Editor;
 
-},{"./block-controls":52,"./blocks":69,"./config":74,"./event-bus":76,"./events":77,"./extensions/sir-trevor.editor-store":78,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./function-bind":86,"./lodash":91,"./utils":96}],76:[function(require,module,exports){
+
+
+},{"./block-controls":54,"./block-manager":56,"./config":77,"./error-handler":79,"./event-bus":80,"./events":81,"./extensions/editor-store":82,"./floating-block-controls":85,"./form-events":86,"./format-bar":87,"./function-bind":90,"./lodash":95,"./utils":101}],79:[function(require,module,exports){
+"use strict";
+
+var _ = require('./lodash');
+
+var ErrorHandler = function($wrapper, mediator, container) {
+  this.$wrapper = $wrapper;
+  this.mediator = mediator;
+  this.$el = container;
+
+  if (_.isUndefined(this.$el)) {
+    this._ensureElement();
+    this.$wrapper.prepend(this.$el);
+  }
+
+  this.$el.hide();
+  this._bindFunctions();
+  this._bindMediatedEvents();
+
+  this.initialize();
+};
+
+Object.assign(ErrorHandler.prototype, require('./function-bind'), require('./mediated-events'), require('./renderable'), {
+
+  errors: [],
+  className: "st-errors",
+  eventNamespace: 'errors',
+
+  mediatedEvents: {
+    'reset': 'reset',
+    'add': 'addMessage',
+    'render': 'render'
+  },
+
+  initialize: function() {
+    var $list = $("<ul>");
+    this.$el.append("<p>" + i18n.t("errors:title") + "</p>")
+    .append($list);
+    this.$list = $list;
+  },
+
+  render: function() {
+    if (this.errors.length === 0) { return false; }
+    this.errors.forEach(this.createErrorItem, this);
+    this.$el.show();
+  },
+
+  createErrorItem: function(error) {
+    var $error = $("<li>", { class: "st-errors__msg", html: error.text });
+    this.$list.append($error);
+  },
+
+  addMessage: function(error) {
+    this.errors.push(error);
+  },
+
+  reset: function() {
+    if (this.errors.length === 0) { return false; }
+    this.errors = [];
+    this.$list.html('');
+    this.$el.hide();
+  }
+
+});
+
+module.exports = ErrorHandler;
+
+
+},{"./function-bind":90,"./lodash":95,"./mediated-events":96,"./renderable":97}],80:[function(require,module,exports){
 "use strict";
 
 module.exports = Object.assign({}, require('./events'));
 
-},{"./events":77}],77:[function(require,module,exports){
+},{"./events":81}],81:[function(require,module,exports){
 "use strict";
 
 module.exports = require('eventablejs');
 
-},{"eventablejs":2}],78:[function(require,module,exports){
+},{"eventablejs":3}],82:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4318,66 +6478,130 @@ module.exports = require('eventablejs');
 var _ = require('../lodash');
 var utils = require('../utils');
 
-module.exports = function(editor, method, options) {
-  var resp;
 
-  options = options || {};
-
-  switch(method) {
-
-    case "create":
-      // Grab our JSON from the textarea and clean any whitespace in case
-      // there is a line wrap between the opening and closing textarea tags
-      var content = editor.$el.val().trim();
-      editor.dataStore = { data: [] };
-
-      if (content.length > 0) {
-        try {
-          // Ensure the JSON string has a data element that's an array
-          var str = JSON.parse(content);
-          if (!_.isUndefined(str.data)) {
-            // Set it
-            editor.dataStore = str;
-          }
-        } catch(e) {
-          editor.errors.push({ text: i18n.t("errors:load_fail") });
-          editor.renderErrors();
-
-          utils.log('Sorry there has been a problem with parsing the JSON');
-          utils.log(e);
-        }
-      }
-      break;
-
-    case "reset":
-      editor.dataStore = { data: [] };
-      break;
-
-    case "add":
-      if (options.data) {
-        editor.dataStore.data.push(options.data);
-        resp = editor.dataStore;
-      }
-      break;
-
-    case "save":
-      // Store to our element
-      editor.$el.val((editor.dataStore.data.length > 0) ? JSON.stringify(editor.dataStore) : '');
-      break;
-
-    case "read":
-      resp = editor.dataStore;
-      break;
-
-  }
-
-  if(resp) {
-    return resp;
-  }
-
+var EditorStore = function(data, mediator) {
+  this.mediator = mediator;
+  this.initialize(data ? data.trim() : '');
 };
 
-},{"../lodash":91,"../utils":96}],79:[function(require,module,exports){
+Object.assign(EditorStore.prototype, {
+
+  initialize: function(data) {
+    this.store = this._parseData(data) || { data: [] };
+  },
+
+  retrieve: function() {
+    return this.store;
+  },
+
+  toString: function(space) {
+    return JSON.stringify(this.store, undefined, space);
+  },
+
+  reset: function() {
+    utils.log("Resetting the EditorStore");
+    this.store = { data: [] };
+  },
+
+  addData: function(data) {
+    this.store.data.push(data);
+    return this.store;
+  },
+
+  _parseData: function(data) {
+    var result;
+
+    if (data.length === 0) { return result; }
+
+    try {
+      // Ensure the JSON string has a data element that's an array
+      var jsonStr = JSON.parse(data);
+      if (!_.isUndefined(jsonStr.data)) {
+        result = jsonStr;
+      }
+    } catch(e) {
+      this.mediator.trigger(
+        'errors:add',
+        { text: i18n.t("errors:load_fail") });
+
+      this.mediator.trigger('errors:render');
+
+      console.log('Sorry there has been a problem with parsing the JSON');
+      console.log(e);
+    }
+
+    return result;
+  }
+
+});
+
+module.exports = EditorStore;
+
+},{"../lodash":95,"../utils":101}],83:[function(require,module,exports){
+"use strict";
+
+/*
+*   Sir Trevor Uploader
+*   Generic Upload implementation that can be extended for blocks
+*/
+
+var _ = require('../lodash');
+var config = require('../config');
+var utils = require('../utils');
+
+var EventBus = require('../event-bus');
+
+module.exports = function(block, file, success, error) {
+
+  EventBus.trigger('onUploadStart');
+
+  var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
+  var data = new FormData();
+
+  data.append('attachment[name]', file.name);
+  data.append('attachment[file]', file);
+  data.append('attachment[uid]', uid);
+
+  block.resetMessages();
+
+  var callbackSuccess = function(data) {
+    utils.log('Upload callback called');
+    EventBus.trigger('onUploadStop');
+
+    if (!_.isUndefined(success) && _.isFunction(success)) {
+      success.apply(block, arguments);
+    }
+  };
+
+  var callbackError = function(jqXHR, status, errorThrown) {
+    utils.log('Upload callback error called');
+    EventBus.trigger('onUploadStop');
+
+    if (!_.isUndefined(error) && _.isFunction(error)) {
+      error.call(block, status);
+    }
+  };
+
+  var xhr = $.ajax({
+    url: config.defaults.uploadUrl,
+    data: data,
+    cache: false,
+    contentType: false,
+    processData: false,
+    dataType: 'json',
+    type: 'POST'
+  });
+
+  block.addQueuedItem(uid, xhr);
+
+  xhr.done(callbackSuccess)
+     .fail(callbackError)
+     .always(block.removeQueuedItem.bind(block, uid));
+
+  return xhr;
+};
+
+},{"../config":77,"../event-bus":80,"../lodash":95,"../utils":101}],84:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4394,19 +6618,19 @@ var utils = require('../utils');
 
 var EventBus = require('../event-bus');
 
-var submittable = function($form) {
+var Submittable = function($form) {
   this.$form = $form;
   this.intialize();
 };
 
-Object.assign(submittable.prototype, {
+Object.assign(Submittable.prototype, {
 
   intialize: function(){
-    this.$submitBtn = this.$form.find("input[type='submit']");
+    this.submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
 
-    this.$submitBtn.each(function(i, btn){
+    this.submitBtn.each(function(i, btn){
       btnTitles.push($(btn).attr('value'));
     });
 
@@ -4417,12 +6641,12 @@ Object.assign(submittable.prototype, {
   },
 
   setSubmitButton: function(e, message) {
-    this.$submitBtn.attr('value', message);
+    this.submitBtn.attr('value', message);
   },
 
   resetSubmitButton: function(){
     var titles = this.submitBtnTitles;
-    this.$submitBtn.each(function(index, item) {
+    this.submitBtn.each(function(index, item) {
       $(item).attr('value', titles[index]);
     });
   },
@@ -4453,14 +6677,14 @@ Object.assign(submittable.prototype, {
 
   _disableSubmitButton: function(message){
     this.setSubmitButton(null, message || i18n.t("general:wait"));
-    this.$submitBtn
+    this.submitBtn
     .attr('disabled', 'disabled')
     .addClass('disabled');
   },
 
   _enableSubmitButton: function(){
     this.resetSubmitButton();
-    this.$submitBtn
+    this.submitBtn
     .removeAttr('disabled')
     .removeClass('disabled');
   },
@@ -4483,68 +6707,10 @@ Object.assign(submittable.prototype, {
 
 });
 
-module.exports = submittable;
+module.exports = Submittable;
 
 
-},{"../event-bus":76,"../utils":96}],80:[function(require,module,exports){
-"use strict";
-
-/*
-*   Sir Trevor Uploader
-*   Generic Upload implementation that can be extended for blocks
-*/
-
-var _ = require('../lodash');
-var config = require('../config');
-var utils = require('../utils');
-
-module.exports = function(block, file, success, error) {
-
-  var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
-  var data = new FormData();
-
-  data.append('attachment[name]', file.name);
-  data.append('attachment[file]', file);
-  data.append('attachment[uid]', uid);
-
-  block.resetMessages();
-
-  var callbackSuccess = function(){
-    utils.log('Upload callback called');
-
-    if (!_.isUndefined(success) && _.isFunction(success)) {
-      success.apply(block, arguments);
-    }
-  };
-
-  var callbackError = function(){
-    utils.log('Upload callback error called');
-
-    if (!_.isUndefined(error) && _.isFunction(error)) {
-      error.apply(block, arguments);
-    }
-  };
-
-  var xhr = $.ajax({
-    url: config.defaults.uploadUrl,
-    data: data,
-    cache: false,
-    contentType: false,
-    processData: false,
-    dataType: 'json',
-    type: 'POST'
-  });
-
-  block.addQueuedItem(uid, xhr);
-
-  xhr.done(callbackSuccess)
-     .fail(callbackError)
-     .always(block.removeQueuedItem.bind(block, uid));
-
-  return xhr;
-};
-
-},{"../config":74,"../lodash":91,"../utils":96}],81:[function(require,module,exports){
+},{"../event-bus":80,"../utils":101}],85:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4557,9 +6723,10 @@ var _ = require('./lodash');
 
 var EventBus = require('./event-bus');
 
-var FloatingBlockControls = function(wrapper, instance_id) {
+var FloatingBlockControls = function(wrapper, instance_id, mediator) {
   this.$wrapper = wrapper;
   this.instance_id = instance_id;
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -4625,40 +6792,42 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
   handleBlockClick: function(e) {
     e.stopPropagation();
-
-    var block = $(e.currentTarget);
-    this.trigger('showBlockControls', block);
+    this.mediator.trigger('block-controls:render', $(e.currentTarget));
   }
 
 });
 
 module.exports = FloatingBlockControls;
 
-},{"./event-bus":76,"./events":77,"./function-bind":86,"./lodash":91,"./renderable":92}],82:[function(require,module,exports){
+},{"./event-bus":80,"./events":81,"./function-bind":90,"./lodash":95,"./renderable":97}],86:[function(require,module,exports){
 "use strict";
 
 var config = require('./config');
 var utils = require('./utils');
 
 var EventBus = require('./event-bus');
-var Submittable = require('./extensions/sir-trevor.submittable');
+var Submittable = require('./extensions/submittable');
 
 var formBound = false; // Flag to tell us once we've bound our submit event
 
 var FormEvents = {
   bindFormSubmit: function(form) {
     if (!formBound) {
-      this.submittable = new Submittable(form);
-      form.on('submit.sirtrevor', this.onFormSubmit);
+      // XXX: should we have a formBound and submittable per-editor?
+      // telling JSHint to ignore as it'll complain we shouldn't be creating
+      // a new object, but otherwise `this` won't be set in the Submittable
+      // initialiser. Bit weird.
+      new Submittable(form); // jshint ignore:line
+      form.bind('submit', this.onFormSubmit);
       formBound = true;
     }
   },
 
-  onBeforeSubmit: function(should_validate) {
+  onBeforeSubmit: function(shouldValidate) {
     // Loop through all of our instances and do our form submits on them
     var errors = 0;
     config.instances.forEach(function(inst, i) {
-      errors += inst.onFormSubmit(should_validate);
+      errors += inst.onFormSubmit(shouldValidate);
     });
     utils.log("Total errors: " + errors);
 
@@ -4677,7 +6846,7 @@ var FormEvents = {
 
 module.exports = FormEvents;
 
-},{"./config":74,"./event-bus":76,"./extensions/sir-trevor.submittable":79,"./utils":96}],83:[function(require,module,exports){
+},{"./config":77,"./event-bus":80,"./extensions/submittable":84,"./utils":101}],87:[function(require,module,exports){
 "use strict";
 
 /*
@@ -4692,19 +6861,30 @@ var _ = require('./lodash');
 var config = require('./config');
 var Formatters = require('./formatters');
 
-var FormatBar = function(options) {
+var FormatBar = function(options, mediator) {
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
+  this.mediator = mediator;
+
   this._ensureElement();
   this._bindFunctions();
+  this._bindMediatedEvents();
 
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(FormatBar.prototype, require('./function-bind'), require('./events'), require('./renderable'), {
+Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediated-events'), require('./events'), require('./renderable'), {
 
   className: 'st-format-bar',
 
   bound: ["onFormatButtonClick", "renderBySelection", "hide"],
+
+  eventNamespace: 'formatter',
+
+  mediatedEvents: {
+    'positon': 'renderBySelection',
+    'show': 'show',
+    'hide': 'hide'
+  },
 
   initialize: function() {
     var formatName, format, btn;
@@ -4739,7 +6919,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 
   remove: function(){ this.$el.remove(); },
 
-  renderBySelection: function(rectangles) {
+  renderBySelection: function() {
 
     var selection = window.getSelection(),
     range = selection.getRangeAt(0),
@@ -4790,7 +6970,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 
 module.exports = FormatBar;
 
-},{"./config":74,"./events":77,"./formatters":85,"./function-bind":86,"./lodash":91,"./renderable":92}],84:[function(require,module,exports){
+},{"./config":77,"./events":81,"./formatters":89,"./function-bind":90,"./lodash":95,"./mediated-events":96,"./renderable":97}],88:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -4862,7 +7042,7 @@ Formatter.extend = require('./helpers/extend');
 
 module.exports = Formatter;
 
-},{"./helpers/extend":88,"./lodash":91}],85:[function(require,module,exports){
+},{"./helpers/extend":92,"./lodash":95}],89:[function(require,module,exports){
 "use strict";
 
 /* Our base formatters */
@@ -4932,7 +7112,7 @@ exports.Italic = new Italic();
 exports.Link = new Link();
 exports.Unlink = new UnLink();
 
-},{"./formatter":84}],86:[function(require,module,exports){
+},{"./formatter":88}],90:[function(require,module,exports){
 "use strict";
 
 /* Generic function binding utility, used by lots of our classes */
@@ -4947,7 +7127,7 @@ module.exports = {
 };
 
 
-},{}],87:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 "use strict";
 
 /*
@@ -5002,7 +7182,7 @@ $.fn.caretToEnd = function(){
 };
 
 
-},{}],88:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 "use strict";
 
 /*
@@ -5048,11 +7228,12 @@ module.exports = function(protoProps, staticProps) {
   return child;
 };
 
-},{}],89:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
 
+require('es6-shim'); // bundling in for the moment as support is very rare
 require('./helpers/event'); // extends jQuery itself
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 
@@ -5063,18 +7244,20 @@ var SirTrevor = {
   log: require('./utils').log,
   Locales: require('./locales'),
 
+  Events: require('./events'),
   EventBus: require('./event-bus'),
 
-  EditorStore: require('./extensions/sir-trevor.editor-store'),
-  Submittable: require('./extensions/sir-trevor.submittable'),
-  FileUploader: require('./extensions/sir-trevor.uploader'),
+  EditorStore: require('./extensions/editor-store'),
+  Submittable: require('./extensions/submittable'),
+  FileUploader: require('./extensions/file-uploader'),
 
   BlockMixins: require('./block_mixins'),
-  BlockPositioner: require('./block.positioner'),
-  BlockReorder: require('./block.reorder'),
-  BlockDeletion: require('./block.deletion'),
-  BlockValidations: require('./block.validations'),
-  BlockStore: require('./block.store'),
+  BlockPositioner: require('./block-positioner'),
+  BlockReorder: require('./block-reorder'),
+  BlockDeletion: require('./block-deletion'),
+  BlockValidations: require('./block-validations'),
+  BlockStore: require('./block-store'),
+  BlockManager: require('./block-manager'),
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),
@@ -5139,7 +7322,7 @@ Object.assign(SirTrevor, require('./form-events'));
 
 module.exports = SirTrevor;
 
-},{"./block":54,"./block-control":51,"./block-controls":52,"./block.deletion":53,"./block.positioner":55,"./block.reorder":56,"./block.store":57,"./block.validations":58,"./block_mixins":63,"./blocks":69,"./config":74,"./editor":75,"./event-bus":76,"./extensions/sir-trevor.editor-store":78,"./extensions/sir-trevor.submittable":79,"./extensions/sir-trevor.uploader":80,"./floating-block-controls":81,"./form-events":82,"./format-bar":83,"./formatter":84,"./formatters":85,"./helpers/event":87,"./locales":90,"./lodash":91,"./simple-block":93,"./to-html":94,"./to-markdown":95,"./utils":96,"./vendor/array-includes":97}],90:[function(require,module,exports){
+},{"./block":61,"./block-control":53,"./block-controls":54,"./block-deletion":55,"./block-manager":56,"./block-positioner":57,"./block-reorder":58,"./block-store":59,"./block-validations":60,"./block_mixins":66,"./blocks":71,"./config":77,"./editor":78,"./event-bus":80,"./events":81,"./extensions/editor-store":82,"./extensions/file-uploader":83,"./extensions/submittable":84,"./floating-block-controls":85,"./form-events":86,"./format-bar":87,"./formatter":88,"./formatters":89,"./helpers/event":91,"./locales":94,"./lodash":95,"./simple-block":98,"./to-html":99,"./to-markdown":100,"./utils":101,"./vendor/array-includes":102,"es6-shim":2}],94:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5200,7 +7383,7 @@ var Locales = {
   }
 };
 
-if (window.i18n === undefined || window.i18n.init === undefined) {
+if (window.i18n === undefined) {
   // Minimal i18n stub that only reads the English strings
   utils.log("Using i18n stub");
   window.i18n = {
@@ -5241,7 +7424,7 @@ if (window.i18n === undefined || window.i18n.init === undefined) {
 
 module.exports = Locales;
 
-},{"./config":74,"./lodash":91,"./utils":96}],91:[function(require,module,exports){
+},{"./config":77,"./lodash":95,"./utils":101}],95:[function(require,module,exports){
 "use strict";
 
 exports.isEmpty = require('lodash.isempty');
@@ -5253,7 +7436,24 @@ exports.result = require('lodash.result');
 exports.template = require('lodash.template');
 exports.uniqueId = require('lodash.uniqueid');
 
-},{"lodash.isempty":3,"lodash.isfunction":27,"lodash.isobject":28,"lodash.isstring":30,"lodash.isundefined":31,"lodash.result":32,"lodash.template":33,"lodash.uniqueid":49}],92:[function(require,module,exports){
+},{"lodash.isempty":5,"lodash.isfunction":29,"lodash.isobject":30,"lodash.isstring":32,"lodash.isundefined":33,"lodash.result":34,"lodash.template":35,"lodash.uniqueid":51}],96:[function(require,module,exports){
+"use strict";
+
+module.exports = {
+  mediatedEvents: {},
+  eventNamespace: null,
+  _bindMediatedEvents: function() {
+    Object.keys(this.mediatedEvents).forEach(function(eventName){
+      var cb = this.mediatedEvents[eventName];
+      eventName = this.eventNamespace ?
+        this.eventNamespace + ':' + eventName :
+        eventName;
+      this.mediator.on(eventName, this[cb].bind(this));
+    }, this);
+  }
+};
+
+},{}],97:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5303,18 +7503,19 @@ module.exports = {
 };
 
 
-},{"./lodash":91}],93:[function(require,module,exports){
+},{"./lodash":95}],98:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
 var utils = require('./utils');
 
-var BlockReorder = require('./block.reorder');
+var BlockReorder = require('./block-reorder');
 
-var SimpleBlock = function(data, instance_id) {
+var SimpleBlock = function(data, instance_id, mediator) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
+  this.mediator = mediator;
 
   this._ensureElement();
   this._bindFunctions();
@@ -5322,7 +7523,7 @@ var SimpleBlock = function(data, instance_id) {
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block.store'), {
+Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./events'), require('./renderable'), require('./block-store'), {
 
   focus : function() {},
 
@@ -5353,7 +7554,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   type: '',
 
-  'class': function() {
+  class: function() {
     return utils.classify(this.type);
   },
 
@@ -5416,7 +7617,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   },
 
   addMessage: function(msg, additionalClass) {
-    var $msg = $("<span>", { html: msg, 'class': "st-msg " + additionalClass });
+    var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
     this.$messages.append($msg)
     .addClass('st-block__messages--is-visible');
     return $msg;
@@ -5440,7 +7641,7 @@ SimpleBlock.extend = require('./helpers/extend');
 
 module.exports = SimpleBlock;
 
-},{"./block.reorder":56,"./block.store":57,"./events":77,"./function-bind":86,"./helpers/extend":88,"./lodash":91,"./renderable":92,"./utils":96}],94:[function(require,module,exports){
+},{"./block-reorder":58,"./block-store":59,"./events":81,"./function-bind":90,"./helpers/extend":92,"./lodash":95,"./renderable":97,"./utils":101}],99:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5466,7 +7667,7 @@ module.exports = function(markdown, type) {
   }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
-    return "<a href='"+p2+"'>"+p1.replace(/\r?\n/g, '')+"</a>";
+    return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
   });
 
   // This may seem crazy, but because JS doesn't have a look behind,
@@ -5476,10 +7677,10 @@ module.exports = function(markdown, type) {
   html = utils.reverse(
            utils.reverse(html)
            .replace(/_(?!\\)((_\\|[^_])*)_(?=$|[^\\])/gm, function(match, p1) {
-              return ">i/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">i<";
+              return ">i/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">i<";
            })
            .replace(/\*\*(?!\\)((\*\*\\|[^\*\*])*)\*\*(?=$|[^\\])/gm, function(match, p1){
-              return ">b/<"+ p1.replace(/\r?\n/g, '').replace(/[\s]+$/,'') +">b<";
+              return ">b/<"+ p1.replace(/\n/g, '').replace(/[\s]+$/,'') +">b<";
            })
           );
 
@@ -5508,12 +7709,12 @@ module.exports = function(markdown, type) {
   }
 
   if (shouldWrap) {
-    html = html.replace(/\r?\n\r?\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\r?\n/gm, "</div><div>");
+    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
+    html = html.replace(/\n/gm, "</div><div>");
   }
 
   html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-             .replace(/\r?\n/g, "<br>")
+             .replace(/\n/g, "<br>")
              .replace(/\*\*/, "")
              .replace(/__/, "");  // Cleanup any markdown characters left
 
@@ -5533,11 +7734,10 @@ module.exports = function(markdown, type) {
   return html;
 };
 
-},{"./blocks":69,"./formatters":85,"./lodash":91,"./utils":96}],95:[function(require,module,exports){
+},{"./blocks":71,"./formatters":89,"./lodash":95,"./utils":101}],100:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
-var config = require('./config');
 var utils = require('./utils');
 
 module.exports = function(content, type) {
@@ -5639,16 +7839,12 @@ module.exports = function(content, type) {
   }
 
   // Strip remaining HTML
-  if (config.defaults.toMarkdown.aggresiveHTMLStrip) {
-    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
-  } else {
-    markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
-  }
+  markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
 
   return markdown;
 };
 
-},{"./blocks":69,"./config":74,"./formatters":85,"./lodash":91,"./utils":96}],96:[function(require,module,exports){
+},{"./blocks":71,"./formatters":89,"./lodash":95,"./utils":101}],101:[function(require,module,exports){
 "use strict";
 
 var _ = require('./lodash');
@@ -5683,6 +7879,17 @@ var utils = {
     return string.charAt(0).toUpperCase() + string.substring(1).toLowerCase();
   },
 
+  flatten: function(obj) {
+    var x = {};
+    (Array.isArray(obj) ? obj : Object.keys(obj)).forEach(function (i) {
+      x[i] = true;
+    });
+    /* _.each(obj, function(a,b) {
+     *   x[(_.isArray(obj)) ? a : b] = true;
+     * }); */
+    return x;
+  },
+
   underscored: function(str){
     return str.trim().replace(/([a-z\d])([A-Z]+)/g, '$1_$2')
     .replace(/[-\s]+/g, '_').toLowerCase();
@@ -5703,7 +7910,7 @@ var utils = {
 
 module.exports = utils;
 
-},{"./config":74,"./lodash":91}],97:[function(require,module,exports){
+},{"./config":77,"./lodash":95}],102:[function(require,module,exports){
 "use strict";
 
 // jshint freeze: false

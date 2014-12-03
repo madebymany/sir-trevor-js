@@ -1,7 +1,6 @@
 "use strict";
 
 var _ = require('./lodash');
-var config = require('./config');
 var utils = require('./utils');
 
 module.exports = function(content, type) {
@@ -103,11 +102,7 @@ module.exports = function(content, type) {
   }
 
   // Strip remaining HTML
-  if (config.defaults.toMarkdown.aggresiveHTMLStrip) {
-    markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
-  } else {
-    markdown = markdown.replace(/<(?=\S)\/?[^>]+(>|$)/ig, "");
-  }
+  markdown = markdown.replace(/<\/?[^>]+(>|$)/g, "");
 
   return markdown;
 };

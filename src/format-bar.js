@@ -12,19 +12,30 @@ var _ = require('./lodash');
 var config = require('./config');
 var Formatters = require('./formatters');
 
-var FormatBar = function(options) {
+var FormatBar = function(options, mediator) {
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
+  this.mediator = mediator;
+
   this._ensureElement();
   this._bindFunctions();
+  this._bindMediatedEvents();
 
   this.initialize.apply(this, arguments);
 };
 
-Object.assign(FormatBar.prototype, require('./function-bind'), require('./events'), require('./renderable'), {
+Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediated-events'), require('./events'), require('./renderable'), {
 
   className: 'st-format-bar',
 
   bound: ["onFormatButtonClick", "renderBySelection", "hide"],
+
+  eventNamespace: 'formatter',
+
+  mediatedEvents: {
+    'positon': 'renderBySelection',
+    'show': 'show',
+    'hide': 'hide'
+  },
 
   initialize: function() {
     var formatName, format, btn;
@@ -59,7 +70,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./events
 
   remove: function(){ this.$el.remove(); },
 
-  renderBySelection: function(rectangles) {
+  renderBySelection: function() {
 
     var selection = window.getSelection(),
     range = selection.getRangeAt(0),

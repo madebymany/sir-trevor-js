@@ -2,8 +2,6 @@
 
 var utils = require('../utils');
 
-var EventBus = require('../event-bus');
-
 module.exports = {
 
   mixinName: "Ajaxable",
@@ -16,14 +14,12 @@ module.exports = {
 
   addQueuedItem: function(name, deferred) {
     utils.log("Adding queued item for " + this.blockID + " called " + name);
-    EventBus.trigger("onUploadStart", this.blockID);
 
     this._queued.push({ name: name, deferred: deferred });
   },
 
   removeQueuedItem: function(name) {
     utils.log("Removing queued item for " + this.blockID + " called " + name);
-    EventBus.trigger("onUploadStop", this.blockID);
 
     this._queued = this._queued.filter(function(queued) {
       return queued.name !== name;

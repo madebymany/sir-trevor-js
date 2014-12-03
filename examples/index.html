@@ -28,7 +28,8 @@
   <pre id="st-json-debug"></pre>
 
   <script src="../node_modules/es5-shim/es5-shim.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../node_modules/es6-shim/es6-shim.js" type="text/javascript" charset="utf-8"></script>
+  <!-- es6-shim should be bundled in with SirTrevor for now -->
+  <!-- <script src="../node_modules/es6-shim/es6-shim.js" type="text/javascript" charset="utf-8"></script> -->
   <script src="../node_modules/jquery/dist/jquery.js" type="text/javascript" charset="utf-8"></script>
   <script src="../sir-trevor.debug.js" type="text/javascript" charset="utf-8"></script>
   <script src="../locales/de.js" type="text/javascript" charset="utf-8"></script>
@@ -56,8 +57,8 @@
         ]
       });
 
-      $('form').bind('submit', function(){
-        $('#st-json-debug').text(JSON.stringify(window.editor.store('read')));
+      $('form').bind('submit', function () {
+        $('#st-json-debug').text(window.editor.store.toString(true));
         return false;
       });
 

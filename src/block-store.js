@@ -7,8 +7,14 @@ var EventBus = require('./event-bus');
 
 module.exports = {
 
+  /**
+   * Internal storage object for the block
+   */
   blockStorage: {},
 
+  /**
+   * Initialize the store, including the block type
+   */
   createStore: function(blockData) {
     this.blockStorage = {
       type: utils.underscored(this.type),
@@ -16,30 +22,38 @@ module.exports = {
     };
   },
 
-  save: function() { this.toData(); },
+  /**
+   * Serialize the block and save the data into the store
+   */
+  save: function() {
+    var data = this._serializeData();
 
-  saveAndReturnData: function() {
+    if (!_.isEmpty(data)) {
+      this.setData(data);
+    }
+  },
+
+  getData: function() {
     this.save();
     return this.blockStorage;
   },
 
-  saveAndGetData: function() {
-    var store = this.saveAndReturnData();
-    return store.data || store;
-  },
-
-  getData: function() {
+  getBlockData: function() {
+    this.save();
     return this.blockStorage.data;
   },
 
+  _getData: function() {
+    return this.blockStorage.data;
+  },
+
+  /**
+   * Set the block data.
+   * This is used by the save() method.
+   */
   setData: function(blockData) {
     utils.log("Setting data for block " + this.blockID);
     Object.assign(this.blockStorage.data, blockData || {});
-  },
-
-  setAndRetrieveData: function(blockData) {
-    this.setData(blockData);
-    return this.getData();
   },
 
   setAndLoadData: function(blockData) {
@@ -47,13 +61,13 @@ module.exports = {
     this.beforeLoadingData();
   },
 
-  toData: function() {},
+  _serializeData: function() {},
   loadData: function() {},
 
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);
-    EventBus.trigger("block:loadData", this.blockID);
-    this.loadData(this.getData());
+    EventBus.trigger("editor/block/loadData");
+    this.loadData(this._getData());
   },
 
   _loadData: function() {
@@ -62,7 +76,7 @@ module.exports = {
   },
 
   checkAndLoadData: function() {
-    if (!_.isEmpty(this.getData())) {
+    if (!_.isEmpty(this._getData())) {
       this.beforeLoadingData();
     }
   }

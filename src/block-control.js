@@ -3,9 +3,8 @@
 var _ = require('./lodash');
 var Blocks = require('./blocks');
 
-var BlockControl = function(type, instance_scope) {
+var BlockControl = function(type) {
   this.type = type;
-  this.instance_scope = instance_scope;
   this.block_type = Blocks[this.type].prototype;
   this.can_be_rendered = this.block_type.toolbarEnabled;
 

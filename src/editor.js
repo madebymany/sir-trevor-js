@@ -12,13 +12,15 @@ var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
 
+var Events = require('./events');
 var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
-var Blocks = require('./blocks');
 var BlockControls = require('./block-controls');
+var BlockManager = require('./block-manager');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
-var editorStore = require('./extensions/sir-trevor.editor-store');
+var EditorStore = require('./extensions/editor-store');
+var ErrorHandler = require('./error-handler');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -26,41 +28,32 @@ var Editor = function(options) {
 
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
-  bound: ['onFormSubmit', 'showBlockControls', 'hideAllTheThings',
-    'hideBlockControls', 'onNewBlockCreated', 'changeBlockPosition',
-    'onBlockDragStart', 'onBlockDragEnd', 'removeBlockDragOver',
-    'onBlockDropped', 'createBlock'], 
+  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
+    'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
+    'blockLimitReached'], 
 
   events: {
-    'block:reorder:down':       'hideBlockControls',
-    'block:reorder:dragstart':  'onBlockDragStart',
-    'block:reorder:dragend':    'onBlockDragEnd',
-    'block:content:dropped':    'removeBlockDragOver',
-    'block:reorder:dropped':    'onBlockDropped',
-    'block:create:new':         'onNewBlockCreated'
+    'block:reorder:dragend': 'removeBlockDragOver',
+    'block:content:dropped': 'removeBlockDragOver'
   },
 
   initialize: function(options) {
     utils.log("Init SirTrevor.Editor");
 
-    this.blockTypes = {};
-    this.blockCounts = {}; // Cached block type counts
-    this.blocks = []; // Block references
-    this.errors = [];
     this.options = Object.assign({}, config.defaults, options || {});
     this.ID = _.uniqueId('st-editor-');
 
     if (!this._ensureAndSetElements()) { return false; }
 
-    if(!_.isUndefined(this.options.onEditorRender) && _.isFunction(this.options.onEditorRender)) {
+    if(!_.isUndefined(this.options.onEditorRender) &&
+       _.isFunction(this.options.onEditorRender)) {
       this.onEditorRender = this.options.onEditorRender;
     }
 
-    this._setRequired();
-    this._setBlocksTypes();
-    this._bindFunctions();
+    // Mediated events for *this* Editor instance
+    this.mediator = Object.assign({}, Events);
 
-    this.store("create");
+    this._bindFunctions();
 
     config.instances.push(this);
 
@@ -69,48 +62,54 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     FormEvents.bindFormSubmit(this.$form);
   },
 
-  /* Build the Editor instance.
-   * Check to see if we've been passed JSON already, and if not try and create
-   * a default block. If we have JSON then we need to build all of our blocks
-   * from this.
+  /*
+   * Build the Editor instance.
+   * Check to see if we've been passed JSON already, and if not try and
+   * create a default block.
+   * If we have JSON then we need to build all of our blocks from this.
    */
   build: function() {
     this.$el.hide();
 
-    this.block_controls = new BlockControls(this.blockTypes, this.ID);
-    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID);
-    this.formatBar = new FormatBar(this.options.formatBar);
+    this.errorHandler = new ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
+    this.store = new EditorStore(this.$el.val(), this.mediator);
+    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
+    this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
+    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
 
-    this.listenTo(this.block_controls, 'createBlock', this.createBlock);
-    this.listenTo(this.fl_block_controls, 'showBlockControls', this.showBlockControls);
+    this.mediator.on('block:changePosition', this.changeBlockPosition);
+    this.mediator.on('block-controls:reset', this.resetBlockControls);
+    this.mediator.on('block:limitReached', this.blockLimitReached);
+    this.mediator.on('block:render', this.renderBlock);
+
+    this.dataStore = "Please use store.retrieve();";
 
     this._setEvents();
-
-    EventBus.on(this.ID + ":blocks:change_position", this.changeBlockPosition);
-    EventBus.on("formatter:position", this.formatBar.renderBySelection);
-    EventBus.on("formatter:hide", this.formatBar.hide);
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
     $(document.body).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
-    $(window).bind('click.sirtrevor', this.hideAllTheThings);
+    $(window).bind('click', this.hideAllTheThings);
 
-    var store = this.store("read");
-
-    if (store.data.length > 0) {
-      store.data.forEach(function(block){
-        utils.log('Creating: ' + block.type);
-        this.createBlock(block.type, block.data);
-      }, this);
-    } else if (this.options.defaultType !== false) {
-      this.createBlock(this.options.defaultType, {});
-    }
-
+    this.createBlocks();
     this.$wrapper.addClass('st-ready');
 
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
+    }
+  },
+
+  createBlocks: function() {
+    var store = this.store.retrieve();
+
+    if (store.data.length > 0) {
+      store.data.forEach(function(block) {
+        this.mediator.trigger('block:create', block.type, block.data);
+      }, this);
+    } else if (this.options.defaultType !== false) {
+      this.mediator.trigger('block:create', this.options.defaultType, {});
     }
   },
 
@@ -122,14 +121,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Destroy all blocks
     this.blocks.forEach(function(block) {
-      this.removeBlock(block.blockID);
+      this.mediator.trigger('block:remove', this.block.blockID);
     }, this);
 
     // Stop listening to events
+    this.mediator.stopListening();
     this.stopListening();
-
-    // Cleanup element
-    var el = this.$el.detach();
 
     // Remove instance
     config.instances = config.instances.filter(function(instance) {
@@ -137,14 +134,22 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }, this);
 
     // Clear the store
-    this.store("reset");
-
-    this.$outer.replaceWith(el);
+    this.store.reset();
+    this.$outer.replaceWith(this.$el.detach());
   },
 
   reinitialize: function(options) {
     this.destroy();
     this.initialize(options || this.options);
+  },
+
+  resetBlockControls: function() {
+    this.block_controls.renderInContainer(this.$wrapper);
+    this.block_controls.hide();
+  },
+
+  blockLimitReached: function(toggle) {
+    this.$wrapper.toggleClass('st--block-limit-reached', toggle);
   },
 
   _setEvents: function() {
@@ -156,112 +161,34 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   hideAllTheThings: function(e) {
     this.block_controls.hide();
     this.formatBar.hide();
-
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-  },
-
-  showBlockControls: function(container) {
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-
-    this.block_controls.show();
-
-    container.append(this.block_controls.$el.detach());
-    container.addClass('with-st-controls');
-
-    this.block_controls.current_container = container;
   },
 
   store: function(method, options){
-    return editorStore(this, method, options || {});
+    utils.log("The store method has been removed, please call store[methodName]");
+    return this.store[method].call(this, options || {});
   },
 
-  /* Create an instance of a block from an available type.  We have to check
-   * the number of blocks we're allowed to create before adding one and handle
-   * fails accordingly.  A block will have a reference to an Editor instance &
-   * the parent BlockType.  We also have to remember to store static counts for
-   * how many blocks we have, and keep a nice array of all the blocks
-   * available.
-   */
-  createBlock: function(type, data, render_at) {
-    type = utils.classify(type);
-
-    if(this._blockLimitReached()) {
-      utils.log("Cannot add any more blocks. Limit reached.");
-      return false;
-    }
-
-    if (!this._isBlockTypeAvailable(type)) {
-      utils.log("Block type not available " + type);
-      return false;
-    }
-
-    // Can we have another one of these blocks?
-    if (!this._canAddBlockType(type)) {
-      utils.log("Block Limit reached for type " + type);
-      return false;
-    }
-
-    var block = new Blocks[type](data, this.ID);
-
+  renderBlock: function(block) {
     this._renderInPosition(block.render().$el);
+    this.hideAllTheThings();
+    this.scrollTo(block.$el);
 
-    this.listenTo(block, 'removeBlock', this.removeBlock);
-
-    this.blocks.push(block);
-    this._incrementBlockTypeCount(type);
-
-    if(!data) {
-      block.focus();
-    }
-
-    EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
-    utils.log("Block created of type " + type);
     block.trigger("onRender");
-
-    this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
-    this.triggerBlockCountUpdate();
-  },
-
-  onNewBlockCreated: function(block) {
-    if (block.instanceID === this.ID) {
-      this.hideBlockControls();
-      this.scrollTo(block.$el);
-    }
   },
 
   scrollTo: function(element) {
     $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
   },
 
-  blockFocus: function(block) {
-    this.block_controls.current_container = null;
-  },
-
-  hideBlockControls: function() {
-    if (!_.isUndefined(this.block_controls.current_container)) {
-      this.block_controls.current_container.removeClass("with-st-controls");
-    }
-
-    this.block_controls.hide();
-  },
-
   removeBlockDragOver: function() {
     this.$outer.find('.st-drag-over').removeClass('st-drag-over');
-  },
-
-  triggerBlockCountUpdate: function() {
-    EventBus.trigger(this.ID + ":blocks:count_update", this.blocks.length);
   },
 
   changeBlockPosition: function($block, selectedPosition) {
     selectedPosition = selectedPosition - 1;
 
-    var blockPosition = this.getBlockPosition($block);
-    var $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+    var blockPosition = this.getBlockPosition($block),
+    $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -272,242 +199,73 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
   },
 
-  onBlockDropped: function(block_id) {
-    this.hideAllTheThings();
-    var block = this.findBlockById(block_id);
-    if (!_.isUndefined(block) &&
-        !_.isEmpty(block.getData()) &&
-          block.drop_options.re_render_on_reorder) {
-      block.beforeLoadingData();
-    }
-  },
-
-  onBlockDragStart: function() {
-    this.hideBlockControls();
-    this.$wrapper.addClass("st-outer--is-reordering");
-  },
-
-  onBlockDragEnd: function() {
-    this.removeBlockDragOver();
-    this.$wrapper.removeClass("st-outer--is-reordering");
-  },
-
   _renderInPosition: function(block) {
-    if (this.block_controls.current_container) {
-      this.block_controls.current_container.after(block);
+    if (this.block_controls.currentContainer) {
+      this.block_controls.currentContainer.after(block);
     } else {
       this.$wrapper.append(block);
     }
   },
 
-  _incrementBlockTypeCount: function(type) {
-    this.blockCounts[type] = (_.isUndefined(this.blockCounts[type])) ? 1: this.blockCounts[type] + 1;
-  },
-
-  _getBlockTypeCount: function(type) {
-    return (_.isUndefined(this.blockCounts[type])) ? 0 : this.blockCounts[type];
-  },
-
-  _canAddBlockType: function(type) {
-    var block_type_limit = this._getBlockTypeLimit(type);
-
-    return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
-  },
-
-  _blockLimitReached: function() {
-    return (this.options.blockLimit !== 0 && this.blocks.length >= this.options.blockLimit);
-  },
-
-  removeBlock: function(block_id) {
-    var block = this.findBlockById(block_id),
-    type = utils.classify(block.type),
-    controls = block.$el.find('.st-block-controls');
-
-    if (controls.length) {
-      this.block_controls.hide();
-      this.$wrapper.prepend(controls);
+  validateAndSaveBlock: function(block, shouldValidate) {
+    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+      utils.log("Block " + block.blockID + " failed validation");
+      return;
     }
 
-    this.blockCounts[type] = this.blockCounts[type] - 1;
-    this.blocks = this.blocks.filter(function(item) {
-      return item.blockID !== block.blockID;
-    });
-    this.stopListening(block);
-
-    block.remove();
-
-    EventBus.trigger("block:remove", block);
-    this.triggerBlockCountUpdate();
-
-    this.$wrapper.toggleClass('st--block-limit-reached', this._blockLimitReached());
+    var blockData = block.getData();
+    utils.log("Adding data for block " + block.blockID + " to block store:",
+              blockData);
+    this.store.addData(blockData);
   },
 
-  performValidations : function(block, should_validate) {
-    var errors = 0;
-
-    if (!config.skipValidation && should_validate) {
-      if(!block.valid()){
-        this.errors.push({ text: _.result(block, 'validationFailMsg') });
-        utils.log("Block " + block.blockID + " failed validation");
-        ++errors;
-      }
-    }
-
-    return errors;
-  },
-
-  saveBlockStateToStore: function(block) {
-    var store = block.saveAndReturnData();
-    if(store && !_.isEmpty(store.data)) {
-      utils.log("Adding data for block " + block.blockID + " to block store");
-      this.store("add", { data: store });
-    }
-  },
-
-  /* Handle a form submission of this Editor instance. Validate all of our
-   * blocks, and serialise all data onto the JSON objects
+  /*
+   * Handle a form submission of this Editor instance.
+   * Validate all of our blocks, and serialise all data onto the JSON objects
    */
-  onFormSubmit: function(should_validate) {
+  onFormSubmit: function(shouldValidate) {
     // if undefined or null or anything other than false - treat as true
-    should_validate = (should_validate === false) ? false : true;
+    shouldValidate = (shouldValidate === false) ? false : true;
 
     utils.log("Handling form submission for Editor " + this.ID);
 
-    this.removeErrors();
-    this.store("reset");
+    this.mediator.trigger('errors:reset');
+    this.store.reset();
 
-    this.validateBlocks(should_validate);
-    this.validateBlockTypesExist(should_validate);
+    this.validateBlocks(shouldValidate);
+    this.block_manager.validateBlockTypesExist(shouldValidate);
 
-    this.renderErrors();
-    this.store("save");
+    this.mediator.trigger('errors:render');
+    this.$el.val(this.store.toString());
 
-    return this.errors.length;
+    return this.errorHandler.errors.length;
   },
 
-  validateBlocks: function(should_validate) {
-    if (!this.required && (config.skipValidation && !should_validate)) {
-      return false;
-    }
-
-    this.$wrapper.find('.st-block').each(function(index, block) {
-      var _block = this.blocks.find(function(b) {
-        return (b.blockID === $(block).attr('id'));
-      });
-
-      if (_.isUndefined(_block)) { return false; }
-
-      // Find our block
-      this.performValidations(_block, should_validate);
-      this.saveBlockStateToStore(_block);
-    }.bind(this));
-  },
-
-  validateBlockTypesExist: function(should_validate) {
-    if (!this.required && (config.skipValidation && !should_validate)) {
-      return false;
-    }
-
-    var blockTypeIterator = function(type, index) {
-      if (!this._isBlockTypeAvailable(type)) { return; }
-
-      if (this._getBlockTypeCount(type) === 0) {
-        utils.log("Failed validation on required block type " + type);
-        this.errors.push({ text: i18n.t("errors:type_missing", { type: type }) });
-      } else {
-        var blocks = this.getBlocksByType(type).filter(function(b) {
-          return !b.isEmpty();
-        });
-
-        if (blocks.length > 0) { return false; }
-
-        this.errors.push({ text: i18n.t("errors:required_type_empty", { type: type }) });
-        utils.log("A required block type " + type + " is empty");
+  validateBlocks: function(shouldValidate) {
+    var self = this;
+    this.$wrapper.find('.st-block').each(function(idx, block) {
+      var _block = self.block_manager.findBlockById($(block).attr('id'));
+      if (!_.isUndefined(_block)) {
+        self.validateAndSaveBlock(_block, shouldValidate);
       }
-    };
-
-    if (Array.isArray(this.required)) {
-      this.required.forEach(blockTypeIterator, this);
-    }
-  },
-
-  renderErrors: function() {
-    if (this.errors.length === 0) { return false; }
-
-    if (_.isUndefined(this.$errors)) {
-      this.$errors = this._errorsContainer();
-    }
-
-    var str = "<ul>";
-
-    this.errors.forEach(function(error) {
-      str += '<li class="st-errors__msg">'+ error.text +'</li>';
     });
-
-    str += "</ul>";
-
-    this.$errors.append(str);
-    this.$errors.show();
-  },
-
-  _errorsContainer: function() {
-    if (_.isUndefined(this.options.errorsContainer)) {
-      var $container = $("<div>", {
-        'class': 'st-errors',
-        html: "<p>" + i18n.t("errors:title") + " </p>"
-      });
-
-      this.$outer.prepend($container);
-      return $container;
-    }
-
-    return $(this.options.errorsContainer);
-  },
-
-  removeErrors: function() {
-    if (this.errors.length === 0) { return false; }
-
-    this.$errors.hide().find('ul').html('');
-
-    this.errors = [];
   },
 
   findBlockById: function(block_id) {
-    return this.blocks.find(function(b) { return b.blockID === block_id; });
+    return this.block_manager.findBlockById(block_id);
   },
 
   getBlocksByType: function(block_type) {
-    return this.blocks.filter(function(b) {
-      return utils.classify(b.type) === block_type;
-    });
+    return this.block_manager.getBlocksByType(block_type);
   },
 
   getBlocksByIDs: function(block_ids) {
-    return this.blocks.filter(function(b) {
-      return block_ids.includes(b.blockID);
-    });
+    return this.block_manager.getBlocksByIDs(block_ids);
   },
 
   getBlockPosition: function($block) {
     return this.$wrapper.find('.st-block').index($block);
-  },
-
-  /* Get Block Type Limit
-   * --
-   * returns the limit for this block, which can be set on a per Editor
-   * instance, or on a global blockType scope. */
-  _getBlockTypeLimit: function(t) {
-    if (!this._isBlockTypeAvailable(t)) { return 0; }
-
-    return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
-  },
-
-  /* Availability helper methods
-   * --
-   * Checks if the object exists within the instance of the Editor. */
-
-  _isBlockTypeAvailable: function(t) {
-    return !_.isUndefined(this.blockTypes[t]);
   },
 
   _ensureAndSetElements: function() {
@@ -530,28 +288,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.$wrapper = this.$outer.find('.st-blocks');
 
     return true;
-  },
-
-  /* Set our blockTypes
-   * These will either be set on a per Editor instance, or set on a global scope.
-   */
-  _setBlocksTypes: function() {
-    this.blockTypes = {};
-    var keys = this.options.blockTypes || Object.keys(Blocks);
-    keys.forEach(function (k) {
-      this.blockTypes[k] = true;
-    }, this);
-  },
-
-  /* Get our required blocks (if any) */
-  _setRequired: function() {
-    if (Array.isArray(this.options.required) &&
-        !_.isEmpty(this.options.required)) {
-      this.required = this.options.required;
-    } else {
-      this.required = false;
-    }
   }
+
 });
 
 module.exports = Editor;
+
+
