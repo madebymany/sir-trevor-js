@@ -6881,7 +6881,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   eventNamespace: 'formatter',
 
   mediatedEvents: {
-    'positon': 'renderBySelection',
+    'position': 'renderBySelection',
     'show': 'show',
     'hide': 'hide'
   },
@@ -7884,9 +7884,6 @@ var utils = {
     (Array.isArray(obj) ? obj : Object.keys(obj)).forEach(function (i) {
       x[i] = true;
     });
-    /* _.each(obj, function(a,b) {
-     *   x[(_.isArray(obj)) ? a : b] = true;
-     * }); */
     return x;
   },
 

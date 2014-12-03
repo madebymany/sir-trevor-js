@@ -32,7 +32,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   eventNamespace: 'formatter',
 
   mediatedEvents: {
-    'positon': 'renderBySelection',
+    'position': 'renderBySelection',
     'show': 'show',
     'hide': 'hide'
   },
