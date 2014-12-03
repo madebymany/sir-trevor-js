@@ -2,6 +2,7 @@
 
 var _ = require('./lodash');
 
+require('es6-shim'); // bundling in for the moment as support is very rare
 require('./helpers/event'); // extends jQuery itself
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 
