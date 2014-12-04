@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('./lodash');
+var $ = require('jquery');
 
 var EventBus = require('./event-bus');
 

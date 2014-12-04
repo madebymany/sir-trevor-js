@@ -9,7 +9,7 @@
  * This will be triggered *by anything* so it needs to subscribe to events.
  */
 
-
+var $ = require('jquery');
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');

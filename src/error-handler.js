@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('./lodash');
+var $ = require('jquery');
 
 var ErrorHandler = function($wrapper, mediator, container) {
   this.$wrapper = $wrapper;

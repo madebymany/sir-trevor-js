@@ -2,6 +2,7 @@
 
 var _ = require('./lodash');
 var utils = require('./utils');
+var $ = require('jquery');
 
 var BlockReorder = require('./block-reorder');
 
