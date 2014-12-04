@@ -6,11 +6,12 @@ var $ = require('jquery');
 
 var BlockReorder = require('./block-reorder');
 
-var SimpleBlock = function(data, instance_id, mediator) {
+var SimpleBlock = function(data, instance_id, mediator, options) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
   this.mediator = mediator;
+  this.options = options;
 
   this._ensureElement();
   this._bindFunctions();

@@ -7,8 +7,14 @@ var config = require('./config');
 var EventBus = require('./event-bus');
 var Blocks = require('./blocks');
 
+var BLOCK_OPTION_KEYS = ['convertToMarkdown', 'convertFromMarkdown'];
+
 var BlockManager = function(options, editorInstance, mediator) {
   this.options = options;
+  this.blockOptions = BLOCK_OPTION_KEYS.reduce(function(acc, key) {
+    acc[key] = options[key];
+    return acc;
+  }, {});
   this.instance_scope = editorInstance;
   this.mediator = mediator;
 
@@ -41,7 +47,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     // Run validations
     if (!this.canCreateBlock(type)) { return; }
 
-    var block = new Blocks[type](data, this.instance_scope, this.mediator);
+    var block = new Blocks[type](data, this.instance_scope, this.mediator,
+                                 this.blockOptions);
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);

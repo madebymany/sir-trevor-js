@@ -1,11 +1,11 @@
 "use strict";
 
-/*
-   Format Bar
-   --
-   Displayed on focus on a text area.
-   Renders with all available options for the editor instance
-   */
+/**
+ * Format Bar
+ * --
+ * Displayed on focus on a text area.
+ * Renders with all available options for the editor instance
+ */
 
 var _ = require('./lodash');
 var $ = require('jquery');

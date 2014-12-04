@@ -2,6 +2,7 @@
 
 module.exports = {
   debug: false,
+  scribeDebug: false,
   skipValidation: false,
   version: "0.4.0",
   language: "en",
@@ -29,5 +30,7 @@ module.exports = {
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
+    convertToMarkdown: false,
+    convertFromMarkdown: true,
   }
 };

@@ -19,5 +19,5 @@ module.exports = Block.extend({
 
   loadData: function(data){
     this.getTextBlock().html(stToHTML(data.text, this.type));
-  }
+  },
 });
