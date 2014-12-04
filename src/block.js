@@ -332,6 +332,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.getTextBlock()
     .bind('paste', this._handleContentPaste)
     .bind('keyup', this.getSelectionForFormatter)
+    .bind('keyup', this.handleHotkey)
     .bind('mouseup', this.getSelectionForFormatter)
     .bind('DOMNodeInserted', this.clearInsertedStyles);
   },
@@ -346,6 +347,17 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       block.mediator.trigger(en, block);
       EventBus.trigger(en, block);
     }, 1);
+  },
+
+  handleHotkey: function(e) {
+    switch (e.keyCode) {
+      case 33: // Page Up
+        this.mediator.trigger('block:navUp');
+        break;
+      case 34: // Page Down
+        this.mediator.trigger('block:navDown');
+        break;
+    }
   },
 
   clearInsertedStyles: function(e) {
