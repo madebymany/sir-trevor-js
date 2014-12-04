@@ -32,7 +32,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 
     this.$select.on('change', this.onSelectChange);
 
-    this.mediator.on("blocks:countUpdate", this.onBlockCountChange);
+    this.mediator.on("block:countUpdate", this.onBlockCountChange);
   },
 
   onBlockCountChange: function(new_count) {
@@ -46,7 +46,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
     var val = this.$select.val();
     if (val !== 0) {
       this.mediator.trigger(
-        "blocks:changePosition", this.$block, val,
+        "block:changePosition", this.$block, val,
         (val === 1 ? 'before' : 'after'));
       this.toggle();
     }
