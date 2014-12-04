@@ -1,5 +1,6 @@
 "use strict";
 
+var $ = require('jquery');
 var Block = require('../block');
 
 module.exports = Block.extend({

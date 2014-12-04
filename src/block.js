@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('./lodash');
+var $ = require('jquery');
 
 var config = require('./config');
 var utils = require('./utils');

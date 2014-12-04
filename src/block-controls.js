@@ -7,6 +7,7 @@
  */
 
 var _ = require('./lodash');
+var $ = require('jquery');
 
 var Blocks = require('./blocks');
 var BlockControl = require('./block-control');
