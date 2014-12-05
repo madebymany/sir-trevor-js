@@ -71,4 +71,22 @@ describe("BlockManager", function() {
     });
   });
 
+  describe("triggerBlockCountUpdate", function(){
+
+    beforeEach(function(){
+      manager.blocks = [
+        { blockID: 1 },
+        { blockID: 2 }
+      ];
+      spyOn(manager.mediator, 'trigger');
+    });
+
+    it("emits the correct length of the blocks", function(){
+      manager.triggerBlockCountUpdate();
+      expect(manager.mediator.trigger).toHaveBeenCalledWith(
+             'block:countUpdate', manager.blocks.length);
+    });
+
+  });
+
 });
