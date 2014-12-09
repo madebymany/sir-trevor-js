@@ -31,10 +31,10 @@ module.exports = function(config) {
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     // logLevel: config.LOG_ERROR,
     // logLevel: config.LOG_INFO,
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_ERROR,
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
     // Start these browsers, currently available:
     // - Chrome
@@ -44,19 +44,19 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
+    //browsers: ['Chrome'],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: true,
+    singleRun: false,
 
     // Browserify config (all optional)
     browserify: {
-      debug: true,
-      transform: [['deamdify'], {global: true}],
+      transform: [['deamdify', {global:true}]]
     },
 
     browserNoActivityTimeout: 60000,

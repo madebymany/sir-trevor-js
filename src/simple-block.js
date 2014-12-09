@@ -11,7 +11,7 @@ var SimpleBlock = function(data, instance_id, mediator, options) {
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
   this.mediator = mediator;
-  this.options = options;
+  this.options = options || {};
 
   this._ensureElement();
   this._bindFunctions();
