@@ -9,12 +9,12 @@
 
 SirTrevor.Submittable = function($form){
   this.$form = $form;
-  this.intialize();
+  this.initialize();
 };
 
 _.extend(SirTrevor.Submittable.prototype, {
 
-  intialize: function(){
+  initialize: function(){
     this.$submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
