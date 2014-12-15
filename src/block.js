@@ -37,34 +37,6 @@ var delete_template = [
   "</div>"
 ].join("\n");
 
-var drop_options = {
-  html: ['<div class="st-block__dropzone">',
-    '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
-    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
-    '</p></div>'].join('\n'),
-    re_render_on_reorder: false
-};
-
-var paste_options = {
-  html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
-    ' class="st-block__paste-input st-paste-block">'].join('')
-};
-
-var upload_options = {
-  html: [
-    '<div class="st-block__upload-container">',
-    '<input type="file" type="st-file-upload">',
-    '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
-    '</div>'
-  ].join('\n')
-};
-
-config.defaults.Block = {
-  drop_options: drop_options,
-  paste_options: paste_options,
-  upload_options: upload_options
-};
-
 Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   bound: [
@@ -328,8 +300,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
         .bind('mouseup', this.getSelectionForFormatter)
         .bind('DOMNodeInserted', this.clearInsertedStyles);
 
-    if (_.isUndefined(this._scribe)) {
-      this._scribe = new Scribe(this.getTextBlock().get(0), {
+    var textBlock = this.getTextBlock().get(0);
+    if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
+      this._scribe = new Scribe(textBlock, {
         debug: config.scribeDebug,
       });
       this._scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());

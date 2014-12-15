@@ -1,5 +1,27 @@
 "use strict";
 
+var drop_options = {
+  html: ['<div class="st-block__dropzone">',
+    '<span class="st-icon"><%= _.result(block, "icon_name") %></span>',
+    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
+    '</p></div>'].join('\n'),
+    re_render_on_reorder: false
+};
+
+var paste_options = {
+  html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
+    ' class="st-block__paste-input st-paste-block">'].join('')
+};
+
+var upload_options = {
+  html: [
+    '<div class="st-block__upload-container">',
+    '<input type="file" type="st-file-upload">',
+    '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
+    '</div>'
+  ].join('\n')
+};
+
 module.exports = {
   debug: false,
   scribeDebug: false,
@@ -23,6 +45,11 @@ module.exports = {
       shadow: false,
       left: '50%',
       top: '50%'
+    },
+    Block: {
+      drop_options: drop_options,
+      paste_options: paste_options,
+      upload_options: upload_options,
     },
     blockLimit: 0,
     blockTypeLimits: {},

@@ -34,7 +34,7 @@ module.exports = function(config) {
     logLevel: config.LOG_ERROR,
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
     // Start these browsers, currently available:
     // - Chrome
@@ -52,11 +52,12 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
-    singleRun: false,
+    singleRun: true,
 
     // Browserify config (all optional)
     browserify: {
-      transform: [['deamdify', {global:true}]]
+      debug: true,
+      transform: [['deamdify', {global: true}]]
     },
 
     browserNoActivityTimeout: 60000,
