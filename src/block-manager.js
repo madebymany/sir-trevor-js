@@ -7,7 +7,8 @@ var config = require('./config');
 var EventBus = require('./event-bus');
 var Blocks = require('./blocks');
 
-var BLOCK_OPTION_KEYS = ['convertToMarkdown', 'convertFromMarkdown'];
+var BLOCK_OPTION_KEYS = ['convertToMarkdown', 'convertFromMarkdown',
+  'formatBar'];
 
 var BlockManager = function(options, editorInstance, mediator) {
   this.options = options;

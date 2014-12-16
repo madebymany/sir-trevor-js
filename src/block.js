@@ -5,6 +5,7 @@ var $ = require('jquery');
 
 var Scribe = require('scribe-editor');
 var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
+var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
 
 var config = require('./config');
 var utils = require('./utils');
@@ -15,7 +16,6 @@ var SimpleBlock = require('./simple-block');
 var BlockReorder = require('./block-reorder');
 var BlockDeletion = require('./block-deletion');
 var BlockPositioner = require('./block-positioner');
-var Formatters = require('./formatters');
 var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
@@ -253,6 +253,24 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.ready();
   },
 
+  execTextBlockCommand: function(cmdName) {
+    if (_.isUndefined(this._scribe)) {
+      throw "No Scribe instance found to send a command to";
+    }
+    var cmd = this._scribe.getCommand(cmdName);
+    this._scribe.el.focus();
+    cmd.execute();
+  },
+
+  queryTextBlockCommandState: function(cmdName) {
+    if (_.isUndefined(this._scribe)) {
+      throw "No Scribe instance found to query command";
+    }
+    var cmd = this._scribe.getCommand(cmdName),
+        sel = new this._scribe.api.Selection();
+    return sel.range && cmd.queryState();
+  },
+
   _handleContentPaste: function(ev) {
     setTimeout(this.onContentPasted.bind(this, ev, $(ev.currentTarget)), 0);
   },
@@ -283,15 +301,36 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   _initFormatting: function() {
     // Enable formatting keyboard input
-    var formatter;
-    for (var name in Formatters) {
-      if (Formatters.hasOwnProperty(name)) {
-        formatter = Formatters[name];
-        if (!_.isUndefined(formatter.keyCode)) {
-          formatter._bindToBlock(this.$el);
-        }
-      }
+    var block = this;
+
+    if (!this.options.formatBar) {
+      return;
     }
+
+    this.options.formatBar.commands.forEach(function(cmd) {
+      if (_.isUndefined(cmd.keyCode)) {
+        return;
+      }
+
+      var ctrlDown = false;
+
+      block.$el
+        .on('keyup','.st-text-block', function(ev) {
+          if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
+            ctrlDown = false;
+          }
+        })
+        .on('keydown','.st-text-block', {formatter: cmd}, function(ev) {
+          if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
+            ctrlDown = true;
+          }
+
+          if(ev.which === ev.data.formatter.keyCode && ctrlDown) {
+            ev.preventDefault();
+            block.execTextBlockCommand(ev.data.formatter.cmd);
+          }
+        });
+    });
   },
 
   _initTextBlocks: function() {
@@ -306,6 +345,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
         debug: config.scribeDebug,
       });
       this._scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
+      this._scribe.use(scribePluginLinkPromptCommand());
 
       if (_.isFunction(this.options.configureScribe)) {
         this.options.configureScribe.call(this, this._scribe);

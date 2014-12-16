@@ -8,7 +8,6 @@ module.exports = function(markdown, type) {
   // Deferring requiring these to sidestep a circular dependency:
   // Block -> this -> Blocks -> Block
   var Blocks = require('./blocks');
-  var Formatters = require('./formatters');
 
   // MD -> HTML
   type = utils.classify(type);
@@ -41,18 +40,6 @@ module.exports = function(markdown, type) {
           );
 
   html =  html.replace(/^\> (.+)$/mg,"$1");
-
-  // Use custom formatters toHTML functions (if any exist)
-  var formatName, format;
-  for(formatName in Formatters) {
-    if (Formatters.hasOwnProperty(formatName)) {
-      format = Formatters[formatName];
-      // Do we have a toHTML function?
-      if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
-        html = format.toHTML(html);
-      }
-    }
-  }
 
   // Use custom block toHTML functions (if any exist)
   var block;
