@@ -6,7 +6,9 @@
     "url": "git@github.com:madebymany/sir-trevor-js.git"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "dist": "grunt",
+    "dev": "grunt dev watch"
   },
   "dependencies": {
     "es6-shim": "^0.21.0",
