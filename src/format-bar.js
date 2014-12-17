@@ -8,6 +8,7 @@
    */
 
 var _ = require('./lodash');
+var $ = require('jquery');
 
 var config = require('./config');
 var Formatters = require('./formatters');

@@ -7,6 +7,7 @@
  * Tweaked so we use the parent class of dropzone
  */
 
+var $ = require("jquery");
 
 function dragEnter(e) {
   e.preventDefault();
