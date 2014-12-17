@@ -141,7 +141,11 @@ module.exports = function(grunt) {
         files: {
           'sir-trevor.css': 'src/sass/main.scss'
         }
-      }
+      },
+
+      options: {
+        loadPath: require('sass-bourbon').includePaths,
+      },
     }
 
   });

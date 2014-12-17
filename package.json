@@ -38,6 +38,7 @@
     "karma-browserify": "^1.0.0",
     "karma-jasmine": "~0.3.1",
     "karma-phantomjs-launcher": "~0.1.4",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "sass-bourbon": "^4.0.2"
   }
 }

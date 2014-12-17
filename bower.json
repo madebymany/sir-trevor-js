@@ -16,8 +16,5 @@
     "es6-shim": "~0.21.0",
     "Eventable": "~1.0.1",
     "jquery": "~1.9.1"
-  },
-  "devDependencies": {
-    "bourbon": "~3.2.3"
   }
 }

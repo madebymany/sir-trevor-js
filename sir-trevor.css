@@ -46,10 +46,10 @@
   content: "binopen"; }
 
 .st-block__inner ::-moz-selection {
-  background: #34e0c2;
+  background: #34E0C2;
   text-shadow: none; }
 .st-block__inner ::selection {
-  background: #34e0c2;
+  background: #34E0C2;
   text-shadow: none; }
 
 .st-spinner {
@@ -119,14 +119,14 @@
   border-radius: 0.2em; }
 
 .st-block-controls__top:hover:before {
-  color: #34e0c2;
-  background: #f3f3f3; }
+  color: #34E0C2;
+  background: #F3F3F3; }
 
 .st-block-controls {
-  background-color: #f3f3f3;
+  background-color: #F3F3F3;
   display: none;
   border-radius: 0.2em;
-  color: #42474b;
+  color: #42474B;
   width: 100%;
   text-align: center;
   padding: 1.2em 0; }
@@ -146,7 +146,7 @@
   display: block; }
 
 .st-block-control:hover {
-  color: #34e0c2; }
+  color: #34E0C2; }
 
 .st-block {
   padding: 0;
@@ -158,7 +158,7 @@
   position: relative; }
 
 .st-block__inner:hover {
-  border-color: #34e0c2; }
+  border-color: #34E0C2; }
 
 .st-block--with-errors .st-block__inner,
 .st-block--delete-active .st-block__inner {
@@ -183,8 +183,8 @@
   border-radius: 0.2em; }
 
 .st-block--with-plus:after {
-  background: #f3f3f3;
-  color: #34e0c2; }
+  background: #F3F3F3;
+  color: #34E0C2; }
 
 .with-st-controls:after,
 .with-st-controls:before {
@@ -220,19 +220,19 @@ ul.st-text-block {
 .st-block__inputs {
   padding: 1.6em 0 1em;
   border-radius: 0.2em;
-  background: #f3f3f3;
+  background: #F3F3F3;
   border-top: 0.125em solid transparent; }
 
 .st-block__dropzone .st-icon {
   font-size: 4em;
-  color: #42474b;
+  color: #42474B;
   display: block;
   text-align: center;
   margin: 0 auto 0.2em; }
 
 .st-block__dropzone p {
   text-align: center;
-  color: #42474b;
+  color: #42474B;
   font-size: 1.2em;
   margin: 0; }
 
@@ -250,7 +250,7 @@ ul.st-text-block {
 
 .st-upload-btn {
   border: 0;
-  background: #42474b;
+  background: #42474B;
   border-radius: 0.2em;
   padding: 0.35em 1em;
   font-size: 1.125em;
@@ -260,7 +260,7 @@ ul.st-text-block {
   z-index: 10; }
 
 .st-block__upload-container:hover .st-upload-btn {
-  background: #34e0c2; }
+  background: #34E0C2; }
 
 .st-block__editor--with-square-media {
   padding-top: 100%;
@@ -310,7 +310,7 @@ ul.st-text-block {
   top: -1.9em;
   left: -1.9em;
   padding: .3em .5em;
-  border: 2px solid #34e0c2;
+  border: 2px solid #34E0C2;
   border-left: none;
   border-top: none;
   max-width: 80%; }
@@ -328,7 +328,7 @@ ul.st-text-block {
   color: #d70014; }
 
 .st-block-positioner {
-  border: 0.125em solid #34e0c2;
+  border: 0.125em solid #34E0C2;
   position: absolute;
   z-index: 2;
   left: -5.5em;
@@ -353,7 +353,7 @@ ul.st-text-block {
   right: -0.3em;
   bottom: 0.6em;
   z-index: 1;
-  border: 0.125em solid #34e0c2;
+  border: 0.125em solid #34E0C2;
   background: #fff;
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -362,12 +362,12 @@ ul.st-text-block {
   transform: rotate(45deg); }
 
 .st-block-positioner__title {
-  color: #34e0c2;
+  color: #34E0C2;
   font-size: 0.7em;
   font-style: italic;
   font-weight: normal;
   margin: 0;
-  border-bottom: 1px solid #34e0c2;
+  border-bottom: 1px solid #34E0C2;
   padding: 0.5em;
   text-align: center; }
 
@@ -401,10 +401,10 @@ ul.st-text-block {
   height: 2.5em;
   line-height: 2.5em;
   font-size: 1.4em;
-  color: #34e0c2;
+  color: #34E0C2;
   background: #fff;
   text-align: center;
-  border: 2px solid #34e0c2;
+  border: 2px solid #34E0C2;
   border-right: 0;
   border-bottom: 0;
   margin-bottom: 0;
@@ -416,7 +416,7 @@ ul.st-text-block {
   font-size: 1.5em;
   line-height: 1.25em;
   height: 1.25em;
-  border: 2px solid #34e0c2;
+  border: 2px solid #34E0C2;
   border-left: 0;
   border-bottom: 0; }
 
@@ -429,7 +429,7 @@ ul.st-text-block {
 .st-block-ui-btn:hover, .st-block-control-ui-btn:hover,
 .st-block-control-ui-btn:hover {
   color: #fff;
-  background: #34e0c2; }
+  background: #34E0C2; }
 
 .st-block--with-errors .st-block-ui-btn:hover, .st-block--with-errors .st-block-control-ui-btn:hover,
 .st-block--delete-active .st-block-ui-btn:hover,
@@ -497,10 +497,12 @@ ul.st-text-block {
 
 .st-format-btn:hover,
 .st-format-btn--is-active {
-  color: #34e0c2; }
+  color: #34E0C2; }
 
 .st-format-btn--Italic {
   font-style: italic; }
 
 .st-format-btn--Unlink {
   text-decoration: line-through; }
+
+/*# sourceMappingURL=sir-trevor.css.map */
