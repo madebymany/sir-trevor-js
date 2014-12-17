@@ -1,6 +1,8 @@
 "use strict";
 
+var $ = require('jquery');
 var _ = require('../lodash');
+
 var utils = require('../utils');
 
 var Block = require('../block');

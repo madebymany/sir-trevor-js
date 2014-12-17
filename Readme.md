@@ -44,7 +44,10 @@ ECMAScript 6 shims are bundled in by default; if the platform you wish to run on
 
 ## Dependencies
 
-Sir Trevor requires [Underscore](http://underscorejs.org/) (or LoDash), [jQuery](http://jquery.com) (or Zepto) and [Eventable](https://github.com/madebymany/eventable).
+It's up to you:
+
+* Bring your own jQuery or Zepto (and have it put itself on `window.$`) and use `sir-trevor.js` / `sir-trevor.min.js`
+* Or if you're using Browserify yourself, `npm install sir-trevor` and `require('sir-trevor')` it as you would expect.
 
 ## Contributing
 

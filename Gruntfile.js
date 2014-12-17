@@ -47,6 +47,10 @@ module.exports = function(grunt) {
     node: true,
   }
 
+  var browserifyDefaultOptions = {
+    standalone: 'SirTrevor',
+  };
+
   grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -62,22 +66,26 @@ module.exports = function(grunt) {
       dist: {
         src: 'index.js',
         dest: 'sir-trevor.js',
+        options: {
+          browserifyOptions: Object.assign({}, browserifyDefaultOptions, {
+            transform: ['browserify-shim'],
+          }),
+        },
       },
+
       debug: {
         src: 'index.js',
         dest: 'sir-trevor.debug.js',
         options: {
-          browserifyOptions: {
-            standalone: 'SirTrevor',
+          browserifyOptions: Object.assign({}, browserifyDefaultOptions, {
             debug: true,
-          },
+          }),
         },
       },
+
       options: {
         banner: banner,
-        browserifyOptions: {
-          standalone: 'SirTrevor',
-        },
+        browserifyOptions: browserifyDefaultOptions,
       },
     },
 
@@ -96,7 +104,7 @@ module.exports = function(grunt) {
         files: {
           'sir-trevor.min.js': ['sir-trevor.js']
         }
-      }
+      },
     },
 
     watch: {
@@ -109,17 +117,18 @@ module.exports = function(grunt) {
     jshint: {
       lib: {
         src: ['index.js', 'src/**/*.js'],
-        options: Object.assign({
+        options: Object.assign({}, jsHintDefaultOptions, {
+          jquery: false,
           globals: {
             i18n: true,
             webkitURL: true,
           },
-        }, jsHintDefaultOptions),
+        }),
       },
 
       tests: {
         src: ['spec/**/*.js'],
-        options: Object.assign({
+        options: Object.assign({}, jsHintDefaultOptions, {
           globals: {
             _: true,
             SirTrevor: true,
@@ -132,7 +141,7 @@ module.exports = function(grunt) {
             spyOn: true,
             beforeEach: true,
           },
-        }, jsHintDefaultOptions),
+        }),
       },
     },
 

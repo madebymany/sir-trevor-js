@@ -4391,6 +4391,7 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
 module.exports = BlockControl;
 
 },{"./blocks":71,"./events":81,"./function-bind":90,"./lodash":95,"./renderable":97}],54:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -4400,6 +4401,7 @@ module.exports = BlockControl;
  */
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var Blocks = require('./blocks');
 var BlockControl = require('./block-control');
@@ -4483,6 +4485,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./me
 
 module.exports = BlockControls;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./block-control":53,"./blocks":71,"./event-bus":80,"./events":81,"./function-bind":90,"./lodash":95,"./mediated-events":96,"./renderable":97}],55:[function(require,module,exports){
 "use strict";
 
@@ -4788,9 +4791,11 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
 module.exports = BlockPositioner;
 
 },{"./function-bind":90,"./renderable":97}],58:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var EventBus = require('./event-bus');
 
@@ -4878,6 +4883,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
 module.exports = BlockReorder;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./event-bus":80,"./function-bind":90,"./lodash":95,"./renderable":97}],59:[function(require,module,exports){
 "use strict";
 
@@ -4965,9 +4971,11 @@ module.exports = {
 };
 
 },{"./event-bus":80,"./lodash":95,"./utils":101}],60:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var utils = require('./utils');
 
 var bestNameFromField = function(field) {
@@ -5042,10 +5050,13 @@ module.exports = {
 
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./lodash":95,"./utils":101}],61:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var config = require('./config');
 var utils = require('./utils');
@@ -5420,6 +5431,7 @@ Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 
 module.exports = Block;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./block-deletion":55,"./block-positioner":57,"./block-reorder":58,"./block-validations":60,"./block_mixins":66,"./config":77,"./event-bus":80,"./formatters":89,"./helpers/extend":92,"./lodash":95,"./simple-block":98,"./to-html":99,"./to-markdown":100,"./utils":101,"spin.js":52}],62:[function(require,module,exports){
 "use strict";
 
@@ -5463,7 +5475,10 @@ module.exports = {
 };
 
 },{"../utils":101}],63:[function(require,module,exports){
+(function (global){
 "use strict";
+
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var utils = require('../utils');
 
@@ -5497,12 +5512,15 @@ module.exports = {
   }
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../utils":101}],64:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /* Adds drop functionaltiy to this block */
 
 var _ = require('../lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var config = require('../config');
 var utils = require('../utils');
 
@@ -5559,10 +5577,13 @@ module.exports = {
 
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../config":77,"../event-bus":80,"../lodash":95,"../utils":101}],65:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('../lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 module.exports = {
 
@@ -5594,6 +5615,7 @@ module.exports = {
 
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../lodash":95,"./ajaxable":62}],66:[function(require,module,exports){
 "use strict";
 
@@ -5607,9 +5629,11 @@ module.exports = {
 };
 
 },{"./ajaxable.js":62,"./controllable.js":63,"./droppable.js":64,"./fetchable.js":65,"./pastable.js":67,"./uploadable.js":68}],67:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('../lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var config = require('../config');
 var utils = require('../utils');
 
@@ -5631,6 +5655,7 @@ module.exports = {
 
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../config":77,"../lodash":95,"../utils":101}],68:[function(require,module,exports){
 "use strict";
 
@@ -5686,8 +5711,10 @@ module.exports = Block.extend({
 });
 
 },{"../block":61,"../to-html":99}],70:[function(require,module,exports){
+(function (global){
 "use strict";
 
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var Block = require('../block');
 
 module.exports = Block.extend({
@@ -5739,6 +5766,7 @@ module.exports = Block.extend({
   }
 });
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../block":61}],71:[function(require,module,exports){
 "use strict";
 
@@ -5883,9 +5911,11 @@ module.exports = Block.extend({
 });
 
 },{"../block":61,"../to-html":99}],75:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('../lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var utils = require('../utils');
 
 var Block = require('../block');
@@ -5991,10 +6021,14 @@ module.exports = Block.extend({
   }
 });
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../block":61,"../lodash":95,"../utils":101}],76:[function(require,module,exports){
+(function (global){
 "use strict";
 
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var _ = require('../lodash');
+
 var utils = require('../utils');
 
 var Block = require('../block');
@@ -6070,6 +6104,7 @@ module.exports = Block.extend({
 });
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../block":61,"../lodash":95,"../utils":101}],77:[function(require,module,exports){
 "use strict";
 
@@ -6106,6 +6141,7 @@ module.exports = {
 };
 
 },{}],78:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -6117,6 +6153,7 @@ module.exports = {
  */
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var config = require('./config');
 var utils = require('./utils');
 
@@ -6404,10 +6441,13 @@ module.exports = Editor;
 
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./block-controls":54,"./block-manager":56,"./config":77,"./error-handler":79,"./event-bus":80,"./events":81,"./extensions/editor-store":82,"./floating-block-controls":85,"./form-events":86,"./format-bar":87,"./function-bind":90,"./lodash":95,"./utils":101}],79:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var ErrorHandler = function($wrapper, mediator, container) {
   this.$wrapper = $wrapper;
@@ -6472,6 +6512,7 @@ Object.assign(ErrorHandler.prototype, require('./function-bind'), require('./med
 module.exports = ErrorHandler;
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./function-bind":90,"./lodash":95,"./mediated-events":96,"./renderable":97}],80:[function(require,module,exports){
 "use strict";
 
@@ -6554,6 +6595,7 @@ Object.assign(EditorStore.prototype, {
 module.exports = EditorStore;
 
 },{"../lodash":95,"../utils":101}],83:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -6562,6 +6604,7 @@ module.exports = EditorStore;
 */
 
 var _ = require('../lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var config = require('../config');
 var utils = require('../utils');
 
@@ -6617,7 +6660,9 @@ module.exports = function(block, file, success, error) {
   return xhr;
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../config":77,"../event-bus":80,"../lodash":95,"../utils":101}],84:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -6629,7 +6674,7 @@ module.exports = function(block, file, success, error) {
  * This will be triggered *by anything* so it needs to subscribe to events.
  */
 
-
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');
@@ -6726,7 +6771,9 @@ Object.assign(Submittable.prototype, {
 module.exports = Submittable;
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../event-bus":80,"../utils":101}],85:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -6736,6 +6783,7 @@ module.exports = Submittable;
    */
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var EventBus = require('./event-bus');
 
@@ -6815,6 +6863,7 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
 module.exports = FloatingBlockControls;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./event-bus":80,"./events":81,"./function-bind":90,"./lodash":95,"./renderable":97}],86:[function(require,module,exports){
 "use strict";
 
@@ -6863,6 +6912,7 @@ var FormEvents = {
 module.exports = FormEvents;
 
 },{"./config":77,"./event-bus":80,"./extensions/submittable":84,"./utils":101}],87:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -6873,6 +6923,7 @@ module.exports = FormEvents;
    */
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var config = require('./config');
 var Formatters = require('./formatters');
@@ -6986,6 +7037,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
 module.exports = FormatBar;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./config":77,"./events":81,"./formatters":89,"./function-bind":90,"./lodash":95,"./mediated-events":96,"./renderable":97}],88:[function(require,module,exports){
 "use strict";
 
@@ -7144,6 +7196,7 @@ module.exports = {
 
 
 },{}],91:[function(require,module,exports){
+(function (global){
 "use strict";
 
 /*
@@ -7153,6 +7206,7 @@ module.exports = {
  * Tweaked so we use the parent class of dropzone
  */
 
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 function dragEnter(e) {
   e.preventDefault();
@@ -7198,6 +7252,7 @@ $.fn.caretToEnd = function(){
 };
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],92:[function(require,module,exports){
 "use strict";
 
@@ -7470,9 +7525,11 @@ module.exports = {
 };
 
 },{}],97:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('./lodash');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 module.exports = {
   tagName: 'div',
@@ -7519,11 +7576,14 @@ module.exports = {
 };
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./lodash":95}],98:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _ = require('./lodash');
 var utils = require('./utils');
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
 var BlockReorder = require('./block-reorder');
 
@@ -7657,6 +7717,7 @@ SimpleBlock.extend = require('./helpers/extend');
 
 module.exports = SimpleBlock;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./block-reorder":58,"./block-store":59,"./events":81,"./function-bind":90,"./helpers/extend":92,"./lodash":95,"./renderable":97,"./utils":101}],99:[function(require,module,exports){
 "use strict";
 
