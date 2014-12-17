@@ -1,0 +1,91 @@
+#!/bin/bash
+
+FROM_BRANCH=master
+TO_BRANCH=dist
+ORIGIN_REMOTE=origin
+
+set -eo pipefail
+
+cd "$(dirname $0)"
+
+if [[ -n "$(git status --porcelain)" ]]; then
+    echo "Working tree/index must be clean before proceeding"
+    exit 1
+fi
+
+if [ $# -ne 1 ]; then
+    echo "Usage: ./release.sh <version-number | major | minor | patch | build | push>"
+    exit 1
+fi
+
+bump_level=$1; shift
+
+export PATH="./node_modules/.bin:$PATH"
+
+function echoinfo() {
+    echo -e "\n$(tput bold)$(tput setaf 7)-- $*$(tput sgr0)\n"
+}
+
+if [[ $bump_level = "push" ]]; then
+    git push --tags $ORIGIN_REMOTE $FROM_BRANCH $TO_BRANCH
+    exit
+fi
+
+if ! command -v mversion >/dev/null; then
+    echo "mversion command not found. Please run 'npm install'."
+    exit 1
+fi
+
+git fetch $ORIGIN_REMOTE
+
+if git show-ref --verify --quiet refs/remotes/$ORIGIN_REMOTE/$TO_BRANCH; then
+    # A dist branch exists on origin
+    if ! git show-ref --verify --quiet refs/heads/$TO_BRANCH; then
+        # Create it locally if we don't have it
+        git branch --track $TO_BRANCH $ORIGIN_REMOTE/$TO_BRANCH
+    fi
+else
+    # There's no dist branch; set it up for the first time
+    git branch $TO_BRANCH $FROM_BRANCH
+    git push $ORIGIN_REMOTE $TO_BRANCH:refs/heads/$TO_BRANCH
+    git branch --set-upstream-to=$ORIGIN_REMOTE/$TO_BRANCH $TO_BRANCH
+fi
+
+git checkout $FROM_BRANCH
+
+[[ -d build ]] && rm -r build
+
+echoinfo "Current version: $(mversion)"
+echoinfo "Updating version"
+new_version=$(mversion $bump_level | awk -F': ' '/^Updated to new version/{print $2}')
+if [[ -z $new_version ]]; then
+  echo "fatal: couldn't find new version in output of mversion. It's been updated and broken this script."
+  echo 1
+fi
+
+git add --all :/
+git commit -m "Bumped to $new_version
+
+[ci skip]"
+
+echoinfo "Switching to dist branch and merging"
+
+git checkout $TO_BRANCH
+git reset --hard refs/remotes/$ORIGIN_REMOTE/$TO_BRANCH
+
+git merge --no-commit $FROM_BRANCH
+echoinfo "Building distribution files"
+npm run dist
+
+mv -f build/* .
+rm -r build/
+
+git add --all :/
+git commit -m "Added distribution files for $new_version
+
+[ci skip]"
+git tag -a "$new_version" -m "Tagged ${new_version}"
+
+echoinfo "Check the commit worked and then push:\n\n$0 push"
+
+git checkout --quiet -

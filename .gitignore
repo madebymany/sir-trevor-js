@@ -1,11 +1,3 @@
-.bundle
-.DS_Store
-node_modules
-.rvmrc
-.sass-cache
-components
-.grunt
-_SpecRunner.html
-build
-components
-/bower_components/
+node_modules/
+.sass-cache/
+/build/
