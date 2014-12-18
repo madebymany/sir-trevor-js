@@ -65,7 +65,7 @@ module.exports = function(grunt) {
     browserify: {
       dist: {
         src: 'index.js',
-        dest: 'sir-trevor.js',
+        dest: 'build/sir-trevor.js',
         options: {
           browserifyOptions: Object.assign({}, browserifyDefaultOptions, {
             transform: ['browserify-shim'],
@@ -75,7 +75,7 @@ module.exports = function(grunt) {
 
       debug: {
         src: 'index.js',
-        dest: 'sir-trevor.debug.js',
+        dest: 'build/sir-trevor.debug.js',
         options: {
           browserifyOptions: Object.assign({}, browserifyDefaultOptions, {
             debug: true,
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
       },
       dist: {
         files: {
-          'sir-trevor.min.js': ['sir-trevor.js']
+          'build/sir-trevor.min.js': ['build/sir-trevor.js']
         }
       },
     },
@@ -148,7 +148,7 @@ module.exports = function(grunt) {
     sass: {
       dist: {
         files: {
-          'sir-trevor.css': 'src/sass/main.scss'
+          'build/sir-trevor.css': 'src/sass/main.scss'
         }
       },
 
