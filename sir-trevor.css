@@ -295,11 +295,13 @@ ul.st-text-block {
   text-align: center; }
 
 .st-block__upload-container input[type="file"] {
+  font-size: 70px;
   position: absolute;
   z-index: 50;
   opacity: 0;
   cursor: pointer;
-  left: 0;
+  left: -50%;
+  margin-left: 120px;
   width: 100%;
   padding: 7px 0;
   text-align: center; }
