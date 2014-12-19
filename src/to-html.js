@@ -18,7 +18,7 @@ module.exports = function(markdown, type) {
   if(_.isUndefined(shouldWrap)) { shouldWrap = false; }
 
   if (shouldWrap) {
-    html = "<div>" + html;
+    html = "<p>" + html;
   }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
@@ -52,8 +52,8 @@ module.exports = function(markdown, type) {
   }
 
   if (shouldWrap) {
-    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\n/gm, "</div><div>");
+    html = html.replace(/\n\s*\n/gm, "</p><p>");
+    html = html.replace(/\n/gm, "<br>");
   }
 
   html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
@@ -71,7 +71,7 @@ module.exports = function(markdown, type) {
              .replace(/\\\-/g, "-");
 
   if (shouldWrap) {
-    html += "</div>";
+    html += "</p>";
   }
 
   return html;
