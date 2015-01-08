@@ -2,9 +2,12 @@
 
 var _ = require('./lodash');
 
-require('es6-shim'); // bundling in for the moment as support is very rare
-require('./helpers/event'); // extends jQuery itself
+// ES6 shims
+require('object.assign').shim();
+require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
+
+require('./helpers/event'); // extends jQuery itself
 
 var SirTrevor = {
 
