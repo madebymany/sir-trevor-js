@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "repository": {
     "type": "git",
     "url": "git@github.com:madebymany/sir-trevor-js.git"
@@ -11,6 +11,7 @@
     "dev": "grunt dev watch"
   },
   "dependencies": {
+    "array.prototype.find": "^1.0.0",
     "es6-shim": "^0.21.0",
     "eventablejs": "^1.0.5",
     "lodash.isempty": "^2.4.1",
@@ -21,6 +22,7 @@
     "lodash.result": "^2.4.1",
     "lodash.template": "^2.4.1",
     "lodash.uniqueid": "^2.4.1",
+    "object.assign": "^1.1.1",
     "spin.js": "^2.0.1"
   },
   "devDependencies": {
