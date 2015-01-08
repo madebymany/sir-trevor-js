@@ -8,7 +8,6 @@ module.exports = function(content, type) {
   // Deferring requiring these to sidestep a circular dependency:
   // Block -> this -> Blocks -> Block
   var Blocks = require('./blocks');
-  var Formatters = require('./formatters');
 
   type = utils.classify(type);
 
@@ -69,18 +68,6 @@ module.exports = function(content, type) {
                       .replace(/<em>(?:\s*)(.*?)(\s*)?<\/em>/gim, replaceItalics)
                       .replace(/<i>(?:\s*)(.*?)(\s*)?<\/i>/gim, replaceItalics);
 
-
-  // Use custom formatters toMarkdown functions (if any exist)
-  var formatName, format;
-  for(formatName in Formatters) {
-    if (Formatters.hasOwnProperty(formatName)) {
-      format = Formatters[formatName];
-      // Do we have a toMarkdown function?
-      if (!_.isUndefined(format.toMarkdown) && _.isFunction(format.toMarkdown)) {
-        markdown = format.toMarkdown(markdown);
-      }
-    }
-  }
 
   // Do our generic stripping out
   markdown = markdown.replace(/([^<>]+)(<div>)/g,"$1\n$2")                                 // Divitis style line breaks (handle the first line)
