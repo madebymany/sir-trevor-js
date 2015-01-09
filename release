@@ -13,8 +13,8 @@ if [[ -n "$(git status --porcelain)" ]]; then
     exit 1
 fi
 
-if [ $# -ne 1 ]; then
-    echo "Usage: ./release.sh <version-number | major | minor | patch | build | push>"
+if [ $# -lt 1 ]; then
+    echo "Usage: ./release.sh <version-number | major | minor | patch | build | push | publish>"
     exit 1
 fi
 
@@ -28,6 +28,23 @@ function echoinfo() {
 
 if [[ $bump_level = "push" ]]; then
     git push --tags $ORIGIN_REMOTE $FROM_BRANCH $TO_BRANCH
+    echoinfo "Remember to publish to npm:\n\n$0 publish"
+    exit
+fi
+
+if [[ $bump_level = "publish" ]]; then
+    echo $1
+    if [[ -z "$1" ]]; then
+        echo "fatal: make sure you provide a version number: v0.5.0."
+        exit 1
+    elif ! git ls-remote --exit-code --tags origin $1; then
+        echo "fatal: make sure you $0 push before publishing."
+        exit 1
+    fi
+
+    git checkout $TO_BRANCH
+    npm publish
+    git checkout $FROM_BRANCH
     exit
 fi
 
