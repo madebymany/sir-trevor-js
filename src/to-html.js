@@ -8,7 +8,6 @@ module.exports = function(markdown, type) {
   // Deferring requiring these to sidestep a circular dependency:
   // Block -> this -> Blocks -> Block
   var Blocks = require('./blocks');
-  var Formatters = require('./formatters');
 
   // MD -> HTML
   type = utils.classify(type);
@@ -19,7 +18,7 @@ module.exports = function(markdown, type) {
   if(_.isUndefined(shouldWrap)) { shouldWrap = false; }
 
   if (shouldWrap) {
-    html = "<div>" + html;
+    html = "<p>" + html;
   }
 
   html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
@@ -42,18 +41,6 @@ module.exports = function(markdown, type) {
 
   html =  html.replace(/^\> (.+)$/mg,"$1");
 
-  // Use custom formatters toHTML functions (if any exist)
-  var formatName, format;
-  for(formatName in Formatters) {
-    if (Formatters.hasOwnProperty(formatName)) {
-      format = Formatters[formatName];
-      // Do we have a toHTML function?
-      if (!_.isUndefined(format.toHTML) && _.isFunction(format.toHTML)) {
-        html = format.toHTML(html);
-      }
-    }
-  }
-
   // Use custom block toHTML functions (if any exist)
   var block;
   if (Blocks.hasOwnProperty(type)) {
@@ -65,8 +52,8 @@ module.exports = function(markdown, type) {
   }
 
   if (shouldWrap) {
-    html = html.replace(/\n\n/gm, "</div><div><br></div><div>");
-    html = html.replace(/\n/gm, "</div><div>");
+    html = html.replace(/\n\s*\n/gm, "</p><p>");
+    html = html.replace(/\n/gm, "<br>");
   }
 
   html = html.replace(/\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
@@ -84,7 +71,7 @@ module.exports = function(markdown, type) {
              .replace(/\\\-/g, "-");
 
   if (shouldWrap) {
-    html += "</div>";
+    html += "</p>";
   }
 
   return html;

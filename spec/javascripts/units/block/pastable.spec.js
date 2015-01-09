@@ -28,8 +28,7 @@ describe("Block:Pastable Block", function(){
     });
 
     it("creates an $inputs element", function(){
-      expect(block.$inputs)
-        .not.toBe(undefined);
+      expect(block.$inputs).not.toBe(undefined);
     });
 
     it("appends the html to the inputs element", function(){

@@ -1,11 +1,39 @@
 "use strict";
 
+var $ = require('jquery');
 var _ = require('./lodash');
 var config = require('./config');
 
 var urlRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
 
 var utils = {
+
+  getInstance: function(identifier) {
+    if (_.isUndefined(identifier)) {
+      return config.instances[0];
+    }
+
+    if (_.isString(identifier)) {
+      return config.instances.find(function(editor) {
+        return editor.ID === identifier;
+      });
+    }
+
+    return config.instances[identifier];
+  },
+
+  getInstanceBySelection: function() {
+    return utils.getInstance(
+      $(window.getSelection().anchorNode).
+        parents('.st-block').data('instance'));
+  },
+
+  getBlockBySelection: function() {
+    return utils.getInstanceBySelection().findBlockById(
+      $(window.getSelection().anchorNode).parents('.st-block').get(0).id
+    );
+  },
+
   log: function() {
     if (!_.isUndefined(console) && config.debug) {
       console.log.apply(console, arguments);

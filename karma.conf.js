@@ -1,6 +1,8 @@
 // Karma configuration
 //
 module.exports = function(config) {
+  var enableBrowserStack = !!(process.env.BROWSERSTACK_USER && process.env.BROWSERSTACK_AUTHKEY);
+
   config.set({
 
     // base path, that will be used to resolve files and exclude
@@ -29,6 +31,8 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    // logLevel: config.LOG_ERROR,
+    // logLevel: config.LOG_INFO,
     logLevel: config.LOG_ERROR,
 
     // enable / disable watching file and executing tests whenever any file changes
@@ -42,7 +46,22 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['PhantomJS'],
+    browsers: enableBrowserStack ? ['BrowserStackChrome'] : ['Chrome'],
+
+    customLaunchers: {
+      BrowserStackChrome: {
+        base: 'BrowserStack',
+        browser: 'chrome',
+        browser_version: 'latest',
+        os: 'OS X',
+        os_version: 'Yosemite'
+      },
+    },
+
+    browserStack: {
+      username: process.env.BROWSERSTACK_USER,
+      accessKey: process.env.BROWSERSTACK_AUTHKEY,
+    },
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
@@ -54,6 +73,7 @@ module.exports = function(config) {
     // Browserify config (all optional)
     browserify: {
       debug: true,
+      transform: [['deamdify', {global: true}]]
     },
 
     browserNoActivityTimeout: 60000,

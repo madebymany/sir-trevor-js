@@ -66,11 +66,6 @@ module.exports = function(grunt) {
       dist: {
         src: 'index.js',
         dest: 'build/sir-trevor.js',
-        options: {
-          browserifyOptions: Object.assign({}, browserifyDefaultOptions, {
-            transform: ['browserify-shim'],
-          }),
-        },
       },
 
       debug: {
@@ -86,6 +81,7 @@ module.exports = function(grunt) {
       options: {
         banner: banner,
         browserifyOptions: browserifyDefaultOptions,
+        transform: [['deamdify', {global: true}], 'browserify-shim'],
       },
     },
 

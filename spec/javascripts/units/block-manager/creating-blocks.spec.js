@@ -4,30 +4,34 @@ describe("BlockManager::Creating blocks", function(){
 
   var manager, options, mediator, block;
 
-  describe("createBlock with no editor options", function(){
+  Object.keys(SirTrevor.Blocks).forEach(function createBlockTest(blockName){
 
-    beforeEach(function(){
-      mediator = _.extend({}, SirTrevor.Events);
-      options = { defaultType: false };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
-      block = new SirTrevor.Block();
+    describe("create " + blockName + "  with no editor options", function(){
 
-      spyOn(SirTrevor.Blocks, 'Text').and.returnValue(block);
-      spyOn(SirTrevor.EventBus, 'trigger');
+      beforeEach(function(){
+        mediator = _.extend({}, SirTrevor.Events);
+        options = { defaultType: false };
+        manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+        block = new SirTrevor.Block();
 
-      manager.createBlock('text');
-    });
+        spyOn(SirTrevor.Blocks, blockName).and.returnValue(block);
+        spyOn(SirTrevor.EventBus, 'trigger');
 
-    it("instantiates a block of the type specified", function(){
-      expect(SirTrevor.Blocks.Text).toHaveBeenCalled();
-    });
+        manager.createBlock(blockName.toLowerCase());
+      });
 
-    it("adds a block to the local block store", function(){
-      expect(manager.blocks.length).toBe(1);
-    });
+      it("instantiates a block of the type specified", function(){
+        expect(SirTrevor.Blocks[blockName]).toHaveBeenCalled();
+      });
 
-    it("increments the block type count", function(){
-      expect(manager._getBlockTypeCount('Text')).toBe(1);
+      it("adds a block to the local block store", function(){
+        expect(manager.blocks.length).toBe(1);
+      });
+
+      it("increments the block type count", function(){
+        expect(manager._getBlockTypeCount(blockName)).toBe(1);
+      });
+
     });
 
   });

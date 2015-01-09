@@ -2,15 +2,20 @@
 
 var _ = require('./lodash');
 
-require('es6-shim'); // bundling in for the moment as support is very rare
-require('./helpers/event'); // extends jQuery itself
+// ES6 shims
+require('object.assign').shim();
+require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
+
+require('./helpers/event'); // extends jQuery itself
+
+var utils = require('./utils');
 
 var SirTrevor = {
 
   config: require('./config'),
 
-  log: require('./utils').log,
+  log: utils.log,
   Locales: require('./locales'),
 
   Events: require('./events'),
@@ -30,8 +35,6 @@ var SirTrevor = {
 
   SimpleBlock: require('./simple-block'),
   Block: require('./block'),
-  Formatter: require('./formatter'),
-  Formatters: require('./formatters'),
 
   Blocks: require('./blocks'),
 
@@ -49,19 +52,7 @@ var SirTrevor = {
     Object.assign(SirTrevor.config.defaults, options || {});
   },
 
-  getInstance: function(identifier) {
-    if (_.isUndefined(identifier)) {
-      return this.config.instances[0];
-    }
-
-    if (_.isString(identifier)) {
-      return this.config.instances.find(function(editor) {
-        return editor.ID === identifier;
-      });
-    }
-
-    return this.config.instances[identifier];
-  },
+  getInstance: utils.getInstance,
 
   setBlockOptions: function(type, options) {
     var block = SirTrevor.Blocks[type];
