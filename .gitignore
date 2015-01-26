@@ -1,3 +1,7 @@
 node_modules/
 .sass-cache/
 /build/
+.DS_Store
+_SpecRunner.html
+bower_components/
+.grunt
