@@ -4,9 +4,11 @@ describe("SirTrevor", function(){
 
   describe("setBlockOptions", function(){
 
-    var block;
+    var block, editorInstance;
 
     beforeEach(function(){
+      editorInstance = {ID: 'dummy'};
+
       SirTrevor.Blocks.Test = SirTrevor.Block.extend({
         test: true
       });
@@ -20,7 +22,7 @@ describe("SirTrevor", function(){
     });
 
     it("has the property set when we instantiate a block", function(){
-      block = new SirTrevor.Blocks.Test();
+      block = new SirTrevor.Blocks.Test(null, editorInstance);
       expect(block.test).toBe(false);
     });
 

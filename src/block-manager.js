@@ -1,6 +1,7 @@
 "use strict";
 
 var _ = require('./lodash');
+var $ = require('jquery');
 var utils = require('./utils');
 var config = require('./config');
 
@@ -16,7 +17,7 @@ var BlockManager = function(options, editorInstance, mediator) {
     acc[key] = options[key];
     return acc;
   }, {});
-  this.instance_scope = editorInstance;
+  this.instance_scope = editorInstance; // It's Sir Trevor editor instance now. ID is useless. Passing Sir Trevor instance gives more flexibility.
   this.mediator = mediator;
 
   this.blocks = [];
@@ -42,7 +43,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   initialize: function() {},
 
-  createBlock: function(type, data) {
+  createBlock: function(type, data, render_at) {
     type = utils.classify(type);
 
     // Run validations
@@ -53,7 +54,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);
-    this.mediator.trigger('block:render', block);
+    this.mediator.trigger('block:render', block, render_at);
 
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
@@ -65,6 +66,19 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   removeBlock: function(blockID) {
     var block = this.findBlockById(blockID),
     type = utils.classify(block.type);
+
+    // assume there can be nested blocks. if none - it's ok.
+    var nested_blocks = block.$el.find('.st-block');
+    if (nested_blocks.length > 0) {
+      var list = nested_blocks.map(function() {
+        return { depth: $(this).parents().length, id: this.getAttribute('id') };
+      }).get();
+      list.sort(function(a, b) { return a.depth - b.depth; });
+      // remove nested blocks in a proper order (deepest first)
+      for (var i=0; i<list.length; i++) {
+        this.removeBlock(list[i].id);
+      }
+    }
 
     this.mediator.trigger('block-controls:reset');
     this.blocks = this.blocks.filter(function(item) {
