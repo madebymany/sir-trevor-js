@@ -113,7 +113,7 @@ describe("Block", function(){
     beforeEach(function(){
       block.configureScribe = function(scribe){
         scribe.allowBlockElements = false;
-      }
+      };
       block.render();
     });
 
