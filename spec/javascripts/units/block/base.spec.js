@@ -107,4 +107,21 @@ describe("Block", function(){
       });
     });
   });
+
+  describe("with configureScribe option", function(){
+
+    beforeEach(function(){
+      block.configureScribe = function(scribe){
+        scribe.allowBlockElements = false;
+      }
+      block.render();
+    });
+
+    it("configures Scribe with the function that was passed", function(){
+      expect(block._scribe.allowBlockElements).toBe(false);
+    });
+
+
+  });
+
 });

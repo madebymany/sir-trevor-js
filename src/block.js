@@ -310,6 +310,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _initFormatting: function() {
+
     // Enable formatting keyboard input
     var block = this;
 
@@ -357,8 +358,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       this._scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
       this._scribe.use(scribePluginLinkPromptCommand());
 
-      if (_.isFunction(this.options.configureScribe)) {
-        this.options.configureScribe.call(this, this._scribe);
+      if (_.isFunction(this.configureScribe)) {
+        this.configureScribe.call(this, this._scribe);
       }
     }
   },
