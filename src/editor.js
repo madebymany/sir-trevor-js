@@ -169,8 +169,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     return this.store[method].call(this, options || {});
   },
 
-  renderBlock: function(block) {
-    this._renderInPosition(block.render().$el);
+  renderBlock: function(block, render_at) {
+    this._renderInPosition(block.render().$el, render_at);
     this.hideAllTheThings();
     this.scrollTo(block.$el);
 
