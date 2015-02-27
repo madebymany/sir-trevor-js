@@ -36,6 +36,8 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   },
 
   onBlockCountChange: function(new_count) {
+    // count only siblings blocks
+    new_count = this.$block.siblings('.st-block').length + 1;
     if (new_count !== this.total_blocks) {
       this.total_blocks = new_count;
       this.renderPositionList();

@@ -11,8 +11,8 @@
   opacity: 0;
 }
 
-.st-block__inner:hover .st-block__ui,
-.st-block__inner:hover .st-block__control-ui {
+.st-block__inner:hover > .st-block__ui,
+.st-block__inner:hover > .st-block__control-ui {
   opacity: 1;
 }
 
@@ -43,26 +43,31 @@
   border-bottom: 0;
 }
 
-.st-block--with-errors .st-block-ui-btn ,
-.st-block--delete-active .st-block-ui-btn {
-  color: $error-color;
-  border-color: $error-color;
+.st-block--with-errors, .st-block--delete-active {
+  & > .st-block__inner {
+
+    & > .st-block__ui,
+    & > .st-block__ui-delete-controls {
+      .st-block-ui-btn {
+        color: $error-color;
+        border-color: $error-color;
+
+        &:hover {
+          background-color: $error-color;
+        }
+      }
+    }
+    & > .st-block__ui-delete-controls {
+      opacity: 1;
+      z-index: 2;
+    }
+  }
 }
 
 .st-block-ui-btn:hover,
 .st-block-control-ui-btn:hover {
   color: #fff;
   background: $accent-color;
-}
-
-.st-block--with-errors .st-block-ui-btn:hover,
-.st-block--delete-active .st-block-ui-btn:hover {
-  background-color: $error-color;
-}
-
-.st-block--delete-active .st-block__ui-delete-controls {
-  opacity: 1;
-  z-index: 2;
 }
 
 .st-block__delete-label {

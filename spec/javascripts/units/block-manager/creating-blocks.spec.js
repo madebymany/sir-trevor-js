@@ -2,7 +2,7 @@
 
 describe("BlockManager::Creating blocks", function(){
 
-  var manager, options, mediator, block;
+  var editorInstance, manager, options, mediator, block;
 
   Object.keys(SirTrevor.Blocks).forEach(function createBlockTest(blockName){
 
@@ -11,8 +11,9 @@ describe("BlockManager::Creating blocks", function(){
       beforeEach(function(){
         mediator = _.extend({}, SirTrevor.Events);
         options = { defaultType: false };
-        manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
-        block = new SirTrevor.Block();
+        editorInstance = {ID: 'dummy'}; // dummy
+        manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), editorInstance, mediator);
+        block = new SirTrevor.Block(undefined, editorInstance);
 
         spyOn(SirTrevor.Blocks, blockName).and.returnValue(block);
         spyOn(SirTrevor.EventBus, 'trigger').and.callThrough();
