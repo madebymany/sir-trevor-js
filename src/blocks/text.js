@@ -17,7 +17,14 @@ module.exports = Block.extend({
 
   icon_name: 'text',
 
+  markdownSupport: true,
+
   loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
+    if (this.markdownSupport && !data.isHtml) {
+      this.getTextBlock().html(stToHTML(data.text, this.type));
+      data.isHtml = true;
+    } else {
+      this.getTextBlock().html(data.text);
+    }
   },
 });
