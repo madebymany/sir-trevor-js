@@ -9,9 +9,8 @@ describe("Blocks: Text block", function() {
       var editor = new SirTrevor.Editor({ el: element });
       var block = new SirTrevor.Blocks.Text(data, editor.ID, editor.mediator);
       block.render();
-      block.save();
 
-      return block._getData();
+      return block.getBlockData();
     };
 
     beforeEach(function() {
@@ -54,6 +53,12 @@ describe("Blocks: Text block", function() {
         var serializedData = getSerializedData(data);
 
         expect(serializedData.text).toEqual('test');
+      });
+
+      it('doesn\'t set isHtml', function() {
+        var serializedData = getSerializedData(data);
+
+        expect(serializedData.isHtml).toBeUndefined();
       });
 
       it('ignores isHtml value', function() {
