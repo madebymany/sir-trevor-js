@@ -14,7 +14,15 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 
 if [ $# -lt 1 ]; then
-    echo "Usage: ./release.sh <version-number | major | minor | patch | build | push | publish>"
+    echo -e "Usage:"
+    echo -e "  ./release <bump_level> <version>"
+    echo -e "\nArguments:"
+    echo -e "  <bump_level>\tpush or publish"
+    echo -e "  <version>\tversion passed to mversion"
+    echo -e "\nGuide:"
+    echo -e "  To release new version to npm you have to run the command with"
+    echo -e "  <bump_level> set to push to push it to git, and then again with"
+    echo -e "  <bump_level> set to publish, without changing <version>\n"
     exit 1
 fi
 
@@ -78,7 +86,7 @@ git checkout $FROM_BRANCH
 
 echoinfo "Current version: $(mversion)"
 echoinfo "Updating version"
-new_version=$(mversion $bump_level | awk -F': ' '/^Updated to new version/{print $2}')
+new_version=$(mversion $given_version | awk -F': ' '/^Updated to new version/{print $2}')
 if [[ -z $new_version ]]; then
   echo "fatal: couldn't find new version in output of mversion. It's been updated and broken this script."
   echo 1
