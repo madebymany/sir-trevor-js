@@ -58,6 +58,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
+    EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
     utils.log("Block created of type " + type);
   },
 

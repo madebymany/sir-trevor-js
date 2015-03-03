@@ -15,7 +15,7 @@ describe("BlockManager::Creating blocks", function(){
         block = new SirTrevor.Block();
 
         spyOn(SirTrevor.Blocks, blockName).and.returnValue(block);
-        spyOn(SirTrevor.EventBus, 'trigger');
+        spyOn(SirTrevor.EventBus, 'trigger').and.callThrough();
 
         manager.createBlock(blockName.toLowerCase());
       });
@@ -30,6 +30,12 @@ describe("BlockManager::Creating blocks", function(){
 
       it("increments the block type count", function(){
         expect(manager._getBlockTypeCount(blockName)).toBe(1);
+      });
+
+      it("fires a create:new block event", function() {
+        var lastEvent = SirTrevor.EventBus.trigger.calls.mostRecent();
+
+        expect(lastEvent.args[0]).toBe('block:create:new');
       });
 
     });
