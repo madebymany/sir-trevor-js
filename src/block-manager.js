@@ -61,6 +61,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
     utils.log("Block created of type " + type);
+
+    return block;
   },
 
   removeBlock: function(blockID) {
