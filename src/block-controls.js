@@ -68,7 +68,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./me
   handleControlButtonClick: function(e) {
     e.stopPropagation();
 
-    this.mediator.trigger('block:create', $(e.currentTarget).attr('data-type'));
+    this.mediator.trigger('block:create', $(e.currentTarget).attr('data-type'), null, this.current_container);
   },
 
   renderInContainer: function(container) {
