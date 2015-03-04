@@ -64,7 +64,7 @@ if [[ $action = "publish" ]]; then
     exit
 fi
 
-if [[$action = "build"]]; then
+if [[ $action = "build" ]]; then
   if ! command -v mversion >/dev/null; then
     echo "mversion command not found. Please run 'npm install'."
     exit 1
