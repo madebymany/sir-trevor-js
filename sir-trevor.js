@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.5.0-beta2
+ * Sir Trevor JS v0.5.0-beta3
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2015-03-03
+ * 2015-03-04
  */
 
 
@@ -10246,7 +10246,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       this.$inputs = input_html;
     }
 
-    if (this.hasTextBlock) { this._initTextBlocks(); }
+    if (this.hasTextBlock()) { this._initTextBlocks(); }
 
     this.availableMixins.forEach(function(mixin) {
       if (this[mixin]) {
