@@ -172,13 +172,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   renderBlock: function(block) {
     this._renderInPosition(block.render().$el);
     this.hideAllTheThings();
-    this.scrollTo(block.$el);
 
     block.trigger("onRender");
-  },
-
-  scrollTo: function(element) {
-    $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
   },
 
   removeBlockDragOver: function() {
@@ -196,7 +191,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     if($blockBy && $blockBy.attr('id') !== $block.attr('id')) {
       this.hideAllTheThings();
       $block["insert" + where]($blockBy);
-      this.scrollTo($block);
     }
   },
 
