@@ -45,3 +45,17 @@
   z-index: 2;
   padding: 0.3em 0.5em;
 }
+
+.st-block--with-errors, .st-block--delete-active {
+  & > .st-block__inner {
+
+    & > .st-block__ui {
+      .st-block-positioner {
+        border-color: $error-color;
+        &:after {
+          border-color: $error-color;
+        }
+      }
+    }
+  }
+}
