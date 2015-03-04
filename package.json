@@ -48,6 +48,7 @@
     "karma-browserify": "^1.0.0",
     "karma-browserstack-launcher": "^0.1.2",
     "karma-chrome-launcher": "^0.1.7",
+    "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "~0.3.1",
     "karma-phantomjs-launcher": "~0.1.4",
     "lodash": "^2.4.1",
