@@ -4,7 +4,6 @@ node_js:
 branches:
   only:
   - master
-env:
-  global:
-  - secure: fOQNGvdW6PLe80vk+VGy4gB62TlPIpzUveOOb4t1jhSCThG3U6WWnUYdsWQQrLmpeb9QgaUgU4V6D6dmugvs7H64cYZzV5Zr8AdyfEhsqGRro7rPKKM94IYdKByMk1fuuI8Sjhu8aMXYDYPtt8gQI0lIOYu0Uev2y76gyI7dnys=
-  - secure: FrBy7h8i+w3YedhLqUJsgVx/NsCi64QhembzfpfWMkT5DK2rIq73Kwagh6oqqu3v4q8T0bnr/hNaHpkXGgSw7D7U+8pAcyvs41DByeinqHROcw81K9E3/t2ElMIS9J+NVqifazGX/v5ehdQo404UIHO+uhVQDtMMglUtWsCLip8=
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
