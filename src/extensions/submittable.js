@@ -16,12 +16,12 @@ var EventBus = require('../event-bus');
 
 var Submittable = function($form) {
   this.$form = $form;
-  this.intialize();
+  this.initialize();
 };
 
 Object.assign(Submittable.prototype, {
 
-  intialize: function(){
+  initialize: function(){
     this.submitBtn = this.$form.find("input[type='submit']");
 
     var btnTitles = [];
