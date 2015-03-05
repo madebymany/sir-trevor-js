@@ -56,7 +56,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-sass');
 
   grunt.initConfig({
 
@@ -149,8 +149,9 @@ module.exports = function(grunt) {
       },
 
       options: {
-        loadPath: require('sass-bourbon').includePaths,
-      },
+        sourceMap: true,
+        includePaths: require('node-bourbon').includePaths,
+      }
     }
 
   });

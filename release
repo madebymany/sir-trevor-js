@@ -8,17 +8,29 @@ set -eo pipefail
 
 cd "$(dirname $0)"
 
+function usage() {
+    echo -e "Usage:"
+    echo -e "  ./release <action> <version>"
+    echo -e "\nArguments:"
+    echo -e "  <action>\tbuild, push or publish"
+    echo -e "  <version>\tversion passed to mversion"
+    echo -e "\nTo release a new version to npm you have to:"
+    echo -e "  ./release build v5.0.0\t\tbuilds a new version in dist branch"
+    echo -e "  ./release push v5.0.0\t\tpushes repo to github"
+    echo -e "  ./release publish v5.0.0\tpublishes version using npm"
+    exit 1
+}
+
 if [[ -n "$(git status --porcelain)" ]]; then
     echo "Working tree/index must be clean before proceeding"
     exit 1
 fi
 
-if [ $# -lt 1 ]; then
-    echo "Usage: ./release.sh <version-number | major | minor | patch | build | push | publish>"
-    exit 1
+if [ $# -lt 2 ]; then
+  usage
 fi
 
-bump_level=$1; shift
+action=$1; shift
 given_version=$1; shift
 
 export PATH="./node_modules/.bin:$PATH"
@@ -27,13 +39,13 @@ function echoinfo() {
     echo -e "\n$(tput bold)$(tput setaf 7)-- $*$(tput sgr0)\n"
 }
 
-if [[ $bump_level = "push" ]]; then
+if [[ $action = "push" ]]; then
     git push --tags $ORIGIN_REMOTE $FROM_BRANCH $TO_BRANCH
     echoinfo "Remember to publish to npm:\n\n$0 publish"
     exit
 fi
 
-if [[ $bump_level = "publish" ]]; then
+if [[ $action = "publish" ]]; then
     if [[ -z $given_version ]]; then
         echo "fatal: make sure you provide a version number: v0.5.0."
         exit 1
@@ -52,61 +64,66 @@ if [[ $bump_level = "publish" ]]; then
     exit
 fi
 
-if ! command -v mversion >/dev/null; then
+if [[ $action = "build" ]]; then
+  if ! command -v mversion >/dev/null; then
     echo "mversion command not found. Please run 'npm install'."
     exit 1
-fi
+  fi
 
-git fetch $ORIGIN_REMOTE
+  git fetch $ORIGIN_REMOTE
 
-if git show-ref --verify --quiet refs/remotes/$ORIGIN_REMOTE/$TO_BRANCH; then
+  if git show-ref --verify --quiet refs/remotes/$ORIGIN_REMOTE/$TO_BRANCH; then
     # A dist branch exists on origin
     if ! git show-ref --verify --quiet refs/heads/$TO_BRANCH; then
-        # Create it locally if we don't have it
-        git branch --track $TO_BRANCH $ORIGIN_REMOTE/$TO_BRANCH
+      # Create it locally if we don't have it
+      git branch --track $TO_BRANCH $ORIGIN_REMOTE/$TO_BRANCH
     fi
-else
+  else
     # There's no dist branch; set it up for the first time
     git branch $TO_BRANCH $FROM_BRANCH
     git push $ORIGIN_REMOTE $TO_BRANCH:refs/heads/$TO_BRANCH
     git branch --set-upstream-to=$ORIGIN_REMOTE/$TO_BRANCH $TO_BRANCH
+  fi
+
+  git checkout $FROM_BRANCH
+
+  [[ -d build ]] && rm -r build
+
+  echoinfo "Current version: $(mversion)"
+  echoinfo "Updating version"
+  new_version=$(mversion $given_version | awk -F': ' '/^Updated to new version/{print $2}')
+  if [[ -z $new_version ]]; then
+    echo "fatal: couldn't find new version in output of mversion. It's been updated and broken this script."
+    echo 1
+  fi
+
+  git add --all :/
+  git commit -m "Bumped to $new_version
+
+  [ci skip]"
+
+  echoinfo "Switching to dist branch and merging"
+
+  git checkout $TO_BRANCH
+  git reset --hard refs/remotes/$ORIGIN_REMOTE/$TO_BRANCH
+
+  git merge --no-commit $FROM_BRANCH
+  echoinfo "Building distribution files"
+  npm run dist
+
+  mv -f build/* .
+  rm -r build/
+
+  git add --all :/
+  git commit -m "Added distribution files for $new_version
+
+  [ci skip]"
+  git tag -a "$new_version" -m "Tagged ${new_version}"
+
+  echoinfo "Check the commit worked and then push:\n\n$0 push $new_version"
+
+  git checkout --quiet -
+  exit
 fi
 
-git checkout $FROM_BRANCH
-
-[[ -d build ]] && rm -r build
-
-echoinfo "Current version: $(mversion)"
-echoinfo "Updating version"
-new_version=$(mversion $bump_level | awk -F': ' '/^Updated to new version/{print $2}')
-if [[ -z $new_version ]]; then
-  echo "fatal: couldn't find new version in output of mversion. It's been updated and broken this script."
-  echo 1
-fi
-
-git add --all :/
-git commit -m "Bumped to $new_version
-
-[ci skip]"
-
-echoinfo "Switching to dist branch and merging"
-
-git checkout $TO_BRANCH
-git reset --hard refs/remotes/$ORIGIN_REMOTE/$TO_BRANCH
-
-git merge --no-commit $FROM_BRANCH
-echoinfo "Building distribution files"
-npm run dist
-
-mv -f build/* .
-rm -r build/
-
-git add --all :/
-git commit -m "Added distribution files for $new_version
-
-[ci skip]"
-git tag -a "$new_version" -m "Tagged ${new_version}"
-
-echoinfo "Check the commit worked and then push:\n\n$0 push"
-
-git checkout --quiet -
+usage
