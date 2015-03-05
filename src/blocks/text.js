@@ -17,7 +17,23 @@ module.exports = Block.extend({
 
   icon_name: 'text',
 
+  markdownSupport: true,
+
+  _serializeData: function() {
+    var data = Block.prototype._serializeData.apply(this);
+
+    if (Object.keys(data).length && this.markdownSupport) {
+      data.isHtml = true;
+    }
+
+    return data;
+  },
+
   loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
+    if (this.markdownSupport && !data.isHtml) {
+      this.getTextBlock().html(stToHTML(data.text, this.type));
+    } else {
+      this.getTextBlock().html(data.text);
+    }
   },
 });
