@@ -11,6 +11,11 @@
     "website",
     "BrowserRunner.html"
   ],
+  "main": [
+    "sir-trevor.js",
+    "sir-trevor.css",
+    "sir-trevor-icons.css"
+  ],
   "dependencies": {
     "es5-shim": "~v4.0.3",
     "es6-shim": "~0.21.0",
