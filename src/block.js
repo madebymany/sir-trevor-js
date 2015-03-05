@@ -101,7 +101,17 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.$editor = this.$inner.children().first();
 
-    if(this.droppable || this.pastable || this.uploadable) {
+    this.mixinsRequireInputs = false;
+    this.availableMixins.forEach(function(mixin) {
+      if (this[mixin]) {
+        var blockMixin = BlockMixins[utils.classify(mixin)];
+        if (!_.isUndefined(blockMixin.requireInputs) && blockMixin.requireInputs) {
+          this.mixinsRequireInputs = true;
+        }
+      }
+    }, this);
+
+    if(this.mixinsRequireInputs) {
       var input_html = $("<div>", { 'class': 'st-block__inputs' });
       this.$inner.append(input_html);
       this.$inputs = input_html;
@@ -243,7 +253,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   beforeLoadingData: function() {
     this.loading();
 
-    if(this.droppable || this.uploadable || this.pastable) {
+    if(this.mixinsRequireInputs) {
       this.$editor.show();
       this.$inputs.hide();
     }

@@ -13,6 +13,7 @@ module.exports = {
 
   mixinName: "Droppable",
   valid_drop_file_types: ['File', 'Files', 'text/plain', 'text/uri-list'],
+  requireInputs: true,
 
   initializeDroppable: function() {
     utils.log("Adding droppable to block " + this.blockID);
