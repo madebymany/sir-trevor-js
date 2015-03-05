@@ -35,6 +35,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
+    'block:reorder:dropped': 'removeBlockDragOver',
     'block:content:dropped': 'removeBlockDragOver'
   },
 
