@@ -47,6 +47,11 @@
 .st-block--delete-active .st-block-ui-btn {
   color: $error-color;
   border-color: $error-color;
+
+  &:hover {
+    color: #fff;
+    background-color: $error-color;
+  }
 }
 
 .st-block-ui-btn:hover,
