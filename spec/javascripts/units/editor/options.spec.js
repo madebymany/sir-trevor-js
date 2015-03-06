@@ -47,19 +47,21 @@ describe("Editor:Editor with options", function(){
   });
 
   describe("setting the formatBarContainer", function(){
-    var formatBarContainer = $('<div/>');
+    it('appends the formatBar to the container specified', function(){
+      var formatBarContainer = $('<div/>');
 
-    beforeEach(function() {
       editor = new SirTrevor.Editor({
         el: element,
         formatBarContainer: formatBarContainer
       });
+
+      expect(editor.formatBar.el.parentNode).toBe(formatBarContainer[0]);
     });
 
-    it('should append the formatBar to the container specified', function(){
-      console.log(editor.formatBar.el.parentNode);
-      console.log(formatBarContainer[0]);
-      expect(editor.formatBar.el.parentNode).toBe(formatBarContainer[0]);
+    it('appends formatBar to document.body if no container specified', function() {
+      editor = new SirTrevor.Editor({ el: element });
+
+      expect(editor.formatBar.el.parentNode).toBe(document.body);
     });
   });
 });
