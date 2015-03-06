@@ -52,6 +52,10 @@
     color: #fff;
     background-color: $error-color;
   }
+  &.active {
+    color: #fff;
+    background-color: $error-color;
+  }
 }
 
 .st-block-ui-btn:hover,
