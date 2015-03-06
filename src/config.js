@@ -59,6 +59,7 @@ module.exports = {
     errorsContainer: undefined,
     convertToMarkdown: false,
     convertFromMarkdown: true,
+    formatBarContainer: document.body,
     formatBar: {
       commands: [
         {
