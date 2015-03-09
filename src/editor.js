@@ -90,7 +90,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this._setEvents();
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
-    $(document.body).append(this.formatBar.render().$el);
+    $(this.options.formatBarContainer).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     $(window).bind('click', this.hideAllTheThings);
