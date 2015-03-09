@@ -30,6 +30,12 @@
   border-bottom: 0;
   margin-bottom: 0;
   cursor: pointer;
+
+  &:hover,
+  &.active {
+    color: #fff;
+    background: $accent-color;
+  }
 }
 
 .st-block-control-ui-btn {
@@ -41,37 +47,20 @@
   border: 2px solid $accent-color;
   border-left: 0;
   border-bottom: 0;
-
-  &.active {
-    color: #fff;
-    background-color: $accent-color;
-  }
 }
 
-.st-block--with-errors .st-block-ui-btn ,
-.st-block--delete-active .st-block-ui-btn {
+.st-block--with-errors .st-block-ui-btn,
+.st-block--delete-active .st-block-ui-btn,
+.st-block--with-errors .st-block-control-ui-btn,
+.st-block--delete-active .st-block-control-ui-btn {
   color: $error-color;
   border-color: $error-color;
 
-  &:hover {
-    color: #fff;
-    background-color: $error-color;
-  }
+  &:hover,
   &.active {
     color: #fff;
     background-color: $error-color;
   }
-}
-
-.st-block-ui-btn:hover,
-.st-block-control-ui-btn:hover {
-  color: #fff;
-  background: $accent-color;
-}
-
-.st-block--with-errors .st-block-ui-btn:hover,
-.st-block--delete-active .st-block-ui-btn:hover {
-  background-color: $error-color;
 }
 
 .st-block--delete-active .st-block__ui-delete-controls {
