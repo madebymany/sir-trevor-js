@@ -63,9 +63,12 @@
   }
 }
 
-.st-block--delete-active .st-block__ui-delete-controls {
-  opacity: 1;
-  z-index: 2;
+.st-block--with-errors,
+.st-block--delete-active {
+  & > .st-block__ui-delete-controls {
+    opacity: 1;
+    z-index: 2;
+  }
 }
 
 .st-block__delete-label {
