@@ -31,7 +31,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
     'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'], 
+    'blockLimitReached'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -122,8 +122,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_controls.destroy();
 
     // Destroy all blocks
-    this.blocks.forEach(function(block) {
-      this.mediator.trigger('block:remove', this.block.blockID);
+    this.block_manager.blocks.forEach(function(block) {
+      this.mediator.trigger('block:remove', block.blockID);
     }, this);
 
     // Stop listening to events
