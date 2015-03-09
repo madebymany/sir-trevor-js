@@ -139,7 +139,7 @@ describe("Editor", function(){
       ];
     });
 
-    it("returns all the blocks of the type", function(){
+    it("clears the blocks", function(){
       editor.destroy();
       expect(editor.block_manager.blocks.length).toBe(0);
     });
