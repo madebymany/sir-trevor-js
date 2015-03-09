@@ -169,8 +169,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     /* Simple to start. Add conditions later */
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
-      if (data.text.length > 0 && this.options.convertToMarkdown) {
-        data.text = stToMarkdown(data.text, this.type);
+
+      if (this.options.convertToMarkdown) {
+        data.isHtml = false;
+        if (data.text.length) {data.text = stToMarkdown(data.text, this.type); }
+      } else {
+        data.isHtml = true;
       }
     }
 

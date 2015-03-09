@@ -1,25 +1,86 @@
 "use strict";
 
-describe("Blocks: Text block", function() {
-  describe("with markdown support", function() {
-    var data;
+describe('Blocks: Text block', function() {
+  var data, block;
 
-    var getSerializedData = function(data) {
-      var element = $("<textarea>");
-      var editor = new SirTrevor.Editor({ el: element });
-      var block = new SirTrevor.Blocks.Text(data, editor.ID, editor.mediator);
-      block.render();
+  var createBlock = function(data) {
+    var element = $("<textarea>");
+    var editor = new SirTrevor.Editor({ el: element });
+    var options = editor.block_manager.blockOptions;
+    block = new SirTrevor.Blocks.Text(data, editor.id, editor.mediator, options);
 
-      return block.getBlockData();
-    };
+    block.render();
+    return block;
+  };
 
+  var getSerializedData = function(data) {
+    block = createBlock(data);
+    return block.getBlockData();
+  };
+
+  beforeEach(function() {
+    data = {text: 'test'};
+  });
+
+  describe('with convertToMarkdown', function() {
     beforeEach(function() {
-      data = {text: 'test'};
+      spyOn(SirTrevor.Blocks.Text.prototype, 'toMarkdown').and.callThrough();
     });
 
-    describe("on", function() {
+    describe('turned on', function() {
       beforeEach(function() { 
-        SirTrevor.setBlockOptions("Text", { markdownSupport: true });
+        SirTrevor.setDefaults({
+          convertFromMarkdown: true,
+          convertToMarkdown: true
+        });
+      });
+
+      it('calls toMarkdown on a block', function() {
+        block = createBlock(data);
+        block.getBlockData();
+
+        expect(block.toMarkdown).toHaveBeenCalled();
+      });
+
+      it('sets isHtml to false', function() {
+        block = createBlock(data);
+        var serializedData = block.getBlockData();
+
+        expect(serializedData.isHtml).toEqual(false);
+      });
+    });
+
+    describe('turned off', function() {
+      beforeEach(function() { 
+        SirTrevor.setDefaults({
+          convertFromMarkdown: true,
+          convertToMarkdown: false
+        });
+      });
+
+      it('doesn\'t call toMarkdown on the block', function() {
+        block = createBlock(data);
+        block.getBlockData();
+
+        expect(block.toMarkdown).not.toHaveBeenCalled();
+      });
+
+      it('sets isHtml to true', function() {
+        block = createBlock(data);
+        var serializedData = block.getBlockData();
+
+        expect(serializedData.isHtml).toEqual(true);
+      });
+    });
+  });
+
+  describe('with convertFromMarkdown', function() {
+    describe('turned on', function() {
+      beforeEach(function() { 
+        SirTrevor.setDefaults({
+          convertFromMarkdown: true,
+          convertToMarkdown: false
+        });
       });
 
       // calling stToHtml on text block wraps everything in <p> tags,
@@ -44,21 +105,18 @@ describe("Blocks: Text block", function() {
       });
     });
 
-    describe("off", function() {
+    describe('turned off', function() {
       beforeEach(function() { 
-        SirTrevor.setBlockOptions("Text", { markdownSupport: false });
+        SirTrevor.setDefaults({
+          convertFromMarkdown: false,
+          convertToMarkdown: false
+        });
       });
 
       it('doesn\'t call stToHtml', function() {
         var serializedData = getSerializedData(data);
 
         expect(serializedData.text).toEqual('test');
-      });
-
-      it('doesn\'t set isHtml', function() {
-        var serializedData = getSerializedData(data);
-
-        expect(serializedData.isHtml).toBeUndefined();
       });
 
       it('ignores isHtml value', function() {
