@@ -2,7 +2,8 @@
   position: absolute;
   margin: -3em 0 0 0;
   background: #4d5358;
-  opacity: 0; visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
   z-index: 10;
   border-radius: 0.4em;
   padding: 0;
@@ -14,8 +15,10 @@
   content: '';
   display: block;
   position: absolute;
-  left: 50%; top: 2.12em;
-  width: 0; height: 0;
+  left: 50%;
+  top: 2.12em;
+  width: 0;
+  height: 0;
   border-left: 0.625em solid transparent;
   border-right: 0.625em solid transparent;
   border-top: 0.625em solid #4d5358;

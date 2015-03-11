@@ -17,6 +17,7 @@
 .st-block-controls__top:hover:before {
   color: $accent-color;
   background: $blocks-control-bg-color;
+  cursor: pointer;
 }
 
 .st-block-controls {
@@ -48,21 +49,4 @@
 
 .st-block-control:hover {
   color: $accent-color;
-}
-
-.st-block--with-errors, .st-block--delete-active {
-  & > .st-block__inner {
-
-    & > .st-block__control-ui {
-      & > .st-block-control-ui-btn {
-        border-color: $error-color;
-        color: $error-color;
-
-        &:hover {
-          background-color: $error-color;
-          color: #FFF;
-        }
-      }
-    }
-  }
 }
