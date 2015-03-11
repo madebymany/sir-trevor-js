@@ -355,9 +355,14 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var textBlock = this.getTextBlock().get(0);
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
-      this._scribe = new Scribe(textBlock, {
-        debug: config.scribeDebug,
-      });
+
+      var scribeConfig = {debug: config.scribeDebug};
+      if (_.isObject(this.scribeOptions)) {
+        scribeConfig = Object.assign(scribeConfig, this.scribeOptions);
+      }
+
+      this._scribe = new Scribe(textBlock, scribeConfig);
+
       this._scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
       this._scribe.use(scribePluginLinkPromptCommand());
 
