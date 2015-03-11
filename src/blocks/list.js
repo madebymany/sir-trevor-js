@@ -15,12 +15,18 @@ module.exports = Block.extend({
 
   icon_name: 'list',
 
+  markdownSupport: true,
+
   editorHTML: function() {
     return _.template(template, this);
   },
 
   loadData: function(data){
-    this.setTextBlockHTML("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+    if (this.markdownSupport && !data.isHtml) {
+      this.getTextBlock().html('<ul>'+stToHTML(data.text, this.type)+'</ul>');
+    } else {
+      this.getTextBlock().html(data.text);
+    }
   },
 
   onBlockRender: function() {
@@ -56,6 +62,17 @@ module.exports = Block.extend({
 
   isEmpty: function() {
     return _.isEmpty(this.getBlockData().text);
-  }
+  },
+
+  _serializeData: function() {
+    var data = Block.prototype._serializeData.apply(this);
+
+    if (Object.keys(data).length && this.markdownSupport) {
+      //console.log('data.isHtml = true');
+      data.isHtml = true;
+    }
+
+    return data;
+  },
 
 });
