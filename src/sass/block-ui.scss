@@ -25,7 +25,7 @@
   color: $accent-color;
   background: #fff;
   text-align: center;
-  border: 2px solid $accent-color;
+  border: $default-border;
   border-right: 0;
   border-bottom: 0;
   margin-bottom: 0;
@@ -44,7 +44,7 @@
   font-size: 1.5em;
   line-height: 1.25em;
   height: 1.25em;
-  border: 2px solid $accent-color;
+  border: $default-border;
   border-left: 0;
   border-bottom: 0;
 }
@@ -73,7 +73,7 @@
 
 .st-block__delete-label {
   display: block;
-  border: 2px solid $error-color;
+  border: $border-size $border-style $error-color;
   border-bottom: none;
   border-right: none;
   text-align: center;
