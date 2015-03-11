@@ -28,17 +28,6 @@
   @include transform(rotate(45deg));
 }
 
-.st-block-positioner__title {
-  color: $accent-color;
-  font-size: 0.7em;
-  font-style: italic;
-  font-weight: normal;
-  margin: 0;
-  border-bottom: 1px solid $accent-color;
-  padding: 0.5em;
-  text-align: center;
-}
-
 .st-block-positioner__inner {
   background: #fff;
   position: relative;
