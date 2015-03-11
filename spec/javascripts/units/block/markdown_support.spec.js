@@ -27,7 +27,7 @@ describe('Blocks: Markdown support', function() {
       });
 
       describe('turned on', function() {
-        beforeEach(function() { 
+        beforeEach(function() {
           SirTrevor.setDefaults({
             convertFromMarkdown: true,
             convertToMarkdown: true
@@ -50,7 +50,7 @@ describe('Blocks: Markdown support', function() {
       });
 
       describe('turned off', function() {
-        beforeEach(function() { 
+        beforeEach(function() {
           SirTrevor.setDefaults({
             convertFromMarkdown: true,
             convertToMarkdown: false
@@ -79,7 +79,7 @@ describe('Blocks: Markdown support', function() {
       });
 
       describe('turned on', function() {
-        beforeEach(function() { 
+        beforeEach(function() {
           SirTrevor.setDefaults({
             convertFromMarkdown: true,
             convertToMarkdown: false
@@ -105,7 +105,7 @@ describe('Blocks: Markdown support', function() {
       });
 
       describe('turned off', function() {
-        beforeEach(function() { 
+        beforeEach(function() {
           SirTrevor.setDefaults({
             convertFromMarkdown: false,
             convertToMarkdown: false
@@ -133,7 +133,7 @@ describe('Blocks: Markdown support', function() {
     });
   });
 
-  describe('List Block', function() {
+  describe('ListBlock', function() {
     beforeEach(function() {
       data = {text: ' - one\n - two\n - three'};
     });
@@ -146,7 +146,7 @@ describe('Blocks: Markdown support', function() {
       });
 
       describe('turned on', function() {
-        beforeEach(function() { 
+        beforeEach(function() {
           SirTrevor.setDefaults({
             convertFromMarkdown: true,
             convertToMarkdown: false
@@ -192,6 +192,75 @@ describe('Blocks: Markdown support', function() {
         it('ignores isHtml value', function() {
           data.isHtml = false;
           block = createBlock('List', data);
+          var serializedData = block.getBlockData();
+
+          expect(block.toHTML).not.toHaveBeenCalled();
+          expect(serializedData.text).toEqual(data.text);
+        });
+      });
+    });
+  });
+
+  describe('QuoteBlock', function() {
+    var quote;
+
+    beforeEach(function() {
+      quote = "Well, what if there is no tomorrow? There wasn't one today";
+      data = {text: '> '+quote, cite: 'Phil'};
+    });
+
+    describe('with convertFromMarkdown', function() {
+      beforeEach(function() {
+        spyOn(SirTrevor.Blocks.Quote.prototype, 'toHTML').and.callThrough();
+      });
+
+      describe('turned on', function() {
+        beforeEach(function() {
+          SirTrevor.setDefaults({
+            convertFromMarkdown: true,
+            convertToMarkdown: false
+          });
+        });
+
+        it('calls toHtml on objects without isHtml set', function() {
+          block = createBlock('Quote', data);
+          var serializedData = block.getBlockData();
+
+          expect(block.toHTML).toHaveBeenCalled();
+          expect(serializedData.text).
+            toEqual(quote);
+        });
+
+        it('doesn\'t call toHtml on objects with isHtml set', function() {
+          data.isHtml = true;
+
+          block = createBlock('Quote', data);
+          var serializedData = block.getBlockData();
+
+          expect(block.toHTML).not.toHaveBeenCalled();
+          expect(serializedData.text).toEqual(data.text);
+        });
+      });
+
+      describe('turned off', function() {
+        beforeEach(function() {
+          SirTrevor.setDefaults({
+            convertFromMarkdown: false,
+            convertToMarkdown: false
+          });
+        });
+
+        it('doesn\'t call toHtml', function() {
+          block = createBlock('Quote', data);
+          var serializedData = block.getBlockData();
+
+          expect(block.toHTML).not.toHaveBeenCalled();
+          expect(serializedData.text).toEqual(data.text);
+        });
+
+        it('ignores isHtml value', function() {
+          data.isHtml = false;
+          block = createBlock('Quote', data);
           var serializedData = block.getBlockData();
 
           expect(block.toHTML).not.toHaveBeenCalled();
