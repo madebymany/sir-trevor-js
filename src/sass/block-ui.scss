@@ -19,7 +19,8 @@
 .st-block-ui-btn {
   display: block;
   float: left;
-  width: 3em; height: 2.5em;
+  width: 3em;
+  height: 2.5em;
   line-height: 2.5em;
   font-size: 1.4em;
   color: $accent-color;
@@ -40,7 +41,8 @@
 
 .st-block-control-ui-btn {
   @extend .st-block-ui-btn;
-  width: 2em; height: 1.75em;
+  width: 2em;
+  height: 1.75em;
   font-size: 1.5em;
   line-height: 1.25em;
   height: 1.25em;
