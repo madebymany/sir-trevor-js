@@ -20,7 +20,11 @@ module.exports = Block.extend({
   },
 
   loadData: function(data){
-    this.setTextBlockHTML("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+    if (this.options.convertFromMarkdown && !data.isHtml) {
+      this.setTextBlockHTML("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+    } else {
+      this.setTextBlockHTML(data.text);
+    }
   },
 
   onBlockRender: function() {
