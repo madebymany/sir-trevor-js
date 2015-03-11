@@ -41,6 +41,7 @@
 .st-block--with-plus:after {
   background: $blocks-control-bg-color;
   color: $accent-color;
+  cursor: pointer;
 }
 
 .with-st-controls:after,
