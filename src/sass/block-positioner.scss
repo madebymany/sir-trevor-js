@@ -2,7 +2,8 @@
   border: $default-border;
   position: absolute;
   z-index: 2;
-  left: -5.5em; bottom: 0.4em;
+  left: -5.5em;
+  bottom: 0.4em;
   background: #fff;
 
   visibility: hidden;
@@ -18,9 +19,11 @@
 .st-block-positioner:after {
   content: '';
   display: block;
-  width: 0.4em; height: 0.4em;
+  width: 0.4em;
+  height: 0.4em;
   position: absolute;
-  right: -0.3em; bottom: 0.6em;
+  right: -0.3em;
+  bottom: 0.6em;
   z-index: 1;
   border: $default-border;
   background: #fff;

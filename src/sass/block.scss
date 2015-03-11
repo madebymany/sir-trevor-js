@@ -151,13 +151,15 @@ ul.st-text-block {
 .st-block__editor--with-square-media iframe,
 .st-block__editor--with-sixteen-by-nine-media video,
 .st-block__editor--with-sixteen-by-nine-media iframe {
-  height: 100%; width: 100%;
+  height: 100%;
+  width: 100%;
   left: 0; top: 0;
   position: absolute;
 }
 
 .st-block__editor img {
-  width: 100%; height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .st-block__upload-container {
@@ -182,7 +184,8 @@ ul.st-text-block {
   top: -1.9em; left: -1.9em;
   padding: .3em .5em;
   border: $default-border;
-  border-left: none; border-top: none;
+  border-left: none;
+  border-top: none;
   max-width: 80%;
 }
 
