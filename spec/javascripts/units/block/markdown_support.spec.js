@@ -21,59 +21,7 @@ describe('Blocks: Markdown support', function() {
       data = {text: 'test'};
     });
 
-    describe('with convertToMarkdown', function() {
-      beforeEach(function() {
-        spyOn(SirTrevor.Blocks.Text.prototype, 'toMarkdown').and.callThrough();
-      });
-
-      describe('turned on', function() {
-        beforeEach(function() {
-          SirTrevor.setDefaults({
-            convertFromMarkdown: true,
-            convertToMarkdown: true
-          });
-        });
-
-        it('calls toMarkdown on a block', function() {
-          block = createBlock('Text', data);
-          block.getBlockData();
-
-          expect(block.toMarkdown).toHaveBeenCalled();
-        });
-
-        it('sets isHtml to false', function() {
-          block = createBlock('Text', data);
-          var serializedData = block.getBlockData();
-
-          expect(serializedData.isHtml).toEqual(false);
-        });
-      });
-
-      describe('turned off', function() {
-        beforeEach(function() {
-          SirTrevor.setDefaults({
-            convertFromMarkdown: true,
-            convertToMarkdown: false
-          });
-        });
-
-        it('doesn\'t call toMarkdown on the block', function() {
-          block = createBlock('Text', data);
-          block.getBlockData();
-
-          expect(block.toMarkdown).not.toHaveBeenCalled();
-        });
-
-        it('sets isHtml to true', function() {
-          block = createBlock('Text', data);
-          var serializedData = block.getBlockData();
-
-          expect(serializedData.isHtml).toEqual(true);
-        });
-      });
-    });
-
-    describe('with convertFromMarkdown', function() {
+    describe('convertFromMarkdown', function() {
       beforeEach(function() {
         spyOn(SirTrevor.Blocks.Text.prototype, 'toHTML').and.callThrough();
       });
@@ -137,10 +85,8 @@ describe('Blocks: Markdown support', function() {
     beforeEach(function() {
       data = {text: ' - one\n - two\n - three'};
     });
-    // convertToMarkdown code is defined in block.js
-    // and tested as a part of TextBlock test above
 
-    describe('with convertFromMarkdown', function() {
+    describe('convertFromMarkdown', function() {
       beforeEach(function() {
         spyOn(SirTrevor.Blocks.List.prototype, 'toHTML').and.callThrough();
       });
@@ -209,7 +155,7 @@ describe('Blocks: Markdown support', function() {
       data = {text: '> '+quote, cite: 'Phil'};
     });
 
-    describe('with convertFromMarkdown', function() {
+    describe('convertFromMarkdown', function() {
       beforeEach(function() {
         spyOn(SirTrevor.Blocks.Quote.prototype, 'toHTML').and.callThrough();
       });

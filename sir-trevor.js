@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2015-03-11
+ * 2015-03-12
  */
 
 
@@ -10148,7 +10148,6 @@ var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command')
 
 var config = require('./config');
 var utils = require('./utils');
-var stToMarkdown = require('./to-markdown');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
@@ -10309,11 +10308,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
       data.isHtml = true;
-
-      if (this.options.convertToMarkdown) {
-        data.isHtml = false;
-        if (data.text.length) {data.text = stToMarkdown(data.text, this.type);}
-      }
     }
 
     // Add any inputs to the data attr
@@ -10559,7 +10553,7 @@ Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 module.exports = Block;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./block-deletion":140,"./block-positioner":142,"./block-reorder":143,"./block-validations":145,"./block_mixins":151,"./config":162,"./event-bus":165,"./helpers/extend":175,"./lodash":178,"./simple-block":181,"./to-markdown":183,"./utils":184,"scribe-editor":132,"scribe-plugin-formatter-plain-text-convert-new-lines-to-html":135,"scribe-plugin-link-prompt-command":136,"spin.js":137}],147:[function(require,module,exports){
+},{"./block-deletion":140,"./block-positioner":142,"./block-reorder":143,"./block-validations":145,"./block_mixins":151,"./config":162,"./event-bus":165,"./helpers/extend":175,"./lodash":178,"./simple-block":181,"./utils":184,"scribe-editor":132,"scribe-plugin-formatter-plain-text-convert-new-lines-to-html":135,"scribe-plugin-link-prompt-command":136,"spin.js":137}],147:[function(require,module,exports){
 "use strict";
 
 var utils = require('../utils');
@@ -11313,7 +11307,6 @@ module.exports = {
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
-    convertToMarkdown: false,
     convertFromMarkdown: true,
     formatBarContainer: document.body,
     formatBar: {

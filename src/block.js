@@ -9,7 +9,6 @@ var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command')
 
 var config = require('./config');
 var utils = require('./utils');
-var stToMarkdown = require('./to-markdown');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
@@ -170,11 +169,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
       data.isHtml = true;
-
-      if (this.options.convertToMarkdown) {
-        data.isHtml = false;
-        if (data.text.length) {data.text = stToMarkdown(data.text, this.type);}
-      }
     }
 
     // Add any inputs to the data attr
