@@ -29,12 +29,12 @@ module.exports = Block.extend({
   },
 
   loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
+    if (this.options.convertFromMarkdown && !data.isHtml) {
+      this.setTextBlockHTML(stToHTML(data.text, this.type));
+    } else {
+      this.setTextBlockHTML(data.text);
+    }
+
     this.$('.js-cite-input').val(data.cite);
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/^(.+)$/mg,"> $1");
   }
-
 });

@@ -108,20 +108,29 @@ describe("Block", function(){
     });
   });
 
-  describe("with configureScribe option", function(){
+  describe("configuring Scribe", function() {
+    describe("with a function (configureScribe)", function() {
+      beforeEach(function(){
+        block.configureScribe = function(scribe){
+          scribe.allowBlockElements = false;
+        };
+        block.render();
+      });
 
-    beforeEach(function(){
-      block.configureScribe = function(scribe){
-        scribe.allowBlockElements = false;
-      };
-      block.render();
+      it("configures scribe instance", function() {
+        expect(block._scribe.allowBlockElements).toBe(false);
+      });
     });
 
-    it("configures Scribe with the function that was passed", function(){
-      expect(block._scribe.allowBlockElements).toBe(false);
+    describe("with an object (scribeOptions)", function() {
+      beforeEach(function() {
+        block.scribeOptions = {allowBlockElements: false};
+        block.render();
+      });
+
+      it("instantiates scribe with options", function() {
+        expect(block._scribe.options.allowBlockElements).toBe(false);
+      });
     });
-
-
   });
-
 });
