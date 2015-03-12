@@ -39,12 +39,6 @@ module.exports = Block.extend({
     }
   },
 
-  toMarkdown: function(markdown) {
-    return markdown.replace(/<\/li>/mg,"\n")
-                   .replace(/<\/?[^>]+(>|$)/g, "")
-                   .replace(/^(.+)$/mg," - $1");
-  },
-
   toHTML: function(html) {
     html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                .replace(/\n/mg, "");

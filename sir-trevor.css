@@ -191,7 +191,7 @@
 .st-text-block--heading {
   line-height: 1.1;
   font-size: 2.2em;
-  min-height: auto;
+  min-height: 1em;
   font-weight: 700; }
 
 ul.st-text-block {

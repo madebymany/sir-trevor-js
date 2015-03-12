@@ -10953,12 +10953,6 @@ module.exports = Block.extend({
     }
   },
 
-  toMarkdown: function(markdown) {
-    return markdown.replace(/<\/li>/mg,"\n")
-                   .replace(/<\/?[^>]+(>|$)/g, "")
-                   .replace(/^(.+)$/mg," - $1");
-  },
-
   toHTML: function(html) {
     html = html.replace(/^ - (.+)$/mg,"<li>$1</li>")
                .replace(/\n/mg, "");
@@ -11017,12 +11011,7 @@ module.exports = Block.extend({
     }
 
     this.$('.js-cite-input').val(data.cite);
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/^(.+)$/mg,"> $1");
   }
-
 });
 
 },{"../block":146,"../lodash":178,"../to-html":182}],159:[function(require,module,exports){

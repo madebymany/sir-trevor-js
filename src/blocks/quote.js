@@ -36,10 +36,5 @@ module.exports = Block.extend({
     }
 
     this.$('.js-cite-input').val(data.cite);
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/^(.+)$/mg,"> $1");
   }
-
 });
