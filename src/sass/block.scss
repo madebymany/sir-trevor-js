@@ -5,7 +5,7 @@
 
 .st-block__inner {
   padding: 1.875em 1.875em 2.8em;
-  border: 2px solid #fff;
+  border: $border-size $border-style #fff;
   position: relative;
 }
 
@@ -41,6 +41,7 @@
 .st-block--with-plus:after {
   background: $blocks-control-bg-color;
   color: $accent-color;
+  cursor: pointer;
 }
 
 .with-st-controls:after,
@@ -57,9 +58,10 @@
   padding: 0.7em 0;
   font-size: 1.125em;
   font-weight: 700;
-  border: 2px dashed #d4d4d4;
+  border: $border-size dashed #d4d4d4;
   background: transparent;
   color: #d4d4d4;
+  margin: 3px 0;
 }
 
 .st-text-block {
@@ -71,7 +73,7 @@
 .st-text-block--heading {
   line-height: 1.1;
   font-size: 2.2em;
-  min-height: auto;
+  min-height: 1em;
   font-weight: 700;
 }
 
@@ -83,7 +85,7 @@ ul.st-text-block {
   padding: 1.6em 0 1em;
   border-radius: 0.2em;
   background: $blocks-control-bg-color;
-  border-top: 0.125em solid transparent;
+  border-top: $border-size $border-style transparent;
 }
 
 .st-block__dropzone .st-icon {
@@ -130,6 +132,7 @@ ul.st-text-block {
 
 .st-block__upload-container:hover .st-upload-btn {
   background:$accent-color;
+  color: #fff;
 }
 
 .st-block__editor--with-square-media {
@@ -150,13 +153,15 @@ ul.st-text-block {
 .st-block__editor--with-square-media iframe,
 .st-block__editor--with-sixteen-by-nine-media video,
 .st-block__editor--with-sixteen-by-nine-media iframe {
-  height: 100%; width: 100%;
+  height: 100%;
+  width: 100%;
   left: 0; top: 0;
   position: absolute;
 }
 
 .st-block__editor img {
-  width: 100%; height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .st-block__upload-container {
@@ -180,8 +185,9 @@ ul.st-text-block {
   position: relative;
   top: -1.9em; left: -1.9em;
   padding: .3em .5em;
-  border: 2px solid $accent-color;
-  border-left: none; border-top: none;
+  border: $default-border;
+  border-left: none;
+  border-top: none;
   max-width: 80%;
 }
 

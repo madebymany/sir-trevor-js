@@ -31,10 +31,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
     'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'], 
+    'blockLimitReached'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
+    'block:reorder:dropped': 'removeBlockDragOver',
     'block:content:dropped': 'removeBlockDragOver'
   },
 
@@ -89,7 +90,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this._setEvents();
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
-    $(document.body).append(this.formatBar.render().$el);
+    $(this.options.formatBarContainer).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     $(window).bind('click', this.hideAllTheThings);
@@ -121,8 +122,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_controls.destroy();
 
     // Destroy all blocks
-    this.blocks.forEach(function(block) {
-      this.mediator.trigger('block:remove', this.block.blockID);
+    this.block_manager.blocks.forEach(function(block) {
+      this.mediator.trigger('block:remove', block.blockID);
     }, this);
 
     // Stop listening to events
@@ -172,13 +173,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   renderBlock: function(block, render_at) {
     this._renderInPosition(block.render().$el, render_at);
     this.hideAllTheThings();
-    this.scrollTo(block.$el);
 
     block.trigger("onRender");
-  },
-
-  scrollTo: function(element) {
-    $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
   },
 
   removeBlockDragOver: function() {
@@ -196,7 +192,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     if($blockBy && $blockBy.attr('id') !== $block.attr('id')) {
       this.hideAllTheThings();
       $block["insert" + where]($blockBy);
-      this.scrollTo($block);
     }
   },
 

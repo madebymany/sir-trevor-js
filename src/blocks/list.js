@@ -20,7 +20,11 @@ module.exports = Block.extend({
   },
 
   loadData: function(data){
-    this.setTextBlockHTML("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+    if (this.options.convertFromMarkdown && !data.isHtml) {
+      this.setTextBlockHTML("<ul>" + stToHTML(data.text, this.type) + "</ul>");
+    } else {
+      this.setTextBlockHTML(data.text);
+    }
   },
 
   onBlockRender: function() {
@@ -33,12 +37,6 @@ module.exports = Block.extend({
     if (this.$('ul').length === 0) {
       document.execCommand("insertUnorderedList", false, false);
     }
-  },
-
-  toMarkdown: function(markdown) {
-    return markdown.replace(/<\/li>/mg,"\n")
-                   .replace(/<\/?[^>]+(>|$)/g, "")
-                   .replace(/^(.+)$/mg," - $1");
   },
 
   toHTML: function(html) {

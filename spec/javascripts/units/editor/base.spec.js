@@ -127,4 +127,22 @@ describe("Editor", function(){
       expect(editor.getBlocksByIDs([1]).length).toBe(1);
     });
   });
+
+   describe("destroy", function(){
+
+    beforeEach(function(){
+      editor = new SirTrevor.Editor({ el: element });
+
+      editor.block_manager.blocks = [
+        { blockID: 1 },
+        { blockID: 2 }
+      ];
+    });
+
+    it("clears the blocks", function(){
+      editor.destroy();
+      expect(editor.block_manager.blocks.length).toBe(0);
+    });
+  });
+
 });

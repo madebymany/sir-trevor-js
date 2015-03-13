@@ -56,6 +56,14 @@ Call a function once the Editor has rendered.
       }
     }
 
+**`formatBarContainer`**
+Specify a container DOM element or jQuery object where the format bar is rendered in. This is useful if you're using Sir Trevor inside a scrollable element (i.e. 'overflow-y: scroll`).  
+*Defaults to `document.body`*
+
+    {
+      formatBarContainer: $('.my-format-bar-container')
+    }
+
 <a name="2-1"></a>
 ## Block Options
 

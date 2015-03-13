@@ -9,7 +9,6 @@ var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command')
 
 var config = require('./config');
 var utils = require('./utils');
-var stToMarkdown = require('./to-markdown');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
@@ -101,7 +100,17 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.$editor = this.$inner.children().first();
 
-    if(this.droppable || this.pastable || this.uploadable) {
+    this.mixinsRequireInputs = false;
+    this.availableMixins.forEach(function(mixin) {
+      if (this[mixin]) {
+        var blockMixin = BlockMixins[utils.classify(mixin)];
+        if (!_.isUndefined(blockMixin.requireInputs) && blockMixin.requireInputs) {
+          this.mixinsRequireInputs = true;
+        }
+      }
+    }, this);
+
+    if(this.mixinsRequireInputs) {
       var input_html = $("<div>", { 'class': 'st-block__inputs' });
       this.$inner.append(input_html);
       this.$inputs = input_html;
@@ -159,9 +168,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     /* Simple to start. Add conditions later */
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
-      if (data.text.length > 0 && this.options.convertToMarkdown) {
-        data.text = stToMarkdown(data.text, this.type);
-      }
+      data.isHtml = true;
     }
 
     // Add any inputs to the data attr
@@ -243,7 +250,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   beforeLoadingData: function() {
     this.loading();
 
-    if(this.droppable || this.uploadable || this.pastable) {
+    if(this.mixinsRequireInputs) {
       this.$editor.show();
       this.$inputs.hide();
     }
@@ -300,6 +307,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _initFormatting: function() {
+
     // Enable formatting keyboard input
     var block = this;
 
@@ -341,14 +349,19 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var textBlock = this.getTextBlock().get(0);
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
-      this._scribe = new Scribe(textBlock, {
-        debug: config.scribeDebug,
-      });
+
+      var scribeConfig = {debug: config.scribeDebug};
+      if (_.isObject(this.scribeOptions)) {
+        scribeConfig = Object.assign(scribeConfig, this.scribeOptions);
+      }
+
+      this._scribe = new Scribe(textBlock, scribeConfig);
+
       this._scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
       this._scribe.use(scribePluginLinkPromptCommand());
 
-      if (_.isFunction(this.options.configureScribe)) {
-        this.options.configureScribe.call(this, this._scribe);
+      if (_.isFunction(this.configureScribe)) {
+        this.configureScribe.call(this, this._scribe);
       }
     }
   },
