@@ -70,15 +70,17 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     type = utils.classify(block.type);
 
     // assume there can be nested blocks. if none - it's ok.
-    var nested_blocks = block.$el.find('.st-block');
-    if (nested_blocks.length > 0) {
-      var list = nested_blocks.map(function() {
-        return { depth: $(this).parents().length, id: this.getAttribute('id') };
-      }).get();
-      list.sort(function(a, b) { return a.depth - b.depth; });
-      // remove nested blocks in a proper order (deepest first)
-      for (var i=0; i<list.length; i++) {
-        this.removeBlock(list[i].id);
+    if (!_.isUndefined(block.$el)) {
+      var nested_blocks = block.$el.find('.st-block');
+      if (nested_blocks.length > 0) {
+        var list = nested_blocks.map(function() {
+          return { depth: $(this).parents().length, id: this.getAttribute('id') };
+        }).get();
+        list.sort(function(a, b) { return a.depth - b.depth; });
+        // remove nested blocks in a proper order (deepest first)
+        for (var i=0; i<list.length; i++) {
+          this.removeBlock(list[i].id);
+        }
       }
     }
 

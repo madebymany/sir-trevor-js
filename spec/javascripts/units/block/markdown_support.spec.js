@@ -10,7 +10,7 @@ describe('Blocks: Markdown support', function() {
     var editor = new SirTrevor.Editor({ el: element });
     var options = editor.block_manager.blockOptions;
     var Klass = SirTrevor.Blocks[utils.classify(type)];
-    var block = new Klass(data, editor.id, editor.mediator, options);
+    var block = new Klass(data, editor, editor.mediator, options);
 
     block.render();
     return block;

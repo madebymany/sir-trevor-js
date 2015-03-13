@@ -8,7 +8,7 @@ describe('Blocks: Heading block', function() {
     var editor = new SirTrevor.Editor({ el: element });
     var options = editor.block_manager.blockOptions;
     block = new SirTrevor.Blocks.Heading(data,
-                                     editor.id, editor.mediator, options);
+                                     editor, editor.mediator, options);
     block.render();
     return block.getBlockData();
   };
