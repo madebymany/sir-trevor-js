@@ -15,9 +15,15 @@ module.exports = Block.extend({
 
   editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
 
+  scribeOptions: { allowBlockElements: false },
+
   icon_name: 'heading',
 
   loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
+    if (this.options.convertFromMarkdown && !data.isHtml) {
+      this.setTextBlockHTML(stToHTML(data.text, this.type));
+    } else {
+      this.setTextBlockHTML(data.text);
+    }
   }
 });

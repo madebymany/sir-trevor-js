@@ -1,8 +1,9 @@
 .st-block-positioner {
-  border: 0.125em solid $accent-color;
+  border: $default-border;
   position: absolute;
   z-index: 2;
-  left: -5.5em; bottom: 0.4em;
+  left: -5.5em;
+  bottom: 0.4em;
   background: #fff;
 
   visibility: hidden;
@@ -18,25 +19,16 @@
 .st-block-positioner:after {
   content: '';
   display: block;
-  width: 0.4em; height: 0.4em;
+  width: 0.4em;
+  height: 0.4em;
   position: absolute;
-  right: -0.3em; bottom: 0.6em;
+  right: -0.3em;
+  bottom: 0.6em;
   z-index: 1;
-  border: 0.125em solid $accent-color;
+  border: $default-border;
   background: #fff;
 
   @include transform(rotate(45deg));
-}
-
-.st-block-positioner__title {
-  color: $accent-color;
-  font-size: 0.7em;
-  font-style: italic;
-  font-weight: normal;
-  margin: 0;
-  border-bottom: 1px solid $accent-color;
-  padding: 0.5em;
-  text-align: center;
 }
 
 .st-block-positioner__inner {
@@ -44,4 +36,18 @@
   position: relative;
   z-index: 2;
   padding: 0.3em 0.5em;
+}
+
+.st-block--with-errors, .st-block--delete-active {
+  & > .st-block__inner {
+
+    & > .st-block__ui {
+      .st-block-positioner {
+        border-color: $error-color;
+        &:after {
+          border-color: $error-color;
+        }
+      }
+    }
+  }
 }

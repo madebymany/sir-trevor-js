@@ -17,6 +17,7 @@
 .st-block-controls__top:hover:before {
   color: $accent-color;
   background: $blocks-control-bg-color;
+  cursor: pointer;
 }
 
 .st-block-controls {

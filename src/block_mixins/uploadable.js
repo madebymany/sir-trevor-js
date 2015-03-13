@@ -11,6 +11,7 @@ module.exports = {
   mixinName: "Uploadable",
 
   uploadsCount: 0,
+  requireInputs: true,
 
   initializeUploadable: function() {
     utils.log("Adding uploadable to block " + this.blockID);
