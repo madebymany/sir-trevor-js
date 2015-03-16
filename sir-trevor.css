@@ -1,5 +1,6 @@
 .st-outer {
-  font-size: 16px; }
+  font-size: 16px;
+  position: relative; }
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 [data-icon]:before, [data-icon-after]:after {
@@ -415,6 +416,7 @@ ul.st-text-block {
   padding: 0.4em 0; }
 
 .st-format-bar {
+  top: 0;
   position: absolute;
   margin: -3em 0 0 0;
   background: #4d5358;

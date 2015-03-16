@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2015-03-12
+ * 2015-03-16
  */
 
 
@@ -11297,7 +11297,6 @@ module.exports = {
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
     convertFromMarkdown: true,
-    formatBarContainer: document.body,
     formatBar: {
       commands: [
         {
@@ -11415,7 +11414,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
     this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
-    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
     this.mediator.on('block-controls:reset', this.resetBlockControls);
@@ -11427,7 +11426,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this._setEvents();
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
-    $(this.options.formatBarContainer).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     $(window).bind('click', this.hideAllTheThings);
@@ -12116,7 +12114,8 @@ var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined
 var config = require('./config');
 var utils = require('./utils');
 
-var FormatBar = function(options, mediator) {
+var FormatBar = function(options, mediator, editor) {
+  this.editor = editor;
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
   this.commands = this.options.commands;
   this.mediator = mediator;
@@ -12158,34 +12157,38 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
     }, this);
 
     this.$b = $(document);
-    this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
   },
 
   hide: function() {
     this.$el.removeClass('st-format-bar--is-ready');
+    this.$el.remove();
   },
 
   show: function() {
+    this.editor.$outer.append(this.$el);
     this.$el.addClass('st-format-bar--is-ready');
+    this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
   },
 
   remove: function(){ this.$el.remove(); },
 
   renderBySelection: function() {
+    this.highlightSelectedButtons();
+    this.show();
+    this.calculatePosition();
+  },
+
+  calculatePosition: function() {
     var selection = window.getSelection(),
         range = selection.getRangeAt(0),
         boundary = range.getBoundingClientRect(),
         coords = {},
-        scrollTop = this.el.parentNode.scrollTop,
-        // in case the format bar is inside a scrollable container
-        leftOffset = this.el.parentNode.offsetLeft,
-        topOffset = this.el.parentNode.offsetTop;
+        outer = this.editor.$outer.get(0),
+        outerBoundary = outer.getBoundingClientRect();
 
-    coords.top = boundary.top + 20 + scrollTop - this.$el.height() - topOffset + 'px';
-    coords.left = ((boundary.left + boundary.right) / 2) - (this.$el.width() / 2) - leftOffset + 'px';
-
-    this.highlightSelectedButtons();
-    this.show();
+    coords.top = (boundary.top - outerBoundary.top) + 'px';
+    coords.left = (((boundary.left + boundary.right) / 2) -
+      (this.el.offsetWidth / 2) - outerBoundary.left) + 'px';
 
     this.$el.css(coords);
   },
