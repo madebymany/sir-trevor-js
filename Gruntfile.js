@@ -34,7 +34,7 @@ module.exports = function(grunt) {
     strict: true,
     maxparams: 4,
     maxdepth: 3,
-    maxcomplexity: 13, // this is quite complex, would be good to reduce
+    maxcomplexity: 10,
     undef: true,
     unused: 'vars',
 
