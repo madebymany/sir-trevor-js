@@ -78,7 +78,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
     this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
-    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
     this.mediator.on('block-controls:reset', this.resetBlockControls);
@@ -90,7 +90,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this._setEvents();
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
-    $(this.options.formatBarContainer).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     $(window).bind('click', this.hideAllTheThings);
