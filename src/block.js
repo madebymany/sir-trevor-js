@@ -396,7 +396,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   getTextBlockHTML: function() {
-    return this._scribe.getHTML();
+    return this._scribe.getContent();
   },
 
   setTextBlockHTML: function(html) {

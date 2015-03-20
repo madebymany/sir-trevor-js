@@ -24,4 +24,23 @@ describe('Blocks: Heading block', function() {
 
     expect(data.text).not.toContain('<p>');
   });
+
+  it('doesn\'t save <br> at the end of the text', function() {
+    var data = getSerializedData({text: 'Test Heading'});
+
+    expect(data.text).toEqual('Test Heading');
+  });
+
+  it('converts markdown inline styling to html', function() {
+    var data = getSerializedData({text: '**Test** _Heading_'});
+
+    expect(data.text).toEqual('<b>Test</b> <i>Heading</i>');
+  });
+
+  it('doesn\'t strip HTML style tags', function() {
+    var blockData = {text: '<b>Test</b> <i>Heading</i>', isHtml: true};
+    var data = getSerializedData(blockData);
+
+    expect(data.text).toEqual('<b>Test</b> <i>Heading</i>');
+  });
 });

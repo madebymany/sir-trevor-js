@@ -4,7 +4,7 @@
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2015-03-16
+ * 2015-03-20
  */
 
 
@@ -10535,7 +10535,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   getTextBlockHTML: function() {
-    return this._scribe.getHTML();
+    return this._scribe.getContent();
   },
 
   setTextBlockHTML: function(html) {
@@ -13032,7 +13032,7 @@ module.exports = utils;
 },{"./config":162,"./lodash":178}],185:[function(require,module,exports){
 "use strict";
 
-// jshint freeze: false
+// jshint freeze: false, maxcomplexity: 11
 
 if (![].includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
