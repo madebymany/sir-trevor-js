@@ -43,8 +43,10 @@ module.exports = function(block, file, success, error) {
     }
   };
 
+  var url = block.uploadUrl || config.defaults.uploadUrl;
+
   var xhr = $.ajax({
-    url: config.defaults.uploadUrl,
+    url: url,
     data: data,
     cache: false,
     contentType: false,

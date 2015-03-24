@@ -39,7 +39,7 @@ Provides a drop zone support for the block. Exposes the `onDrop` event which mus
 Provides the UI support for a pastable component (like the video block). You can override the default paste handler by re-implementing the `onContentPasted` method.
 
 **`uploadable`**
-Provides support for uploadable content and mixins in the uploader into the block.
+Provides support for uploadable content and mixins in the uploader into the block. The uploadable mixin will use the `uploadUrl` set in the `SirTrevor.setDefaults` by default. Your custom block can override this by defining `uploadUrl` in the block body.
 
 **`ajaxable`**
 Gives a way to fetch content remotely through a editor managed queue.
