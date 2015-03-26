@@ -11,9 +11,9 @@ describe("Block", function(){
   beforeEach(function(){
     element = $("<textarea>");
     editor = new SirTrevor.Editor({ el: element });
-    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
-    block_two = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
-    block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.Text({}, editor, editor.mediator);
+    block_two = new SirTrevor.Blocks.Text({}, editor, editor.mediator);
+    block_three = new SirTrevor.Blocks.ComplexType({}, editor, editor.mediator);
   });
 
   it("block is instance of ST.Block", function(){

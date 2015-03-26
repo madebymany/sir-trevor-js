@@ -46,6 +46,7 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
   onDrop: function(ev) {
     ev.preventDefault();
+    ev.stopPropagation(); // to prevent event handling on outer blocks
 
     var dropped_on = this.$el,
     item_id = ev.originalEvent.dataTransfer.getData("text/plain"),

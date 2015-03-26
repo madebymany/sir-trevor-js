@@ -75,7 +75,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.errorHandler = new ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
     this.store = new EditorStore(this.$el.val(), this.mediator);
-    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
+    this.block_manager = new BlockManager(this.options, this, this.mediator); // passing SirTrevor instance gives more flexibility
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
     this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
@@ -169,8 +169,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     return this.store[method].call(this, options || {});
   },
 
-  renderBlock: function(block) {
-    this._renderInPosition(block.render().$el);
+  renderBlock: function(block, render_at) {
+    this._renderInPosition(block.render().$el, render_at);
     this.hideAllTheThings();
 
     block.trigger("onRender");
@@ -184,7 +184,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     selectedPosition = selectedPosition - 1;
 
     var blockPosition = this.getBlockPosition($block),
-    $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+    $blockBy = $block.parent().children('.st-block').eq(selectedPosition);
 
     var where = (blockPosition > selectedPosition) ? "Before" : "After";
 
@@ -194,8 +194,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
   },
 
-  _renderInPosition: function(block) {
-    if (this.block_controls.currentContainer) {
+  _renderInPosition: function(block, render_at) {
+    if (render_at) {
+      $(render_at).after(block);
+    } else if (this.block_controls.currentContainer) {
       this.block_controls.currentContainer.after(block);
     } else {
       this.$wrapper.append(block);
@@ -239,7 +241,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   validateBlocks: function(shouldValidate) {
     var self = this;
-    this.$wrapper.find('.st-block').each(function(idx, block) {
+    // save only top-level blocks (nested data is handled by container blocks themselves)
+    this.$wrapper.children('.st-block').each(function(idx, block) {
       var _block = self.block_manager.findBlockById($(block).attr('id'));
       if (!_.isUndefined(_block)) {
         self.validateAndSaveBlock(_block, shouldValidate);
@@ -260,7 +263,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   getBlockPosition: function($block) {
-    return this.$wrapper.find('.st-block').index($block);
+    return $block.parent().children('.st-block').index($block);
   },
 
   _ensureAndSetElements: function() {
