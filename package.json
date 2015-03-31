@@ -54,7 +54,8 @@
     "karma-phantomjs-launcher": "~0.1.4",
     "lodash": "^2.4.1",
     "mversion": "^1.9.0",
-    "node-bourbon": "^4.2.1-beta1"
+    "node-bourbon": "^4.2.1-beta1",
+    "phantomjs": "^1.9.16"
   },
   "browserify-shim": {
     "jquery": "global:$"
