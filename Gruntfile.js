@@ -47,42 +47,43 @@ module.exports = function(grunt) {
     node: true,
   }
 
-  var browserifyDefaultOptions = {
-    standalone: 'SirTrevor',
+  var webpackOptions = function(filename){
+    return {
+      entry: "./index.js",
+      output: {
+        library: "SirTrevor",
+        libraryTarget: "umd",
+        path: "build/",
+        filename: filename
+      },
+      externals: {
+        "jquery": {
+          root: "jQuery",
+          commonjs: "jquery",
+          commonjs2: "jquery",
+          amd: "jquery"
+        }
+      }
+    }
   };
 
-  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
+  grunt.loadNpmTasks('grunt-webpack');
 
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
 
-    browserify: {
-      dist: {
-        src: 'index.js',
-        dest: 'build/sir-trevor.js',
-      },
+    webpack: {
+      dist: webpackOptions("sir-trevor.js"),
 
-      debug: {
-        src: 'index.js',
-        dest: 'build/sir-trevor.debug.js',
-        options: {
-          browserifyOptions: Object.assign({}, browserifyDefaultOptions, {
-            debug: true,
-          }),
-        },
-      },
-
-      options: {
-        banner: banner,
-        browserifyOptions: browserifyDefaultOptions,
-        transform: [['deamdify', {global: true}], 'browserify-shim'],
-      },
+      debug: Object.assign(webpackOptions("sir-trevor.debug.js"), {
+        debug: true,
+      })
     },
 
     karma: {
@@ -156,9 +157,9 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('default', ['test', 'sass', 'browserify', 'uglify']);
+  grunt.registerTask('default', ['test', 'sass', 'webpack', 'uglify']);
   grunt.registerTask('test', ['jshint', 'karma']);
-  grunt.registerTask('dev', ['sass', 'browserify:debug']);
+  grunt.registerTask('dev', ['sass', 'webpack:debug']);
   grunt.registerTask('jasmine-browser', ['server', 'watch']);
 
 };
