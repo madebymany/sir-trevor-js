@@ -7,7 +7,7 @@ module.exports = function(config) {
     basePath: 'spec/',
 
     // frameworks to use
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -53,17 +53,14 @@ module.exports = function(config) {
     // if true, it capture browsers, run tests and exit
     singleRun: true,
 
-    // Browserify config (all optional)
-    browserify: {
-      debug: true,
-      transform: [['deamdify', {global: true}]]
-    },
-
     browserNoActivityTimeout: 60000,
 
-    // Add browserify to preprocessors
     preprocessors: {
-      "javascripts/**/*.js": "browserify"
-    }
+      // add webpack as preprocessor
+      "javascripts/**/*.js": ['webpack'],
+    },
+
+    webpack: {
+    },
   });
 }
