@@ -15,7 +15,15 @@ module.exports = Block.extend({
 
   loadData: function(data){
     // Create our image tag
-    this.$editor.html($('<img>', { src: data.file.url }));
+    //this.$editor.html($('<img>', { src: data.file.url }));
+    //Added a function to check if URL is undefined when generating the data.file.url from a returned string (say when returning to a saved page)
+    this.$editor.html($('<img>', { src: function(){
+      if(typeof data.file[0]!=="undefined"){
+        return data.file[0].url
+      }else{
+        data.file.url
+      }
+    }));
   },
 
   onBlockRender: function(){
