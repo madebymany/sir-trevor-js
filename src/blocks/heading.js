@@ -15,7 +15,7 @@ module.exports = Block.extend({
 
   editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
 
-  scribeOptions: { allowBlockElements: false },
+  scribeOptions: { allowBlockElements: true },
 
   icon_name: 'heading',
 
