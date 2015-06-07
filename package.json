@@ -44,7 +44,6 @@
     "lodash.isstring": "^2.4.1",
     "lodash.isundefined": "^2.4.1",
     "lodash.result": "^2.4.1",
-    "lodash.template": "^2.4.1",
     "lodash.uniqueid": "^2.4.1",
     "mversion": "^1.9.0",
     "node-bourbon": "^4.2.1-beta1",
