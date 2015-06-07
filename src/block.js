@@ -18,6 +18,7 @@ var BlockPositioner = require('./block-positioner');
 var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
+var deleteTemplate = require("./templates/delete.ejs");
 
 var Block = function(data, instance_id, mediator, options) {
   SimpleBlock.apply(this, arguments);
@@ -25,16 +26,6 @@ var Block = function(data, instance_id, mediator, options) {
 
 Block.prototype = Object.create(SimpleBlock.prototype);
 Block.prototype.constructor = Block;
-
-var delete_template = [
-  "<div class='st-block__ui-delete-controls'>",
-  "<label class='st-block__delete-label'>",
-  "<%= i18n.t('general:delete') %>",
-  "</label>",
-  "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
-  "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
-  "</div>"
-].join("\n");
 
 Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
@@ -236,7 +227,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       return;
     }
 
-    this.$inner.append(_.template(delete_template));
+    this.$inner.append(deleteTemplate());
     this.$el.addClass('st-block--delete-active');
 
     var $delete_el = this.$inner.find('.st-block__ui-delete-controls');

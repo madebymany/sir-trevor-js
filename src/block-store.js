@@ -54,11 +54,12 @@ module.exports = {
   setData: function(blockData) {
     utils.log("Setting data for block " + this.blockID);
     Object.assign(this.blockStorage.data, blockData || {});
+    this.beforeLoadingData();
   },
 
   setAndLoadData: function(blockData) {
+    utils.log("setAndLoadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
     this.setData(blockData);
-    this.beforeLoadingData();
   },
 
   _serializeData: function() {},

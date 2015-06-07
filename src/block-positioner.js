@@ -1,11 +1,6 @@
 "use strict";
 
-var template = [
-  "<div class='st-block-positioner__inner'>",
-  "<span class='st-block-positioner__selected-value'></span>",
-  "<select class='st-block-positioner__select'></select>",
-  "</div>"
-].join("\n");
+var template = require("./templates/block-positioner.ejs");
 
 var BlockPositioner = function(block_element, mediator) {
   this.mediator = mediator;
@@ -27,7 +22,7 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   visibleClass: 'st-block-positioner--is-visible',
 
   initialize: function(){
-    this.$el.append(template);
+    this.$el.append(template());
     this.$select = this.$('.st-block-positioner__select');
 
     this.$select.on('change', this.onSelectChange);

@@ -5,6 +5,7 @@ var utils = require('./utils');
 var $ = require('jquery');
 
 var BlockReorder = require('./block-reorder');
+var template = require('./templates/block.ejs');
 
 var SimpleBlock = function(data, instance_id, mediator, options) {
   this.createStore(data);
@@ -27,9 +28,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   className: 'st-block',
 
-  block_template: _.template(
-    "<div class='st-block__inner'><%= editor_html %></div>"
-  ),
+  blockTemplate: template,
 
   attributes: function() {
     return {
@@ -43,29 +42,20 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
     return utils.titleize(this.type.replace(/[\W_]/g, ' '));
   },
 
-  blockCSSClass: function() {
-    this.blockCSSClass = utils.toSlug(this.type);
-    return this.blockCSSClass;
-  },
-
   type: '',
-
-  class: function() {
-    return utils.classify(this.type);
-  },
 
   editorHTML: '',
 
   initialize: function() {},
 
   onBlockRender: function(){},
+
   beforeBlockRender: function(){},
 
   _setBlockInner : function() {
-    var editor_html = _.result(this, 'editorHTML');
 
     this.$el.append(
-      this.block_template({ editor_html: editor_html })
+      this.blockTemplate(this)
     );
 
     this.$inner = this.$el.find('.st-block__inner');

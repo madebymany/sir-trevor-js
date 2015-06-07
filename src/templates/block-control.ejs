@@ -1,0 +1,4 @@
+<span class="st-icon">
+  <%= typeof block_type.icon_name === "function" ? block_type.icon_name() : block_type.icon_name %>
+</span>
+<%= typeof block_type.title === "function" ? block_type.title() : block_type.title %>

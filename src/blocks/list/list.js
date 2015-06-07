@@ -1,11 +1,10 @@
 "use strict";
 
-var _ = require('../lodash');
+var _ = require('../../lodash');
 
-var Block = require('../block');
-var stToHTML = require('../to-html');
-
-var template = '<div class="st-text-block st-required" contenteditable="true"><ul><li></li></ul></div>';
+var Block = require('../../block');
+var stToHTML = require('../../to-html');
+var template = require("./list.ejs");
 
 module.exports = Block.extend({
 
@@ -15,9 +14,7 @@ module.exports = Block.extend({
 
   icon_name: 'list',
 
-  editorHTML: function() {
-    return _.template(template, this);
-  },
+  editorHTML: template(),
 
   loadData: function(data){
     if (this.options.convertFromMarkdown && !data.isHtml) {
