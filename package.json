@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",
+    "ejs-loader": "^0.2.1",
     "es6-shim": "^0.21.0",
     "eventablejs": "^1.0.5",
     "grunt": "^0.4.5",

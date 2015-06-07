@@ -49,6 +49,11 @@ module.exports = function(grunt) {
 
   var webpackOptions = function(filename){
     return {
+      module: {
+        loaders: [
+          { test: /\.ejs$/, loader: "ejs" }
+        ],
+      },
       entry: "./index.js",
       output: {
         library: "SirTrevor",

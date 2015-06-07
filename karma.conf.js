@@ -61,6 +61,11 @@ module.exports = function(config) {
     },
 
     webpack: {
-    },
+      module: {
+        loaders: [
+          { test: /\.ejs$/, loader: "ejs" }
+        ],
+      },
+    }
   });
 }

@@ -1,0 +1,4 @@
+<div class="st-block__dropzone">
+  <span class="st-icon"><%= typeof icon_name === "function" ? icon_name() : icon_name %></span>
+  <p><%= i18n.t("general:drop", { block: ("<span>" + (typeof title === "function" ? title() : title) + "</span>") }) %></p>
+</div>

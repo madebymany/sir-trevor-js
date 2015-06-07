@@ -4,8 +4,9 @@
   Text Block
 */
 
-var Block = require('../block');
-var stToHTML = require('../to-html');
+var Block = require('../../block');
+var stToHTML = require('../../to-html');
+var template = require("./text.ejs");
 
 module.exports = Block.extend({
 
@@ -13,8 +14,7 @@ module.exports = Block.extend({
 
   title: function() { return i18n.t('blocks:text:title'); },
 
-  editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
-
+  editorHTML: template(),
   icon_name: 'text',
 
   loadData: function(data){

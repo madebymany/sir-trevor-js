@@ -41,6 +41,7 @@ describe("Block:Store", function(){
 
     beforeEach(function(){
       block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
+      block.render();
     });
 
     it("should set the data on the block", function(){

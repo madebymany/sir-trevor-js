@@ -4,8 +4,9 @@
   Heading Block
 */
 
-var Block = require('../block');
-var stToHTML = require('../to-html');
+var Block = require('../../block');
+var stToHTML = require('../../to-html');
+var template = require('./heading.ejs');
 
 module.exports = Block.extend({
 
@@ -13,7 +14,7 @@ module.exports = Block.extend({
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
-  editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
+  editorHTML: template(),
 
   scribeOptions: { allowBlockElements: false },
 

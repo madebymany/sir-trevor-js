@@ -1,7 +1,7 @@
 "use strict";
 
-var _ = require('./lodash');
 var Blocks = require('./blocks');
+var template = require("./templates/block-control.ejs");
 
 var BlockControl = function(type) {
   this.type = type;
@@ -23,7 +23,7 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
   },
 
   render: function() {
-    this.$el.html('<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>' + _.result(this.block_type, 'title'));
+    this.el.innerHTML = template(this);
     return this;
   }
 });
