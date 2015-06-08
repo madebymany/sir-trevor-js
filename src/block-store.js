@@ -58,7 +58,7 @@ module.exports = {
   },
 
   setAndLoadData: function(blockData) {
-    utils.log("setAndLoadData is deprecated and will be removed in the future. Please use beforeLoadingData instead.");
+    utils.log("setAndLoadData is deprecated and will be removed in the future. Please use setData instead.");
     this.setData(blockData);
   },
 
