@@ -9,11 +9,11 @@ module.exports = Block.extend({
   // more providers at https://gist.github.com/jeffling/a9629ae28e076785a14f
   providers: {
     vimeo: {
-      regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo.com\/(.+)/,
+      regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo\.com\/.+(?:\/)([^\/].*)+$/,
       html: "<iframe src=\"<%= protocol %>//player.vimeo.com/video/<%= remote_id %>?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
     },
     youtube: {
-      regex: /^.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/,
+      regex: /^.*(?:(youtu\.be|youtube\.com)\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*)/,
       html: "<iframe src=\"<%= protocol %>//www.youtube.com/embed/<%= remote_id %>\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
     }
   },
