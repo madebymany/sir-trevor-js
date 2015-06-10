@@ -1,6 +1,5 @@
 {
   "name": "sir-trevor-js",
-  "version": "0.5.0-beta3",
   "ignore": [
     "**/.*",
     "node_modules",
