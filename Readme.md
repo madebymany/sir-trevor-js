@@ -42,6 +42,8 @@ Sir Trevor is only tested on the following modern browsers:
 
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
 
+Sir Trevor uses [The Guardian's scribe](https://github.com/guardian/scribe) for rich text editing. Double check their [browser support](https://github.com/guardian/scribe#browser-support) if your application relies on full RTE support.
+
 ## Dependencies
 
 It's up to you:
