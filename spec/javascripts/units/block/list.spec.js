@@ -21,9 +21,17 @@ describe('Blocks: List block', function () {
       var serializedData = block.getBlockData();
 
       expect(serializedData.listItems.length).toEqual(3);
-      expect(serializedData.listItems[0]).toEqual('element one');
-      expect(serializedData.listItems[1]).toEqual('element two');
-      expect(serializedData.listItems[2]).toEqual('element three');
+      expect(serializedData.listItems[0].content).toEqual('element one');
+      expect(serializedData.listItems[1].content).toEqual('element two');
+      expect(serializedData.listItems[2].content).toEqual('element three');
+    });
+
+    it('doesn\'t create empty list element at the end', function() {
+      var data = {text: ' - element one\n - element two\n - element three\n'};
+      var block = createBlock('list', data);
+      var serializedData = block.getBlockData();
+
+      expect(serializedData.listItems.length).toEqual(3);
     });
 
     it('parses markdown styles inside list items', function() {
@@ -31,8 +39,8 @@ describe('Blocks: List block', function () {
       var block = createBlock('list', data);
       var serializedData = block.getBlockData();
 
-      expect(serializedData.listItems[0]).toEqual('hello <b>bold</b>');
-      expect(serializedData.listItems[1]).toEqual('hello <i>italics</i>');
+      expect(serializedData.listItems[0].content).toEqual('hello <b>bold</b>');
+      expect(serializedData.listItems[1].content).toEqual('hello <i>italics</i>');
     });
 
     it('inits list with single item when empty data', function() {
@@ -54,7 +62,14 @@ describe('Blocks: List block', function () {
     });
 
     it('creates an editor for each list item in data', function() {
-      var data = {listItems: ['one', 'two', 'three'], isHtml: true};
+      var data = {
+        listItems: [
+          {content: 'one'},
+          {content: 'two'},
+          {content: 'three'}
+        ],
+        isHtml: true
+      };
       var block = createBlock('list', data);
       block.getBlockData();
 
