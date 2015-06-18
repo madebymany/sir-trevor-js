@@ -54,7 +54,7 @@ describe('Blocks: List block', function () {
 
   describe('loading data', function() {
     it('creates a single list item if data is empty', function() {
-      var data = {listItems: [], isHtml: true};
+      var data = {listItems: [], format: 'html'};
       var block = createBlock('list', data);
       var serializedData = block.getBlockData();
 
@@ -68,7 +68,7 @@ describe('Blocks: List block', function () {
           {content: 'two'},
           {content: 'three'}
         ],
-        isHtml: true
+        format: 'html'
       };
       var block = createBlock('list', data);
       block.getBlockData();

@@ -167,7 +167,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     /* Simple to start. Add conditions later */
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
-      data.isHtml = true;
+      data.format = 'html';
     }
 
     // Add any inputs to the data attr

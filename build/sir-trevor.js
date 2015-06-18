@@ -22011,7 +22011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  icon_name: 'text',
 
 	  loadData: function(data){
-	    if (this.options.convertFromMarkdown && !data.isHtml) {
+	    if (this.options.convertFromMarkdown && data.format !== "html") {
 	      this.setTextBlockHTML(stToHTML(data.text, this.type));
 	    } else {
 	      this.setTextBlockHTML(data.text);
@@ -22193,7 +22193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /* Simple to start. Add conditions later */
 	    if (this.hasTextBlock()) {
 	      data.text = this.getTextBlockHTML();
-	      data.isHtml = true;
+	      data.format = 'html';
 	    }
 
 	    // Add any inputs to the data attr
@@ -23125,7 +23125,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  loadData: function(data){
-	    if (this.options.convertFromMarkdown && !data.isHtml) {
+	    if (this.options.convertFromMarkdown && data.format !== "html") {
 	      this.setTextBlockHTML(stToHTML(data.text, this.type));
 	    } else {
 	      this.setTextBlockHTML(data.text);
@@ -23221,7 +23221,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  icon_name: 'heading',
 
 	  loadData: function(data){
-	    if (this.options.convertFromMarkdown && !data.isHtml) {
+	    if (this.options.convertFromMarkdown && data.format !== "html") {
 	      this.setTextBlockHTML(stToHTML(data.text, this.type));
 	    } else {
 	      this.setTextBlockHTML(data.text);
@@ -23322,7 +23322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  loadData: function(data) {
 	    var block = this;
-	    if (this.options.convertFromMarkdown && !data.isHtml) {
+	    if (this.options.convertFromMarkdown && data.format !== "html") {
 	      data = this.parseFromMarkdown(data.text);
 	    }
 
@@ -23345,11 +23345,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return {content: stToHTML(item, this.type)};
 	      }.bind(this));
 
-	    return { listItems: listItems, isHtml: true };
+	    return { listItems: listItems, format: 'html' };
 	  },
 
 	  _serializeData: function() {
-	    var data = {isHtml: true, listItems: []};
+	    var data = {format: 'html', listItems: []};
 
 	    this.editorIds.forEach(function(editorId) {
 	      var listItem = {content: this.getTextEditor(editorId).scribe.getContent()};

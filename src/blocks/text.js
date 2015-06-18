@@ -18,7 +18,7 @@ module.exports = Block.extend({
   icon_name: 'text',
 
   loadData: function(data){
-    if (this.options.convertFromMarkdown && !data.isHtml) {
+    if (this.options.convertFromMarkdown && data.format !== "html") {
       this.setTextBlockHTML(stToHTML(data.text, this.type));
     } else {
       this.setTextBlockHTML(data.text);

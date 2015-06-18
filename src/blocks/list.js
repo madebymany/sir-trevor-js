@@ -86,7 +86,7 @@ module.exports = Block.extend({
 
   loadData: function(data) {
     var block = this;
-    if (this.options.convertFromMarkdown && !data.isHtml) {
+    if (this.options.convertFromMarkdown && data.format !== "html") {
       data = this.parseFromMarkdown(data.text);
     }
 
@@ -109,11 +109,11 @@ module.exports = Block.extend({
         return {content: stToHTML(item, this.type)};
       }.bind(this));
 
-    return { listItems: listItems, isHtml: true };
+    return { listItems: listItems, format: 'html' };
   },
 
   _serializeData: function() {
-    var data = {isHtml: true, listItems: []};
+    var data = {format: 'html', listItems: []};
 
     this.editorIds.forEach(function(editorId) {
       var listItem = {content: this.getTextEditor(editorId).scribe.getContent()};
