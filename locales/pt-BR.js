@@ -1,4 +1,4 @@
-SirTrevor.Locales.pt-BR = {
+SirTrevor.Locales.pt_BR = {
       general: {
         'delete':           'Deletar?',
         'drop':             'Arraste __block__ aqui',
