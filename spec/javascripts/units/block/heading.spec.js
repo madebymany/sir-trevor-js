@@ -13,10 +13,10 @@ describe('Blocks: Heading block', function() {
     return block.getBlockData();
   };
 
-  it('doesn\'t allow block level elements', function() {
+  it('does allow block level elements', function() {
     getSerializedData({text: 'Test Heading'});
 
-    expect(block._scribe.options.allowBlockElements).toBe(false);
+    expect(block._scribe.options.allowBlockElements).toBe(true);
   });
 
   it('doesn\'t wrap content in <p> tags', function() {

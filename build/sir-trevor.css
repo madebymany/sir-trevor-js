@@ -198,6 +198,10 @@
 ul.st-text-block {
   margin-left: 1.875em; }
 
+.st-list-block__editor {
+  display: inline;
+  width: 100%; }
+
 .st-block__inputs {
   padding: 1.6em 0 1em;
   border-radius: 0.2em;
