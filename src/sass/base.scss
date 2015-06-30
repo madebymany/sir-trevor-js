@@ -3,41 +3,6 @@
   position: relative;
 }
 
-@mixin sir-trevor-icons() {
-  font-family: 'ST-Icons';
-  speak: none;
-  /* Enable Ligatures */
-  -webkit-font-feature-settings:"liga","dlig";-moz-font-feature-settings:"liga=1, dlig=1";-moz-font-feature-settings:"liga","dlig";-ms-font-feature-settings:"liga","dlig";-o-font-feature-settings:"liga","dlig";
-  font-feature-settings:"liga","dlig";
-  text-rendering:optimizeLegibility;
-    font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-}
-
-// ST-Icons
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
-[data-icon]:before,
-[data-icon-after]:after {
-  @include sir-trevor-icons;
-  content: attr(data-icon);
-}
-
-[data-icon-after]:after {
-  content: attr(data-icon-after);
-}
-
-.st-icon {
-  @include sir-trevor-icons;
-  cursor:pointer;
-}
-
-[data-icon=bin]:hover:before {
-  content: "binopen";
-}
-
 .st-block__inner {
 
   ::-moz-selection {
