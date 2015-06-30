@@ -38,7 +38,7 @@ describe('Blocks: Heading block', function() {
   });
 
   it('doesn\'t strip HTML style tags', function() {
-    var blockData = {text: '<b>Test</b> <i>Heading</i>', isHtml: true};
+    var blockData = {text: '<b>Test</b> <i>Heading</i>', format: 'html'};
     var data = getSerializedData(blockData);
 
     expect(data.text).toEqual('<b>Test</b> <i>Heading</i>');
