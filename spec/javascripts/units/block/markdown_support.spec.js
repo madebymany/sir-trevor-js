@@ -34,7 +34,7 @@ describe('Blocks: Markdown support', function() {
           });
         });
 
-        it('calls toHtml on objects without isHtml set', function() {
+        it('calls toHtml on objects without format = "html"', function() {
           block = createBlock('Text', data);
           var serializedData = block.getBlockData();
 
@@ -42,8 +42,8 @@ describe('Blocks: Markdown support', function() {
           expect(serializedData.text).toEqual('<p>test</p>');
         });
 
-        it('doesn\'t call toHtml on objects with isHtml set', function() {
-          data.isHtml = true;
+        it('doesn\'t call toHtml on objects with format = "html"', function() {
+          data.format = 'html';
           block = createBlock('Text', data);
           var serializedData = block.getBlockData();
 
@@ -68,8 +68,8 @@ describe('Blocks: Markdown support', function() {
           expect(serializedData.text).toEqual(data.text);
         });
 
-        it('ignores isHtml value', function() {
-          data.isHtml = false;
+        it('ignores format value', function() {
+          data.format = 'html';
 
           block = createBlock('Text', data);
           var serializedData = block.getBlockData();
@@ -102,7 +102,7 @@ describe('Blocks: Markdown support', function() {
           });
         });
 
-        it('calls toHtml on objects without isHtml set', function() {
+        it('calls toHtml on objects without format = "html"', function() {
           block = createBlock('Quote', data);
           var serializedData = block.getBlockData();
 
@@ -111,8 +111,8 @@ describe('Blocks: Markdown support', function() {
             toEqual(quote);
         });
 
-        it('doesn\'t call toHtml on objects with isHtml set', function() {
-          data.isHtml = true;
+        it('doesn\'t call toHtml on objects with format = "html"', function() {
+          data.format = 'html';
 
           block = createBlock('Quote', data);
           var serializedData = block.getBlockData();
@@ -138,8 +138,8 @@ describe('Blocks: Markdown support', function() {
           expect(serializedData.text).toEqual(data.text);
         });
 
-        it('ignores isHtml value', function() {
-          data.isHtml = false;
+        it('ignores format value', function() {
+          data.format = 'html';
           block = createBlock('Quote', data);
           var serializedData = block.getBlockData();
 
