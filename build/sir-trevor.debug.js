@@ -2482,6 +2482,25 @@ return /******/ (function(modules) { // webpackBootstrap
 		'propertyIsEnumerable',
 		'constructor'
 	];
+	var equalsConstructorPrototype = function (o) {
+		var ctor = o.constructor;
+		return ctor && ctor.prototype === o;
+	};
+	var blacklistedKeys = ['window', 'console', 'parent', 'self', 'frames'];
+	var hasAutomationEqualityBug = (function () {
+		/* global window */
+		if (typeof window === 'undefined') { return false; }
+		for (var k in window) {
+			if (blacklistedKeys.indexOf(k) === -1 && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
+				try {
+					equalsConstructorPrototype(window[k]);
+				} catch (e) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}());
 
 	var keysShim = function keys(object) {
 		var isObject = object !== null && typeof object === 'object';
@@ -2514,8 +2533,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		}
 
 		if (hasDontEnumBug) {
-			var ctor = object.constructor;
-			var skipConstructor = ctor && ctor.prototype === object;
+			var skipConstructor = hasAutomationEqualityBug || equalsConstructorPrototype(object);
 
 			for (var k = 0; k < dontEnums.length; ++k) {
 				if (!(skipConstructor && dontEnums[k] === 'constructor') && has.call(object, dontEnums[k])) {
@@ -22078,7 +22096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  icon_name: 'default',
 
 	  validationFailMsg: function() {
-	    return i18n.t('errors:validation_fail', { type: this.title() });
+	    return i18n.t('errors:validation_fail', { type: this.title });
 	  },
 
 	  editorHTML: '<div class="st-block__editor"></div>',
@@ -22634,9 +22652,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * Example:
 	    var opts = {
-	      lines: 12,            // The number of lines to draw
-	    , length: 7,            // The length of each line
-	    , width: 5,             // The line thickness
+	      lines: 12             // The number of lines to draw
+	    , length: 7             // The length of each line
+	    , width: 5              // The line thickness
 	    , radius: 10            // The radius of the inner circle
 	    , scale: 1.0            // Scales overall size of the spinner
 	    , corners: 1            // Roundness (0..1)
