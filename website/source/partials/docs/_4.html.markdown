@@ -5,6 +5,8 @@ A founding principle of Sir Trevor is to have an extensible editor that you can 
 
 A good place to start is to read through one of the [blocks that comes bundled with Sir Trevor](https://github.com/madebymany/sir-trevor-js/tree/master/src/blocks).
 
+There’s also a [Sir Trevor Blocks repository](https://github.com/madebymany/sir-trevor-blocks).
+
 <a name="4-1"></a>
 ## Concepts
 
