@@ -24334,7 +24334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.el = this.options.el[0];
 	    this.$form = this.$el.parents('form');
 
-	    var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer', 'dropzone': 'copy link move' });
+	    var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer notranslate', 'dropzone': 'copy link move' });
 	    var $wrapper = $("<div>").attr({ 'class': 'st-blocks' });
 
 	    // Wrap our element in lots of containers *eww*
