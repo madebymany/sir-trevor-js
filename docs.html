@@ -104,7 +104,7 @@
 <pre><code>{
   &quot;name&quot;: &quot;your-project&quot;,
   &quot;dependencies&quot;: {
-    &quot;sir-trevor-js&quot;: &quot;0.3.0&quot;
+    &quot;sir-trevor-js&quot;: &quot;0.3.2&quot;
   }
 }
 </code></pre>
@@ -305,7 +305,7 @@ Call a function once the Editor has rendered.<br>
 <li><code>attachment[uid]</code> – a unique identifier for this file</li>
 </ul>
 
-<p>For an uploader example, using Rails + Carrierwave <a href="https://gist.github.com/cjbell88/7091537">please see here</a>.</p>
+<p>There is <a href="https://gist.github.com/cjbell/7091537">an uploader example using Rails + Carrierwave</a>.</p>
 
 <p><a name="3-3"></a></p>
 
@@ -380,11 +380,13 @@ Called once a block has been rendered.</p>
 
 <p>A good place to start is to read through one of the <a href="https://github.com/madebymany/sir-trevor-js/tree/master/src/blocks">blocks that comes bundled with Sir Trevor</a>.</p>
 
+<p>There’s also a <a href="https://github.com/madebymany/sir-trevor-blocks">Sir Trevor Blocks repository</a>.</p>
+
 <p><a name="4-1"></a></p>
 
 <h2>Concepts</h2>
 
-<p>A <code>SirTrevor.Block</code> essentially takes some data, provides and interface for that data and knows how to serialize itself into JSON.</p>
+<p>A <code>SirTrevor.Block</code> essentially takes some data, provides an interface for that data and knows how to serialize itself into JSON.</p>
 
 <p>Generally the flow for a block goes like this:</p>
 
@@ -418,7 +420,7 @@ Provides a drop zone support for the block. Exposes the <code>onDrop</code> even
 Provides the UI support for a pastable component (like the video block). You can override the default paste handler by re-implementing the <code>onContentPasted</code> method.</p>
 
 <p><strong><code>uploadable</code></strong><br>
-Provides support for uploadable content and mixins in the uploader into the block.</p>
+Provides support for uploadable content and mixins in the uploader into the block. The uploadable mixin will use the <code>uploadUrl</code> set in the <code>SirTrevor.setDefaults</code> by default. Your custom block can override this by defining <code>uploadUrl</code> in the block body.</p>
 
 <p><strong><code>ajaxable</code></strong><br>
 Gives a way to fetch content remotely through a editor managed queue.</p>
