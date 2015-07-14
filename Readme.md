@@ -21,7 +21,7 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 1. [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails)
 2. [Umbraco 7](https://github.com/mindrevolution/SirTrevor-for-Umbraco), [Umbraco 6](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
 3. [CakePHP](http://github.com/martinbean/cakephp-sir-trevor-plugin)
-4. [Wordpress](https://github.com/neyre/sir-trevor-wp) && [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
+4. [Wordpress](https://github.com/neyre/sir-trevor-wp), [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
 5. [Laravel](https://github.com/caouecs/Laravel4-SirTrevorJS)
 6. [Django](https://github.com/philippbosch/django-sirtrevor)
 7. [Yii Framework](https://github.com/DrMabuse23/yii2-sir-trevor-js)
