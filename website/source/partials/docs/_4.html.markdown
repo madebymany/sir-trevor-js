@@ -49,7 +49,7 @@ Gives a way to fetch content remotely through a editor managed queue.
 **`controllable`**
 Provides a second, smaller UI in the lower left block corner to control its contents. Requires the `controls`-object so be specified in the block configuration (`'command-name': handler`).
 
-The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `uploadable_options.html`, `droppable_options.html` or `pastable_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
+The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `upload_options.html`, `drop_options.html` or `paste_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
 
 <a name="4-3"></a>
 ## Validations
