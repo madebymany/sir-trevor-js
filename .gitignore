@@ -5,3 +5,5 @@ _SpecRunner.html
 bower_components/
 components/
 .grunt
+website/.bundle/
+website/vendor/
