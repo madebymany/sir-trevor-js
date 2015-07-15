@@ -89,7 +89,7 @@
 
     <h1>What is Sir Trevor?</h1>
 
-<p>Sir Trevor provides a means to transform a text input into a rich content editor that&rsquo;s been re-imagined for the web. The content of the editor is stored as markdown inside a JSON object, with the structure and the contents of the post serialized inside of it.</p>
+<p>Sir Trevor provides a means to transform a text input into a rich content editor that&rsquo;s been re-imagined for the web. The content of the editor is stored inside a JSON object, with the structure and the contents of the post serialized inside of it.</p>
 
 <p><a name="1"></a></p>
 
@@ -104,7 +104,7 @@
 <pre><code>{
   &quot;name&quot;: &quot;your-project&quot;,
   &quot;dependencies&quot;: {
-    &quot;sir-trevor-js&quot;: &quot;0.3.2&quot;
+    &quot;sir-trevor-js&quot;: &quot;0.4.3&quot;
   }
 }
 </code></pre>
@@ -115,8 +115,6 @@
 
 <ul>
 <li><a href="http://jquery.com/download">jQuery</a></li>
-<li><a href="https://github.com/jashkenas/underscore/blob/master/underscore.js">Underscore.js</a></li>
-<li><a href="https://github.com/madebymany/eventable/blob/master/eventable.js">Eventable</a></li>
 <li><a href="https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.js">Sir Trevor JS</a></li>
 </ul>
 
@@ -157,7 +155,7 @@
   &quot;data&quot;: [{
     &quot;type&quot;: &quot;text&quot;,
     &quot;data&quot;: {
-      &quot;text&quot;: &quot;Hello, my name is **Sir Trevor**&quot;
+      &quot;text&quot;: &quot;Hello, my name is &amp;lt;b&amp;gt;Sir Trevor&amp;lt;/b&amp;gt;&quot;
     }
   }]
 }
@@ -165,7 +163,7 @@
 
 <p>Each piece of JSON is made up of an object that contains the <em>type</em> and <em>data</em> for the block.</p>
 
-<p>Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You&rsquo;ll need to remember to transform the markdown to HTML using a library too.</p>
+<p>Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You’ll need to remember to transform the markdown to HTML using a library too.</p>
 
 <p>For a server-side example, please see our <a href="http://github.com/madebymany/sir-trevor-rails">Sir Trevor Rails gem</a>. The ideas within this could easily be extrapolated for other languages.</p>
 
@@ -305,7 +303,7 @@ Call a function once the Editor has rendered.<br>
 <li><code>attachment[uid]</code> – a unique identifier for this file</li>
 </ul>
 
-<p>There is <a href="https://gist.github.com/cjbell/7091537">an uploader example using Rails + Carrierwave</a>.</p>
+<p><a href="setting-up-image-uploading.html">How to set up image uploading</a> with some example implementations.</p>
 
 <p><a name="3-3"></a></p>
 
@@ -428,7 +426,7 @@ Gives a way to fetch content remotely through a editor managed queue.</p>
 <p><strong><code>controllable</code></strong><br>
 Provides a second, smaller UI in the lower left block corner to control its contents. Requires the <code>controls</code>-object so be specified in the block configuration (<code>&#39;command-name&#39;: handler</code>).</p>
 
-<p>The <strong>droppable, uploadable and pastable</strong> components have the ability to override the default HTML that gets built as the UI. This can easily be done through the <code>uploadable_options.html</code>, <code>droppable_options.html</code> or <code>pastable_options.html</code> objects on the block. Each takes a string that is passed to an underscore <code>_.template</code> method.</p>
+<p>The <strong>droppable, uploadable and pastable</strong> components have the ability to override the default HTML that gets built as the UI. This can easily be done through the <code>upload_options.html</code>, <code>drop_options.html</code> or <code>paste_options.html</code> objects on the block. Each takes a string that is passed to an underscore <code>_.template</code> method.</p>
 
 <p><a name="4-3"></a></p>
 
