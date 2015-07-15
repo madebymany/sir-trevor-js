@@ -91,7 +91,7 @@
 
 <p>Adding images to a document is basic functionality in Sir Trevor JS. Setting it up is fairly simple, but does require an understanding of the component parts.</p>
 
-<p>Sir Trevor is not a CMS — it is a focused tool to create and edit structured content — and needs to be integrated into a system that handles all the other parts that are associated with a CMS (e.g. user authentication, CRUD actions to fetch and store the content, etc.). For this reason, you will need to set up the server-side handling of uploaded files separately.</p>
+<p>Sir Trevor is not a CMS — it is a focused tool to create and edit structured content — and needs to be integrated into a system that handles all the other parts that are associated with a CMS (e.g. user authentication, CRUD actions to fetch and store the content, etc.). For this reason, the server-side handling of uploaded files needs to be set up separately.</p>
 
 <p>Like most web forms, a Sir Trevor document is sent to the server when a user saves the document (i.e. submits the form). But when you add a new image block and choose the image file to be displayed, it is uploaded immediately (via an Ajax request).</p>
 
@@ -102,7 +102,7 @@
 <h2>Flow of events</h2>
 
 <ol>
-<li>User adds new Sir Trevor image block and chooses image (to be uploaded)</li>
+<li>User adds a Sir Trevor image block and chooses an image file</li>
 <li>The image file is immediately sent to the server end point</li>
 <li>The end point returns a response that includes an URL reference to the image</li>
 </ol>
@@ -135,7 +135,7 @@
 }
 </code></pre>
 
-<p>The JSON object can be more complex and include more information as well, but, by default, Sir Trevor’s image block only looks at the response.file.url value.</p>
+<p>The JSON object can be more complex and include more information as well, but, by default, Sir Trevor’s image block only looks at the <code>response.file.url</code> value.</p>
 
 <h2>Example file upload handlers</h2>
 
