@@ -27,16 +27,16 @@ module.exports = function(block, file, success, error) {
 
   var callbackSuccess = function(data) {
     utils.log('Upload callback called');
-    EventBus.trigger('onUploadStop');
+    EventBus.trigger('onUploadStop', data);
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
-      success.apply(block, arguments);
+      success.apply(block, arguments, data);
     }
   };
 
   var callbackError = function(jqXHR, status, errorThrown) {
     utils.log('Upload callback error called');
-    EventBus.trigger('onUploadStop');
+    EventBus.trigger('onUploadStop', undefined, errorThrown, status, jqXHR);
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
       error.call(block, status);
