@@ -20,7 +20,7 @@ SirTrevor.Blocks.Example = (function(){
       return "Example";
     },
 
-    // Boolean; show this blockType of the toolbar
+    // Boolean; show this blockType in the toolbar
     toolbarEnabled: true,
 
     // Block Mixins
@@ -96,7 +96,7 @@ SirTrevor.Blocks.Example = (function(){
 
     // Validations
     // --
-    // Required fields (with .st-required class) always get validted
+    // Required fields (with .st-required class) always get validated
     // Called using the validateField method
     // Set a data-st-name="Field Name" on your required inputs to use it in the validation fail message
 
