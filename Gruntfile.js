@@ -73,6 +73,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-sass');
   grunt.loadNpmTasks('grunt-webpack');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-jasmine-nodejs');
 
   grunt.initConfig({
 
@@ -83,7 +85,9 @@ module.exports = function(grunt) {
 
       debug: Object.assign(webpackOptions("sir-trevor.debug.js"), {
         debug: true,
-      })
+      }),
+
+      test: webpackOptions("sir-trevor.test.js")
     },
 
     karma: {
@@ -137,6 +141,9 @@ module.exports = function(grunt) {
             it: true,
             spyOn: true,
             beforeEach: true,
+            afterEach: true,
+            beforeAll: true,
+            afterAll: true
           },
         }),
       },
@@ -148,17 +155,55 @@ module.exports = function(grunt) {
           'build/sir-trevor.css': 'src/sass/main.scss'
         }
       },
+      test: {
+        files: {
+          'build/sir-trevor.test.css': 'src/sass/main.scss'
+        },
+        options: {
+          sourceMap: false
+        }
+      },
 
       options: {
         sourceMap: true,
         includePaths: require('node-bourbon').includePaths,
       }
-    }
+    },
 
+    connect: {
+      server: {
+        options: {
+          port: 8000,
+          hostname: '127.0.0.1',
+        }
+      }
+    },
+
+    jasmine_nodejs: {
+      options: {
+        specNameSuffix: "spec.js",
+        useHelpers: false,
+        stopOnFailure: false,
+        reporters: {
+          console: {
+            colors: true,
+            cleanStack: 1,
+            verbosity: 1,
+            listStyle: "flat",
+            activity: true
+          }
+        },
+      },
+      test: {
+        specs: [
+          "spec/e2e/basic.spec.js"
+        ]
+      }
+    }
   });
 
   grunt.registerTask('default', ['test', 'sass', 'webpack', 'uglify']);
-  grunt.registerTask('test', ['jshint', 'karma']);
+  grunt.registerTask('test', ['jshint', 'karma', 'webpack:test', 'sass:test', 'connect', 'jasmine_nodejs']);
   grunt.registerTask('dev', ['sass', 'webpack:debug']);
   grunt.registerTask('jasmine-browser', ['server', 'watch']);
 

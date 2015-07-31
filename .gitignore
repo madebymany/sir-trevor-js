@@ -7,3 +7,4 @@ components/
 .grunt
 website/.bundle/
 website/vendor/
+build/*.test.*
