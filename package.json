@@ -35,7 +35,7 @@
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "~0.3.1",
-    "karma-webpack": "^1.5.0",
+    "karma-webpack": "1.6.0",
     "lodash": "^2.4.1",
     "lodash.isempty": "^2.4.1",
     "lodash.isfunction": "^2.4.1",
