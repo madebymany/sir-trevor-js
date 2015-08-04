@@ -196,7 +196,7 @@ module.exports = function(grunt) {
       },
       test: {
         specs: [
-          "spec/e2e/basic.spec.js"
+          "spec/e2e/*.spec.js"
         ]
       }
     }
