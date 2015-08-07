@@ -3,6 +3,10 @@
 require('es5-shim');
 require('es6-shim');
 
+var path = require('path');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var webpackConfigMerger = require('webpack-config-merger');
+
 module.exports = function(grunt) {
 
   var banner = [
@@ -53,7 +57,7 @@ module.exports = function(grunt) {
       output: {
         library: "SirTrevor",
         libraryTarget: "umd",
-        path: "build/",
+        path: path.join(__dirname, 'build'),
         filename: filename
       },
       externals: {
@@ -63,6 +67,13 @@ module.exports = function(grunt) {
           commonjs2: "jquery",
           amd: "jquery"
         }
+      },
+      module: {
+        loaders: [{
+          test: /\.js?$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel?optional[]=runtime'
+        }]
       }
     }
   };
@@ -82,12 +93,27 @@ module.exports = function(grunt) {
 
     webpack: {
       dist: webpackOptions("sir-trevor.js"),
-
-      debug: Object.assign(webpackOptions("sir-trevor.debug.js"), {
-        debug: true,
-      }),
-
       test: webpackOptions("sir-trevor.test.js")
+    },
+
+    "webpack-dev-server": {
+      start: {
+        webpack: webpackConfigMerger(webpackOptions("sir-trevor.debug.js"), {
+          debug: true,
+          plugins: [
+            new ExtractTextPlugin("sir-trevor.debug.css")
+          ],
+          module: {
+            preLoaders: [{
+              test: /\.scss$/,
+              loader: ExtractTextPlugin.extract('css!autoprefixer!sass?outputStyle=compressed')
+            }]
+          }
+        }),
+        keepalive: true,
+        hot: true,
+        contentBase: "./"
+      }
     },
 
     karma: {
@@ -204,7 +230,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', ['test', 'sass', 'webpack', 'uglify']);
   grunt.registerTask('test', ['jshint', 'karma', 'webpack:test', 'sass:test', 'connect', 'jasmine_nodejs']);
-  grunt.registerTask('dev', ['sass', 'webpack:debug']);
+  grunt.registerTask('dev', ['webpack-dev-server:start']);
   grunt.registerTask('jasmine-browser', ['server', 'watch']);
 
 };

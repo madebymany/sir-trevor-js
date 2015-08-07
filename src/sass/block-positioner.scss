@@ -8,7 +8,7 @@
 
   visibility: hidden;
   opacity: 0;
-  @include transition(opacity 0.2s ease-in-out);
+  transition: opacity 0.2s ease-in-out;
 }
 
 .st-block-positioner--is-visible {
@@ -28,7 +28,7 @@
   border: $default-border;
   background: #fff;
 
-  @include transform(rotate(45deg));
+  transform: rotate(45deg);
 }
 
 .st-block-positioner__inner {

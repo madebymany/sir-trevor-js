@@ -9,7 +9,7 @@
   border-radius: 0.4em;
   padding: 0;
 
-  @include transition(opacity 0.2s ease-in-out);
+  transition: opacity 0.2s ease-in-out;
 }
 
 .st-format-bar:before {
