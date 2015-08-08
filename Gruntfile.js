@@ -3,10 +3,6 @@
 require('es5-shim');
 require('es6-shim');
 
-var path = require('path');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var webpackConfigMerger = require('webpack-config-merger');
-
 module.exports = function(grunt) {
 
   var banner = [
@@ -19,64 +15,6 @@ module.exports = function(grunt) {
     ' * <%= grunt.template.today("yyyy-mm-dd") %>',
     ' */\n\n',
   ].join("\n");
-
-  var jsHintDefaultOptions = {
-    // Errors
-    bitwise: true,
-    camelcase: false,
-    curly: true,
-    eqeqeq: true,
-    forin: true,
-    freeze: true,
-    immed: true,
-    indent: 2,
-    latedef: true,
-    newcap: true,
-    noarg: true,
-    nonbsp: true,
-    nonew: true,
-    strict: true,
-    maxparams: 4,
-    maxdepth: 3,
-    maxcomplexity: 10,
-    undef: true,
-    unused: 'vars',
-
-    // Relax
-    eqnull: true,
-
-    // Envs
-    browser: true,
-    jquery: true,
-    node: true,
-  }
-
-  var webpackOptions = function(filename){
-    return {
-      entry: "./index.js",
-      output: {
-        library: "SirTrevor",
-        libraryTarget: "umd",
-        path: path.join(__dirname, 'build'),
-        filename: filename
-      },
-      externals: {
-        "jquery": {
-          root: "jQuery",
-          commonjs: "jquery",
-          commonjs2: "jquery",
-          amd: "jquery"
-        }
-      },
-      module: {
-        loaders: [{
-          test: /\.js?$/,
-          exclude: /(node_modules|bower_components)/,
-          loader: 'babel?optional[]=runtime'
-        }]
-      }
-    }
-  };
 
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -92,24 +30,14 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON('package.json'),
 
     webpack: {
-      dist: webpackOptions("sir-trevor.js"),
-      test: webpackOptions("sir-trevor.test.js")
+      dist: require('./config/webpack/dist'),
+      test: require('./config/webpack/test'),
+      uncompressed: require('./config/webpack/uncompressed')
     },
 
     "webpack-dev-server": {
       start: {
-        webpack: webpackConfigMerger(webpackOptions("sir-trevor.debug.js"), {
-          debug: true,
-          plugins: [
-            new ExtractTextPlugin("sir-trevor.debug.css")
-          ],
-          module: {
-            preLoaders: [{
-              test: /\.scss$/,
-              loader: ExtractTextPlugin.extract('css!autoprefixer!sass?outputStyle=compressed')
-            }]
-          }
-        }),
+        webpack: require('./config/webpack/dev'),
         keepalive: true,
         hot: true,
         contentBase: "./"
@@ -118,83 +46,11 @@ module.exports = function(grunt) {
 
     karma: {
       test: {
-        configFile: 'karma.conf.js'
+        configFile: './config/karma.conf.js'
       }
     },
 
-    uglify: {
-      options: {
-        mangle: false,
-        banner: banner
-      },
-      dist: {
-        files: {
-          'build/sir-trevor.min.js': ['build/sir-trevor.js']
-        }
-      },
-    },
-
-    watch: {
-      scripts: {
-        files: ['src/*.js', 'src/**/*.js', 'src/sass/*.scss'],
-        tasks: ['dev'],
-      }
-    },
-
-    jshint: {
-      lib: {
-        src: ['index.js', 'src/**/*.js'],
-        options: Object.assign({}, jsHintDefaultOptions, {
-          jquery: false,
-          globals: {
-            i18n: true,
-            webkitURL: true,
-          },
-        }),
-      },
-
-      tests: {
-        src: ['spec/**/*.js'],
-        options: Object.assign({}, jsHintDefaultOptions, {
-          globals: {
-            _: true,
-            SirTrevor: true,
-            i18n: true,
-            webkitURL: true,
-            jasmine: true,
-            describe: true,
-            expect: true,
-            it: true,
-            spyOn: true,
-            beforeEach: true,
-            afterEach: true,
-            beforeAll: true,
-            afterAll: true
-          },
-        }),
-      },
-    },
-
-    sass: {
-      dist: {
-        files: {
-          'build/sir-trevor.css': 'src/sass/main.scss'
-        }
-      },
-      test: {
-        files: {
-          'build/sir-trevor.test.css': 'src/sass/main.scss'
-        },
-        options: {
-          sourceMap: false
-        }
-      },
-
-      options: {
-        sourceMap: true,
-        includePaths: require('node-bourbon').includePaths,
-      }
-    },
+    jshint: require('./config/jshint.conf'),
 
     connect: {
       server: {
@@ -228,9 +84,7 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', ['test', 'sass', 'webpack', 'uglify']);
-  grunt.registerTask('test', ['jshint', 'karma', 'webpack:test', 'sass:test', 'connect', 'jasmine_nodejs']);
+  grunt.registerTask('default', ['test', 'webpack:uncompressed', 'webpack:dist']);
+  grunt.registerTask('test', ['jshint', 'karma', 'webpack:test', 'connect', 'jasmine_nodejs']);
   grunt.registerTask('dev', ['webpack-dev-server:start']);
-  grunt.registerTask('jasmine-browser', ['server', 'watch']);
-
 };
