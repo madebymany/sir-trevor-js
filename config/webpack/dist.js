@@ -7,7 +7,7 @@ module.exports = webpackConfigMerger(require('./config'), {
     filename: 'sir-trevor.min.js'
   },
   plugins: [
-    new ExtractTextPlugin("sir-trevor.css"),
+    new ExtractTextPlugin("sir-trevor.min.css"),
     new webpack.optimize.UglifyJsPlugin({
       minimize: true,
       compress: {
