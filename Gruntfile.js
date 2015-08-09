@@ -5,17 +5,6 @@ require('es6-shim');
 
 module.exports = function(grunt) {
 
-  var banner = [
-    '/*!',
-    ' * Sir Trevor JS v<%= pkg.version %>',
-    ' *',
-    ' * Released under the MIT license',
-    ' * www.opensource.org/licenses/MIT',
-    ' *',
-    ' * <%= grunt.template.today("yyyy-mm-dd") %>',
-    ' */\n\n',
-  ].join("\n");
-
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
