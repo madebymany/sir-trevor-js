@@ -5,7 +5,7 @@ describe("Block:Uploadable Block", function(){
   var element, editor, block;
 
   beforeEach(function(){
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
 
     SirTrevor.Blocks.UploadableBlock = SirTrevor.Block.extend({
@@ -28,13 +28,13 @@ describe("Block:Uploadable Block", function(){
         .toHaveBeenCalledWith(SirTrevor.BlockMixins.Uploadable);
     });
 
-    it("creates an $inputs element", function(){
-      expect(block.$inputs)
+    it("creates an inputs element", function(){
+      expect(block.inputs)
         .not.toBe(undefined);
     });
 
     it("appends the html to the inputs element", function(){
-      expect(block.$inputs.find('.st-block__upload-container').length)
+      expect(block.inputs.querySelectorAll('.st-block__upload-container').length)
         .toBe(1);
     });
 

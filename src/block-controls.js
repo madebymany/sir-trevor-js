@@ -7,11 +7,12 @@
  */
 
 var _ = require('./lodash');
-var $ = require('jquery');
 
 var Blocks = require('./blocks');
 var BlockControl = require('./block-control');
 var EventBus = require('./event-bus');
+var Events = require('./packages/events');
+var Dom = require('./packages/dom');
 
 var BlockControls = function(available_types, mediator) {
   this.available_types = available_types || [];
@@ -43,24 +44,24 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./me
       if (Blocks.hasOwnProperty(block_type)) {
         var block_control = new BlockControl(block_type);
         if (block_control.can_be_rendered) {
-          this.$el.append(block_control.render().$el);
+          this.el.appendChild(block_control.render().el);
         }
       }
     }
 
-    this.$el.delegate('.st-block-control', 'click', this.handleControlButtonClick);
+    Events.delegate(this.el, '.st-block-control', 'click', this.handleControlButtonClick);
     this.mediator.on('block-controls:show', this.renderInContainer);
   },
 
   show: function() {
-    this.$el.addClass('st-block-controls--active');
+    this.el.classList.add('st-block-controls--active');
 
     EventBus.trigger('block:controls:shown');
   },
 
   hide: function() {
     this.removeCurrentContainer();
-    this.$el.removeClass('st-block-controls--active');
+    this.el.classList.remove('st-block-controls--active');
 
     EventBus.trigger('block:controls:hidden');
   },
@@ -68,14 +69,16 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./me
   handleControlButtonClick: function(e) {
     e.stopPropagation();
 
-    this.mediator.trigger('block:create', $(e.currentTarget).attr('data-type'));
+    this.mediator.trigger('block:create', e.currentTarget.getAttribute('data-type'));
   },
 
   renderInContainer: function(container) {
     this.removeCurrentContainer();
 
-    container.append(this.$el.detach());
-    container.addClass('with-st-controls');
+    Dom.remove(this.el);
+
+    container.appendChild(this.el);
+    container.classList.add('with-st-controls');
 
     this.currentContainer = container;
     this.show();
@@ -83,7 +86,7 @@ Object.assign(BlockControls.prototype, require('./function-bind'), require('./me
 
   removeCurrentContainer: function() {
     if (!_.isUndefined(this.currentContainer)) {
-      this.currentContainer.removeClass("with-st-controls");
+      this.currentContainer.classList.remove("with-st-controls");
       this.currentContainer = undefined;
     }
   }

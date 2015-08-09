@@ -6,7 +6,7 @@ describe('Blocks: Markdown support', function() {
   var data, block;
 
   var createBlock = function(type, data) {
-    var element = $("<textarea>");
+    var element = global.createBaseElement();
     var editor = new SirTrevor.Editor({ el: element });
     var options = editor.block_manager.blockOptions;
     var Klass = SirTrevor.Blocks[utils.classify(type)];

@@ -8,7 +8,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "thinkerous/sir-trevor-js": "feature/addComponent",
-    "components/jquery": "*"
+    "thinkerous/sir-trevor-js": "feature/addComponent"
   }
 }

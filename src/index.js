@@ -6,8 +6,7 @@ var _ = require('./lodash');
 require('object.assign').shim();
 require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
-
-require('./helpers/event'); // extends jQuery itself
+require('es6-promise').polyfill();
 
 var utils = require('./utils');
 
@@ -16,6 +15,7 @@ var SirTrevor = {
   config: require('./config'),
 
   log: utils.log,
+
   Locales: require('./locales'),
 
   Events: require('./events'),

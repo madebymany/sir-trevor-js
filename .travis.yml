@@ -8,3 +8,6 @@ branches:
 before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+cache:
+  directories:
+    - node_modules

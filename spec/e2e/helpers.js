@@ -65,7 +65,7 @@ exports.initSirTrevor = function(data) {
   javascriptString.push(
     /*jshint multistr: true */
     "window.editor = new SirTrevor.Editor({ \
-      el: $('.sir-trevor'), \
+      el: document.querySelector('.sir-trevor'), \
       blockTypes: ['Heading', 'Text', 'List', 'Quote', 'Image', 'Video', 'Tweet'] \
     });"
   );

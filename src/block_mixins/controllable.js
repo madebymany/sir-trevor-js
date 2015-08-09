@@ -1,8 +1,8 @@
 "use strict";
 
-var $ = require('jquery');
-
 var utils = require('../utils');
+var Dom = require('../packages/dom');
+var Events = require('../packages/events');
 
 module.exports = {
 
@@ -10,7 +10,7 @@ module.exports = {
 
   initializeControllable: function() {
     utils.log("Adding controllable to block " + this.blockID);
-    this.$control_ui = $('<div>', {'class': 'st-block__control-ui'});
+    this.control_ui = Dom.createElement('div', {'class': 'st-block__control-ui'});
     Object.keys(this.controls).forEach(
       function(cmd) {
         // Bind configured handler to current block context
@@ -18,18 +18,18 @@ module.exports = {
       },
       this
     );
-    this.$inner.append(this.$control_ui);
+    this.inner.appendChild(this.control_ui);
   },
 
   getControlTemplate: function(cmd) {
-    return $("<a>",
+    return Dom.createElement("a",
       { 'data-icon': cmd,
         'class': 'st-icon st-block-control-ui-btn st-block-control-ui-btn--' + cmd
       });
   },
 
   addUiControl: function(cmd, handler) {
-    this.$control_ui.append(this.getControlTemplate(cmd));
-    this.$control_ui.on('click', '.st-block-control-ui-btn--' + cmd, handler);
+    this.control_ui.appendChild(this.getControlTemplate(cmd));
+    Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, 'click', handler);
   }
 };

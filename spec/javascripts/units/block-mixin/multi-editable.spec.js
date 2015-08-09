@@ -5,7 +5,7 @@ describe("Block Mixin: MultiEditable", function() {
   var tpl = '<div class="st-block__editor"></div>';
 
   beforeEach(function() {
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
     var options = editor.block_manager.blockOptions;
 

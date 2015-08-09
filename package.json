@@ -12,13 +12,16 @@
     "dev": "grunt dev watch"
   },
   "dependencies": {
-    "es5-shim": "^4.0.3",
-    "jquery": "^2.1.1"
+    "es5-shim": "^4.0.3"
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",
     "autoprefixer-loader": "^2.0.0",
+    "babel-core": "^5.8.14",
+    "babel-loader": "^5.3.2",
+    "babel-runtime": "^5.8.12",
     "css-loader": "^0.15.6",
+    "es6-promise": "^2.3.0",
     "es6-shim": "^0.21.0",
     "eventablejs": "^1.0.5",
     "extract-text-webpack-plugin": "^0.8.2",
@@ -26,14 +29,14 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-connect": "^0.10.1",
     "grunt-contrib-jasmine": "^0.8.1",
-    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.3.1",
     "grunt-jasmine-nodejs": "^1.4.2",
     "grunt-karma": "^0.9.0",
     "grunt-sass": "^0.18.0",
     "grunt-webpack": "^1.0.8",
-    "jasmine-jquery": "^2.0.5",
+    "jsonp-promise": "^0.1.2",
     "karma": "~0.12.28",
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.4",
@@ -59,6 +62,7 @@
     "style-loader": "^0.12.3",
     "webpack": "^1.8.4",
     "webpack-config-merger": "0.0.3",
-    "webpack-dev-server": "^1.8.0"
+    "webpack-dev-server": "^1.8.0",
+    "whatwg-fetch": "^0.9.0"
   }
 }

@@ -5,7 +5,7 @@ describe("Block:Store", function(){
   var element, editor, block;
 
   beforeEach(function(){
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
   });
 

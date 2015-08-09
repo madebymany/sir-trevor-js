@@ -1,11 +1,10 @@
 "use strict";
 
 var _ = require('./lodash');
-var $ = require('jquery');
 var utils = require('./utils');
 
 var bestNameFromField = function(field) {
-  var msg = field.attr("data-st-name") || field.attr("name");
+  var msg = field.getAttribute("data-st-name") || field.getAttribute("name");
 
   if (!msg) {
     msg = 'Field';
@@ -29,21 +28,20 @@ module.exports = {
     this.resetErrors();
 
     var required_fields = this.$('.st-required');
-    required_fields.each(function (i, f) {
+    Array.prototype.forEach.call(required_fields, function (f, i) {
       this.validateField(f);
     }.bind(this));
     this.validations.forEach(this.runValidator, this);
 
-    this.$el.toggleClass('st-block--with-errors', this.errors.length > 0);
+    this.el.classList.toggle('st-block--with-errors', this.errors.length > 0);
   },
 
   // Everything in here should be a function that returns true or false
   validations: [],
 
   validateField: function(field) {
-    field = $(field);
-
-    var content = field.attr('contenteditable') ? field.text() : field.val();
+    
+    var content = field.getAttribute('contenteditable') ? field.textContent : field.value;
 
     if (content.length === 0) {
       this.setError(field, i18n.t("errors:block_empty",
@@ -58,19 +56,19 @@ module.exports = {
   },
 
   setError: function(field, reason) {
-    var $msg = this.addMessage(reason, "st-msg--error");
-    field.addClass('st-error');
+    var msg = this.addMessage(reason, "st-msg--error");
+    field.classList.add('st-error');
 
-    this.errors.push({ field: field, reason: reason, msg: $msg });
+    this.errors.push({ field: field, reason: reason, msg: msg });
   },
 
   resetErrors: function() {
     this.errors.forEach(function(error){
-      error.field.removeClass('st-error');
+      error.field.classList.remove('st-error');
       error.msg.remove();
     });
 
-    this.$messages.removeClass("st-block__messages--is-visible");
+    this.messages.classList.remove("st-block__messages--is-visible");
     this.errors = [];
   }
 

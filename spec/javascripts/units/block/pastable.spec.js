@@ -5,7 +5,7 @@ describe("Block:Pastable Block", function(){
   var element, editor, block;
 
   beforeEach(function(){
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
 
     SirTrevor.Blocks.PastableBlock = SirTrevor.Block.extend({
@@ -27,12 +27,12 @@ describe("Block:Pastable Block", function(){
         .toHaveBeenCalledWith(SirTrevor.BlockMixins.Pastable);
     });
 
-    it("creates an $inputs element", function(){
-      expect(block.$inputs).not.toBe(undefined);
+    it("creates an inputs element", function(){
+      expect(block.inputs).not.toBe(undefined);
     });
 
     it("appends the html to the inputs element", function(){
-      expect(block.$inputs.find('.st-paste-block').length)
+      expect(block.inputs.querySelectorAll('.st-paste-block').length)
         .toBe(1);
     });
 

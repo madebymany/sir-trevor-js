@@ -23,7 +23,7 @@ Object.assign(BlockControl.prototype, require('./function-bind'), require('./ren
   },
 
   render: function() {
-    this.$el.html('<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>' + _.result(this.block_type, 'title'));
+    this.el.innerHTML = '<span class="st-icon">'+ _.result(this.block_type, 'icon_name') +'</span>' + _.result(this.block_type, 'title');
     return this;
   }
 });

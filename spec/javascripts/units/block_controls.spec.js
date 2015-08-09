@@ -19,10 +19,6 @@ describe("BlockControls", function(){
       expect(block_control.available_types).toBeDefined();
     });
 
-    it("creates an $el", function(){
-      expect(block_control.$el).toBeDefined();
-    });
-
     it("creates an el", function(){
       expect(block_control.el).toBeDefined();
     });
@@ -42,7 +38,7 @@ describe("BlockControls", function(){
     });
 
     it("creates a control element for every type given", function(){
-      expect(block_control.$el.children().length).toBe(2);
+      expect(block_control.el.children.length).toBe(2);
     });
 
   });

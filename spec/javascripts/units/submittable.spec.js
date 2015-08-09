@@ -1,22 +1,20 @@
 "use strict";
 
+var utils = require('../../../src/packages/dom');
+
 describe("SirTrevor.Submittable", function() {
 
   var submittable;
   var formTemplate = "<form><input type='submit' value='Go!'></form>";
 
   beforeEach(function() {
-    submittable = new SirTrevor.Submittable($(formTemplate));
+    submittable = new SirTrevor.Submittable(utils.createDocumentFragmentFromString(formTemplate));
   });
 
   describe("submitBtn", function() {
 
-    it("should be a jQuery element", function() {
-      expect(submittable.submitBtn instanceof $).toBe(true);
-    });
-
     it("should be an input btn", function() {
-      expect(submittable.submitBtn[0].nodeName).toBe("INPUT");
+      expect(submittable.submitBtns[0].nodeName).toBe("INPUT");
     });
 
   });
@@ -36,11 +34,11 @@ describe("SirTrevor.Submittable", function() {
     });
 
     it("should set a disabled attribute", function() {
-      expect(submittable.submitBtn.attr('disabled')).toBe('disabled');
+      expect(submittable.submitBtns[0].getAttribute('disabled')).toBe('disabled');
     });
 
     it("should set a disabled class", function() {
-      expect(submittable.submitBtn.hasClass('disabled')).toBe(true);
+      expect(submittable.submitBtns[0].classList.contains('disabled')).toBe(true);
     });
 
   });
@@ -53,11 +51,11 @@ describe("SirTrevor.Submittable", function() {
     });
 
     it("shouldn't set a disabled attribute", function() {
-      expect(submittable.submitBtn.attr('disabled')).toBe(undefined);
+      expect(submittable.submitBtns[0].getAttribute('disabled')).toBe(null);
     });
 
     it("shouldn't have a disabled class", function() {
-      expect(submittable.submitBtn.hasClass('disabled')).toBe(false);
+      expect(submittable.submitBtns[0].classList.contains('disabled')).toBe(false);
     });
 
   });
@@ -66,7 +64,7 @@ describe("SirTrevor.Submittable", function() {
 
     it("Adds the title provided", function() {
       submittable.setSubmitButton(null, "YOLO");
-      expect(submittable.submitBtn.attr('value')).toBe('YOLO');
+      expect(submittable.submitBtns[0].value).toBe('YOLO');
     });
 
   });
@@ -80,7 +78,7 @@ describe("SirTrevor.Submittable", function() {
     });
 
     it("should reset the title back to its previous state", function() {
-      expect(submittable.submitBtn.attr('value')).toContain("Go!");
+      expect(submittable.submitBtns[0].value).toContain("Go!");
     });
 
   });

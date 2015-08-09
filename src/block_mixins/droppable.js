@@ -3,9 +3,11 @@
 /* Adds drop functionaltiy to this block */
 
 var _ = require('../lodash');
-var $ = require('jquery');
 var config = require('../config');
 var utils = require('../utils');
+var Dom = require('../packages/dom');
+
+var dropEvents = require('../helpers/drop-events');
 
 var EventBus = require('../event-bus');
 
@@ -20,29 +22,28 @@ module.exports = {
 
     this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
-    var drop_html = $(_.template(this.drop_options.html,
-                                 { block: this, _: _ }));
+    var drop_html = Dom.createDocumentFragmentFromString(
+                      _.template(this.drop_options.html,
+                        { block: this, _: _ })
+                    );
 
-    this.$editor.hide();
-    this.$inputs.append(drop_html);
-    this.$dropzone = drop_html;
+    Dom.hide(this.editor);
+    this.inputs.appendChild(drop_html);
+    this.dropzone = drop_html;
 
     // Bind our drop event
-    this.$dropzone.dropArea()
-                  .bind('drop', this._handleDrop.bind(this));
+    dropEvents.dropArea(this.dropzone).addEventListener('drop', this._handleDrop.bind(this));
 
-    this.$inner.addClass('st-block__inner--droppable');
+    this.inner.classList.add('st-block__inner--droppable');
   },
 
   _handleDrop: function(e) {
     e.preventDefault();
 
-    e = e.originalEvent;
-
-    var el = $(e.target),
+    var el = e.target,
         types = e.dataTransfer.types;
 
-    el.removeClass('st-dropzone--dragover');
+    el.classList.remove('st-dropzone--dragover');
 
     /*
       Check the type we just received,

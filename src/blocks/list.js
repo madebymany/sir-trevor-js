@@ -80,8 +80,7 @@ module.exports = Block.extend({
   },
 
   setupListVariables: function() {
-    this.$ul = this.$inner.find('ul');
-    this.ul = this.$ul.get(0);
+    this.ul = this.inner.querySelector('ul');
   },
 
   loadData: function(data) {
@@ -141,7 +140,7 @@ module.exports = Block.extend({
       var idx = this.editorIds.indexOf(after.id) + 1;
       this.editorIds.splice(idx, 0, editor.id);
     } else {
-      this.$ul.append(editor.node);
+      this.ul.appendChild(editor.node);
       this.editorIds.push(editor.id);
     }
 

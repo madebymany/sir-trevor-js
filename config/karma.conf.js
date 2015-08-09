@@ -65,7 +65,10 @@ module.exports = function(config) {
         preLoaders: [{
           test: /\.scss$/,
           loader: 'css!autoprefixer!sass?outputStyle=compressed'
-        }]
+        }],
+        loaders: [
+          { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel?stage=0&optional=runtime' },
+        ]
       }
     },
 
