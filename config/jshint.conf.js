@@ -14,7 +14,7 @@ var jsHintDefaultOptions = {
   nonbsp: true,
   nonew: true,
   strict: true,
-  maxparams: 4,
+  maxparams: 5,
   maxdepth: 3,
   maxcomplexity: 10,
   undef: true,
@@ -27,6 +27,8 @@ var jsHintDefaultOptions = {
   browser: true,
   jquery: true,
   node: true,
+
+  esnext: true,
 }
 
 module.exports = {
@@ -57,7 +59,8 @@ module.exports = {
         beforeEach: true,
         afterEach: true,
         beforeAll: true,
-        afterAll: true
+        afterAll: true,
+        xit: true
       },
     }),
   },
