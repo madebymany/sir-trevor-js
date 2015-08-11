@@ -6,7 +6,7 @@ describe("Editor:Submission", function(){
 
   beforeEach(function(){
     SirTrevor.instances = [];
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({
       el: element, defaultType: false
     });

@@ -1,9 +1,10 @@
 "use strict";
 
 var _ = require('../lodash');
-var $ = require('jquery');
 var config = require('../config');
 var utils = require('../utils');
+var Dom = require('../packages/dom');
+
 
 module.exports = {
 
@@ -15,12 +16,22 @@ module.exports = {
 
     this.paste_options = Object.assign(
       {}, config.defaults.Block.paste_options, this.paste_options);
-    this.$inputs.append(_.template(this.paste_options.html, this));
 
-    this.$('.st-paste-block')
-      .bind('click', function(){ $(this).select(); })
-      .bind('paste', this._handleContentPaste)
-      .bind('submit', this._handleContentPaste);
+    this.inputs.appendChild(
+      Dom.createDocumentFragmentFromString(
+        _.template(this.paste_options.html, this)
+      )
+    );
+
+    Array.prototype.forEach.call(this.$('.st-paste-block'), function(el) {
+      el.addEventListener('click', function() { 
+        var event = document.createEvent('HTMLEvents');
+        event.initEvent('select', true, false);
+        this.dispatchEvent(event);
+      });
+      el.addEventListener('paste', this._handleContentPaste);
+      el.addEventListener('submit', this._handleContentPaste);
+    }.bind(this));
   }
 
 };

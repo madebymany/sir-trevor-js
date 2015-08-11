@@ -6,7 +6,7 @@ describe("Editor", function(){
 
   beforeEach(function(){
     SirTrevor.instances = [];
-    element = $("<textarea>");
+    element = global.createBaseElement();
   });
 
   describe("instantiating without an element", function(){
@@ -41,16 +41,16 @@ describe("Editor", function(){
       editor = new SirTrevor.Editor({ el: element });
     });
 
-    it("creates a $form element", function(){
-      expect(editor.$form).toBeDefined();
+    it("creates a form element", function(){
+      expect(editor.form).toBeDefined();
     });
 
-    it("creates an $outer element", function(){
-      expect(editor.$outer).toBeDefined();
+    it("creates an outer element", function(){
+      expect(editor.outer).toBeDefined();
     });
 
-    it("creates a $wrapper element", function(){
-      expect(editor.$wrapper).toBeDefined();
+    it("creates a wrapper element", function(){
+      expect(editor.wrapper).toBeDefined();
     });
 
   });

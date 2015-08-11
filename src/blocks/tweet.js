@@ -1,8 +1,8 @@
 "use strict";
 
 var _ = require('../lodash');
-var $ = require('jquery');
 var utils = require('../utils');
+var Dom = require('../packages/dom');
 
 var Block = require('../block');
 
@@ -36,14 +36,20 @@ module.exports = Block.extend({
 
   loadData: function(data) {
     if (_.isUndefined(data.status_url)) { data.status_url = ''; }
-    this.$inner.find('iframe').remove();
-    this.$inner.prepend(tweet_template(data));
+    var iframe = this.inner.querySelector('iframe');
+    Dom.remove(iframe);
+
+    this.inner.insertBefore(
+      Dom.createDocumentFragmentFromString(
+        tweet_template(data)
+      ), this.inner.firstChild
+    );
   },
 
   onContentPasted: function(event){
     // Content pasted. Delegate to the drop parse method
-    var input = $(event.target),
-    val = input.val();
+    var input = event.target,
+    val = input.value;
 
     // Pass this to the same handler as onDrop
     this.handleTwitterDropPaste(val);
@@ -61,12 +67,7 @@ module.exports = Block.extend({
       this.loading();
       tweetID = tweetID[0];
 
-      var ajaxOptions = {
-        url: this.fetchUrl(tweetID),
-        dataType: "json"
-      };
-
-      this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
+      this.fetch(url, undefined, this.onTweetSuccess, this.onTweetFail);
     }
   },
 

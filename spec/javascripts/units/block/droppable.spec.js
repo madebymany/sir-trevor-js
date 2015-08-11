@@ -5,7 +5,7 @@ describe("Block:Droppable Block", function(){
   var element, editor, block;
 
   beforeEach(function(){
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
 
     SirTrevor.Blocks.DroppableBlock = SirTrevor.Block.extend({
@@ -27,17 +27,17 @@ describe("Block:Droppable Block", function(){
         .toHaveBeenCalledWith(SirTrevor.BlockMixins.Droppable);
     });
 
-    it("adds a droppable class to $inner", function(){
-      expect(block.$inner.hasClass('st-block__inner--droppable'));
+    it("adds a droppable class to inner", function(){
+      expect(block.inner.classList.contains('st-block__inner--droppable'));
     });
 
-    it("creates an $inputs element", function(){
-      expect(block.$inputs)
+    it("creates an inputs element", function(){
+      expect(block.inputs)
         .not.toBe(undefined);
     });
 
     it("appends the html to the inputs element", function(){
-      expect(block.$inputs.find('.st-block__dropzone').length)
+      expect(block.inputs.querySelectorAll('.st-block__dropzone').length)
         .toBe(1);
     });
 

@@ -35,6 +35,6 @@ module.exports = Block.extend({
       this.setTextBlockHTML(data.text);
     }
 
-    this.$('.js-cite-input').val(data.cite);
+    this.$('.js-cite-input')[0].value = data.cite;
   }
 });

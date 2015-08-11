@@ -1,12 +1,13 @@
 "use strict";
 
 var _ = require('./lodash');
-var $ = require('jquery');
 
 var ScribeInterface = require('./scribe-interface');
 
 var config = require('./config');
 var utils = require('./utils');
+var Dom = require('./packages/dom');
+var Events = require('./packages/events');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
@@ -97,8 +98,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.beforeBlockRender();
     this._setBlockInner();
 
-    this.$editor = this.$inner.children().first();
-
+    this.editor = this.inner.children[0];
+    
     this.mixinsRequireInputs = false;
     this.availableMixins.forEach(function(mixin) {
       if (this[mixin]) {
@@ -110,9 +111,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }, this);
 
     if(this.mixinsRequireInputs) {
-      var input_html = $("<div>", { 'class': 'st-block__inputs' });
-      this.$inner.append(input_html);
-      this.$inputs = input_html;
+      var input_html = document.createElement("div");
+      input_html.classList.add('st-block__inputs');
+      this.inner.appendChild(input_html);
+      this.inputs = input_html;
     }
 
     if (this.hasTextBlock()) { this._initTextBlocks(); }
@@ -135,20 +137,20 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       this.resolveAllInQueue();
     }
 
-    this.$el.remove();
+    Dom.remove(this.el);
   },
 
   loading: function() {
     if(!_.isUndefined(this.spinner)) { this.ready(); }
 
     this.spinner = new Spinner(config.defaults.spinner);
-    this.spinner.spin(this.$el[0]);
+    this.spinner.spin(this.el);
 
-    this.$el.addClass('st--is-loading');
+    this.el.classList.add('st--is-loading');
   },
 
   ready: function() {
-    this.$el.removeClass('st--is-loading');
+    this.el.classList.remove('st--is-loading');
     if (!_.isUndefined(this.spinner)) {
       this.spinner.stop();
       delete this.spinner;
@@ -171,8 +173,14 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }
 
     // Add any inputs to the data attr
-    if (this.$(':input').not('.st-paste-block').length > 0) {
-      this.$(':input').each(function(index,input){
+    var matcher = [
+      'input:not([class="st-paste-block"])',
+      'textarea:not([class="st-paste-block"])',
+      'select:not([class="st-paste-block"])',
+      'button:not([class="st-paste-block"])'
+    ].join(",");
+    if (this.$(matcher).length > 0) {
+      Array.prototype.forEach.call(this.$('input, textarea, select, button'), function(input) {
         if (input.getAttribute('name')) {
           data[input.getAttribute('name')] = input.value;
         }
@@ -184,19 +192,27 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   /* Generic implementation to tell us when the block is active */
   focus: function() {
-    this.getTextBlock().focus();
+    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+      el.focus();
+    });
   },
 
   blur: function() {
-    this.getTextBlock().blur();
+    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+      el.blur();
+    });
   },
 
   onFocus: function() {
-    this.getTextBlock().bind('focus', this._onFocus);
+    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+      el.addEventListener('focus', this._onFocus);
+    }.bind(this));
   },
 
   onBlur: function() {
-    this.getTextBlock().bind('blur', this._onBlur);
+    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+      el.addEventListener('blur', this._onBlur);
+    }.bind(this));
   },
 
   /*
@@ -204,7 +220,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
    */
 
   _onFocus: function() {
-    this.trigger('blockFocus', this.$el);
+    this.trigger('blockFocus', this.el);
   },
 
   _onBlur: function() {},
@@ -226,32 +242,33 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var onDeleteDeny = function(e) {
       e.preventDefault();
-      this.$el.removeClass('st-block--delete-active');
-      $delete_el.remove();
+      this.el.classList.remove('st-block--delete-active');
+      Dom.remove(delete_el);
     };
 
     if (this.isEmpty()) {
       onDeleteConfirm.call(this, new Event('click'));
       return;
     }
+    this.inner.appendChild(
+      Dom.createDocumentFragmentFromString(
+        _.template(delete_template)()
+      )
+    );
+    this.el.classList.add('st-block--delete-active');
 
-    this.$inner.append(_.template(delete_template));
-    this.$el.addClass('st-block--delete-active');
+    var delete_el = this.inner.querySelector('.st-block__ui-delete-controls');
 
-    var $delete_el = this.$inner.find('.st-block__ui-delete-controls');
-
-    this.$inner.on('click', '.st-block-ui-btn--confirm-delete',
-                   onDeleteConfirm.bind(this))
-                   .on('click', '.st-block-ui-btn--deny-delete',
-                       onDeleteDeny.bind(this));
+    Events.delegate(this.inner, '.st-block-ui-btn--confirm-delete', 'click', onDeleteConfirm.bind(this));
+    Events.delegate(this.inner, '.st-block-ui-btn--deny-delete', 'click', onDeleteDeny.bind(this));
   },
 
   beforeLoadingData: function() {
     this.loading();
 
     if(this.mixinsRequireInputs) {
-      this.$editor.show();
-      this.$inputs.hide();
+      Dom.show(this.editor);
+      Dom.hide(this.inputs);
     }
 
     SimpleBlock.fn.beforeLoadingData.call(this);
@@ -276,7 +293,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _handleContentPaste: function(ev) {
-    setTimeout(this.onContentPasted.bind(this, ev, $(ev.currentTarget)), 0);
+    setTimeout(this.onContentPasted.bind(this, ev, ev.currentTarget), 0);
   },
 
   _getBlockClass: function() {
@@ -289,12 +306,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   _initUIComponents: function() {
 
-    var positioner = new BlockPositioner(this.$el, this.mediator);
+    var positioner = new BlockPositioner(this.el, this.mediator);
 
     this._withUIComponent(positioner, '.st-block-ui-btn--reorder',
                           positioner.toggle);
 
-    this._withUIComponent(new BlockReorder(this.$el, this.mediator));
+    this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
     this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn--delete',
                           this.onDeleteClick);
@@ -319,32 +336,32 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
       var ctrlDown = false;
 
-      block.$el
-        .on('keyup','.st-text-block', function(ev) {
-          if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
-            ctrlDown = false;
-          }
-        })
-        .on('keydown','.st-text-block', {formatter: cmd}, function(ev) {
-          if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
-            ctrlDown = true;
-          }
+      Events.delegate(block.el,'.st-text-block', 'keyup', function(ev) {
+        if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
+          ctrlDown = false;
+        }
+      });
+      Events.delegate(block.el, '.st-text-block', 'keydown', function(ev) {
+        if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
+          ctrlDown = true;
+        }
 
-          if(ev.which === ev.data.formatter.keyCode && ctrlDown) {
-            ev.preventDefault();
-            block.execTextBlockCommand(ev.data.formatter.cmd);
-          }
-        });
+        if(ev.which === cmd.keyCode && ctrlDown) {
+          ev.preventDefault();
+          block.execTextBlockCommand(cmd);
+        }
+      });
     });
   },
 
   _initTextBlocks: function() {
-    this.getTextBlock()
-        .bind('keyup', this.getSelectionForFormatter)
-        .bind('mouseup', this.getSelectionForFormatter)
-        .bind('DOMNodeInserted', this.clearInsertedStyles);
-
-    var textBlock = this.getTextBlock().get(0);
+    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+      el.addEventListener('keyup', this.getSelectionForFormatter);
+      el.addEventListener('mouseup', this.getSelectionForFormatter);
+      el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
+    }.bind(this));
+    
+    var textBlock = this.getTextBlock()[0];
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
 
       var configureScribe =
@@ -369,6 +386,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   clearInsertedStyles: function(e) {
     var target = e.target;
+    if (_.isUndefined(target.tagName)) {
+      target = target.parentNode;
+    }
     target.removeAttribute('style'); // Hacky fix for Chrome.
   },
 

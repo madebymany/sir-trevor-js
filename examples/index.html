@@ -29,11 +29,10 @@
   <script src="../node_modules/es5-shim/es5-shim.js" type="text/javascript" charset="utf-8"></script>
   <!-- es6-shim should be bundled in with SirTrevor for now -->
   <!-- <script src="../node_modules/es6-shim/es6-shim.js" type="text/javascript" charset="utf-8"></script> -->
-  <script src="../node_modules/jquery/dist/jquery.js" type="text/javascript" charset="utf-8"></script>
   <script src="../sir-trevor.debug.js" type="text/javascript" charset="utf-8"></script>
   <script src="../locales/de.js" type="text/javascript" charset="utf-8"></script>
   <script type="text/javascript" charset="utf-8">
-    $(function(){
+    (function(){
       SirTrevor.config.debug = true;
       SirTrevor.config.scribeDebug = true;
       SirTrevor.config.language = "en";
@@ -45,7 +44,7 @@
       });
 
       window.editor = new SirTrevor.Editor({
-        el: $('.sir-trevor'),
+        el: document.querySelector('.sir-trevor'),
         blockTypes: [
           "Heading",
           "Text",
@@ -57,12 +56,13 @@
         ]
       });
 
-      $('form').bind('submit', function () {
-        $('#st-json-debug').text(window.editor.store.toString(true));
-        return false;
+      document.querySelector('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        
+        document.querySelector('#st-json-debug').innerText = window.editor.store.toString(true);
       });
 
-    });
+    })();
   </script>
 </body>
 </html>

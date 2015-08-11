@@ -1,6 +1,6 @@
 "use strict";
 
-var $ = require('jquery');
+var Dom = require('../packages/dom');
 var Block = require('../block');
 
 module.exports = Block.extend({
@@ -15,15 +15,20 @@ module.exports = Block.extend({
 
   loadData: function(data){
     // Create our image tag
-    this.$editor.html($('<img>', { src: data.file.url }));
+    this.editor.innerHTML = '';
+    this.editor.appendChild(Dom.createElement('img', { src: data.file.url }));
   },
 
   onBlockRender: function(){
     /* Setup the upload button */
-    this.$inputs.find('button').bind('click', function(ev){ ev.preventDefault(); });
-    this.$inputs.find('input').on('change', (function(ev) {
-      this.onDrop(ev.currentTarget);
-    }).bind(this));
+    Array.prototype.forEach.call(this.inputs.querySelectorAll('button'), function(button) {
+      button.addEventListener('click', function(ev){ ev.preventDefault(); });
+    });
+    Array.prototype.forEach.call(this.inputs.querySelectorAll('input'), function(input) {
+      input.addEventListener('change', (function(ev) {
+        this.onDrop(ev.currentTarget);
+      }).bind(this));
+    }.bind(this));
   },
 
   onDrop: function(transferData){
@@ -34,9 +39,11 @@ module.exports = Block.extend({
     if (/image/.test(file.type)) {
       this.loading();
       // Show this image on here
-      this.$inputs.hide();
-      this.$editor.html($('<img>', { src: urlAPI.createObjectURL(file) })).show();
-
+      Dom.hide(this.inputs);
+      this.editor.innerHTML = '';
+      this.editor.appendChild(Dom.createElement('img', { src: urlAPI.createObjectURL(file) }));
+      Dom.show(this.editor);
+      
       this.uploader(
         file,
         function(data) {

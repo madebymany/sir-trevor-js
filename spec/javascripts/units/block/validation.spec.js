@@ -4,7 +4,7 @@ describe("Block:Validation", function(){
   var element, editor, block;
 
   beforeEach(function(){
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
     block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
   });
@@ -57,22 +57,22 @@ describe("Block:Validation", function(){
 
   describe("validateField", function(){
 
-    var $field;
+    var field;
 
     beforeEach(function(){
-      $field = $("<input>");
+      field = document.createElement("input");
       block.setError = function(field, reason){};
       spyOn(block, "setError");
     });
 
     it("will call setError if the field has no content", function(){
-      block.validateField($field);
+      block.validateField(field);
       expect(block.setError).toHaveBeenCalled();
     });
 
     it("will won't call setError if the field has content", function(){
-      $field.val("Test");
-      block.validateField($field);
+      field.value = "Test";
+      block.validateField(field);
       expect(block.setError).not.toHaveBeenCalled();
     });
 
