@@ -8,7 +8,6 @@
 
 const Blocks = require("./blocks");
 const Events = require("./packages/events");
-const Dom    = require("./packages/dom");
 
 const BLOCK_CONTROL_TEMPLATE  = require("./templates/block-control");
 const BLOCK_ADDITION_TEMPLATE = require("./templates/top-block-addition");
@@ -23,7 +22,7 @@ function generateBlocksHTML(Blocks, availableTypes) {
 }
 
 function render(Blocks, availableTypes) {
-  var el = document.createElement('div')
+  var el = document.createElement('div');
   el.className = "st-block-controls";
   el.innerHTML = generateBlocksHTML.apply(null, arguments);
   return el;
@@ -36,6 +35,7 @@ module.exports.create = function(SirTrevor) {
   function createBlock(e) {
     // REFACTOR: mediator so that we can trigger events directly on instance?
     // REFACTOR: block create event expects data as second argument.
+    /*jshint validthis:true */
     SirTrevor.mediator.trigger(
       "block:create", this.dataset.type, null, el.parentNode.id
     );
@@ -43,6 +43,7 @@ module.exports.create = function(SirTrevor) {
 
   function insert(e) {
     e.stopPropagation(); // we don't want el to be removed by the window click
+    /*jshint validthis:true */
     var parent = this.parentNode;
     if (!parent || hide() === parent) { return; }
     parent.appendChild(el);

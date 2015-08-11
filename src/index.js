@@ -1,7 +1,5 @@
 "use strict";
 
-var _ = require('./lodash');
-
 // ES6 shims
 require('object.assign').shim();
 require('array.prototype.find');

@@ -1,5 +1,7 @@
 "use strict";
 
+// disabling undefined warnings until jshint can handle argument destructing
+
 let Dom = Object.create(null);
 
 Dom.setAttributes = (el, attributes = {}) => {

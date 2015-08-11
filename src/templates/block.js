@@ -8,5 +8,5 @@ module.exports = (editor_html) => {
       ${ editor_html }
     </div>
     ${ BLOCK_ADDITION_TEMPLATE }
-  `
-}
+  `;
+};

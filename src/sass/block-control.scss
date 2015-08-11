@@ -25,8 +25,8 @@ $animation-speed: 0.2s;
 }
 
 .st-block-addition__button {
-  @include transition(all $animation-speed ease-in-out);
-  @include transform(translateY(-50%));
+  transition: all $animation-speed ease-in-out;
+  transform: translateY(-50%);
   @extend .st-icon;
   background-color:$block-controls-color;
   position:absolute;
@@ -42,7 +42,7 @@ $animation-speed: 0.2s;
   }
 
   .st-block--active & {
-    @include transform(translateY(-50%) rotate(45deg));
+    transform: translateY(-50%) rotate(45deg);
   }
 }
 
@@ -53,13 +53,15 @@ $animation-speed: 0.2s;
 }
 
 .st-block-addition__button:after {
-  @include transition(all $animation-speed ease-in-out);
   @extend %st-psuedo-shape;
-  @include triangle(.8em .6em, $block-controls-color, right);
-  @include transform(translateY(-50%));
-  top: 50%;
+  transition: all $animation-speed ease-in-out;
+  transform: translateY(-50%);
   width: 0;
   height: 0;
+  border-style: solid;
+  border-width: .4em 0 .4em .6em;
+  border-color: transparent transparent transparent $block-controls-color;
+  top: 50%;
   right:-.3em;
   z-index:-1;
 
@@ -73,8 +75,8 @@ $animation-speed: 0.2s;
 }
 
 .st-block-addition:before {
-  @include transition(all $animation-speed ease-in-out);
   @extend %st-psuedo-shape;
+  transition: all $animation-speed ease-in-out;
   height:1px;
   width:100%;
   background-color:$block-controls-color;
