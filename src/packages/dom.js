@@ -71,38 +71,12 @@ Dom.matches = (function(proto) {
 })(Element.prototype);
 
 Dom.getClosest = function(elem, selector) {
-
-  var firstChar = selector.charAt(0);
-
-  while(elem !== document && elem !== null) {
-    if ( firstChar === '.' ) {
-      if ( elem.classList.contains( selector.substr(1) ) ) {
-        return elem;
-      }
+  for (elem; elem && elem !== document.body; elem = elem.parentNode) {
+    if (Dom.matches(elem, selector)) {
+      break;
     }
-
-    // If selector is an ID
-    if ( firstChar === '#' ) {
-      if ( elem.id === selector.substr(1) ) {
-        return elem;
-      }
-    } 
-
-    // If selector is a data attribute
-    if ( firstChar === '[' ) {
-      if ( elem.hasAttribute( selector.substr(1, selector.length - 2) ) ) {
-        return elem;
-      }
-    }
-
-    // If selector is a tag
-    if ( elem.tagName.toLowerCase() === selector ) {
-      return elem;
-    }
-
-    elem = elem.parentNode;
   }
-  return false;
+  return elem;
 };
 
 Dom.wrap = function(toWrap, wrapper) {
@@ -117,7 +91,6 @@ Dom.wrap = function(toWrap, wrapper) {
 
 Dom.createDocumentFragmentFromString = function(html) {
   var frag = document.createDocumentFragment();
-
   var elem = document.createElement('div');
   elem.innerHTML = html;
 

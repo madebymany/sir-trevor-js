@@ -6,7 +6,7 @@ describe('Blocks: Heading block', function() {
   var getSerializedData = function(data) {
     var element = global.createBaseElement();
     var editor = new SirTrevor.Editor({ el: element });
-    var options = editor.block_manager.blockOptions;
+    var options = editor.blockManager.blockOptions;
     block = new SirTrevor.Blocks.Heading(data,
                                      editor.id, editor.mediator, options);
     block.render();

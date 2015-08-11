@@ -4,7 +4,7 @@ var Dom = require("./dom");
 
 var fixEvent = function(e, target) {
   var obj = {};
-  
+
   // Events don't work as normal objects, so need to copy properties directly.
   // List and matchers taken from jQuery.Event.fix.
   // For other properties refer to the originalEvent object.
@@ -49,7 +49,7 @@ var fixEvent = function(e, target) {
   return obj;
 };
 
-module.exports.delegate = (el, selector, event, fn, useCapture = false) => {
+module.exports.delegate = function delegate(el, selector, event, fn, useCapture = false) {
   el.addEventListener(event, (e) => {
     var target = e.target;
     for (target; target && target !== el; target = target.parentNode) {

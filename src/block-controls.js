@@ -6,90 +6,77 @@
  * Gives an interface for adding new Sir Trevor blocks.
  */
 
-var _ = require('./lodash');
+const Blocks = require("./blocks");
+const Events = require("./packages/events");
+const Dom    = require("./packages/dom");
 
-var Blocks = require('./blocks');
-var BlockControl = require('./block-control');
-var EventBus = require('./event-bus');
-var Events = require('./packages/events');
-var Dom = require('./packages/dom');
+const BLOCK_CONTROL_TEMPLATE  = require("./templates/block-control");
+const BLOCK_ADDITION_TEMPLATE = require("./templates/top-block-addition");
 
-var BlockControls = function(available_types, mediator) {
-  this.available_types = available_types || [];
-  this.mediator = mediator;
-
-  this._ensureElement();
-  this._bindFunctions();
-  this._bindMediatedEvents();
-
-  this.initialize();
-};
-
-Object.assign(BlockControls.prototype, require('./function-bind'), require('./mediated-events'), require('./renderable'), require('./events'), {
-
-  bound: ['handleControlButtonClick'],
-  block_controls: null,
-
-  className: "st-block-controls",
-  eventNamespace: 'block-controls',
-
-  mediatedEvents: {
-    'render': 'renderInContainer',
-    'show': 'show',
-    'hide': 'hide'
-  },
-
-  initialize: function() {
-    for(var block_type in this.available_types) {
-      if (Blocks.hasOwnProperty(block_type)) {
-        var block_control = new BlockControl(block_type);
-        if (block_control.can_be_rendered) {
-          this.el.appendChild(block_control.render().el);
-        }
-      }
+function generateBlocksHTML(Blocks, availableTypes) {
+  return availableTypes.reduce((memo, type) => {
+    if (Blocks.hasOwnProperty(type) && Blocks[type].prototype.toolbarEnabled) {
+      return memo += BLOCK_CONTROL_TEMPLATE(Blocks[type].prototype);
     }
+    return memo;
+  }, "");
+}
 
-    Events.delegate(this.el, '.st-block-control', 'click', this.handleControlButtonClick);
-    this.mediator.on('block-controls:show', this.renderInContainer);
-  },
+function render(Blocks, availableTypes) {
+  var el = document.createElement('div')
+  el.className = "st-block-controls";
+  el.innerHTML = generateBlocksHTML.apply(null, arguments);
+  return el;
+}
 
-  show: function() {
-    this.el.classList.add('st-block-controls--active');
+module.exports.create = function(SirTrevor) {
+  // REFACTOR - should probably not know about blockManager
+  var el = render(Blocks, SirTrevor.blockManager.blockTypes);
 
-    EventBus.trigger('block:controls:shown');
-  },
-
-  hide: function() {
-    this.removeCurrentContainer();
-    this.el.classList.remove('st-block-controls--active');
-
-    EventBus.trigger('block:controls:hidden');
-  },
-
-  handleControlButtonClick: function(e) {
-    e.stopPropagation();
-
-    this.mediator.trigger('block:create', e.currentTarget.getAttribute('data-type'));
-  },
-
-  renderInContainer: function(container) {
-    this.removeCurrentContainer();
-
-    Dom.remove(this.el);
-
-    container.appendChild(this.el);
-    container.classList.add('with-st-controls');
-
-    this.currentContainer = container;
-    this.show();
-  },
-
-  removeCurrentContainer: function() {
-    if (!_.isUndefined(this.currentContainer)) {
-      this.currentContainer.classList.remove("with-st-controls");
-      this.currentContainer = undefined;
-    }
+  function createBlock(e) {
+    // REFACTOR: mediator so that we can trigger events directly on instance?
+    // REFACTOR: block create event expects data as second argument.
+    SirTrevor.mediator.trigger(
+      "block:create", this.dataset.type, null, el.parentNode.id
+    );
   }
-});
 
-module.exports = BlockControls;
+  function insert(e) {
+    e.stopPropagation(); // we don't want el to be removed by the window click
+    var parent = this.parentNode;
+    if (!parent || hide() === parent) { return; }
+    parent.appendChild(el);
+    parent.classList.toggle("st-block--active");
+  }
+
+  // Public
+  function hide() {
+    var parent = el.parentNode;
+    if (!parent) { return; }
+    parent.removeChild(el);
+    parent.classList.remove("st-block--active");
+    return parent;
+  }
+
+  // Public
+  function destroy() {
+    SirTrevor.wrapper.removeEventListener("click", insert);
+    SirTrevor = null;
+    el = null;
+  }
+
+  // REFACTOR: reassess how mediator works
+  SirTrevor.mediator.on('block-controls:hide', hide);
+
+  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE);
+
+  Events.delegate(
+    SirTrevor.wrapper, ".st-block-addition", "click", insert
+  );
+
+  Events.delegate(
+    SirTrevor.wrapper, ".st-block-controls__button", "click", createBlock
+  );
+
+  return {hide, destroy};
+};

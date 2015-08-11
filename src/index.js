@@ -38,10 +38,6 @@ var SirTrevor = {
 
   Blocks: require('./blocks'),
 
-  BlockControl: require('./block-control'),
-  BlockControls: require('./block-controls'),
-  FloatingBlockControls: require('./floating-block-controls'),
-
   FormatBar: require('./format-bar'),
   Editor: require('./editor'),
 
@@ -55,13 +51,13 @@ var SirTrevor = {
   getInstance: utils.getInstance,
 
   setBlockOptions: function(type, options) {
-    var block = SirTrevor.Blocks[type];
+    //var block = SirTrevor.Blocks[type];
 
-    if (_.isUndefined(block)) {
-      return;
-    }
+    //if (_.isUndefined(block)) {
+      //return;
+    //}
 
-    Object.assign(block.prototype, options || {});
+    //Object.assign(block.prototype, options || {});
   },
 
   runOnAllInstances: function(method) {

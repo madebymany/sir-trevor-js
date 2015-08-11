@@ -1,34 +1,7 @@
 .st-block-positioner {
-  border: $default-border;
-  position: absolute;
-  z-index: 2;
-  left: -5.5em;
-  bottom: 0.4em;
-  background: #fff;
-
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.st-block-positioner--is-visible {
-  visibility: visible;
-  opacity: 1;
-}
-
-.st-block-positioner:after {
-  content: '';
-  display: block;
-  width: 0.4em;
-  height: 0.4em;
-  position: absolute;
-  right: -0.3em;
-  bottom: 0.6em;
-  z-index: 1;
-  border: $default-border;
-  background: #fff;
-
-  transform: rotate(45deg);
+  @include ui-popup;
+  left: 4em;
+  top: 0.5em;
 }
 
 .st-block-positioner__inner {
@@ -36,6 +9,10 @@
   position: relative;
   z-index: 2;
   padding: 0.3em 0.5em;
+}
+
+.st-block-positioner__select {
+  display:block;
 }
 
 .st-block--with-errors, .st-block--delete-active {

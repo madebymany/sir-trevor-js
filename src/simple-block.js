@@ -7,6 +7,8 @@ var Events = require('./packages/events');
 
 var BlockReorder = require('./block-reorder');
 
+const BLOCK_TEMPLATE = require('./templates/block');
+
 var SimpleBlock = function(data, instance_id, mediator, options) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
@@ -28,9 +30,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   className: 'st-block',
 
-  block_template: _.template(
-    "<div class='st-block__inner'><%= editor_html %></div>"
-  ),
+  block_template: BLOCK_TEMPLATE,
 
   attributes: function() {
     return {
@@ -65,13 +65,9 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   _setBlockInner : function() {
     var editor_html = _.result(this, 'editorHTML');
 
-    this.el.appendChild(
-      Dom.createDocumentFragmentFromString(
-        this.block_template({ editor_html: editor_html })
-      )
-    );
+    this.el.insertAdjacentHTML("beforeend", this.block_template({ editor_html: editor_html }))
 
-    this.inner = this.$('.st-block__inner')[0];
+    this.inner = this.el.querySelector('.st-block__inner');
     this.inner.addEventListener('click', function(e){ e.stopPropagation(); });
     this.inner.addEventListener('mouseover', function(e){ e.stopPropagation(); });
   },

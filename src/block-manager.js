@@ -7,23 +7,29 @@ var config = require('./config');
 var EventBus = require('./event-bus');
 var Blocks = require('./blocks');
 
-var BLOCK_OPTION_KEYS = ['convertToMarkdown', 'convertFromMarkdown',
-  'formatBar'];
+var Dom = require("./packages/dom");
 
-var BlockManager = function(options, editorInstance, mediator) {
-  this.options = options;
+const BLOCK_OPTION_KEYS = 
+  ['convertToMarkdown', 'convertFromMarkdown', 'formatBar'];
+
+var BlockManager = function(SirTrevor) {
+  this.options = SirTrevor.options;
   this.blockOptions = BLOCK_OPTION_KEYS.reduce(function(acc, key) {
-    acc[key] = options[key];
+    acc[key] = SirTrevor.options[key];
     return acc;
   }, {});
-  this.instance_scope = editorInstance;
-  this.mediator = mediator;
+  this.instance_scope = SirTrevor.ID;
+  this.mediator = SirTrevor.mediator;
+
+  // REFACTOR: this is a hack until I can focus on reworking the blockmanager
+  this.$wrapper = SirTrevor.$wrapper;
 
   this.blocks = [];
   this.blockCounts = {};
-  this.blockTypes = {};
+  this.blockTypes = [];
 
   this._setBlocksTypes();
+
   this._setRequired();
   this._bindMediatedEvents();
 
@@ -42,7 +48,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   initialize: function() {},
 
-  createBlock: function(type, data) {
+  createBlock: function(type, data, id) {
     type = utils.classify(type);
 
     // Run validations
@@ -53,7 +59,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);
-    this.mediator.trigger('block:render', block);
+    this.renderBlock(block, id);
 
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
@@ -76,6 +82,17 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
     EventBus.trigger("block:remove");
+  },
+
+  renderBlock: function(block, previousBlockId) {
+    // REFACTOR: this will have to do until we're able to address the block manager
+    var previousSibling = document.getElementById(previousBlockId);
+    if (previousSibling) {
+      Dom.insertAfter(block.render().el, previousSibling);
+    } else {
+      this.$wrapper[0].appendChild(block.render().el);
+    }
+    block.trigger("onRender");
   },
 
   rerenderBlock: function(blockID) {
@@ -160,7 +177,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   isBlockTypeAvailable: function(t) {
-    return !_.isUndefined(this.blockTypes[t]);
+    return this.blockTypes.includes(t);
   },
 
   canAddBlockType: function(type) {
@@ -169,9 +186,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   _setBlocksTypes: function() {
-    this.blockTypes = utils.flatten(
-      _.isUndefined(this.options.blockTypes) ?
-      Blocks : this.options.blockTypes);
+    this.blockTypes = this.options.blockTypes || Object.keys(Blocks);
   },
 
   _setRequired: function() {

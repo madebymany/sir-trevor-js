@@ -1,52 +1,125 @@
 // Block Control
 
+$animation-speed: 0.2s;
+
 .st--block-limit-reached .st-block-controls__top {
   display: none;
 }
 
-.st-block-controls__top:before {
-  width: 100%;
-  display: block;
-  text-align: center;
-  font-size: 1.875em;
-  padding: 0.3em 0;
-  line-height: 0.9;
-  border-radius: 0.2em;
+.st-top-controls {
+  position: relative;
+  z-index: 2;
 }
 
-.st-block-controls__top:hover:before {
-  color: $accent-color;
-  background: $blocks-control-bg-color;
-  cursor: pointer;
+.st-block-addition {
+  position:relative;
+  z-index:1;
+  outline:none;
+  border:none;
+  font-size:1.3em;
+  display:block;
+  width:100%;
+  background-color:transparent;
+  padding:0;
+  left:-1.1em;
+}
+
+.st-block-addition__button {
+  @include transition(all $animation-speed ease-in-out);
+  @include transform(translateY(-50%));
+  @extend .st-icon;
+  background-color:$block-controls-color;
+  position:absolute;
+  box-sizing:border-box;
+  padding:.2em;
+  display:block;
+  color:#fff;
+  font-size:0.8em;
+
+  .st-block-addition:hover &,
+  .st-block--active & {
+    background-color:$accent-color;
+  }
+
+  .st-block--active & {
+    @include transform(translateY(-50%) rotate(45deg));
+  }
+}
+
+%st-psuedo-shape {
+  content:"";
+  display:block;
+  position: absolute;
+}
+
+.st-block-addition__button:after {
+  @include transition(all $animation-speed ease-in-out);
+  @extend %st-psuedo-shape;
+  @include triangle(.8em .6em, $block-controls-color, right);
+  @include transform(translateY(-50%));
+  top: 50%;
+  width: 0;
+  height: 0;
+  right:-.3em;
+  z-index:-1;
+
+  .st-block-addition:hover & {
+    border-left-color:$accent-color;
+  }
+
+  .st-block--active & {
+    border:0;
+  }
+}
+
+.st-block-addition:before {
+  @include transition(all $animation-speed ease-in-out);
+  @extend %st-psuedo-shape;
+  height:1px;
+  width:100%;
+  background-color:$block-controls-color;
+  top: 0;
+  padding-right:1.1em;
+  opacity:.2;
+}
+
+.st-block-addition:hover:before,
+.st-block--active .st-block-addition:before {
+  height:2px;
+  top: -1px;
+  opacity:1;
+}
+
+.st-block-addition:hover:before {
+  background-color:$accent-color;
 }
 
 .st-block-controls {
   background-color: $blocks-control-bg-color;
-  display: none;
   border-radius: 0.2em;
   color: $base-ui-color;
   width: 100%;
   text-align: center;
   padding: 1.2em 0;
+  font-size:0.8em;
+  border-bottom::2px solid $block-controls-color;
 }
 
-.st-block-controls--active {
-  display:block;
-}
-
-.st-block-control {
+.st-block-controls__button {
+  border:none;
+  background:transparent;
   font-size: 1.125em;
   display: inline-block;
   cursor: pointer;
   margin: 0 1em 0 0;
 }
 
-.st-block-control .st-icon {
+.st-block-controls__button .st-icon {
   font-size: 2.25em;
   margin: 0 0 .2em 0;
   display: block;
 }
 
-.st-block-control:hover {
+.st-block-controls__button:hover {
   color: $accent-color;
 }

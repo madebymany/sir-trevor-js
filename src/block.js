@@ -18,22 +18,14 @@ var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
 
+const DELETE_TEMPLATE = require("./templates/delete");
+
 var Block = function(data, instance_id, mediator, options) {
   SimpleBlock.apply(this, arguments);
 };
 
 Block.prototype = Object.create(SimpleBlock.prototype);
 Block.prototype.constructor = Block;
-
-var delete_template = [
-  "<div class='st-block__ui-delete-controls'>",
-  "<label class='st-block__delete-label'>",
-  "<%= i18n.t('general:delete') %>",
-  "</label>",
-  "<a class='st-block-ui-btn st-block-ui-btn--confirm-delete st-icon' data-icon='tick'></a>",
-  "<a class='st-block-ui-btn st-block-ui-btn--deny-delete st-icon' data-icon='close'></a>",
-  "</div>"
-].join("\n");
 
 Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
@@ -42,12 +34,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender",
   ],
 
-  className: 'st-block st-icon--add',
+  className: 'st-block',
 
   attributes: function() {
-    return Object.assign(SimpleBlock.fn.attributes.call(this), {
-      'data-icon-after' : "add"
-    });
+    return Object.assign(SimpleBlock.fn.attributes.call(this));
   },
 
   icon_name: 'default',
@@ -56,7 +46,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     return i18n.t('errors:validation_fail', { type: this.title });
   },
 
-  editorHTML: '<div class="st-block__editor"></div>',
+  editorHTML: "<div class=\"st-block__editor\"></div>",
 
   toolbarEnabled: true,
 
@@ -157,16 +147,15 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }
   },
 
-  /* Generic _serializeData implementation to serialize the block into a plain object.
-   * Can be overwritten, although hopefully this will cover most situations.
-   * If you want to get the data of your block use block.getBlockData()
-   */
+   //Generic _serializeData implementation to serialize the block into a plain object.
+   //Can be overwritten, although hopefully this will cover most situations.
+   //If you want to get the data of your block use block.getBlockData()
   _serializeData: function() {
     utils.log("toData for " + this.blockID);
 
     var data = {};
 
-    /* Simple to start. Add conditions later */
+    //[> Simple to start. Add conditions later <]
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
       data.format = 'html';
@@ -190,7 +179,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     return data;
   },
 
-  /* Generic implementation to tell us when the block is active */
+  //[> Generic implementation to tell us when the block is active <]
   focus: function() {
     Array.prototype.forEach.call(this.getTextBlock(), function(el) {
       el.focus();
@@ -215,10 +204,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }.bind(this));
   },
 
-  /*
-   * Event handlers
-   */
-
+  //Event handlers
   _onFocus: function() {
     this.trigger('blockFocus', this.el);
   },
@@ -231,36 +217,36 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   onDrop: function(dataTransferObj) {},
 
+  onDeleteConfirm(e) {
+    e.preventDefault();
+    this.mediator.trigger('block:remove', this.blockID);
+    this.remove();
+  },
+
+  // REFACTOR: have one set of delete controls that moves around like the 
+  // block controls?
+  addDeleteControls: function(){
+
+    var onDeleteDeny = (e) => {
+      e.preventDefault();
+      this.deleteEl.classList.remove("active");
+    };
+
+    this.ui.insertAdjacentHTML("beforeend", DELETE_TEMPLATE);
+    Events.delegate(this.el, ".js-st-block-confirm-delete", "click", this.onDeleteConfirm);
+    Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
+  },
+
   onDeleteClick: function(ev) {
     ev.preventDefault();
 
-    var onDeleteConfirm = function(e) {
-      e.preventDefault();
-      this.mediator.trigger('block:remove', this.blockID);
-      this.remove();
-    };
-
-    var onDeleteDeny = function(e) {
-      e.preventDefault();
-      this.el.classList.remove('st-block--delete-active');
-      Dom.remove(delete_el);
-    };
-
     if (this.isEmpty()) {
-      onDeleteConfirm.call(this, new Event('click'));
+      this.onDeleteConfirm.call(this, new Event('click'));
       return;
     }
-    this.inner.appendChild(
-      Dom.createDocumentFragmentFromString(
-        _.template(delete_template)()
-      )
-    );
-    this.el.classList.add('st-block--delete-active');
 
-    var delete_el = this.inner.querySelector('.st-block__ui-delete-controls');
-
-    Events.delegate(this.inner, '.st-block-ui-btn--confirm-delete', 'click', onDeleteConfirm.bind(this));
-    Events.delegate(this.inner, '.st-block-ui-btn--deny-delete', 'click', onDeleteDeny.bind(this));
+    this.deleteEl = this.el.querySelector('.st-block__ui-delete-controls');
+    this.deleteEl.classList.toggle('active');
   },
 
   beforeLoadingData: function() {
@@ -300,20 +286,19 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     return 'st-block--' + this.className;
   },
 
-  /*
-   * Init functions for adding functionality
-   */
-
+   //Init functions for adding functionality
   _initUIComponents: function() {
+
+    this.addDeleteControls();
 
     var positioner = new BlockPositioner(this.el, this.mediator);
 
-    this._withUIComponent(positioner, '.st-block-ui-btn--reorder',
+    this._withUIComponent(positioner, '.st-block-ui-btn__reorder',
                           positioner.toggle);
 
     this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
-    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn--delete',
+    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete',
                           this.onDeleteClick);
 
     this.onFocus();

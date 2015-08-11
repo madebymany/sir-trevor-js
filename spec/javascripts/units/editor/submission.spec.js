@@ -25,9 +25,9 @@ describe("Editor:Submission", function(){
   });
 
   it("calls the validateBlockTypesExist method", function(){
-    spyOn(editor.block_manager, "validateBlockTypesExist");
+    spyOn(editor.blockManager, "validateBlockTypesExist");
     editor.onFormSubmit();
-    expect(editor.block_manager.validateBlockTypesExist).toHaveBeenCalled();
+    expect(editor.blockManager.validateBlockTypesExist).toHaveBeenCalled();
   });
 
   it("calls toString on the store", function(){

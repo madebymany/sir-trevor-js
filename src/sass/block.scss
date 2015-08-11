@@ -1,16 +1,16 @@
+.st-blocks {
+  position:relative;
+}
+
 .st-block {
-  padding:0;
   position: relative;
+  padding:3px 0;
 }
 
 .st-block__inner {
-  padding: 1.875em 1.875em 2.8em;
-  border: $border-size $border-style #fff;
   position: relative;
-}
-
-.st-block__inner:hover {
-  border-color: $accent-color;
+  width:80%;
+  margin:auto;
 }
 
 .st-block--with-errors .st-block__inner,
@@ -52,22 +52,52 @@
 .st-block.st-drag-over:after,
 .st-block.st-drag-over:last-child:after,
 .st-block-controls__top.st-drag-over:before {
-  font-family:inherit;
-  content: "Drop block here";
-  text-align: center;
-  padding: 0.7em 0;
-  font-size: 1.125em;
-  font-weight: 700;
-  border: $border-size dashed #d4d4d4;
+  content: "";
   background: transparent;
-  color: #d4d4d4;
-  margin: 3px 0;
+  display:block;
+  width:100%;
+  height:3px;
+  position:absolute;
+  bottom:0;
+  left:0;
+  background:$accent-color;
+}
+
+.st-drag-element {
+  background:#fff;
+  box-shadow: 3px 3px $accent-color inset, -3px -3px $accent-color inset ;
+  position:absolute;
+  width:100%;
+  z-index:-1;
+
+  .st-block-addition {
+    display:none;
+  }
+}
+
+.st-block--dragging {
+  background:#f6f7f9;
+  & > * {
+    opacity:0;
+  }
+  & .st-block-addition {
+    opacity:1;
+  }
+}
+
+.st-drag-over {
+  & .st-block-addition {
+    opacity:0;
+  }
 }
 
 .st-text-block {
+  @include st-input;
+  @include st-input-active;
   min-height: 3em;
   font-size: $text-block-font-size;
   line-height: 1.45;
+  overflow:auto;
 }
 
 .st-text-block--heading {
@@ -77,8 +107,16 @@
   font-weight: 700;
 }
 
+.st-text-block--heading p {
+  margin:.5em 0;
+}
+
 ul.st-text-block {
   margin-left: 1.875em;
+}
+
+.st-list-block__list {
+  font-size: $text-block-font-size;
 }
 
 .st-list-block__editor {

@@ -20,7 +20,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
   bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrop'],
 
-  className: 'st-block-ui-btn st-block-ui-btn--reorder st-icon',
+  className: 'st-block-ui-btn__reorder',
   tagName: 'a',
 
   attributes: function() {
@@ -45,7 +45,6 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
   },
 
   onMouseDown: function() {
-    this.mediator.trigger("block-controls:hide");
     EventBus.trigger("block:reorder:down");
   },
 
@@ -67,17 +66,27 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
   },
 
   onDragStart: function(ev) {
-    var btn = ev.currentTarget.parentNode;
-    ev.dataTransfer.setDragImage(this.block, btn.offsetLeft, btn.offsetTop);
+    var block = this.block;
+
+    this.dragEl = block.cloneNode(true);
+    this.dragEl.classList.add("st-drag-element");
+    this.dragEl.style.top = `${block.offsetTop}px`;
+    this.dragEl.style.left = `${block.offsetLeft}px`;
+
+    block.parentNode.appendChild(this.dragEl);
+
+    ev.dataTransfer.setDragImage(this.dragEl, 0, 0);
     ev.dataTransfer.setData('Text', this.blockId());
+    this.mediator.trigger("block-controls:hide");
 
     EventBus.trigger("block:reorder:dragstart");
-    this.block.classList.add('st-block--dragging');
+    block.classList.add('st-block--dragging');
   },
 
   onDragEnd: function(ev) {
     EventBus.trigger("block:reorder:dragend");
     this.block.classList.remove('st-block--dragging');
+    this.dragEl.parentNode.removeChild(this.dragEl);
   },
 
   render: function() {

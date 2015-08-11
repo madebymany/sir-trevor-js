@@ -2,11 +2,9 @@
 
 // jshint freeze: false, maxcomplexity: 11
 
-if (![].includes) {
+if (!Array.prototype.includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {
-    if (this === undefined || this === null) {
-      throw new TypeError('Cannot convert this value to object');
-    }
+    'use strict';
     var O = Object(this);
     var len = parseInt(O.length) || 0;
     if (len === 0) {
@@ -18,14 +16,13 @@ if (![].includes) {
       k = n;
     } else {
       k = len + n;
-      if (k < 0) {
-        k = 0;
-      }
+      if (k < 0) {k = 0;}
     }
+    var currentElement;
     while (k < len) {
-      var currentElement = O[k];
+      currentElement = O[k];
       if (searchElement === currentElement ||
-         (searchElement !== searchElement && currentElement !== currentElement)) {
+          (searchElement !== searchElement && currentElement !== currentElement)) {
         return true;
       }
       k++;

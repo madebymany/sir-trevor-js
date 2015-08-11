@@ -18,7 +18,6 @@ var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
 var BlockControls = require('./block-controls');
 var BlockManager = require('./block-manager');
-var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
 var ErrorHandler = require('./error-handler');
@@ -30,8 +29,7 @@ var Editor = function(options) {
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
-    'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'],
+    'removeBlockDragOver', 'blockLimitReached'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -72,25 +70,21 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
    */
   build: function() {
     Dom.hide(this.el);
-    
+
     this.errorHandler = new ErrorHandler(this.outer, this.mediator, this.options.errorsContainer);
     this.store = new EditorStore(this.el.value, this.mediator);
-    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
-    this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
-    this.fl_block_controls = new FloatingBlockControls(this.wrapper, this.ID, this.mediator);
+
+    this.blockManager = new BlockManager(this);
+    this.blockControls = BlockControls.create(this);
+
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
-    this.mediator.on('block-controls:reset', this.resetBlockControls);
     this.mediator.on('block:limitReached', this.blockLimitReached);
-    this.mediator.on('block:render', this.renderBlock);
 
     this.dataStore = "Please use store.retrieve();";
 
     this._setEvents();
-
-    this.wrapper.insertBefore(this.fl_block_controls.render().el, this.wrapper.firstChild);
-    this.outer.appendChild(this.block_controls.render().el);
 
     window.addEventListener('click', this.hideAllTheThings);
 
@@ -110,18 +104,17 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
         this.mediator.trigger('block:create', block.type, block.data);
       }, this);
     } else if (this.options.defaultType !== false) {
-      this.mediator.trigger('block:create', this.options.defaultType, {});
+      this.mediator.trigger('elock:create', this.options.defaultType, {});
     }
   },
 
   destroy: function() {
     // Destroy the rendered sub views
     this.formatBar.destroy();
-    this.fl_block_controls.destroy();
-    this.block_controls.destroy();
+    this.blockControls.destroy();
 
     // Destroy all blocks
-    this.block_manager.blocks.forEach(function(block) {
+    this.blockManager.blocks.forEach(function(block) {
       this.mediator.trigger('block:remove', block.blockID);
     }, this);
 
@@ -144,11 +137,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.initialize(options || this.options);
   },
 
-  resetBlockControls: function() {
-    this.block_controls.renderInContainer(this.wrapper);
-    this.block_controls.hide();
-  },
-
   blockLimitReached: function(toggle) {
     this.wrapper.classList.toggle('st--block-limit-reached', toggle);
   },
@@ -160,20 +148,13 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   hideAllTheThings: function(e) {
-    this.block_controls.hide();
+    this.blockControls.hide();
     this.formatBar.hide();
   },
 
   store: function(method, options){
     utils.log("The store method has been removed, please call store[methodName]");
     return this.store[method].call(this, options || {});
-  },
-
-  renderBlock: function(block) {
-    this._renderInPosition(block.render().el);
-    this.hideAllTheThings();
-
-    block.trigger("onRender");
   },
 
   removeBlockDragOver: function() {
@@ -185,7 +166,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     var blockPosition = this.getBlockPosition(block),
     blockBy = this.wrapper.querySelectorAll('.st-block')[selectedPosition];
-    
+
     if(blockBy && blockBy.getAttribute('id') !== block.getAttribute('id')) {
       this.hideAllTheThings();
       if (blockPosition > selectedPosition) {
@@ -194,14 +175,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       } else {
         Dom.insertAfter(block, blockBy);
       }
-    }
-  },
-
-  _renderInPosition: function(block) {
-    if (this.block_controls.currentContainer) {
-      this.block_controls.currentContainer.insertAdjacentElement('afterend', block);
-    } else {
-      this.wrapper.appendChild(block);
     }
   },
 
@@ -232,7 +205,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.store.reset();
 
     this.validateBlocks(shouldValidate);
-    this.block_manager.validateBlockTypesExist(shouldValidate);
+    this.blockManager.validateBlockTypesExist(shouldValidate);
 
     this.mediator.trigger('errors:render');
     this.el.value = this.store.toString();
@@ -243,7 +216,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   validateBlocks: function(shouldValidate) {
     var self = this;
     Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(block, idx) {
-      var _block = self.block_manager.findBlockById(block.getAttribute('id'));
+      var _block = self.blockManager.findBlockById(block.getAttribute('id'));
       if (!_.isUndefined(_block)) {
         self.validateAndSaveBlock(_block, shouldValidate);
       }
@@ -251,15 +224,15 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   findBlockById: function(block_id) {
-    return this.block_manager.findBlockById(block_id);
+    return this.blockManager.findBlockById(block_id);
   },
 
   getBlocksByType: function(block_type) {
-    return this.block_manager.getBlocksByType(block_type);
+    return this.blockManager.getBlocksByType(block_type);
   },
 
   getBlocksByIDs: function(block_ids) {
-    return this.block_manager.getBlocksByIDs(block_ids);
+    return this.blockManager.getBlocksByIDs(block_ids);
   },
 
   getBlockPosition: function(block) {
@@ -280,7 +253,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.el = this.options.el;
     this.form = Dom.getClosest(this.el, 'form');
-    
+
     var outer = Dom.createElement("div", {
                   'id': this.ID, 
                   'class': 'st-outer notranslate', 
@@ -294,7 +267,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.outer = this.form.querySelector('#' + this.ID);
     this.wrapper = this.outer.querySelector('.st-blocks');
-    
+
     return true;
   }
 

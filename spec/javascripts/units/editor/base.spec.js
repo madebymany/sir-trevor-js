@@ -62,11 +62,11 @@ describe("Editor", function(){
     });
 
     it("creates a new BlockControl", function(){
-      expect(editor.block_controls).toBeDefined();
+      expect(editor.blockControls).toBeDefined();
     });
 
     it("creates a new FloatingBlockControl", function(){
-      expect(editor.fl_block_controls).toBeDefined();
+      expect(editor.fl_blockControls).toBeDefined();
     });
 
     it("creates a new FormatBar", function(){
@@ -80,7 +80,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -101,7 +101,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { type: "Text" },
         { type: "Image" }
       ];
@@ -117,7 +117,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -133,7 +133,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -141,7 +141,7 @@ describe("Editor", function(){
 
     it("clears the blocks", function(){
       editor.destroy();
-      expect(editor.block_manager.blocks.length).toBe(0);
+      expect(editor.blockManager.blocks.length).toBe(0);
     });
   });
 

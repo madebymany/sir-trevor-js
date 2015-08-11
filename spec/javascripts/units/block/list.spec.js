@@ -6,7 +6,7 @@ describe('Blocks: List block', function () {
   var createBlock = function(type, data) {
     var element = global.createBaseElement();
     var editor = new SirTrevor.Editor({ el: element });
-    var options = editor.block_manager.blockOptions;
+    var options = editor.blockManager.blockOptions;
     var Klass = SirTrevor.Blocks[utils.classify(type)];
     var block = new Klass(data, editor.id, editor.mediator, options);
     editor.renderBlock(block);

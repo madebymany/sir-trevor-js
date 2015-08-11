@@ -7,7 +7,7 @@ describe("Block Mixin: MultiEditable", function() {
   beforeEach(function() {
     element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
-    var options = editor.block_manager.blockOptions;
+    var options = editor.blockManager.blockOptions;
 
     SirTrevor.Blocks.MultiBlock = SirTrevor.Block.extend({
       multi_editable: true
