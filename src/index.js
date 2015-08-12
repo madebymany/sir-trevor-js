@@ -52,8 +52,6 @@ var SirTrevor = {
     Object.assign(SirTrevor.config.defaults, options || {});
   },
 
-  getInstance: utils.getInstance,
-
   setBlockOptions: function(type, options) {
     var block = SirTrevor.Blocks[type];
 
@@ -62,17 +60,6 @@ var SirTrevor = {
     }
 
     Object.assign(block.prototype, options || {});
-  },
-
-  runOnAllInstances: function(method) {
-    if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
-      var methodArgs = Array.prototype.slice.call(arguments, 1);
-      Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
-        i[method].apply(null, methodArgs);
-      });
-    } else {
-      SirTrevor.log("method doesn't exist");
-    }
   },
 
 };

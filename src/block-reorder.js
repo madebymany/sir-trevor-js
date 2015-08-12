@@ -57,9 +57,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
     block = document.querySelector('#' + item_id);
 
     if (!_.isUndefined(item_id) && !_.isEmpty(block) &&
-        dropped_on.getAttribute('id') !== item_id &&
-          dropped_on.getAttribute('data-instance') === block.getAttribute('data-instance')
-       ) {
+        dropped_on.getAttribute('id') !== item_id) {
        dropped_on.insertAdjacentElement('afterend', block);
      }
      this.mediator.trigger("block:rerender", item_id);

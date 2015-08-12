@@ -14,7 +14,6 @@ describe("Block Mixin: MultiEditable", function() {
     });
 
     block = new SirTrevor.Blocks.MultiBlock({},
-                                                editor.id,
                                                 editor.mediator,
                                                 options);
 

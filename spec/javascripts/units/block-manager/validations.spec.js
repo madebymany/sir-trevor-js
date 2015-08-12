@@ -12,7 +12,7 @@ describe("BlockManager::Validations", function(){
 
     beforeEach(function(){
       options = { defaultType: false, required: ['Text'] };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
       spyOn(manager.mediator, 'trigger');
     });
 

@@ -43,8 +43,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     utils.log("Init SirTrevor.Editor");
 
     this.options = Object.assign({}, config.defaults, options || {});
-    this.ID = _.uniqueId('st-editor-');
-
+    
     if (!this._ensureAndSetElements()) { return false; }
 
     if(!_.isUndefined(this.options.onEditorRender) &&
@@ -57,11 +56,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this._bindFunctions();
 
-    config.instances.push(this);
-
     this.build();
 
-    FormEvents.bindFormSubmit(this.form);
+    FormEvents.bindFormSubmit(this);
   },
 
   /*
@@ -75,9 +72,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     
     this.errorHandler = new ErrorHandler(this.outer, this.mediator, this.options.errorsContainer);
     this.store = new EditorStore(this.el.value, this.mediator);
-    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
+    this.block_manager = new BlockManager(this.options, this.mediator);
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
-    this.fl_block_controls = new FloatingBlockControls(this.wrapper, this.ID, this.mediator);
+    this.fl_block_controls = new FloatingBlockControls(this.wrapper, this.mediator);
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
@@ -129,10 +126,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.mediator.stopListening();
     this.stopListening();
 
-    // Remove instance
-    config.instances = config.instances.filter(function(instance) {
-      return instance.ID !== this.ID;
-    }, this);
+    FormEvents.unbindFormSubmit(this);
 
     // Clear the store
     this.store.reset();
@@ -189,7 +183,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     if(blockBy && blockBy.getAttribute('id') !== block.getAttribute('id')) {
       this.hideAllTheThings();
       if (blockPosition > selectedPosition) {
-        console.log('yeah');
         blockBy.parentNode.insertBefore(block, blockBy);
       } else {
         Dom.insertAfter(block, blockBy);
@@ -243,7 +236,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   validateBlocks: function(shouldValidate) {
     var self = this;
     Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(block, idx) {
-      var _block = self.block_manager.findBlockById(block.getAttribute('id'));
+      var _block = self.findBlockById(block.getAttribute('id'));
       if (!_.isUndefined(_block)) {
         self.validateAndSaveBlock(_block, shouldValidate);
       }
@@ -272,6 +265,17 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     return index;
   },
 
+  /**
+   * Get the block which contains the current window selection.
+   * @returns {Object} block - The block or undefined.
+   */
+
+  getBlockFromCurrentWindowSelection: function() {
+    return this.findBlockById(
+      Dom.getClosest(window.getSelection().anchorNode.parentNode, '.st-block').id
+    );
+  },
+
   _ensureAndSetElements: function() {
     if(_.isUndefined(this.options.el)) {
       utils.log("You must provide an el");
@@ -281,20 +285,16 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.el = this.options.el;
     this.form = Dom.getClosest(this.el, 'form');
     
-    var outer = Dom.createElement("div", {
-                  'id': this.ID, 
+    this.outer = Dom.createElement("div", {
                   'class': 'st-outer notranslate', 
                   'dropzone': 'copy link move'});
 
-    var wrapper = Dom.createElement("div", {'class': 'st-blocks'});
+    this.wrapper = Dom.createElement("div", {'class': 'st-blocks'});
 
     // Wrap our element in lots of containers *eww*
 
-    Dom.wrap(Dom.wrap(this.el, outer), wrapper);
+    Dom.wrap(Dom.wrap(this.el, this.outer), this.wrapper);
 
-    this.outer = this.form.querySelector('#' + this.ID);
-    this.wrapper = this.outer.querySelector('.st-blocks');
-    
     return true;
   }
 

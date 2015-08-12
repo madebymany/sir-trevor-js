@@ -7,10 +7,9 @@ var Events = require('./packages/events');
 
 var BlockReorder = require('./block-reorder');
 
-var SimpleBlock = function(data, instance_id, mediator, options) {
+var SimpleBlock = function(data, mediator, options) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
-  this.instanceID = instance_id;
   this.mediator = mediator;
   this.options = options || {};
 
@@ -35,8 +34,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   attributes: function() {
     return {
       'id': this.blockID,
-      'data-type': this.type,
-      'data-instance': this.instanceID
+      'data-type': this.type
     };
   },
 

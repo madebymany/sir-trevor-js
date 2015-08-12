@@ -12,9 +12,8 @@ var dropEvents = require('./helpers/drop-events');
 
 var EventBus = require('./event-bus');
 
-var FloatingBlockControls = function(wrapper, instance_id, mediator) {
+var FloatingBlockControls = function(wrapper, mediator) {
   this.wrapper = wrapper;
-  this.instance_id = instance_id;
   this.mediator = mediator;
 
   this._ensureElement();
@@ -53,8 +52,7 @@ Object.assign(FloatingBlockControls.prototype, require('./function-bind'), requi
 
     if (!_.isUndefined(item_id) &&
         !_.isEmpty(block) &&
-          dropped_on.getAttribute('id') !== item_id &&
-            this.instance_id === block.getAttribute('data-instance')
+          dropped_on.getAttribute('id') !== item_id
        ) {
          dropped_on.insertAdjacentElement('afterend', block);
        }

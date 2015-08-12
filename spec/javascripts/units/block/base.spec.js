@@ -11,9 +11,9 @@ describe("Block", function(){
   beforeEach(function(){
     element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
-    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
-    block_two = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
-    block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.Text({}, editor.mediator);
+    block_two = new SirTrevor.Blocks.Text({}, editor.mediator);
+    block_three = new SirTrevor.Blocks.ComplexType({}, editor.mediator);
   });
 
   it("block is instance of ST.Block", function(){
@@ -47,7 +47,7 @@ describe("Block", function(){
     });
 
     it("has have a shorthand method for selecting elements under the el", function(){
-      expect(typeof block.$native).toBe('function');
+      expect(typeof block.$).toBe('function');
     });
 
   });

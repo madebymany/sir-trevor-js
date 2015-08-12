@@ -6,7 +6,7 @@ describe("Block:Validation", function(){
   beforeEach(function(){
     element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
-    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.Text({}, editor.mediator);
   });
 
   describe("valid", function(){

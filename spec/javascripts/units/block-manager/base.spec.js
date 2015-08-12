@@ -5,7 +5,7 @@ describe("BlockManager", function() {
   var manager;
 
   beforeEach(function(){
-    manager = new SirTrevor.BlockManager(SirTrevor.config.defaults, '', Object.assign({}, SirTrevor.Events));
+    manager = new SirTrevor.BlockManager(SirTrevor.config.defaults, Object.assign({}, SirTrevor.Events));
   });
 
   describe("findBlockById", function(){

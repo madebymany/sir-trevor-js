@@ -12,7 +12,7 @@ describe("Block:Droppable Block", function(){
       droppable: true
     });
 
-    block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.DroppableBlock({}, editor.mediator);
   });
 
   describe("render", function(){

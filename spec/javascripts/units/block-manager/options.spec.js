@@ -67,7 +67,7 @@ describe("BlockManager::Options", function(){
   });
 
   function managerWithOptions(options) {
-    manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+    manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
   }
 
 });

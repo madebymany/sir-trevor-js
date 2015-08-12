@@ -12,7 +12,7 @@ describe("Block:Uploadable Block", function(){
       uploadable: true
     });
 
-    block = new SirTrevor.Blocks.UploadableBlock({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.UploadableBlock({}, editor.mediator);
   });
 
   describe("render", function(){

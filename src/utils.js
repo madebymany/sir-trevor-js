@@ -2,37 +2,10 @@
 
 var _ = require('./lodash');
 var config = require('./config');
-var Dom = require('./packages/dom');
 
 var urlRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
 
 var utils = {
-
-  getInstance: function(identifier) {
-    if (_.isUndefined(identifier)) {
-      return config.instances[0];
-    }
-
-    if (_.isString(identifier)) {
-      return config.instances.find(function(editor) {
-        return editor.ID === identifier;
-      });
-    }
-
-    return config.instances[identifier];
-  },
-
-  getInstanceBySelection: function() {
-    return utils.getInstance(
-      Dom.getClosest(window.getSelection().anchorNode.parentNode, '.st-block').getAttribute('data-instance')
-    );
-  },
-
-  getBlockBySelection: function() {
-    return utils.getInstanceBySelection().findBlockById(
-      Dom.getClosest(window.getSelection().anchorNode.parentNode, '.st-block').id
-    );
-  },
 
   log: function() {
     if (!_.isUndefined(console) && config.debug) {

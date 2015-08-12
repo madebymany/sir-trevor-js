@@ -11,7 +11,7 @@ describe("BlockManager::Creating blocks", function(){
       beforeEach(function(){
         mediator = _.extend({}, SirTrevor.Events);
         options = { defaultType: false };
-        manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+        manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
         block = new SirTrevor.Block();
 
         spyOn(SirTrevor.Blocks, blockName).and.returnValue(block);
@@ -47,7 +47,7 @@ describe("BlockManager::Creating blocks", function(){
     beforeEach(function(){
       mediator = _.extend({}, SirTrevor.Events);
       options = { defaultType: false, blockLimit: 1 };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
 
       manager.createBlock('Text');
     });
@@ -64,7 +64,7 @@ describe("BlockManager::Creating blocks", function(){
     beforeEach(function(){
       mediator = _.extend({}, SirTrevor.Events);
       options = { defaultType: false, blockTypes: ['Text'] };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
     });
 
     it("will only create a block where the type is available", function(){
@@ -82,7 +82,7 @@ describe("BlockManager::Creating blocks", function(){
     beforeEach(function(){
       mediator = _.extend({}, SirTrevor.Events);
       options = { defaultType: false, blockTypeLimits: { 'Text': 1 } };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
     });
 
     it("adheres to the blockType limit", function(){

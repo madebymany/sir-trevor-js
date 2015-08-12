@@ -12,7 +12,7 @@ describe("Block:Pastable Block", function(){
       pastable: true
     });
 
-    block = new SirTrevor.Blocks.PastableBlock({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.PastableBlock({}, editor.mediator);
   });
 
   describe("render", function(){

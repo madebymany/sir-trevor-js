@@ -12,7 +12,7 @@ describe("Block:Store", function(){
   describe("create", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.mediator);
     });
 
     it("creates the data in the block store", function(){
@@ -28,7 +28,7 @@ describe("Block:Store", function(){
   describe("_getData", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.mediator);
     });
 
     it("should retrieve the data", function(){
@@ -40,7 +40,7 @@ describe("Block:Store", function(){
   describe("setData", function(){
 
     beforeEach(function(){
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.mediator);
     });
 
     it("should set the data on the block", function(){
@@ -58,7 +58,7 @@ describe("Block:Store", function(){
   describe("save", function(){
 
     beforeEach(function() {
-      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.ID, editor.mediator);
+      block = new SirTrevor.Blocks.Text({ text: 'Test' }, editor.mediator);
       spyOn(block, '_serializeData');
     });
 

@@ -18,7 +18,7 @@ var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
 
-var Block = function(data, instance_id, mediator, options) {
+var Block = function(data, mediator, options) {
   SimpleBlock.apply(this, arguments);
 };
 

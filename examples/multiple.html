@@ -1,0 +1,99 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="../sir-trevor.debug.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+  <style>
+    body {
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+    .sir-trevor {
+      border: 1px solid grey;
+      float: left;
+      padding: 5px;
+      width: 49%;
+    }
+    .sir-trevor:nth-child(2) {
+      float: right;
+    }
+    .sir-trevor-button {
+      clear: both;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <div class="sir-trevor">
+      <h2>Editor 1</h2>
+      <textarea class="sir-trevor__editor" name="content"></textarea>
+      <pre id="st-json-debug-1"></pre>
+    </div>
+    <div class="sir-trevor">
+      <h2> Editor 2</h2>
+      <textarea class="sir-trevor__editor" name="content"></textarea>
+      <pre id="st-json-debug-2"></pre>
+    </div>
+    <input class="sir-trevor-button" type="submit" value="Submit">
+  </form>
+
+  <script src="../node_modules/es5-shim/es5-shim.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../sir-trevor.debug.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../locales/de.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+    (function(){
+      SirTrevor.config.debug = true;
+      SirTrevor.config.scribeDebug = true;
+      SirTrevor.config.language = "en";
+
+      SirTrevor.setBlockOptions("Text", {
+        onBlockRender: function() {
+          console.log("Text block rendered");
+        }
+      });
+
+      window.editor1 = new SirTrevor.Editor({
+        el: document.querySelectorAll('.sir-trevor__editor')[0],
+        blockTypes: [
+          "Heading",
+          "Text",
+          "List",
+          "Quote",
+          "Image",
+          "Video",
+          "Tweet"
+        ]
+      });
+
+      window.editor2 = new SirTrevor.Editor({
+        el: document.querySelectorAll('.sir-trevor__editor')[1],
+        blockTypes: [
+          "Heading",
+          "Text",
+          "List",
+          "Quote",
+          "Image",
+          "Video",
+          "Tweet"
+        ]
+      });
+
+      document.querySelector('form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        
+        document.querySelector('#st-json-debug-1').innerText = window.editor1.store.toString(true);
+        document.querySelector('#st-json-debug-2').innerText = window.editor2.store.toString(true);
+      });
+
+    })();
+  </script>
+</body>
+</html>

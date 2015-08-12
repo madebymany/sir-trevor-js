@@ -29,8 +29,6 @@ module.exports = {
   version: "0.4.0",
   language: "en",
 
-  instances: [],
-
   defaults: {
     defaultType: false,
     spinner: {

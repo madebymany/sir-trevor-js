@@ -8,7 +8,7 @@ describe("BlockManager::Removing blocks", function(){
     SirTrevor.instances = [];
     mediator = _.extend({}, SirTrevor.Events);
     options = { defaultType: false };
-    manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+    manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), mediator);
 
     manager.createBlock('Text');
   });
