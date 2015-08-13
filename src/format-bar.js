@@ -64,6 +64,8 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   show: function() {
+    this.hide();
+
     this.editor.$outer.append(this.$el);
     this.$el.addClass('st-format-bar--is-ready');
     this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
