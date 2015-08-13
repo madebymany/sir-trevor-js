@@ -2,7 +2,7 @@
 
 var helpers = require('./helpers');
 
-var blockTypes = ["Heading", "text", "list", "quote", "image", "video", "tweet"]; // jshint ignore:line
+var blockTypes = ["heading", "text", "list", "quote", "image", "video", "tweet"]; // jshint ignore:line
 
 describe('Empty data', function() {
 
@@ -46,7 +46,7 @@ describe('Empty data', function() {
   it('should allow reordering of blocks', function(done) {
     helpers.createBlock(blockTypes[0], function() {
       helpers.createBlock(blockTypes[1], function(parent) {
-        helpers.findElementByCss('.st-block-ui-btn--reorder', parent).click().then( function() {
+        helpers.findElementByCss('.st-block-ui-btn__reorder', parent).click().then( function() {
           return helpers.findElementByCss('.st-block-positioner__select > option[value=\'1\']', parent).click();
         }).then( function() {
           return helpers.findElementsByCss('.st-block');
