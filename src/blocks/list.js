@@ -55,7 +55,13 @@ module.exports = Block.extend({
   icon_name: 'list',
   multi_editable: true,
 
-  scribeOptions: { allowBlockElements: false },
+  scribeOptions: { 
+    allowBlockElements: false,
+    tags: {
+      p: false
+    }
+  },
+
   configureScribe: function(scribe) {
     scribe.use(new ScribeListBlockPlugin(this));
   },
