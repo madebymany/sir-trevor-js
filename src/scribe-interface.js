@@ -24,6 +24,9 @@ var sanitizeDefaults = {
 module.exports = {
 
   initScribeInstance: function(el, scribeOptions, configureScribe) {
+
+    scribeOptions = scribeOptions || {};
+
     var scribeConfig = {debug: config.scribeDebug};
     var tags = sanitizeDefaults;
 
