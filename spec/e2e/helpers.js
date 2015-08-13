@@ -17,7 +17,6 @@ exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {
     exports.findElementByCss('.st-block-addition', parent).click().then( function() {
-      console.log(blockType);
       return exports.findElementByCss('.st-block-controls__button[data-type="'+blockType+'"]', parent).click();
     }).then( function() {
       return exports.findElementByCss('.st-block[data-type="'+blockType+'"]');
