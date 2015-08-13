@@ -79,5 +79,5 @@ module.exports.create = function(SirTrevor) {
     SirTrevor.wrapper, ".st-block-controls__button", "click", createBlock
   );
 
-  return {hide, destroy};
+  return {el, hide, destroy};
 };

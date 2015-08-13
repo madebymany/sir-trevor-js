@@ -104,7 +104,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
         this.mediator.trigger('block:create', block.type, block.data);
       }, this);
     } else if (this.options.defaultType !== false) {
-      this.mediator.trigger('elock:create', this.options.defaultType, {});
+      this.mediator.trigger('block:create', this.options.defaultType, {});
     }
   },
 

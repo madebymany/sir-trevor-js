@@ -10,7 +10,7 @@ describe('Blocks: Video block', function() {
     var options = editor.blockManager.blockOptions;
     var Klass = SirTrevor.Blocks[utils.classify(type)];
     var block = new Klass(data, editor.id, editor.mediator, options);
-    editor.renderBlock(block);
+    editor.blockManager.renderBlock(block);
 
     return block;
   };

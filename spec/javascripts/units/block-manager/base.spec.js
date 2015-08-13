@@ -5,24 +5,26 @@ describe("BlockManager", function() {
   var manager;
 
   beforeEach(function(){
-    manager = new SirTrevor.BlockManager(SirTrevor.config.defaults, '', Object.assign({}, SirTrevor.Events));
+    var element = global.createBaseElement();
+    var editor = new SirTrevor.Editor({
+      el: element
+    });
+    manager = editor.blockManager;
   });
 
   describe("findBlockById", function(){
 
     beforeEach(function(){
-      manager.blocks = [
-        { blockID: 1 },
-        { blockID: 2 }
-      ];
+      manager.createBlock("Text");
+      manager.createBlock("Text");
     });
 
     it("returns a block from the blocks array if it's present", function(){
-      expect(manager.findBlockById(1)).toBeDefined();
+      expect(manager.findBlockById(manager.blocks[0].blockID)).toEqual(manager.blocks[0]);
     });
 
     it("returns nothing if the block isn't found", function(){
-      expect(manager.findBlockById(3)).toBeUndefined();
+      expect(manager.findBlockById("st-block-crazy-id")).toBeUndefined();
     });
 
   });
@@ -30,10 +32,8 @@ describe("BlockManager", function() {
   describe("getBlocksByType", function(){
 
     beforeEach(function(){
-      manager.blocks = [
-        { type: "Text" },
-        { type: "Image" }
-      ];
+      manager.createBlock("Text");
+      manager.createBlock("Image");
     });
 
     it("returns all the blocks of the type", function(){
@@ -45,14 +45,12 @@ describe("BlockManager", function() {
   describe("getBlocksByIDs", function(){
 
     beforeEach(function(){
-      manager.blocks = [
-        { blockID: 1 },
-        { blockID: 2 }
-      ];
+      manager.createBlock("Text");
+      manager.createBlock("Text");
     });
 
     it("returns all the blocks of the type", function(){
-      expect(manager.getBlocksByIDs([1]).length).toBe(1);
+      expect(manager.getBlocksByIDs(manager.blocks[0].blockID).length).toBe(1);
     });
   });
 
@@ -74,10 +72,8 @@ describe("BlockManager", function() {
   describe("triggerBlockCountUpdate", function(){
 
     beforeEach(function(){
-      manager.blocks = [
-        { blockID: 1 },
-        { blockID: 2 }
-      ];
+      manager.createBlock("Text");
+      manager.createBlock("Text");
       spyOn(manager.mediator, 'trigger');
     });
 

@@ -28,13 +28,9 @@
 
   <pre id="st-json-debug"></pre>
 
-<<<<<<< HEAD
   <script src="../node_modules/es5-shim/es5-shim.js" type="text/javascript" charset="utf-8"></script>
   <!-- es6-shim should be bundled in with SirTrevor for now -->
   <!-- <script src="../node_modules/es6-shim/es6-shim.js" type="text/javascript" charset="utf-8"></script> -->
-=======
-  <script src="../node_modules/jquery/dist/jquery.js" type="text/javascript" charset="utf-8"></script>
->>>>>>> ffdb8de... refactored the block controls and added new ui
   <script src="../sir-trevor.debug.js" type="text/javascript" charset="utf-8"></script>
   <script src="../locales/de.js" type="text/javascript" charset="utf-8"></script>
   <script type="text/javascript" charset="utf-8">
@@ -64,7 +60,6 @@
 
       document.querySelector('form').addEventListener('submit', function (e) {
         e.preventDefault();
-        
         document.querySelector('#st-json-debug').innerText = window.editor.store.toString(true);
       });
 

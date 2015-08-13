@@ -65,10 +65,6 @@ describe("Editor", function(){
       expect(editor.blockControls).toBeDefined();
     });
 
-    it("creates a new FloatingBlockControl", function(){
-      expect(editor.fl_blockControls).toBeDefined();
-    });
-
     it("creates a new FormatBar", function(){
       expect(editor.formatBar).toBeDefined();
     });

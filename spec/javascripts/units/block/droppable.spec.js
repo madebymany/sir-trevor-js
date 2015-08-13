@@ -15,6 +15,10 @@ describe("Block:Droppable Block", function(){
     block = new SirTrevor.Blocks.DroppableBlock({}, editor.ID, editor.mediator);
   });
 
+  afterEach(function(){
+    delete SirTrevor.Blocks.DroppableBlock;
+  });
+
   describe("render", function(){
 
     beforeEach(function(){

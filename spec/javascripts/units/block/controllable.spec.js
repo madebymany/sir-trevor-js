@@ -6,7 +6,10 @@ describe("Controllable Block", function(){
 
   beforeEach(function(){
     element = global.createBaseElement();
-    editor = new SirTrevor.Editor({ el: element });
+    editor  = new SirTrevor.Editor({
+      el: element,
+      blockTypes: ["Text"]
+    });
 
     testHandler = jasmine.createSpy();
 
@@ -18,6 +21,10 @@ describe("Controllable Block", function(){
     });
 
     block = new SirTrevor.Blocks.ControllableBlock({}, editor.ID, editor.mediator);
+  });
+
+  afterEach(function(){
+    delete SirTrevor.Blocks.ControllableBlock;
   });
 
   describe("render", function(){
@@ -39,7 +46,7 @@ describe("Controllable Block", function(){
 
     xit("runs the handler on click", function(){
       var event = new MouseEvent("click");
-      
+
       block.control_ui.querySelector('.st-block-control-ui-btn').dispatchEvent(event);
       expect(testHandler)
         .toHaveBeenCalled();

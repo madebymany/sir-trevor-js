@@ -4,16 +4,24 @@ describe("Block", function(){
 
   var element, editor, block, block_two, block_three;
 
-  SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
-    type: "complex_type"
-  });
-
   beforeEach(function(){
+
+    SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
+      type: "complex_type"
+    });
+
     element = global.createBaseElement();
-    editor = new SirTrevor.Editor({ el: element });
+    editor  = new SirTrevor.Editor({
+      el: element,
+      blockTypes: ["Text"]
+    });
     block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
     block_two = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
     block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID, editor.mediator);
+  });
+
+  afterEach(function(){
+    delete SirTrevor.Blocks.ComplexType;
   });
 
   it("block is instance of ST.Block", function(){
@@ -46,8 +54,8 @@ describe("Block", function(){
       expect(block.el).not.toBe(undefined);
     });
 
-    it("has have a shorthand method for selecting elements under the el", function(){
-      expect(typeof block.$native).toBe('function');
+    it("has a shorthand method for selecting elements under the el", function(){
+      expect(typeof block.$).toBe('function');
     });
 
   });

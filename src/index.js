@@ -49,13 +49,13 @@ var SirTrevor = {
   getInstance: utils.getInstance,
 
   setBlockOptions: function(type, options) {
-    //var block = SirTrevor.Blocks[type];
+    var block = SirTrevor.Blocks[type];
 
-    //if (_.isUndefined(block)) {
-      //return;
-    //}
+    if (typeof block === "undefined") {
+      return;
+    }
 
-    //Object.assign(block.prototype, options || {});
+    Object.assign(block.prototype, options || {});
   },
 
   runOnAllInstances: function(method) {

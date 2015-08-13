@@ -9,7 +9,7 @@ var stToHTML = require('../to-html');
 
 module.exports = Block.extend({
 
-  type: 'Heading',
+  type: 'heading',
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 

@@ -65,7 +65,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   _setBlockInner : function() {
     var editor_html = _.result(this, 'editorHTML');
 
-    this.el.insertAdjacentHTML("beforeend", this.block_template({ editor_html: editor_html }))
+    this.el.insertAdjacentHTML("beforeend", this.block_template(editor_html));
 
     this.inner = this.el.querySelector('.st-block__inner');
     this.inner.addEventListener('click', function(e){ e.stopPropagation(); });
@@ -101,7 +101,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   _initUI : function() {
     var ui_element = Dom.createElement("div", { 'class': 'st-block__ui' });
-    this.inner.appendChild(ui_element);
+    this.el.appendChild(ui_element);
     this.ui = ui_element;
     this._initUIComponents();
   },

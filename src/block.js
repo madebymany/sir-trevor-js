@@ -345,7 +345,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       el.addEventListener('mouseup', this.getSelectionForFormatter);
       el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
     }.bind(this));
-    
+
     var textBlock = this.getTextBlock()[0];
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
 

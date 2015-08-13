@@ -22,7 +22,7 @@ var BlockManager = function(SirTrevor) {
   this.mediator = SirTrevor.mediator;
 
   // REFACTOR: this is a hack until I can focus on reworking the blockmanager
-  this.$wrapper = SirTrevor.$wrapper;
+  this.wrapper = SirTrevor.wrapper;
 
   this.blocks = [];
   this.blockCounts = {};
@@ -90,7 +90,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (previousSibling) {
       Dom.insertAfter(block.render().el, previousSibling);
     } else {
-      this.$wrapper[0].appendChild(block.render().el);
+      this.wrapper.appendChild(block.render().el);
     }
     block.trigger("onRender");
   },
