@@ -33,11 +33,11 @@ describe('Empty data', function() {
 
   it('should allow removal of block', function(done) {
     helpers.createBlock(blockTypes[0], function() {
-      helpers.findElementByCss('.st-block-ui-btn--delete').click().then( function() {
-        return helpers.findElementByCss('.st-block-ui-btn--confirm-delete').click();
-      }).then( function() {
+      helpers.findElementByCss('.st-block-ui-btn__delete').click().then( function() {
+        return helpers.findElementByCss('.js-st-block-confirm-delete').click();
+      }, helpers.catchError).then( function() {
         return helpers.findElementByCss('.st-block');
-      }).then( null, function(err) {
+      }, helpers.catchError).then( null, function(err) {
         done();
       });
     });

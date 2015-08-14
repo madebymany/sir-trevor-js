@@ -58,6 +58,8 @@ exports.initSirTrevor = function(data) {
   });
 };
 
+exports.catchError = function(err) { return false; };
+
 beforeAll(function() {
 
   var serverUrl = null;

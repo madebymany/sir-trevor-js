@@ -23780,7 +23780,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    this.ui.insertAdjacentHTML("beforeend", DELETE_TEMPLATE);
-	    Events.delegate(this.el, ".js-st-block-confirm-delete", "click", this.onDeleteConfirm);
+	    Events.delegate(this.el, ".js-st-block-confirm-delete", "click", this.onDeleteConfirm.bind(this));
 	    Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
 	  },
 
