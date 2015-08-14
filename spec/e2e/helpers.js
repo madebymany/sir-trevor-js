@@ -13,6 +13,10 @@ exports.findElementsByCss = function(css, parent) {
   return (parent || exports.browser).findElements(driver.By.css(css));
 };
 
+exports.findBlocks = function() {
+  return exports.findElementsByCss('.st-block');
+};
+
 exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {
