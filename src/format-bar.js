@@ -69,6 +69,8 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   show: function() {
+    this.hide();
+
     this.editor.outer.appendChild(this.el);
     this.el.classList.add('st-format-bar--is-ready');
   },

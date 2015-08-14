@@ -50,7 +50,7 @@ describe("BlockManager", function() {
     });
 
     it("returns all the blocks of the type", function(){
-      expect(manager.getBlocksByIDs(manager.blocks[0].blockID).length).toBe(1);
+      expect(manager.getBlocksByIDs([manager.blocks[0].blockID]).length).toBe(1);
     });
   });
 
