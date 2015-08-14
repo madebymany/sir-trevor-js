@@ -158,7 +158,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   removeBlockDragOver: function() {
-    this.outer.querySelector('.st-drag-over').classList.remove('st-drag-over');
+    var dragOver = this.outer.querySelector('.st-drag-over');
+    if (!dragOver) { return; }
+    dragOver.classList.remove('st-drag-over');
   },
 
   changeBlockPosition: function(block, selectedPosition) {

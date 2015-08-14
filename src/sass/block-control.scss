@@ -12,8 +12,9 @@ $animation-speed: 0.2s;
 }
 
 .st-block-addition {
-  position:relative;
-  z-index:1;
+  position: absolute;
+  text-align: left;
+  transform: translateY(-50%);
   outline:none;
   border:none;
   font-size:1.3em;
@@ -22,19 +23,28 @@ $animation-speed: 0.2s;
   background-color:transparent;
   padding:0;
   left:-1.1em;
+
+  &::-moz-focus-inner {
+    padding:0;
+    margin:0;
+    margin-left:-1px;
+  }
+
 }
 
 .st-block-addition__button {
   transition: all $animation-speed ease-in-out;
-  transform: translateY(-50%);
   @extend .st-icon;
   background-color:$block-controls-color;
-  position:absolute;
+  position:relative;
   box-sizing:border-box;
   padding:.2em;
   display:block;
   color:#fff;
   font-size:0.8em;
+  float:left;
+
+  transform:translateZ(0);
 
   .st-block-addition:hover &,
   .st-block--active & {
@@ -42,7 +52,7 @@ $animation-speed: 0.2s;
   }
 
   .st-block--active & {
-    transform: translateY(-50%) rotate(45deg);
+    transform: rotate(45deg);
   }
 }
 
@@ -60,7 +70,8 @@ $animation-speed: 0.2s;
   height: 0;
   border-style: solid;
   border-width: .4em 0 .4em .6em;
-  border-color: transparent transparent transparent $block-controls-color;
+  border-color: rgba(255, 255, 255, 0);
+  border-left-color: rgba(148, 148, 148, 1);
   top: 50%;
   right:-.3em;
   z-index:-1;
@@ -80,15 +91,15 @@ $animation-speed: 0.2s;
   height:1px;
   width:100%;
   background-color:$block-controls-color;
-  top: 0;
   padding-right:1.1em;
   opacity:.2;
+  top:50%;
+  transform:translateY(-50%);
 }
 
 .st-block-addition:hover:before,
 .st-block--active .st-block-addition:before {
   height:2px;
-  top: -1px;
   opacity:1;
 }
 

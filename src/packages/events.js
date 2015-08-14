@@ -21,8 +21,8 @@ var fixEvent = function(e, target) {
       rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/;
 
   var propsToCopy =
-    rmouseEvent.test( event.type ) ? props.shared.concat(props.mouseEvent) :
-    rkeyEvent.test( event.type ) ? props.shared.concat(props.keyEvent) :
+    rmouseEvent.test( e.type ) ? props.shared.concat(props.mouseEvent) :
+    rkeyEvent.test( e.type ) ? props.shared.concat(props.keyEvent) :
           props.shared;
 
   var prop;
@@ -49,15 +49,17 @@ var fixEvent = function(e, target) {
   return obj;
 };
 
-module.exports.delegate = function delegate(el, selector, event, fn, useCapture = false) {
-  el.addEventListener(event, (e) => {
-    var target = e.target;
-    for (target; target && target !== el; target = target.parentNode) {
-      if (Dom.matches(target, selector)) {
-        fn.call(target, fixEvent(e, target));
-        break;
+module.exports.delegate =
+  function delegate(el, selector, event, fn, useCapture = false) {
+    el.addEventListener(event, (e) => {
+      var target = e.target;
+      for (target; target && target !== el; target = target.parentNode) {
+        console.log(target);
+        if (Dom.matches(target, selector)) {
+          fn.call(target, fixEvent(e, target));
+          break;
+        }
       }
-    }
-    target = null;
-  }, useCapture);
-};
+      target = null;
+    }, useCapture);
+  };

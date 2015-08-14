@@ -4,6 +4,7 @@ var _ = require('./lodash');
 var dropEvents = require('./helpers/drop-events');
 
 var EventBus = require('./event-bus');
+var Dom = require('./packages/dom');
 
 var BlockReorder = function(block_element, mediator) {
   this.block = block_element;
@@ -32,9 +33,9 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
   },
 
   initialize: function() {
-    this.el.addEventListener('mousedown touchstart', this.onMouseDown);
+    this.el.addEventListener('mousedown', this.onMouseDown);
     this.el.addEventListener('dragstart', this.onDragStart);
-    this.el.addEventListener('dragend touchend', this.onDragEnd);
+    this.el.addEventListener('dragend', this.onDragEnd);
 
     dropEvents.dropArea(this.block);
     this.block.addEventListener('drop', this.onDrop);
@@ -53,16 +54,13 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
     var dropped_on = this.block,
     item_id = ev.dataTransfer.getData("text/plain"),
-    block = document.querySelector('#' + item_id);
+      block = document.querySelector('#' + item_id);
 
-    if (!_.isUndefined(item_id) && !_.isEmpty(block) &&
-        dropped_on.getAttribute('id') !== item_id &&
-          dropped_on.getAttribute('data-instance') === block.getAttribute('data-instance')
-       ) {
-       dropped_on.insertAdjacentElement('afterend', block);
-     }
-     this.mediator.trigger("block:rerender", item_id);
-     EventBus.trigger("block:reorder:dropped", item_id);
+    if (!!item_id, !!block, dropped_on.id !== item_id) {
+      Dom.insertAfter(block, dropped_on);
+    }
+    this.mediator.trigger("block:rerender", item_id);
+    EventBus.trigger("block:reorder:dropped", item_id);
   },
 
   onDragStart: function(ev) {

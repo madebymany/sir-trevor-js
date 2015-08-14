@@ -144,7 +144,7 @@ module.exports = Block.extend({
       this.editorIds.push(editor.id);
     }
 
-    this.focusOn(editor);
+    !content && this.focusOn(editor);
   },
 
   focusOnNeighbor: function(item) {
@@ -167,6 +167,7 @@ module.exports = Block.extend({
     editor.el.focus();
 
     if (range) {
+      console.log(range, lastChild)
       range.setStartAfter(lastChild, 1);
       range.collapse(false);
     }

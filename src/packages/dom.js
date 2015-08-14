@@ -12,7 +12,7 @@ Dom.setAttributes = (el, attributes = {}) => {
   }
 
   if (attributes.text) {
-    el.innerText = attributes.text;
+    el.textContent = attributes.text;
     delete attributes.text;
   }
 
