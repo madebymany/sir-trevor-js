@@ -29,15 +29,6 @@ var FormatBar = function(options, mediator, editor) {
   this.initialize.apply(this, arguments);
 };
 
-function generateButtonHTML(Blocks, availableTypes) {
-  return availableTypes.reduce((memo, type) => {
-    if (Blocks.hasOwnProperty(type) && Blocks[type].prototype.toolbarEnabled) {
-      return memo += BLOCK_CONTROL_TEMPLATE(Blocks[type].prototype);
-    }
-    return memo;
-  }, "");
-}
-
 Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediated-events'), require('./events'), require('./renderable'), {
 
   className: 'st-format-bar',

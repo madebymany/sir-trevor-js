@@ -1,6 +1,5 @@
 "use strict";
 
-var _ = require('./lodash');
 var dropEvents = require('./helpers/drop-events');
 
 var EventBus = require('./event-bus');

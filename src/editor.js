@@ -172,7 +172,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     if(blockBy && blockBy.getAttribute('id') !== block.getAttribute('id')) {
       this.hideAllTheThings();
       if (blockPosition > selectedPosition) {
-        console.log('yeah');
         blockBy.parentNode.insertBefore(block, blockBy);
       } else {
         Dom.insertAfter(block, blockBy);

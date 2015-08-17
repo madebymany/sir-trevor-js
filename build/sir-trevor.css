@@ -132,8 +132,11 @@
   z-index: 2; }
 
 .st-block-addition {
-  position: relative;
-  z-index: 1;
+  position: absolute;
+  text-align: left;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
   outline: none;
   border: none;
   font-size: 1.3em;
@@ -142,27 +145,31 @@
   background-color: transparent;
   padding: 0;
   left: -1.1em; }
+  .st-block-addition::-moz-focus-inner {
+    padding: 0;
+    margin: 0;
+    margin-left: -1px; }
 
 .st-block-addition__button {
   -webkit-transition: all 0.2s ease-in-out;
           transition: all 0.2s ease-in-out;
-  -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-          transform: translateY(-50%);
   background-color: #949494;
-  position: absolute;
+  position: relative;
   box-sizing: border-box;
   padding: .2em;
   display: block;
   color: #fff;
-  font-size: 0.8em; }
+  font-size: 0.8em;
+  float: left;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0); }
   .st-block-addition:hover .st-block-addition__button,
   .st-block--active .st-block-addition__button {
     background-color: #0078FF; }
   .st-block--active .st-block-addition__button {
-    -webkit-transform: translateY(-50%) rotate(45deg);
-        -ms-transform: translateY(-50%) rotate(45deg);
-            transform: translateY(-50%) rotate(45deg); }
+    -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+            transform: rotate(45deg); }
 
 .st-block-addition__button:after, .st-block-addition:before {
   content: "";
@@ -179,7 +186,8 @@
   height: 0;
   border-style: solid;
   border-width: 0.4em 0 0.4em 0.6em;
-  border-color: transparent transparent transparent #949494;
+  border-color: rgba(255, 255, 255, 0);
+  border-left-color: #949494;
   top: 50%;
   right: -.3em;
   z-index: -1; }
@@ -194,14 +202,16 @@
   height: 1px;
   width: 100%;
   background-color: #949494;
-  top: 0;
   padding-right: 1.1em;
-  opacity: .2; }
+  opacity: .2;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%); }
 
 .st-block-addition:hover:before,
 .st-block--active .st-block-addition:before {
   height: 2px;
-  top: -1px;
   opacity: 1; }
 
 .st-block-addition:hover:before {
@@ -237,8 +247,7 @@
   position: relative; }
 
 .st-block {
-  position: relative;
-  padding: 3px 0; }
+  position: relative; }
 
 .st-block__inner {
   position: relative;

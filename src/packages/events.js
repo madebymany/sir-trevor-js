@@ -54,7 +54,6 @@ module.exports.delegate =
     el.addEventListener(event, (e) => {
       var target = e.target;
       for (target; target && target !== el; target = target.parentNode) {
-        console.log(target);
         if (Dom.matches(target, selector)) {
           fn.call(target, fixEvent(e, target));
           break;

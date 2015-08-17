@@ -81,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = __webpack_require__(1);
 
-	__webpack_require__(223);
+	__webpack_require__(224);
 
 /***/ },
 /* 1 */
@@ -129,9 +129,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Blocks: __webpack_require__(198),
 
 	  FormatBar: __webpack_require__(215),
-	  Editor: __webpack_require__(216),
+	  Editor: __webpack_require__(217),
 
-	  toMarkdown: __webpack_require__(222),
+	  toMarkdown: __webpack_require__(223),
 	  toHTML: __webpack_require__(207),
 
 	  setDefaults: function setDefaults(options) {
@@ -163,7 +163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	};
 
-	_Object$assign(SirTrevor, __webpack_require__(217));
+	_Object$assign(SirTrevor, __webpack_require__(218));
 
 	module.exports = SirTrevor;
 
@@ -2436,7 +2436,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 39 */
-[225, 40, 43],
+[226, 40, 43],
 /* 40 */
 /***/ function(module, exports) {
 
@@ -2762,7 +2762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 49 */
-[225, 50, 51],
+[226, 50, 51],
 /* 50 */
 40,
 /* 51 */
@@ -2884,11 +2884,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 55 */
 40,
 /* 56 */
-[226, 57, 58],
+[227, 57, 58],
 /* 57 */
 40,
 /* 58 */
-[227, 59],
+[228, 59],
 /* 59 */
 42,
 /* 60 */
@@ -3301,11 +3301,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 65 */
-[226, 66, 67],
+[227, 66, 67],
 /* 66 */
 40,
 /* 67 */
-[227, 68],
+[228, 68],
 /* 68 */
 42,
 /* 69 */
@@ -3756,7 +3756,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  if (attributes.text) {
-	    el.innerText = attributes.text;
+	    el.textContent = attributes.text;
 	    delete attributes.text;
 	  }
 
@@ -22955,10 +22955,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Object$assign = __webpack_require__(2)['default'];
 
-	var _ = __webpack_require__(32);
 	var dropEvents = __webpack_require__(99);
 
 	var EventBus = __webpack_require__(87);
+	var Dom = __webpack_require__(81);
 
 	var BlockReorder = function BlockReorder(block_element, mediator) {
 	  this.block = block_element;
@@ -22987,9 +22987,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  initialize: function initialize() {
-	    this.el.addEventListener('mousedown touchstart', this.onMouseDown);
+	    this.el.addEventListener('mousedown', this.onMouseDown);
 	    this.el.addEventListener('dragstart', this.onDragStart);
-	    this.el.addEventListener('dragend touchend', this.onDragEnd);
+	    this.el.addEventListener('dragend', this.onDragEnd);
 
 	    dropEvents.dropArea(this.block);
 	    this.block.addEventListener('drop', this.onDrop);
@@ -23010,8 +23010,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        item_id = ev.dataTransfer.getData("text/plain"),
 	        block = document.querySelector('#' + item_id);
 
-	    if (!_.isUndefined(item_id) && !_.isEmpty(block) && dropped_on.getAttribute('id') !== item_id && dropped_on.getAttribute('data-instance') === block.getAttribute('data-instance')) {
-	      dropped_on.insertAdjacentElement('afterend', block);
+	    if ((!!item_id, !!block, dropped_on.id !== item_id)) {
+	      Dom.insertAfter(block, dropped_on);
 	    }
 	    this.mediator.trigger("block:rerender", item_id);
 	    EventBus.trigger("block:reorder:dropped", item_id);
@@ -24938,7 +24938,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.editorIds.push(editor.id);
 	    }
 
-	    this.focusOn(editor);
+	    !content && this.focusOn(editor); // jshint ignore:line
 	  },
 
 	  focusOnNeighbor: function focusOnNeighbor(item) {
@@ -25247,12 +25247,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Dom = __webpack_require__(81);
 	var Events = __webpack_require__(97);
 
+	var FORMAT_BUTTON_TEMPLATE = __webpack_require__(216);
+
 	var FormatBar = function FormatBar(options, mediator, editor) {
 	  this.editor = editor;
 	  this.options = _Object$assign({}, config.defaults.formatBar, options || {});
 	  this.commands = this.options.commands;
 	  this.mediator = mediator;
-	  this.hasBound = false;
 
 	  this._ensureElement();
 	  this._bindFunctions();
@@ -25276,18 +25277,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  initialize: function initialize() {
-	    this.btns = [];
 
-	    this.commands.forEach(function (format) {
-	      var btn = Dom.createElement("button", {
-	        'class': 'st-format-btn st-format-btn--' + format.name + ' ' + (format.iconName ? 'st-icon' : ''),
-	        'text': format.text,
-	        'data-cmd': format.cmd
-	      });
+	    var buttons = this.commands.reduce(function (memo, format) {
+	      return memo += FORMAT_BUTTON_TEMPLATE(format);
+	    }, "");
 
-	      this.btns.push(btn);
-	      this.el.appendChild(btn);
-	    }, this);
+	    this.el.insertAdjacentHTML("beforeend", buttons);
+
+	    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
 	  },
 
 	  hide: function hide() {
@@ -25300,12 +25297,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.editor.outer.appendChild(this.el);
 	    this.el.classList.add('st-format-bar--is-ready');
-
-	    if (!this.hasBound) {
-	      Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
-	    }
-
-	    this.hasBound = true;
 	  },
 
 	  remove: function remove() {
@@ -25335,10 +25326,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  highlightSelectedButtons: function highlightSelectedButtons() {
 	    var block = utils.getBlockBySelection();
-	    this.btns.forEach(function (btn) {
+	    [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function (btn) {
 	      var cmd = btn.getAttribute('data-cmd');
 	      btn.classList.toggle("st-format-btn--is-active", block.queryTextBlockCommandState(cmd));
-	    }, this);
+	      btn = null;
+	    });
 	  },
 
 	  onFormatButtonClick: function onFormatButtonClick(ev) {
@@ -25370,6 +25362,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 216 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	module.exports = function (_ref) {
+	  var name = _ref.name;
+	  var text = _ref.text;
+	  var cmd = _ref.cmd;
+	  var iconName = _ref.iconName;
+
+	  return "\n    <button class=\"st-format-btn st-format-btn--" + name + " " + (iconName ? "st-icon" : "") + "\" data-cmd=\"" + cmd + "\">\n      " + text + "\n    </button>\n  ";
+	};
+
+/***/ },
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25393,12 +25400,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var Events = __webpack_require__(85);
 	var EventBus = __webpack_require__(87);
-	var FormEvents = __webpack_require__(217);
-	var BlockControls = __webpack_require__(218);
+	var FormEvents = __webpack_require__(218);
+	var BlockControls = __webpack_require__(219);
 	var BlockManager = __webpack_require__(197);
 	var FormatBar = __webpack_require__(215);
 	var EditorStore = __webpack_require__(88);
-	var ErrorHandler = __webpack_require__(221);
+	var ErrorHandler = __webpack_require__(222);
 
 	var Editor = function Editor(options) {
 	  this.initialize(options);
@@ -25536,7 +25543,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  removeBlockDragOver: function removeBlockDragOver() {
-	    this.outer.querySelector('.st-drag-over').classList.remove('st-drag-over');
+	    var dragOver = this.outer.querySelector('.st-drag-over');
+	    if (!dragOver) {
+	      return;
+	    }
+	    dragOver.classList.remove('st-drag-over');
 	  },
 
 	  changeBlockPosition: function changeBlockPosition(block, selectedPosition) {
@@ -25548,7 +25559,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (blockBy && blockBy.getAttribute('id') !== block.getAttribute('id')) {
 	      this.hideAllTheThings();
 	      if (blockPosition > selectedPosition) {
-	        console.log('yeah');
 	        blockBy.parentNode.insertBefore(block, blockBy);
 	      } else {
 	        Dom.insertAfter(block, blockBy);
@@ -25653,7 +25663,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Editor;
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25703,7 +25713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FormEvents;
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25717,8 +25727,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Blocks = __webpack_require__(198);
 	var Events = __webpack_require__(97);
 
-	var BLOCK_CONTROL_TEMPLATE = __webpack_require__(219);
-	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(220);
+	var BLOCK_CONTROL_TEMPLATE = __webpack_require__(220);
+	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(221);
 
 	function generateBlocksHTML(Blocks, availableTypes) {
 	  return availableTypes.reduce(function (memo, type) {
@@ -25789,7 +25799,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -25803,7 +25813,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 220 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25813,7 +25823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = "\n  <div id=\"st_top\" class=\"st-top-controls\">\n    " + BLOCK_ADDITION_TEMPLATE + "\n  </div>\n";
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25895,7 +25905,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ErrorHandler;
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -25986,14 +25996,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 223 */
+/* 224 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 224 */,
-/* 225 */
+/* 225 */,
+/* 226 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -26042,7 +26052,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
 
 	/**
@@ -26084,7 +26094,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
 
 	/**
