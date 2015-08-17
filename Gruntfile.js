@@ -12,6 +12,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-webpack');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-jasmine-nodejs');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.initConfig({
 
@@ -71,10 +72,15 @@ module.exports = function(grunt) {
           "spec/e2e/basic.spec.js"
         ]
       }
+    },
+
+    clean: {
+      all: ["build/*.*"]
     }
   });
 
   grunt.registerTask('default', ['test', 'webpack:uncompressed', 'webpack:dist']);
-  grunt.registerTask('test', ['jshint', 'karma', 'webpack:test', 'connect', 'jasmine_nodejs']);
+  grunt.registerTask('test', ['clean:all', 'jshint', 'karma', 'test-integration']);
+  grunt.registerTask('test-integration', ['webpack:test', 'connect', 'jasmine_nodejs' ])
   grunt.registerTask('dev', ['webpack-dev-server:start']);
 };
