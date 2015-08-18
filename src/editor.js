@@ -15,13 +15,13 @@ var Dom = require('./packages/dom');
 
 var Events = require('./events');
 var EventBus = require('./event-bus');
-var FormEvents = require('./form-events');
 var BlockControls = require('./block-controls');
 var BlockManager = require('./block-manager');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
 var ErrorHandler = require('./error-handler');
+var FormEvents = require('./helpers/form-events');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -29,9 +29,9 @@ var Editor = function(options) {
 
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
-  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
+  bound: ['hideAllTheThings', 'changeBlockPosition',
     'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'],
+    'blockLimitReached', 'process'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -43,8 +43,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     utils.log("Init SirTrevor.Editor");
 
     this.options = Object.assign({}, config.defaults, options || {});
-    
+
     if (!this._ensureAndSetElements()) { return false; }
+
+    this.options.data = this.options.data || this.el.value;
 
     if(!_.isUndefined(this.options.onEditorRender) &&
        _.isFunction(this.options.onEditorRender)) {
@@ -58,7 +60,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.build();
 
-    FormEvents.bindFormSubmit(this);
+    if (this.options.formEvents && !this.formEvents) {
+      this.formEvents = new FormEvents(this, this.options);
+    }
+
+    this.mediator.trigger('initialize');
   },
 
   /*
@@ -71,7 +77,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     Dom.hide(this.el);
     
     this.errorHandler = new ErrorHandler(this.outer, this.mediator, this.options.errorsContainer);
-    this.store = new EditorStore(this.el.value, this.mediator);
+    this.store = new EditorStore(this.options.data, this.mediator);
     this.block_manager = new BlockManager(this.options, this.mediator);
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
     this.fl_block_controls = new FloatingBlockControls(this.wrapper, this.mediator);
@@ -122,11 +128,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       this.mediator.trigger('block:remove', block.blockID);
     }, this);
 
+    this.mediator.trigger('destroy');
+
     // Stop listening to events
     this.mediator.stopListening();
     this.stopListening();
-
-    FormEvents.unbindFormSubmit(this);
 
     // Clear the store
     this.store.reset();
@@ -212,14 +218,28 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   /*
-   * Handle a form submission of this Editor instance.
-   * Validate all of our blocks, and serialise all data onto the JSON objects
+   * Returns a promise which resolves when all queued items have been resolved.
+   * @param {Boolean} shouldValidate
+   * @returns {Promise} Object contains the data and errors from the editor
    */
-  onFormSubmit: function(shouldValidate) {
+  process: function(shouldValidate) {
+    return Promise.all(
+      this.getBlockQueuedItems().map(function(item) {
+        return item.deferred;
+      })
+    ).then( () => {
+      return this.getData(shouldValidate);
+    });
+  },
+
+  /*
+   * Validate all of our blocks, and serialise all data onto the JSON objects.
+   * @param {Boolean} shouldValidate
+   * @returns {Object} Object containg the data, canSubmit boolean and error count from the editor
+   */
+  getData: function(shouldValidate) {
     // if undefined or null or anything other than false - treat as true
     shouldValidate = (shouldValidate === false) ? false : true;
-
-    utils.log("Handling form submission for Editor " + this.ID);
 
     this.mediator.trigger('errors:reset');
     this.store.reset();
@@ -228,9 +248,16 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_manager.validateBlockTypesExist(shouldValidate);
 
     this.mediator.trigger('errors:render');
-    this.el.value = this.store.toString();
 
-    return this.errorHandler.errors.length;
+    return {
+      data: this.store.toString(),
+      errors: this.errorHandler.errors.length,
+      canSubmit: !(this.errorHandler.errors.length || this.getBlockQueuedItems().length)
+    };
+  },
+
+  getBlockQueuedItems: function() {
+    return this.block_manager.getQueuedItems();
   },
 
   validateBlocks: function(shouldValidate) {
@@ -283,8 +310,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
 
     this.el = this.options.el;
-    this.form = Dom.getClosest(this.el, 'form');
-    
+
     this.outer = Dom.createElement("div", {
                   'class': 'st-outer notranslate', 
                   'dropzone': 'copy link move'});

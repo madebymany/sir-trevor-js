@@ -21,7 +21,7 @@ module.exports = {
   removeQueuedItem: function(name) {
     utils.log("Removing queued item for " + this.blockID + " called " + name);
 
-    this._queued = this._queued.filter(function(queued) {
+    this._queued = this._queued.filter((queued) => {
       return queued.name !== name;
     });
   },
@@ -36,5 +36,5 @@ module.exports = {
       item.deferred.abort();
     }, this);
   }
-
+  
 };

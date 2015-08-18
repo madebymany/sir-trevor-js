@@ -39,10 +39,6 @@ describe("Editor", function(){
       editor = new SirTrevor.Editor({ el: element });
     });
 
-    it("creates a form element", function(){
-      expect(editor.form).toBeDefined();
-    });
-
     it("creates an outer element", function(){
       expect(editor.outer).toBeDefined();
     });
@@ -142,5 +138,31 @@ describe("Editor", function(){
       expect(editor.block_manager.blocks.length).toBe(0);
     });
   });
+
+
+  describe('instantiating without formEvents', function(){
+
+    beforeEach(function(){
+      editor = new SirTrevor.Editor({ el: element });
+    });
+
+    it('should not assign formEvents', function(){
+      expect(editor.formEvents).not.toBeDefined();
+    });
+
+  });
+
+  describe('instantiating with formEvents', function(){
+
+    beforeEach(function(){
+      editor = new SirTrevor.Editor({ el: element, formEvents: true });
+    });
+
+    it('should assign formEvents', function(){
+      expect(editor.formEvents).toBeDefined();
+    });
+
+  });
+
 
 });

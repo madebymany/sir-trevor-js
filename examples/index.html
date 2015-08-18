@@ -56,10 +56,12 @@
         ]
       });
 
-      document.querySelector('form').addEventListener('submit', function (e) {
+      document.querySelector('form').addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        document.querySelector('#st-json-debug').innerText = window.editor.store.toString(true);
+
+        window.editor.process().then( function(response) {
+          document.querySelector('#st-json-debug').innerText = response.data;
+        });
       });
 
     })();

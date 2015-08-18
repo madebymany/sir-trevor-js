@@ -10,3 +10,17 @@ global.createBaseElement = function() {
   form.appendChild(element);
   return element;
 };
+
+beforeEach(function() {
+  jasmine.addMatchers({
+    toBeAPromise: function() {
+      return {
+        compare: function(actual, expected) {
+          var result = {};
+          result.pass = actual && typeof actual.then === "function";
+          return result;
+        }
+      };
+    }
+  });
+});

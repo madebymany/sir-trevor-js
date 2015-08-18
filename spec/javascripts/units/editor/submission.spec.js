@@ -12,29 +12,53 @@ describe("Editor:Submission", function(){
     });
   });
 
-  it("calls reset and save on the store", function(){
-    spyOn(editor.store, "reset");
-    editor.onFormSubmit();
-    expect(editor.store.reset).toHaveBeenCalled();
+  describe('process', function(){
+
+    describe('on successful queued items resolved', function(){
+
+      it("returns a promise", function(){
+        expect(editor.process()).toBeAPromise();
+      });
+
+      it("calls getData", function(){
+        var getDataResponse = 'data';
+        spyOn(editor, "getData").and.returnValue(getDataResponse);
+        expect(editor.getData).not.toHaveBeenCalled();
+
+        editor.process().then( function(response) {
+          expect(editor.getData).toHaveBeenCalled();
+          expect(response).toBe(getDataResponse);
+        });
+      });
+    });
   });
 
-  it("calls the validateBlocks method", function(){
-    spyOn(editor, "validateBlocks");
-    editor.onFormSubmit();
-    expect(editor.validateBlocks).toHaveBeenCalled();
-  });
+  describe('getData', function(){
 
-  it("calls the validateBlockTypesExist method", function(){
-    spyOn(editor.block_manager, "validateBlockTypesExist");
-    editor.onFormSubmit();
-    expect(editor.block_manager.validateBlockTypesExist).toHaveBeenCalled();
-  });
+    it("calls reset and save on the store", function(){
+      spyOn(editor.store, "reset");
+      editor.getData();
+      expect(editor.store.reset).toHaveBeenCalled();
+    });
 
-  it("calls toString on the store", function(){
-    spyOn(editor.store, "toString");
-    editor.onFormSubmit();
-    // Store gets called twice
-    expect(editor.store.toString).toHaveBeenCalled();
+    it("calls the validateBlocks method", function(){
+      spyOn(editor, "validateBlocks");
+      editor.getData();
+      expect(editor.validateBlocks).toHaveBeenCalled();
+    });
+
+    it("calls the validateBlockTypesExist method", function(){
+      spyOn(editor.block_manager, "validateBlockTypesExist");
+      editor.getData();
+      expect(editor.block_manager.validateBlockTypesExist).toHaveBeenCalled();
+    });
+
+    it("calls toString on the store", function(){
+      spyOn(editor.store, "toString");
+      editor.getData();
+      // Store gets called twice
+      expect(editor.store.toString).toHaveBeenCalled();
+    });
   });
 
 });

@@ -6,8 +6,8 @@ var blockTypes = ["Heading", "text", "list", "quote", "image", "video", "tweet"]
 
 describe('Empty data', function() {
 
-  beforeEach( function() {
-    helpers.initSirTrevor();
+  beforeEach( function(done) {
+    helpers.initSirTrevor().then(done);
   });
 
   it('should render with no blocks', function(done) {
@@ -65,7 +65,7 @@ describe('Empty data', function() {
 
 describe('Existing data', function() {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
 
     var data = {
       "data": [
@@ -84,7 +84,7 @@ describe('Existing data', function() {
       ]
     };
 
-    helpers.initSirTrevor(data);
+    helpers.initSirTrevor(data).then(done);
   });
 
   it('should be populated with 2 text blocks', function(done) {

@@ -167,6 +167,15 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     return !(block_type_limit !== 0 && this._getBlockTypeCount(type) >= block_type_limit);
   },
 
+  getQueuedItems: function() {
+    return this.blocks.reduce(function(arr, b) {
+      if (b.ajaxable && 
+        _.isFunction(b.hasItemsInQueue) && b.hasItemsInQueue) {
+          return arr.concat(b._queued);
+      }
+    }, []);
+  },
+
   _setBlocksTypes: function() {
     this.blockTypes = utils.flatten(
       _.isUndefined(this.options.blockTypes) ?

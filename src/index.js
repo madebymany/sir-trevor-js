@@ -22,7 +22,6 @@ var SirTrevor = {
   EventBus: require('./event-bus'),
 
   EditorStore: require('./extensions/editor-store'),
-  Submittable: require('./extensions/submittable'),
   FileUploader: require('./extensions/file-uploader'),
 
   BlockMixins: require('./block_mixins'),
@@ -63,8 +62,5 @@ var SirTrevor = {
   },
 
 };
-
-Object.assign(SirTrevor, require('./form-events'));
-
 
 module.exports = SirTrevor;
