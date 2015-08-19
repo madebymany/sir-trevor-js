@@ -2,17 +2,20 @@
 
 function dragEnter(e) {
   e.preventDefault();
+  e.stopPropagation();
 }
 
 function dragOver(e) {
   e.dataTransfer.dropEffect = "copy";
   e.currentTarget.classList.add('st-drag-over');
   e.preventDefault();
+  e.stopPropagation();
 }
 
 function dragLeave(e) {
   e.currentTarget.classList.remove('st-drag-over');
   e.preventDefault();
+  e.stopPropagation();
 }
 
 module.exports = {

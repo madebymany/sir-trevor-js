@@ -32,6 +32,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   bound: [
     "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
     "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender",
+    "onDeleteConfirm"
   ],
 
   className: 'st-block',
@@ -193,15 +194,15 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   onFocus: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+    Array.prototype.forEach.call(this.getTextBlock(), (el) => {
       el.addEventListener('focus', this._onFocus);
-    }.bind(this));
+    });
   },
 
   onBlur: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+    Array.prototype.forEach.call(this.getTextBlock(), (el) => {
       el.addEventListener('blur', this._onBlur);
-    }.bind(this));
+    });
   },
 
   //Event handlers
@@ -217,7 +218,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   onDrop: function(dataTransferObj) {},
 
-  onDeleteConfirm(e) {
+  onDeleteConfirm: function(e) {
     e.preventDefault();
     this.mediator.trigger('block:remove', this.blockID);
     this.remove();
@@ -233,7 +234,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     };
 
     this.ui.insertAdjacentHTML("beforeend", DELETE_TEMPLATE);
-    Events.delegate(this.el, ".js-st-block-confirm-delete", "click", this.onDeleteConfirm.bind(this));
+    Events.delegate(this.el, ".js-st-block-confirm-delete", "click", this.onDeleteConfirm);
     Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
   },
 
@@ -340,11 +341,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _initTextBlocks: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+    Array.prototype.forEach.call(this.getTextBlock(), (el) => {
       el.addEventListener('keyup', this.getSelectionForFormatter);
       el.addEventListener('mouseup', this.getSelectionForFormatter);
       el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
-    }.bind(this));
+    });
 
     var textBlock = this.getTextBlock()[0];
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
@@ -358,14 +359,13 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   getSelectionForFormatter: function() {
-    var block = this;
-    setTimeout(function() {
+    setTimeout(() => {
       var selection = window.getSelection(),
           selectionStr = selection.toString().trim(),
           en = 'formatter:' + ((selectionStr === '') ? 'hide' : 'position');
 
-      block.mediator.trigger(en, block);
-      EventBus.trigger(en, block);
+      this.mediator.trigger(en, this);
+      EventBus.trigger(en, this);
     }, 1);
   },
 

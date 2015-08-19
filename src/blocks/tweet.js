@@ -39,11 +39,7 @@ module.exports = Block.extend({
     var iframe = this.inner.querySelector('iframe');
     Dom.remove(iframe);
 
-    this.inner.insertBefore(
-      Dom.createDocumentFragmentFromString(
-        tweet_template(data)
-      ), this.inner.firstChild
-    );
+    this.inner.insertAdjacentHTML("afterbegin", tweet_template(data));
   },
 
   onContentPasted: function(event){

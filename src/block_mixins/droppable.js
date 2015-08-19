@@ -22,23 +22,22 @@ module.exports = {
 
     this.drop_options = Object.assign({}, config.defaults.Block.drop_options, this.drop_options);
 
-    var drop_html = Dom.createDocumentFragmentFromString(
-                      _.template(this.drop_options.html,
-                        { block: this, _: _ })
-                    );
-
     Dom.hide(this.editor);
-    this.inputs.appendChild(drop_html);
-    this.dropzone = drop_html;
+
+    this.inputs.insertAdjacentHTML("beforeend", _.template(this.drop_options.html,
+                                                    { block: this, _: _ }));
 
     // Bind our drop event
-    dropEvents.dropArea(this.dropzone).addEventListener('drop', this._handleDrop.bind(this));
+    dropEvents
+      .dropArea(this.inputs.lastElementChild)
+      .addEventListener('drop', this._handleDrop.bind(this));
 
     this.inner.classList.add('st-block__inner--droppable');
   },
 
   _handleDrop: function(e) {
     e.preventDefault();
+    e.stopPropagation();
 
     var el = e.target,
         types = e.dataTransfer.types;
