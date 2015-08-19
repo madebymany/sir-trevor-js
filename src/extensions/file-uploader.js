@@ -33,7 +33,7 @@ module.exports = function(block, file, success, error) {
       success.apply(block, arguments, data);
     }
 
-    block.removeQueuedItem.bind(block, uid);
+    block.removeQueuedItem(uid);
   };
 
   var callbackError = function(jqXHR, status, errorThrown) {
@@ -44,7 +44,7 @@ module.exports = function(block, file, success, error) {
       error.call(block, status);
     }
 
-    block.removeQueuedItem.bind(block, uid);
+    block.removeQueuedItem(uid);
   };
 
   var url = block.uploadUrl || config.defaults.uploadUrl;
