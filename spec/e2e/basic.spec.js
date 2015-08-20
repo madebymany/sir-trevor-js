@@ -6,8 +6,8 @@ var blockTypes = ["heading", "text", "list", "quote", "image", "video", "tweet"]
 
 describe('Empty data', function() {
 
-  beforeEach( function() {
-    helpers.initSirTrevor();
+  beforeEach( function(done) {
+    helpers.initSirTrevor().then(done);
   });
 
   it('should render with no blocks', function(done) {
@@ -47,7 +47,7 @@ describe('Empty data', function() {
 
 describe('Existing data', function() {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
 
     var data = {
       "data": [
@@ -66,7 +66,7 @@ describe('Existing data', function() {
       ]
     };
 
-    helpers.initSirTrevor(data);
+    helpers.initSirTrevor(data).then(done);
   });
 
   it('should be populated with 2 text blocks', function(done) {
@@ -101,7 +101,6 @@ describe('Existing data', function() {
     });
 
     it('with drag and drop', function(done) {
-
       return helpers.browser.executeScript( function() {
         var elements = document.querySelectorAll('.st-block');
         window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: elements[0]});
@@ -115,6 +114,34 @@ describe('Existing data', function() {
       });
     }, 20000);
       
+  });
+
+});
+
+describe('Block tests', function() {
+
+  beforeEach( function(done) {
+    helpers.initSirTrevor().then(done);
+  });
+
+  it('should allow drag and drop in a block', function(done) {
+    helpers.createBlock(blockTypes[4], function(block) {
+      helpers.browser.executeScript( function() {
+        window.simulateDragDrop(undefined, {
+          dropTarget: document.querySelector('.st-block__dropzone'),
+          dataTransfer: {
+            types: ['File'],
+            files: [
+              new Blob(['image-data'], {type: 'image/gif'}) // jshint ignore:line
+            ]
+          }
+        });
+      }).then( function() {
+        return helpers.findElementByCss('.st-block__editor > img', block);
+      }).then( function() {
+        done();
+      });
+    });
   });
 
 });
