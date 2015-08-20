@@ -1,5 +1,7 @@
 'use strict';
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
+
 var helpers = require('./helpers');
 
 var blockTypes = ["heading", "text", "list", "quote", "image", "video", "tweet"]; // jshint ignore:line

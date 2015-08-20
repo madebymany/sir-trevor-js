@@ -12,3 +12,16 @@ before_script:
 cache:
   directories:
     - node_modules
+env:
+  global:
+    - secure: fDe5yGDhB3MKuyywUCEoIGeVknbSMjae36/BVx2LvCz5ufzaa4mylvKHfBx92vYDMAyTaukfFap9edSArRYchc33faFBVPgkfDmpODYq0HZh3uV5LS21Wky6OV2EQryzNmW15J7Z/YubDPHwM1+e7003sMmbrL8lVPB8MxYUpuE=
+    - secure: ZoAW9zio3zyv7hqesXtZZGsRXZ50X69gwycy4ApbmA8kWvxqDcwwKG75GX7pYmfbmmeN8qUlYB0QXJh3mffoJs8Xvy4TAma9HzEqrG3WUMqKlZs62oMSv/u6in1zD9bl6De0VRbBxz6xsL7Ul9Rfnck3zx50WuaKIxou8GOBNUo=
+  matrix:
+    - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='OSX 10.9'
+    - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='Windows 7'
+    - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='OSX 10.9'
+    - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='Windows 7'
+    - BROWSER_NAME='internet explorer' BROWSER_VERSION='11' PLATFORM='Windows 10'
+    - BROWSER_NAME='safari' BROWSER_VERSION='8' PLATFORM='OSX 10.10'
+addons:
+  sauce_connect: true

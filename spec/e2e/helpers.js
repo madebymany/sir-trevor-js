@@ -3,7 +3,7 @@
 var driver = require('selenium-webdriver');
 
 var APP_URL = 'http://localhost:8000/spec/app/index.html';
-var USE_SAUCELABS = false;
+var USE_SAUCELABS = true;
 
 exports.findElementByCss = function(css, parent) {
   return (parent || exports.browser).findElement(driver.By.css(css));
@@ -77,6 +77,12 @@ beforeAll(function() {
     capabilities.browserName = 'firefox';
 
     if (USE_SAUCELABS) {
+
+      Object.assign(capabilities, {
+        browserName: process.env.BROWSER_NAME,
+        version: process.env.BROWSER_VERSION,
+        platform: process.env.PLATFORM
+      });
 
       serverUrl = 'http://ondemand.saucelabs.com:80/wd/hub';
 
