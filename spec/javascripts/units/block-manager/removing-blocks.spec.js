@@ -2,14 +2,15 @@
 
 describe("BlockManager::Removing blocks", function(){
 
-  var mediator, options, manager;
+  var manager;
 
   beforeEach(function(){
-    SirTrevor.instances = [];
-    mediator = _.extend({}, SirTrevor.Events);
-    options = { defaultType: false };
-    manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
-
+    var element = global.createBaseElement();
+    var editor  = new SirTrevor.Editor({
+      el: element,
+      blockTypes: ["Text"]
+    });
+    manager = editor.blockManager;
     manager.createBlock('Text');
   });
 

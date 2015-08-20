@@ -4,41 +4,30 @@ describe("BlockControls", function(){
 
   describe("creating a new instance", function(){
 
-    var block_control, mediator;
+    var blockControls, editor;
 
     beforeEach(function(){
-      mediator = Object.assign({}, SirTrevor.Events);
-      block_control = new SirTrevor.BlockControls([], mediator);
+      var element = global.createBaseElement();
+      editor  = new SirTrevor.Editor({
+        el: element
+      });
+      blockControls = editor.blockControls;
     });
 
     it("can be created", function(){
-      expect(block_control).toBeDefined();
-    });
-
-    it("sets the available_types", function(){
-      expect(block_control.available_types).toBeDefined();
+      expect(blockControls).toBeDefined();
     });
 
     it("creates an el", function(){
-      expect(block_control.el).toBeDefined();
+      expect(blockControls.el).toBeDefined();
     });
 
-  });
-
-  describe("setting available_types", function(){
-
-    var mediator, block_control;
-
-    beforeEach(function(){
-      mediator = Object.assign({}, SirTrevor.Events);
-      block_control = new SirTrevor.BlockControls({
-        'Text' : true,
-        'Image' : true
-      }, mediator);
-    });
-
-    it("creates a control element for every type given", function(){
-      expect(block_control.el.children.length).toBe(2);
+    it("sets the available types", function(){
+      editor.blockManager.blockTypes.forEach(function(blockType){
+        expect(
+          blockControls.el.querySelector("[data-type=" + blockType.toLowerCase() + "]")
+        ).not.toBe(null);
+      });
     });
 
   });

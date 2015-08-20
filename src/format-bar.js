@@ -14,6 +14,8 @@ var utils = require('./utils');
 var Dom = require('./packages/dom');
 var Events = require('./packages/events');
 
+const FORMAT_BUTTON_TEMPLATE = require("./templates/format-button");
+
 var FormatBar = function(options, mediator, editor) {
   this.editor = editor;
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
@@ -42,19 +44,14 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   initialize: function() {
-    this.btns = [];
 
-    this.commands.forEach(function(format) {
-      var btn = Dom.createElement("button", {
-        'class': 'st-format-btn st-format-btn--' + format.name + ' ' +
-          (format.iconName ? 'st-icon' : ''),
-        'text': format.text,
-        'data-cmd': format.cmd
-      });
+    var buttons = this.commands.reduce(function(memo, format) {
+      return memo += FORMAT_BUTTON_TEMPLATE(format);
+    }, "");
 
-      this.btns.push(btn);
-      this.el.appendChild(btn);
-    }, this);
+    this.el.insertAdjacentHTML("beforeend", buttons);
+
+    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
   },
 
   hide: function() {
@@ -63,9 +60,10 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   show: function() {
+    this.hide();
+
     this.editor.outer.appendChild(this.el);
     this.el.classList.add('st-format-bar--is-ready');
-    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
   },
 
   remove: function(){ Dom.remove(this.el); },
@@ -94,11 +92,12 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
   highlightSelectedButtons: function() {
     var block = utils.getBlockBySelection();
-    this.btns.forEach(function(btn) {
+    [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function(btn) {
       var cmd = btn.getAttribute('data-cmd');
       btn.classList.toggle("st-format-btn--is-active",
                       block.queryTextBlockCommandState(cmd));
-    }, this);
+      btn = null;
+    });
   },
 
   onFormatButtonClick: function(ev) {

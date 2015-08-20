@@ -1,7 +1,5 @@
 "use strict";
 
-var _ = require('./lodash');
-
 // ES6 shims
 require('object.assign').shim();
 require('array.prototype.find');
@@ -38,10 +36,6 @@ var SirTrevor = {
 
   Blocks: require('./blocks'),
 
-  BlockControl: require('./block-control'),
-  BlockControls: require('./block-controls'),
-  FloatingBlockControls: require('./floating-block-controls'),
-
   FormatBar: require('./format-bar'),
   Editor: require('./editor'),
 
@@ -57,7 +51,7 @@ var SirTrevor = {
   setBlockOptions: function(type, options) {
     var block = SirTrevor.Blocks[type];
 
-    if (_.isUndefined(block)) {
+    if (typeof block === "undefined") {
       return;
     }
 

@@ -21,7 +21,7 @@ module.exports = {
     function alwaysFunc(func, arg) {
       /*jshint validthis: true */
       func.call(this, arg);
-      this.removeQueuedItem.bind(this, uid);
+      this.removeQueuedItem(uid);
     }
 
     if(!_.isUndefined(success)) {

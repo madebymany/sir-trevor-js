@@ -1,20 +1,20 @@
 .st-outer {
   font-size: 16px;
   position: relative;
+  background:#fff;
 }
 
 .st-block__inner {
-
   ::-moz-selection {
-      background: $accent-color;
-      text-shadow: none;
+    background: $accent-color;
+    text-shadow: none;
+    color:#fff;
   }
-
   ::selection {
-      background: $accent-color;
-      text-shadow: none;
+    background: $accent-color;
+    text-shadow: none;
+    color:#fff;
   }
-
 }
 
 .st-spinner {

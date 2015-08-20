@@ -144,7 +144,7 @@ module.exports = Block.extend({
       this.editorIds.push(editor.id);
     }
 
-    this.focusOn(editor);
+    !content && this.focusOn(editor); // jshint ignore:line
   },
 
   focusOnNeighbor: function(item) {

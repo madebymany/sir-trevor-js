@@ -5,18 +5,23 @@
 }
 
 // Generic styles
-.st-text-block,
-.st-block input[type="text"],
-.st-block textarea {
+@mixin st-input {
   font-size: inherit;
   margin: 0;
-  padding: 0.3em 0;
+  /*padding: 0.3em 0;*/
+}
+
+.st-block input[type="text"],
+.st-block textarea {
+  @include st-input;
 }
 
 // Focus / Active styles
-.st-text-block,
-.st-text-block:active,
-.st-text-block:focus,
+@mixin st-input-active {
+  outline: none;
+  border: none;
+}
+
 .st-block [contenteditable="true"],
 .st-block [contenteditable="true"]:active,
 .st-block [contenteditable="true"]:focus,
@@ -26,14 +31,12 @@
 .st-block textarea,
 .st-block textarea:hover,
 .st-block textarea:active {
-  outline: none;
-  border: none;
+  @include st-input-active;
 }
 
 .st-block input[type="text"],
 .st-block input[type="text"]:active,
 .st-block input[type="text"]:focus {
-  // width: 100%;
   color: #42474b;
   border: 0.1em solid #d4d4d4;
   padding:.6em;

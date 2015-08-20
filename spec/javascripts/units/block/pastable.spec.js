@@ -15,6 +15,10 @@ describe("Block:Pastable Block", function(){
     block = new SirTrevor.Blocks.PastableBlock({}, editor.ID, editor.mediator);
   });
 
+  afterEach(function(){
+    delete SirTrevor.Blocks.PastableBlock;
+  });
+
   describe("render", function(){
 
     beforeEach(function(){

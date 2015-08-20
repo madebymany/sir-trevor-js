@@ -15,6 +15,10 @@ describe("Block:Uploadable Block", function(){
     block = new SirTrevor.Blocks.UploadableBlock({}, editor.ID, editor.mediator);
   });
 
+  afterEach(function(){
+    delete SirTrevor.Blocks.UploadableBlock;
+  });
+
   describe("render", function(){
 
     beforeEach(function(){

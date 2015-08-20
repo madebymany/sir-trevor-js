@@ -7,8 +7,6 @@ var template = [
   "</div>"
 ].join("\n");
 
-var Dom = require('./packages/dom');
-
 var BlockPositioner = function(block, mediator) {
   this.mediator = mediator;
   this.block = block;
@@ -26,12 +24,10 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
   className: 'st-block-positioner',
-  visibleClass: 'st-block-positioner--is-visible',
+  visibleClass: 'active',
 
   initialize: function(){
-    this.el.appendChild(
-      Dom.createDocumentFragmentFromString(template)
-    );
+    this.el.insertAdjacentHTML("beforeend", template);
     this.select = this.$('.st-block-positioner__select')[0];
 
     this.select.addEventListener('change', this.onSelectChange);

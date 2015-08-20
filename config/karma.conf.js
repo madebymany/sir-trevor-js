@@ -62,6 +62,11 @@ module.exports = function(config) {
 
     webpack: {
       module: {
+        loaders: [{
+          test: /\.js?$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel?optional[]=runtime'
+        }],
         preLoaders: [{
           test: /\.scss$/,
           loader: 'css!autoprefixer!sass?outputStyle=compressed'
