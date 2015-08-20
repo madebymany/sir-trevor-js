@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.x
+
+### 0.5.0
+
+* Added Scribe for better text formatting rather than custom markdown for better extensibility
+* Multieditable block mixin added for when blocks contain more than 1 formattable textarea
+* Switched build process from Browserify to Webpack
+* Added basic integration tests
+
 ## 0.4.x
 
 ### 0.4.0

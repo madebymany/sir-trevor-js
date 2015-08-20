@@ -6,6 +6,11 @@
 
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
+## Upgrade guide from v0.4
+
+- [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
+- [Migration docs](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md)
+
 ## Quick start
 
 Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js/docs.html).
@@ -35,10 +40,10 @@ We are keeping a list of [custom block repos here](https://github.com/madebymany
 
 Sir Trevor is only tested on the following modern browsers:
 
-- IE10+
-- Chrome 25+
-- Safari 5+
-- Firefox 16+
+- IE11+
+- Chrome 43+
+- Safari 8+
+- Firefox 36+
 
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
 
