@@ -43,7 +43,7 @@ Sir Trevor is only tested on the following modern browsers:
 - IE11+
 - Chrome 43+
 - Safari 8+
-- Firefox 36+
+- Firefox 40+
 
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
 
