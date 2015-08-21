@@ -7,6 +7,7 @@ Here are a few ways you can help make SirTrevor better!
 [Chris Bell](https://github.com/cjbell88),
 [Andy Walker](https://github.com/ninjabiscuit),
 [Andrew Sprinz](https://github.com/andrewsprinz),
+[Łukasz Sągol](https://github.com/lukaszsagol),
 [Ilya Poropudas](https://github.com/ilyaporopudas)
 
 
@@ -69,6 +70,6 @@ SirTrevor saves json and relies on markdown parsers and third party image upload
 
 We'd love SirTrevor to be available in as many languages as possible. If you would like to add a translations file it would be most welcome. Translations can be found in the ``/locales`` directory. Simply copy one of the existing translation files and replace the copy appropriately.
 
-# Thats it
+# That’s it
 
 If you have further questions, contact one of the core team members or file an issue.

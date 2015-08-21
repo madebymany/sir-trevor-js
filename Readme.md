@@ -6,6 +6,11 @@
 
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
+## Upgrade guide from v0.4
+
+- [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
+- [Migration docs](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md)
+
 ## Quick start
 
 Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js/docs.html).
@@ -21,7 +26,7 @@ Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js
 1. [Sir Trevor Rails](http://github.com/madebymany/sir-trevor-rails)
 2. [Umbraco 7](https://github.com/mindrevolution/SirTrevor-for-Umbraco), [Umbraco 6](http://our.umbraco.org/projects/backoffice-extensions/skybrud-sir-trevor-editor)
 3. [CakePHP](http://github.com/martinbean/cakephp-sir-trevor-plugin)
-4. [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
+4. [Wordpress](https://github.com/neyre/sir-trevor-wp), [Wordpress](https://github.com/raffij/sir-trevor-wordpress)
 5. [Laravel](https://github.com/caouecs/Laravel4-SirTrevorJS)
 6. [Django](https://github.com/philippbosch/django-sirtrevor)
 7. [Yii Framework](https://github.com/DrMabuse23/yii2-sir-trevor-js)
@@ -35,12 +40,14 @@ We are keeping a list of [custom block repos here](https://github.com/madebymany
 
 Sir Trevor is only tested on the following modern browsers:
 
-- IE10+
-- Chrome 25+
-- Safari 5+
-- Firefox 16+
+- IE11+
+- Chrome 43+
+- Safari 8+
+- Firefox 40+
 
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
+
+Sir Trevor uses [The Guardian's scribe](https://github.com/guardian/scribe) for rich text editing. Double check their [browser support](https://github.com/guardian/scribe#browser-support) if your application relies on full RTE support.
 
 ## Dependencies
 

@@ -8,6 +8,7 @@ var utils = require('../utils');
 module.exports = {
 
   mixinName: "Pastable",
+  requireInputs: true,
 
   initializePastable: function() {
     utils.log("Adding pastable to block " + this.blockID);

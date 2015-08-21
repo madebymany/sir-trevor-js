@@ -15,9 +15,9 @@ function usage() {
     echo -e "  <action>\tbuild, push or publish"
     echo -e "  <version>\tversion passed to mversion"
     echo -e "\nTo release a new version to npm you have to:"
-    echo -e "  ./release build 5.0.0\t\tbuilds a new version in dist branch"
-    echo -e "  ./release push 5.0.0\t\tpushes repo to github"
-    echo -e "  ./release publish 5.0.0\tpublishes version using npm"
+    echo -e "  ./release build v5.0.0\t\tbuilds a new version in dist branch"
+    echo -e "  ./release push v5.0.0\t\tpushes repo to github"
+    echo -e "  ./release publish v5.0.0\tpublishes version using npm"
     exit 1
 }
 
@@ -120,7 +120,7 @@ if [[ $action = "build" ]]; then
   [ci skip]"
   git tag -a "$new_version" -m "Tagged ${new_version}"
 
-  echoinfo "Check the commit worked and then push:\n\n$0 push"
+  echoinfo "Check the commit worked and then push:\n\n$0 push $new_version"
 
   git checkout --quiet -
   exit

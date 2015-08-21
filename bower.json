@@ -1,6 +1,5 @@
 {
   "name": "sir-trevor-js",
-  "version": "0.5.0-beta3",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -11,10 +10,16 @@
     "website",
     "BrowserRunner.html"
   ],
+  "main": [
+    "sir-trevor.js",
+    "sir-trevor.css",
+    "sir-trevor-icons.css"
+  ],
   "dependencies": {
     "es5-shim": "~v4.0.3",
     "es6-shim": "~0.21.0",
     "Eventable": "~1.0.1",
     "jquery": "~1.9.1"
-  }
+  },
+  "version": "0.5.0"
 }

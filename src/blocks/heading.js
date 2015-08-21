@@ -13,11 +13,22 @@ module.exports = Block.extend({
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
-  editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
+  editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
+
+  scribeOptions: { 
+    allowBlockElements: false,
+    tags: {
+      p: false
+    }
+  },
 
   icon_name: 'heading',
 
   loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
+    if (this.options.convertFromMarkdown && data.format !== "html") {
+      this.setTextBlockHTML(stToHTML(data.text, this.type));
+    } else {
+      this.setTextBlockHTML(data.text);
+    }
   }
 });

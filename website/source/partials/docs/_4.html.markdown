@@ -5,10 +5,12 @@ A founding principle of Sir Trevor is to have an extensible editor that you can 
 
 A good place to start is to read through one of the [blocks that comes bundled with Sir Trevor](https://github.com/madebymany/sir-trevor-js/tree/master/src/blocks).
 
+There’s also a [Sir Trevor Blocks repository](https://github.com/madebymany/sir-trevor-blocks).
+
 <a name="4-1"></a>
 ## Concepts
 
-A `SirTrevor.Block` essentially takes some data, provides and interface for that data and knows how to serialize itself into JSON.
+A `SirTrevor.Block` essentially takes some data, provides an interface for that data and knows how to serialize itself into JSON.
 
 Generally the flow for a block goes like this:
 
@@ -39,7 +41,7 @@ Provides a drop zone support for the block. Exposes the `onDrop` event which mus
 Provides the UI support for a pastable component (like the video block). You can override the default paste handler by re-implementing the `onContentPasted` method.
 
 **`uploadable`**
-Provides support for uploadable content and mixins in the uploader into the block.
+Provides support for uploadable content and mixins in the uploader into the block. The uploadable mixin will use the `uploadUrl` set in the `SirTrevor.setDefaults` by default. Your custom block can override this by defining `uploadUrl` in the block body.
 
 **`ajaxable`**
 Gives a way to fetch content remotely through a editor managed queue.
@@ -47,7 +49,7 @@ Gives a way to fetch content remotely through a editor managed queue.
 **`controllable`**
 Provides a second, smaller UI in the lower left block corner to control its contents. Requires the `controls`-object so be specified in the block configuration (`'command-name': handler`).
 
-The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `uploadable_options.html`, `droppable_options.html` or `pastable_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
+The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `upload_options.html`, `drop_options.html` or `paste_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
 
 <a name="4-3"></a>
 ## Validations

@@ -31,10 +31,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
     'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'], 
+    'blockLimitReached'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
+    'block:reorder:dropped': 'removeBlockDragOver',
     'block:content:dropped': 'removeBlockDragOver'
   },
 
@@ -77,7 +78,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
     this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
-    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
     this.mediator.on('block-controls:reset', this.resetBlockControls);
@@ -89,7 +90,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this._setEvents();
 
     this.$wrapper.prepend(this.fl_block_controls.render().$el);
-    $(document.body).append(this.formatBar.render().$el);
     this.$outer.append(this.block_controls.render().$el);
 
     $(window).bind('click', this.hideAllTheThings);
@@ -121,8 +121,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_controls.destroy();
 
     // Destroy all blocks
-    this.blocks.forEach(function(block) {
-      this.mediator.trigger('block:remove', this.block.blockID);
+    this.block_manager.blocks.forEach(function(block) {
+      this.mediator.trigger('block:remove', block.blockID);
     }, this);
 
     // Stop listening to events
@@ -172,13 +172,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   renderBlock: function(block) {
     this._renderInPosition(block.render().$el);
     this.hideAllTheThings();
-    this.scrollTo(block.$el);
 
     block.trigger("onRender");
-  },
-
-  scrollTo: function(element) {
-    $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
   },
 
   removeBlockDragOver: function() {
@@ -196,7 +191,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     if($blockBy && $blockBy.attr('id') !== $block.attr('id')) {
       this.hideAllTheThings();
       $block["insert" + where]($blockBy);
-      this.scrollTo($block);
     }
   },
 
@@ -279,7 +273,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.el = this.options.el[0];
     this.$form = this.$el.parents('form');
 
-    var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer', 'dropzone': 'copy link move' });
+    var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer notranslate', 'dropzone': 'copy link move' });
     var $wrapper = $("<div>").attr({ 'class': 'st-blocks' });
 
     // Wrap our element in lots of containers *eww*

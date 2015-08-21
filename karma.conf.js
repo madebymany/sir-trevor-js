@@ -1,15 +1,13 @@
 // Karma configuration
 //
 module.exports = function(config) {
-  var enableBrowserStack = !!(process.env.BROWSERSTACK_USER && process.env.BROWSERSTACK_AUTHKEY);
-
   config.set({
 
     // base path, that will be used to resolve files and exclude
     basePath: 'spec/',
 
     // frameworks to use
-    frameworks: ['jasmine', 'browserify'],
+    frameworks: ['jasmine'],
 
     // list of files / patterns to load in the browser
     files: [
@@ -46,22 +44,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: enableBrowserStack ? ['BrowserStackChrome'] : ['Chrome'],
-
-    customLaunchers: {
-      BrowserStackChrome: {
-        base: 'BrowserStack',
-        browser: 'chrome',
-        browser_version: 'latest',
-        os: 'OS X',
-        os_version: 'Yosemite'
-      },
-    },
-
-    browserStack: {
-      username: process.env.BROWSERSTACK_USER,
-      accessKey: process.env.BROWSERSTACK_AUTHKEY,
-    },
+    browsers: [process.env.TRAVIS ? 'Firefox' : 'Chrome'],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
@@ -70,17 +53,18 @@ module.exports = function(config) {
     // if true, it capture browsers, run tests and exit
     singleRun: true,
 
-    // Browserify config (all optional)
-    browserify: {
-      debug: true,
-      transform: [['deamdify', {global: true}]]
-    },
-
     browserNoActivityTimeout: 60000,
 
-    // Add browserify to preprocessors
     preprocessors: {
-      "javascripts/**/*.js": "browserify"
-    }
+      // add webpack as preprocessor
+      "javascripts/**/*.js": ['webpack'],
+    },
+
+    webpack: {
+    },
+
+    webpackMiddleware: {
+      noInfo: true
+    },
   });
 }

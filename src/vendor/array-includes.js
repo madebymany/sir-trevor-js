@@ -1,6 +1,6 @@
 "use strict";
 
-// jshint freeze: false
+// jshint freeze: false, maxcomplexity: 11
 
 if (![].includes) {
   Array.prototype.includes = function(searchElement /*, fromIndex*/ ) {

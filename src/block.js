@@ -3,13 +3,10 @@
 var _ = require('./lodash');
 var $ = require('jquery');
 
-var Scribe = require('scribe-editor');
-var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
-var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
+var ScribeInterface = require('./scribe-interface');
 
 var config = require('./config');
 var utils = require('./utils');
-var stToMarkdown = require('./to-markdown');
 var BlockMixins = require('./block_mixins');
 
 var SimpleBlock = require('./simple-block');
@@ -55,7 +52,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   icon_name: 'default',
 
   validationFailMsg: function() {
-    return i18n.t('errors:validation_fail', { type: this.title() });
+    return i18n.t('errors:validation_fail', { type: this.title });
   },
 
   editorHTML: '<div class="st-block__editor"></div>',
@@ -63,13 +60,14 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   toolbarEnabled: true,
 
   availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
-    'ajaxable', 'controllable'],
+    'ajaxable', 'controllable', 'multi_editable'],
 
   droppable: false,
   pastable: false,
   uploadable: false,
   fetchable: false,
   ajaxable: false,
+  multi_editable: false,
 
   drop_options: {},
   paste_options: {},
@@ -101,7 +99,17 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.$editor = this.$inner.children().first();
 
-    if(this.droppable || this.pastable || this.uploadable) {
+    this.mixinsRequireInputs = false;
+    this.availableMixins.forEach(function(mixin) {
+      if (this[mixin]) {
+        var blockMixin = BlockMixins[utils.classify(mixin)];
+        if (!_.isUndefined(blockMixin.requireInputs) && blockMixin.requireInputs) {
+          this.mixinsRequireInputs = true;
+        }
+      }
+    }, this);
+
+    if(this.mixinsRequireInputs) {
       var input_html = $("<div>", { 'class': 'st-block__inputs' });
       this.$inner.append(input_html);
       this.$inputs = input_html;
@@ -159,9 +167,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     /* Simple to start. Add conditions later */
     if (this.hasTextBlock()) {
       data.text = this.getTextBlockHTML();
-      if (data.text.length > 0 && this.options.convertToMarkdown) {
-        data.text = stToMarkdown(data.text, this.type);
-      }
+      data.format = 'html';
     }
 
     // Add any inputs to the data attr
@@ -243,7 +249,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   beforeLoadingData: function() {
     this.loading();
 
-    if(this.droppable || this.uploadable || this.pastable) {
+    if(this.mixinsRequireInputs) {
       this.$editor.show();
       this.$inputs.hide();
     }
@@ -257,18 +263,16 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     if (_.isUndefined(this._scribe)) {
       throw "No Scribe instance found to send a command to";
     }
-    var cmd = this._scribe.getCommand(cmdName);
-    this._scribe.el.focus();
-    cmd.execute();
+
+    return ScribeInterface.execTextBlockCommand(this._scribe, cmdName);
   },
 
   queryTextBlockCommandState: function(cmdName) {
     if (_.isUndefined(this._scribe)) {
       throw "No Scribe instance found to query command";
     }
-    var cmd = this._scribe.getCommand(cmdName),
-        sel = new this._scribe.api.Selection();
-    return sel.range && cmd.queryState();
+
+    return ScribeInterface.queryTextBlockCommandState(this._scribe, cmdName);
   },
 
   _handleContentPaste: function(ev) {
@@ -300,6 +304,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _initFormatting: function() {
+
     // Enable formatting keyboard input
     var block = this;
 
@@ -341,15 +346,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var textBlock = this.getTextBlock().get(0);
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
-      this._scribe = new Scribe(textBlock, {
-        debug: config.scribeDebug,
-      });
-      this._scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
-      this._scribe.use(scribePluginLinkPromptCommand());
 
-      if (_.isFunction(this.options.configureScribe)) {
-        this.options.configureScribe.call(this, this._scribe);
-      }
+      var configureScribe =
+        _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
+      this._scribe = ScribeInterface.initScribeInstance(
+        textBlock, this.scribeOptions, configureScribe
+      );
     }
   },
 
@@ -383,7 +385,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   getTextBlockHTML: function() {
-    return this._scribe.getHTML();
+    return this._scribe.getContent();
   },
 
   setTextBlockHTML: function(html) {
