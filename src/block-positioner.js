@@ -15,8 +15,8 @@ var totalBlocks = 0;
 
 function render() {
   return Dom.createElement('div', {
-    class: 'st-block-positioner',
-    html: BLOCK_POSITIONER_TEMPLATE
+    'class': 'st-block-positioner',
+    'html': BLOCK_POSITIONER_TEMPLATE
   });
 }
 

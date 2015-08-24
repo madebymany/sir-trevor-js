@@ -297,9 +297,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this._withUIComponent(positioner, '.st-block-ui-btn__reorder',
                           positioner.toggle);
 
-    this._withUIComponent(new BlockReorder(this.el, this.mediator));
+    this._withUIComponent(BlockReorder.create(this.el, this.mediator));
 
-    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete',
+    this._withUIComponent(BlockDeletion.create(), '.st-block-ui-btn__delete',
                           this.onDeleteClick);
 
     this.onFocus();

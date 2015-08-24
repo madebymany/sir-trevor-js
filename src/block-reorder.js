@@ -1,95 +1,85 @@
 "use strict";
 
-var dropEvents = require('./helpers/drop-events');
+const dropEvents = require('./helpers/drop-events');
 
-var EventBus = require('./event-bus');
-var Dom = require('./packages/dom');
+const EventBus = require('./event-bus');
+const Dom = require('./packages/dom');
 
-var BlockReorder = function(block_element, mediator) {
-  this.block = block_element;
-  this.blockID = this.block.getAttribute('id');
-  this.mediator = mediator;
+module.exports.create = function(block, mediator) {
+  var dragEl;
+  /**
+   * Element to be used by blocks.
+   * @public
+   */
+  var el = Dom.createElement('a', {
+    'class': 'st-block-ui-btn__reorder',
+    'html': 'reorder',
+    'draggable': 'true',
+    'data-icon': 'move'
+  });
 
-  this._ensureElement();
-  this._bindFunctions();
+  el.addEventListener('mousedown', onMouseDown);
+  el.addEventListener('dragstart', onDragStart);
+  el.addEventListener('dragend', onDragEnd);
 
-  this.initialize();
-};
+  dropEvents.dropArea(block);
+  block.addEventListener('drop', onDrop);
 
-Object.assign(BlockReorder.prototype, require('./function-bind'), require('./renderable'), {
-
-  bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrop'],
-
-  className: 'st-block-ui-btn__reorder',
-  tagName: 'a',
-
-  attributes: function() {
-    return {
-      'html': 'reorder',
-      'draggable': 'true',
-      'data-icon': 'move'
-    };
-  },
-
-  initialize: function() {
-    this.el.addEventListener('mousedown', this.onMouseDown);
-    this.el.addEventListener('dragstart', this.onDragStart);
-    this.el.addEventListener('dragend', this.onDragEnd);
-
-    dropEvents.dropArea(this.block);
-    this.block.addEventListener('drop', this.onDrop);
-  },
-
-  blockId: function() {
-    return this.block.getAttribute('id');
-  },
-
-  onMouseDown: function() {
+  /**
+   * Trigger onMouseDown event
+   * @private
+   */
+  function onMouseDown() {
     EventBus.trigger("block:reorder:down");
-  },
+  }
 
-  onDrop: function(ev) {
+  /**
+   * onDrop inert element in new position
+   * @private
+   */
+  function onDrop(ev) {
     ev.preventDefault();
 
-    var dropped_on = this.block,
+    var dropped_on = block,
     item_id = ev.dataTransfer.getData("text/plain"),
-      block = document.querySelector('#' + item_id);
+      dropped_block = document.querySelector('#' + item_id);
 
-    if (!!item_id, !!block, dropped_on.id !== item_id) {
-      Dom.insertAfter(block, dropped_on);
+    if (!!item_id, !!dropped_block, dropped_on.id !== item_id) {
+      Dom.insertAfter(dropped_block, dropped_on);
     }
-    this.mediator.trigger("block:rerender", item_id);
+    mediator.trigger("block:rerender", item_id);
     EventBus.trigger("block:reorder:dropped", item_id);
-  },
+  }
 
-  onDragStart: function(ev) {
-    var block = this.block;
+  /**
+   * onDragStart copy block data to event.
+   * @private
+   */
+  function onDragStart(ev) {
+    dragEl = block.cloneNode(true);
+    dragEl.classList.add("st-drag-element");
+    dragEl.style.top = `${block.offsetTop}px`;
+    dragEl.style.left = `${block.offsetLeft}px`;
 
-    this.dragEl = block.cloneNode(true);
-    this.dragEl.classList.add("st-drag-element");
-    this.dragEl.style.top = `${block.offsetTop}px`;
-    this.dragEl.style.left = `${block.offsetLeft}px`;
+    block.parentNode.appendChild(dragEl);
 
-    block.parentNode.appendChild(this.dragEl);
-
-    ev.dataTransfer.setDragImage(this.dragEl, 0, 0);
-    ev.dataTransfer.setData('Text', this.blockId());
-    this.mediator.trigger("block-controls:hide");
+    ev.dataTransfer.setDragImage(dragEl, 0, 0);
+    ev.dataTransfer.setData('Text', block.getAttribute('id'));
+    mediator.trigger("block-controls:hide");
 
     EventBus.trigger("block:reorder:dragstart");
     block.classList.add('st-block--dragging');
-  },
-
-  onDragEnd: function(ev) {
-    EventBus.trigger("block:reorder:dragend");
-    this.block.classList.remove('st-block--dragging');
-    this.dragEl.parentNode.removeChild(this.dragEl);
-  },
-
-  render: function() {
-    return this;
   }
 
-});
+  /**
+   * onDragEnd remove old element.
+   * @private
+   */
+  function onDragEnd(ev) {
+    EventBus.trigger("block:reorder:dragend");
+    block.classList.remove('st-block--dragging');
+    dragEl.parentNode.removeChild(dragEl);
+  }
 
-module.exports = BlockReorder;
+  return {el};
+};

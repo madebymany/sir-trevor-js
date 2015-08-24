@@ -1,20 +1,17 @@
 "use strict";
 
-var BlockDeletion = function() {
-  this._ensureElement();
-  this._bindFunctions();
-};
+const Dom = require("./packages/dom");
 
-Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./renderable'), {
-
-  tagName: 'a',
-  className: 'st-block-ui-btn__delete',
-
-  attributes: {
-    html: 'delete',
+module.exports.create = function() {
+  /**
+   * Element to be used by blocks.
+   * @public
+   */
+  var el = Dom.createElement('a', {
+    'class': 'st-block-ui-btn__delete',
+    'html': 'delete',
     'data-icon': 'close'
-  }
+  });
 
-});
-
-module.exports = BlockDeletion;
+  return {el};
+};

@@ -93,7 +93,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   },
 
   _withUIComponent: function(component, className, callback) {
-    this.ui.appendChild(component.el || component.render().el);
+    this.ui.appendChild(component.el);
     if (className && callback) {
       Events.delegate(this.ui, className, 'click', callback);
     }
