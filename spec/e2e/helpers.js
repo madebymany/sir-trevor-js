@@ -64,6 +64,14 @@ exports.initSirTrevor = function(data) {
 
 exports.catchError = function(err) { return false; };
 
+exports.completeAlertPopup = function(text) {
+  return exports.browser.wait(driver.until.alertIsPresent()).then( function() {
+    var alert = exports.browser.switchTo().alert();
+    alert.sendKeys(text);
+    return alert.accept();
+  });
+};
+
 beforeAll(function() {
 
   var serverUrl = null;
