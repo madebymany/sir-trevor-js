@@ -292,7 +292,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.addDeleteControls();
 
-    var positioner = new BlockPositioner(this.el, this.mediator);
+    var positioner = BlockPositioner.create(this.el, this.mediator);
 
     this._withUIComponent(positioner, '.st-block-ui-btn__reorder',
                           positioner.toggle);

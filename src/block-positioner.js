@@ -1,78 +1,92 @@
 "use strict";
 
-var template = [
-  "<div class='st-block-positioner__inner'>",
-  "<span class='st-block-positioner__selected-value'></span>",
-  "<select class='st-block-positioner__select'></select>",
-  "</div>"
-].join("\n");
+/*
+ * SirTrevor Block Positioner
+ * --
+ * Gives an interface for positioning blocks.
+ */
 
-var BlockPositioner = function(block, mediator) {
-  this.mediator = mediator;
-  this.block = block;
+const BLOCK_POSITIONER_TEMPLATE  = require('./templates/block-positioner');
 
-  this._ensureElement();
-  this._bindFunctions();
+const Dom = require("./packages/dom");
 
-  this.initialize();
-};
+var visibleClass = 'active';
+var totalBlocks = 0;
 
-Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./renderable'), {
+function render() {
+  return Dom.createElement('div', {
+    class: 'st-block-positioner',
+    html: BLOCK_POSITIONER_TEMPLATE
+  });
+}
 
-  total_blocks: 0,
+function renderPositionList() {
+  var inner = "<option value='0'>" + i18n.t("general:position") + "</option>";
+  for(var i = 1; i <= totalBlocks; i++) {
+    inner += "<option value="+i+">"+i+"</option>";
+  }
+  return inner;
+}
 
-  bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
+function onBlockCountChange(newCount) {
+  totalBlocks = newCount;
+}
 
-  className: 'st-block-positioner',
-  visibleClass: 'active',
+module.exports.create = function(block, mediator) {
+  var visible = false;
 
-  initialize: function(){
-    this.el.insertAdjacentHTML("beforeend", template);
-    this.select = this.$('.st-block-positioner__select')[0];
+  /**
+   * Element to be used by blocks.
+   * @public
+   */
+  var el = render();
 
-    this.select.addEventListener('change', this.onSelectChange);
+  var select = el.querySelector('.st-block-positioner__select');
+  select.addEventListener('change', onSelectChange);
 
-    this.mediator.on("block:countUpdate", this.onBlockCountChange);
-  },
-
-  onBlockCountChange: function(new_count) {
-    if (new_count !== this.total_blocks) {
-      this.total_blocks = new_count;
-      this.renderPositionList();
-    }
-  },
-
-  onSelectChange: function() {
-    var val = this.select.value;
+  /**
+   * Trigger changePosition event and close positioner toggle
+   * @private
+   */
+  function onSelectChange() {
+    var val = select.value;
     if (val !== 0) {
-      this.mediator.trigger(
-        "block:changePosition", this.block, val,
+      mediator.trigger(
+        "block:changePosition", block, val,
         (val === 1 ? 'before' : 'after'));
-      this.toggle();
+      hide();
     }
-  },
-
-  renderPositionList: function() {
-    var inner = "<option value='0'>" + i18n.t("general:position") + "</option>";
-    for(var i = 1; i <= this.total_blocks; i++) {
-      inner += "<option value="+i+">"+i+"</option>";
-    }
-    this.select.innerHTML = inner;
-  },
-
-  toggle: function() {
-    this.select.value = 0;
-    this.el.classList.toggle(this.visibleClass);
-  },
-
-  show: function(){
-    this.el.classList.add(this.visibleClass);
-  },
-
-  hide: function(){
-    this.el.classList.remove(this.visibleClass);
   }
 
-});
+  /**
+   * Toggle visibility
+   * @public
+   */
+  function toggle() {
+    visible ? hide() : show();
+  }
 
-module.exports = BlockPositioner;
+  /**
+   * Render and show positioner element
+   * @private
+   */
+  function show() {
+    select.innerHTML = renderPositionList();
+    el.classList.add(visibleClass);
+    visible = true;
+  }
+
+  /**
+   * Hide and clear postioner element
+   * @private
+   */
+  function hide() {
+    el.classList.remove(visibleClass);
+    select.innerHTML = '';
+    visible = false;
+  }
+
+  mediator.on("block:countUpdate", onBlockCountChange);
+
+  return {toggle, el};
+};

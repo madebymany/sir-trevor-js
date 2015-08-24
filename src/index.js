@@ -24,7 +24,6 @@ var SirTrevor = {
   FileUploader: require('./extensions/file-uploader'),
 
   BlockMixins: require('./block_mixins'),
-  BlockPositioner: require('./block-positioner'),
   BlockReorder: require('./block-reorder'),
   BlockDeletion: require('./block-deletion'),
   BlockValidations: require('./block-validations'),
