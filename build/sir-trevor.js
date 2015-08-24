@@ -3695,6 +3695,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        cmd: "unlink",
 	        text: "link"
 	      }]
+	    },
+	    ajaxOptions: {
+	      headers: {}
 	    }
 	  }
 	};
@@ -3745,7 +3748,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	Dom.remove = function (el) {
-	  if (el.parentNode) {
+	  if (el && el.parentNode) {
 	    el.parentNode.removeChild(el);
 	  }
 	};
@@ -4420,8 +4423,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var url = block.uploadUrl || config.defaults.uploadUrl;
 
 	  var xhr = Ajax.fetch(url, {
-	    body: new FormData(data),
-	    method: 'POST'
+	    body: data,
+	    method: 'POST',
+	    dataType: 'json'
 	  });
 
 	  block.addQueuedItem(uid, xhr);
@@ -4439,20 +4443,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _Object$create = __webpack_require__(82)['default'];
 
+	var _Object$assign = __webpack_require__(2)['default'];
+
 	__webpack_require__(92);
 	var fetchJsonP = __webpack_require__(93);
 	var cancellablePromise = __webpack_require__(94);
+	var config = __webpack_require__(80);
 
 	var Ajax = _Object$create(null);
 
 	Ajax.fetch = function (url) {
 	  var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
+	  options = _Object$assign({}, config.defaults.ajaxOptions, options);
+
 	  var promise;
 	  if (options.jsonp) {
 	    promise = fetchJsonP(url).promise;
 	  } else {
-	    promise = fetch(url, options);
+	    promise = fetch(url, options).then(function (response) {
+	      if (options.dataType === 'json') {
+	        return response.json();
+	      }
+	      return response.text();
+	    });
 	  }
 	  return cancellablePromise(promise);
 	};
@@ -18884,7 +18898,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var Block = __webpack_require__(247);
 
-	var tweet_template = _.template(["<blockquote class='twitter-tweet' align='center'>", "<p><%= text %></p>", "&mdash; <%= user.name %> (@<%= user.screen_name %>)", "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>", "</blockquote>", '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'].join("\n"));
+	var tweet_template = _.template(["<blockquote class='twitter-tweet' align='center'>", "<p><%= text %></p>", "&mdash; <%= user.name %> (@<%= user.screen_name %>)", "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>", "</blockquote>"].join("\n"));
 
 	module.exports = Block.extend({
 
@@ -18915,6 +18929,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Dom.remove(iframe);
 
 	    this.inner.insertAdjacentHTML("afterbegin", tweet_template(data));
+
+	    var script = Dom.createElement('script', { src: '//platform.twitter.com/widgets.js' });
+	    this.inner.appendChild(script);
 	  },
 
 	  onContentPasted: function onContentPasted(event) {
@@ -18938,7 +18955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.loading();
 	      tweetID = tweetID[0];
 
-	      this.fetch(url, undefined, this.onTweetSuccess, this.onTweetFail);
+	      this.fetch(this.fetchUrl(tweetID), { dataType: 'json' }, this.onTweetSuccess, this.onTweetFail);
 	    }
 	  },
 

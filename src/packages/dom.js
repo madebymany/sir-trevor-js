@@ -33,7 +33,7 @@ Dom.insertAfter = (el, referenceNode) => {
 };
 
 Dom.remove = (el) => {
-  if (el.parentNode) {
+  if (el && el.parentNode) {
     el.parentNode.removeChild(el);
   }
 };

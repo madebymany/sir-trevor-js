@@ -50,8 +50,9 @@ module.exports = function(block, file, success, error) {
   var url = block.uploadUrl || config.defaults.uploadUrl;
 
   var xhr = Ajax.fetch(url, {
-    body: new FormData(data),
-    method: 'POST'
+    body: data,
+    method: 'POST',
+    dataType: 'json'
   });
 
   block.addQueuedItem(uid, xhr);
