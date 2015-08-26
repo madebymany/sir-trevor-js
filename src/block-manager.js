@@ -53,7 +53,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     // Run validations
     if (!this.canCreateBlock(type)) { return; }
-
+    
     var block = new Blocks[type](data, this.instance_scope, this.mediator,
                                  this.blockOptions);
     this.blocks.push(block);

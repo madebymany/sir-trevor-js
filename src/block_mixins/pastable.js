@@ -23,9 +23,13 @@ module.exports = {
         event.initEvent('select', true, false);
         this.dispatchEvent(event);
       });
-      el.addEventListener('paste', this._handleContentPaste);
-      el.addEventListener('submit', this._handleContentPaste);
+      el.addEventListener('paste', this._handleContentPaste.bind(this));
+      el.addEventListener('submit', this._handleContentPaste.bind(this));
     });
-  }
+  },
+
+  _handleContentPaste: function(ev) {
+    setTimeout(this.onContentPasted.bind(this, ev, ev.currentTarget), 0);
+  },
 
 };

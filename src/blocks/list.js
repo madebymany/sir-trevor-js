@@ -2,72 +2,36 @@
 
 var Block = require('../block');
 var stToHTML = require('../to-html');
-
-var ScribeListBlockPlugin = function(block) {
-  return function(scribe) {
-    scribe.el.addEventListener('keydown', function(ev) {
-      var rangeToHTML = function(range) {
-        var div = document.createElement('div');
-        div.appendChild(range.extractContents());
-
-        return div.innerHTML;
-      };
-
-      var selectToEnd = function() {
-        var selection = new scribe.api.Selection();
-        var range = selection.range.cloneRange();
-        range.setEndAfter(scribe.el.lastChild, 0);
-
-        return range;
-      };
-
-      var currentPosition = function() {
-        var selection = new scribe.api.Selection();
-        return selection.range.startOffset;
-      };
-
-      var content;
-
-      if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
-        ev.preventDefault();
-
-        content = rangeToHTML(selectToEnd());
-        block.addListItemAfterCurrent(content);
-      } else if (!block.isLastListItem()) { // don't remove if last item
-        if (ev.keyCode === 8 && currentPosition() === 0) {
-          ev.preventDefault();
-
-          content = scribe.getContent();
-          block.removeCurrentListItem();
-          block.appendToCurrentItem(content);
-        } else if (ev.keyCode === 46) {
-          // TODO: Pressing del from end of list item
-        }
-      }
-    });
-  };
-};
-
+var TextField = require('./primitives/text-field');
+var ScribeListBlockPlugin = require('./helpers/scribe-list-block-plugin');
 
 module.exports = Block.extend({
   type: 'list',
   title: function() { return i18n.t('blocks:list:title'); },
   icon_name: 'list',
-  multi_editable: true,
+  formattable: true,
 
-  scribeOptions: { 
-    allowBlockElements: false,
-    tags: {
-      p: false
+  scribeOptions: {
+    default: { 
+      allowBlockElements: false,
+      tags: {
+        p: false
+      }
     }
   },
 
-  configureScribe: function(scribe) {
-    scribe.use(new ScribeListBlockPlugin(this));
+  configureScribe: {
+    default: function(scribe) {
+      scribe.use(new ScribeListBlockPlugin(this));
+    }
   },
 
   editorHTML: '<ul class="st-list-block__list"></ul>',
-  listItemEditorHTML: '<li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li>',
+  listItemEditorHTML: [
+    '<li class="st-list-block__item">',
+    '<div class="st-list-block__editor" data-primitive="text" data-formattable="true"></div>',
+    '</li>'
+  ].join(''),
 
   initialize: function() {
     this.editorIds = [];
@@ -120,8 +84,8 @@ module.exports = Block.extend({
   _serializeData: function() {
     var data = {format: 'html', listItems: []};
 
-    this.editorIds.forEach(function(editorId) {
-      var listItem = {content: this.getTextEditor(editorId).scribe.getContent()};
+    Object.keys(this.fields).forEach(function(editorId) {
+      var listItem = {content: this.fields[editorId].getContent()};
       data.listItems.push(listItem);
     }.bind(this));
 
@@ -137,7 +101,7 @@ module.exports = Block.extend({
     content = content || '';
     if (content.trim() === "<br>") { content = ''; }
 
-    var editor = this.newTextEditor(this.listItemEditorHTML, content);
+    var editor = new TextField(this.listItemEditorHTML, content, this);
 
     if (after && this.ul.lastchild !== after.node) {
       var before = after.node.nextSibling;
@@ -149,6 +113,8 @@ module.exports = Block.extend({
       this.ul.appendChild(editor.node);
       this.editorIds.push(editor.id);
     }
+
+    this.fields[editor.id] = editor;
 
     !content && this.focusOn(editor); // jshint ignore:line
   },
@@ -191,7 +157,7 @@ module.exports = Block.extend({
   },
 
   appendToCurrentItem: function(content) {
-    this.appendToTextEditor(this.getCurrentTextEditor().id, content);
+    this.getCurrentTextEditor().appendToTextEditor(content);
   },
 
   isLastListItem: function() {
@@ -218,6 +184,25 @@ module.exports = Block.extend({
     } else {
       return null;
     }
-  }
+  },
+
+  getTextEditor: function(id) {
+    return this.fields[id];
+  },
+
+  removeTextEditor: function(id) {
+    delete this.fields[id];
+  },
+
+  getCurrentTextEditor: function() {
+    var id = document.activeElement.dataset.editorId;
+    var editor = this.getTextEditor(id);
+
+    if (editor) {
+      this.currentEditor = editor;
+    }
+
+    return this.currentEditor;
+  },
 
 });

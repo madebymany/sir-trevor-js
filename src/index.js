@@ -36,7 +36,6 @@ var SirTrevor = {
 
   Blocks: require('./blocks'),
 
-  FormatBar: require('./format-bar'),
   Editor: require('./editor'),
 
   toMarkdown: require('./to-markdown'),

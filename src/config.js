@@ -59,36 +59,44 @@ module.exports = {
     errorsContainer: undefined,
     convertFromMarkdown: true,
     formatBar: {
-      commands: [
-        {
+      commands: {
+        'bold': {
           name: "Bold",
           title: "bold",
           cmd: "bold",
           keyCode: 66,
           text : "B"
         },
-        {
+        'italic': {
           name: "Italic",
           title: "italic",
           cmd: "italic",
           keyCode: 73,
           text : "i"
         },
-        {
+        'link': {
           name: "Link",
           title: "link",
           iconName: "link",
           cmd: "linkPrompt",
           text : "link",
         },
-        {
+        'unlink': {
           name: "Unlink",
           title: "unlink",
           iconName: "link",
           cmd: "unlink",
           text : "link",
         },
-      ],
+      },
+      available: {
+        default: [
+          'bold', 
+          'italic', 
+          'link', 
+          'unlink'
+        ]
+      }
     },
     ajaxOptions: {
       headers: {}

@@ -2,8 +2,6 @@
 
 var _ = require('./lodash');
 
-var ScribeInterface = require('./scribe-interface');
-
 var config = require('./config');
 var utils = require('./utils');
 var Dom = require('./packages/dom');
@@ -30,9 +28,9 @@ Block.prototype.constructor = Block;
 Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   bound: [
-    "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
-    "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender",
-    "onDeleteConfirm"
+    "_onFocus", "_onBlur",
+    "onDrop", "onDeleteClick",
+    "onBlockRender", "onDeleteConfirm"
   ],
 
   className: 'st-block',
@@ -52,22 +50,20 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   toolbarEnabled: true,
 
   availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
-    'ajaxable', 'controllable', 'multi_editable'],
+    'ajaxable', 'controllable', 'primitives'],
 
   droppable: false,
   pastable: false,
   uploadable: false,
   fetchable: false,
   ajaxable: false,
-  multi_editable: false,
 
+  // Build blocks from primitives
+  primitives: true,
+  
   drop_options: {},
   paste_options: {},
   upload_options: {},
-
-  formattable: true,
-
-  _previousSelection: '',
 
   initialize: function() {},
 
@@ -108,15 +104,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       this.inputs = input_html;
     }
 
-    if (this.hasTextBlock()) { this._initTextBlocks(); }
-
     this.availableMixins.forEach(function(mixin) {
       if (this[mixin]) {
         this.withMixin(BlockMixins[utils.classify(mixin)]);
       }
     }, this);
-
-    if (this.formattable) { this._initFormatting(); }
 
     this._blockPrepare();
 
@@ -156,11 +148,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var data = {};
 
-    //[> Simple to start. Add conditions later <]
-    if (this.hasTextBlock()) {
-      data.text = this.getTextBlockHTML();
-      data.format = 'html';
-    }
+    data = Object.assign({}, data, this.savePrimitiveFields());
 
     // Add any inputs to the data attr
     var matcher = [
@@ -180,32 +168,27 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     return data;
   },
 
-  //[> Generic implementation to tell us when the block is active <]
+  /* Generic implementation to tell us when the block is active */
   focus: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
-      el.focus();
-    });
+    this.focusPrimitiveFields();
   },
 
   blur: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), function(el) {
-      el.blur();
-    });
+    this.blurPrimitiveFields();
   },
 
   onFocus: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), (el) => {
-      el.addEventListener('focus', this._onFocus);
-    });
+    this.getTextBlock().bind('focus', this._onFocus);
   },
 
   onBlur: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), (el) => {
-      el.addEventListener('blur', this._onBlur);
-    });
+    this.getTextBlock().bind('blur', this._onBlur);
   },
 
-  //Event handlers
+  /*
+   * Event handlers
+   */
+
   _onFocus: function() {
     this.trigger('blockFocus', this.el);
   },
@@ -263,26 +246,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.ready();
   },
 
-  execTextBlockCommand: function(cmdName) {
-    if (_.isUndefined(this._scribe)) {
-      throw "No Scribe instance found to send a command to";
-    }
-
-    return ScribeInterface.execTextBlockCommand(this._scribe, cmdName);
-  },
-
-  queryTextBlockCommandState: function(cmdName) {
-    if (_.isUndefined(this._scribe)) {
-      throw "No Scribe instance found to query command";
-    }
-
-    return ScribeInterface.queryTextBlockCommandState(this._scribe, cmdName);
-  },
-
-  _handleContentPaste: function(ev) {
-    setTimeout(this.onContentPasted.bind(this, ev, ev.currentTarget), 0);
-  },
-
   _getBlockClass: function() {
     return 'st-block--' + this.className;
   },
@@ -301,100 +264,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete',
                           this.onDeleteClick);
-
-    this.onFocus();
-    this.onBlur();
-  },
-
-  _initFormatting: function() {
-
-    // Enable formatting keyboard input
-    var block = this;
-
-    if (!this.options.formatBar) {
-      return;
-    }
-
-    this.options.formatBar.commands.forEach(function(cmd) {
-      if (_.isUndefined(cmd.keyCode)) {
-        return;
-      }
-
-      var ctrlDown = false;
-
-      Events.delegate(block.el,'.st-text-block', 'keyup', function(ev) {
-        if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
-          ctrlDown = false;
-        }
-      });
-      Events.delegate(block.el, '.st-text-block', 'keydown', function(ev) {
-        if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
-          ctrlDown = true;
-        }
-
-        if(ev.which === cmd.keyCode && ctrlDown) {
-          ev.preventDefault();
-          block.execTextBlockCommand(cmd);
-        }
-      });
-    });
-  },
-
-  _initTextBlocks: function() {
-    Array.prototype.forEach.call(this.getTextBlock(), (el) => {
-      el.addEventListener('keyup', this.getSelectionForFormatter);
-      el.addEventListener('mouseup', this.getSelectionForFormatter);
-      el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
-    });
-
-    var textBlock = this.getTextBlock()[0];
-    if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
-
-      var configureScribe =
-        _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
-      this._scribe = ScribeInterface.initScribeInstance(
-        textBlock, this.scribeOptions, configureScribe
-      );
-    }
-  },
-
-  getSelectionForFormatter: function() {
-    setTimeout(() => {
-      var selection = window.getSelection(),
-          selectionStr = selection.toString().trim(),
-          en = 'formatter:' + ((selectionStr === '') ? 'hide' : 'position');
-
-      this.mediator.trigger(en, this);
-      EventBus.trigger(en, this);
-    }, 1);
-  },
-
-  clearInsertedStyles: function(e) {
-    var target = e.target;
-    if (_.isUndefined(target.tagName)) {
-      target = target.parentNode;
-    }
-    target.removeAttribute('style'); // Hacky fix for Chrome.
-  },
-
-  hasTextBlock: function() {
-    return this.getTextBlock().length > 0;
-  },
-
-  getTextBlock: function() {
-    if (_.isUndefined(this.text_block)) {
-      this.text_block = this.$('.st-text-block');
-    }
-
-    return this.text_block;
-  },
-
-  getTextBlockHTML: function() {
-    return this._scribe.getContent();
-  },
-
-  setTextBlockHTML: function(html) {
-    return this._scribe.setContent(html);
   },
 
   isEmpty: function() {

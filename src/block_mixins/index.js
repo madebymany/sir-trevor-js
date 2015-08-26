@@ -7,5 +7,5 @@ module.exports = {
   Fetchable: require('./fetchable.js'),
   Pastable: require('./pastable.js'),
   Uploadable: require('./uploadable.js'),
-  MultiEditable: require('./multi-editable.js')
+  Primitives: require('./primitives.js')
 };

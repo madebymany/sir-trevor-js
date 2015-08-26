@@ -5,7 +5,7 @@
 */
 
 var Block = require('../block');
-var stToHTML = require('../to-html');
+var _ = require('../lodash');
 
 module.exports = Block.extend({
 
@@ -13,15 +13,17 @@ module.exports = Block.extend({
 
   title: function() { return i18n.t('blocks:text:title'); },
 
-  editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
+  editorHTML: [
+    '<div class="st-text-block" data-ref="text" data-primitive="text" data-formattable="true"></div>',
+    '<div class="st-text-block" data-ref="caption" data-primitive="text" data-formattable="true"></div>'
+  ].join(''),
 
   icon_name: 'text',
 
-  loadData: function(data){
-    if (this.options.convertFromMarkdown && data.format !== "html") {
-      this.setTextBlockHTML(stToHTML(data.text, this.type));
-    } else {
-      this.setTextBlockHTML(data.text);
-    }
+  onBlockRender: function() {
+    var data = this._getData();
+    this.loadPrimitiveFields(data);
+    this.focus();
   },
+
 });
