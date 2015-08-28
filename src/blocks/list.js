@@ -85,7 +85,7 @@ module.exports = Block.extend({
     var data = {format: 'html', listItems: []};
 
     Object.keys(this.fields).forEach(function(editorId) {
-      var listItem = {content: this.fields[editorId].getContent()};
+      var listItem = {content: this.fields[editorId].getData()};
       data.listItems.push(listItem);
     }.bind(this));
 
@@ -169,7 +169,7 @@ module.exports = Block.extend({
     var editorId = this.editorIds[idx + 1];
 
     if (editorId !== undefined) {
-      return this.getTextEditor(editorId);
+      return this.getPrimitive(editorId);
     } else {
       return null;
     }
@@ -180,23 +180,15 @@ module.exports = Block.extend({
     var editorId = this.editorIds[idx - 1];
 
     if (editorId !== undefined) {
-      return this.getTextEditor(editorId);
+      return this.getPrimitive(editorId);
     } else {
       return null;
     }
   },
 
-  getTextEditor: function(id) {
-    return this.fields[id];
-  },
-
-  removeTextEditor: function(id) {
-    delete this.fields[id];
-  },
-
   getCurrentTextEditor: function() {
     var id = document.activeElement.dataset.editorId;
-    var editor = this.getTextEditor(id);
+    var editor = this.getPrimitive(id);
 
     if (editor) {
       this.currentEditor = editor;

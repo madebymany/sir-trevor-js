@@ -1,69 +1,57 @@
 "use strict";
 
-var _ = require('../lodash');
 var utils = require('../utils');
-var ScribeInterface = require('../scribe-interface');
 var stToHTML = require('../to-html');
-var TextField = require('../blocks/primitives/text-field');
+var Primitives = require('../blocks/primitives/index');
 
 module.exports = {
   mixinName: 'Primitives',
 
-  fields: {},
+  initializePrimitives: function() {
+    this.fields = {};
+  },
 
-  initializePrimitives: function() {},
-
-  loadPrimitiveFields: function(data) {
-    var content, type, ref;
+  loadPrimitives: function(data) {
+    var type, ref;
 
     [].forEach.call(this.getPrimitives(), (el) => {
       type = el.getAttribute('data-primitive');
       ref = el.getAttribute('data-ref');
 
-      switch(type) {
-        case 'text':
-          content = "";
-          if (data) {
-            content = data[ref] || "";
-            if (this.options.convertFromMarkdown && data.format !== "html") {
-              content = stToHTML(content, this.type);
-            }
-          }
-          this.fields[ref] = new TextField(el, content, this);
-          break;
-        default:
-          utils.log("Primitive of type " + type + " doesn't exist");
-          break;
-      }
+      this.fields[ref] = new Primitives[type](el, data[ref], this);
     });
-    type = content = null;
+    type = ref = null;
   },
 
-  savePrimitiveFields: function() {
+  getPrimitiveData: function() {
     var data = {}, field;
 
     Object.keys(this.fields).forEach( (ref) => {
       field = this.fields[ref];
-      switch(field.type) {
-        case 'text':
-          data[ref] = field.getContent();
-          break;
-      }
+      data[ref] = field.getData();
     });
 
     return data;
   },
 
-  focusPrimitiveFields: function() {
+  focusOnPrimitives: function() {
     [].forEach.call(this.fields, (field) => field.focus);
   },
 
-  blurPrimitiveFields: function() {
+  blurOnPrimitives: function() {
     [].forEach.call(this.fields, (field) => field.blur);
   },
 
   getPrimitives: function() {
     return this.inner.querySelectorAll('[data-primitive]');
-  }
+  },
+
+  removePrimitive: function(ref) {
+    delete this.getPrimitive(ref);
+  },
+
+  getPrimitive: function(ref) {
+    return this.fields[ref];
+  },
 
 };

@@ -2,7 +2,6 @@
 
 const _ = require('../../lodash');
 const ScribeInterface = require('../../scribe-interface');
-const stToHTML = require('../../to-html');
 const FormatBar = require('../helpers/format-bar');
 
 const TYPE = 'text';
@@ -28,11 +27,11 @@ Object.assign(TextField.prototype, {
       this.el, this.getScribeOptions(), this.getConfigureScribe()
     );
 
-    this.scribe.setContent(content);
+    this.scribe.setContent(content || "");
   },
 
   getScribeOptions: function() {
-    return this.scribeOptions[this.ref] || this.scribeOptions.default
+    return this.scribeOptions[this.ref] || this.scribeOptions.default;
   },
 
   getConfigureScribe: function() {
@@ -134,7 +133,7 @@ Object.assign(TextField.prototype, {
     }, 1);
   },
 
-  getContent: function() {
+  getData: function() {
     return this.scribe.getContent();
   },
 

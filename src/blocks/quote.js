@@ -7,7 +7,6 @@
 var _ = require('../lodash');
 
 var Block = require('../block');
-var stToHTML = require('../to-html');
 
 var template = _.template([
   '<blockquote class="st-required st-text-block" data-primitive="text" data-formattable="true"></blockquote>',
@@ -28,11 +27,9 @@ module.exports = Block.extend({
     return template(this);
   },
 
-  onBlockRender: function() {
-    var data = this._getData();
-    this.loadPrimitiveFields(data);
-    this.$('.js-cite-input').val(data.cite);
-    this.focus();
+  loadData: function(data) {
+    this.loadPrimitives(data);
+    this.el.querySelector('.js-cite-input').value = data.cite;
   },
 
 });

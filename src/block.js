@@ -12,7 +12,6 @@ var SimpleBlock = require('./simple-block');
 var BlockReorder = require('./block-reorder');
 var BlockDeletion = require('./block-deletion');
 var BlockPositioner = require('./block-positioner');
-var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
 
@@ -148,7 +147,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var data = {};
 
-    data = Object.assign({}, data, this.savePrimitiveFields());
+    data = Object.assign({}, data, this.getPrimitiveData());
 
     // Add any inputs to the data attr
     var matcher = [
@@ -170,11 +169,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   /* Generic implementation to tell us when the block is active */
   focus: function() {
-    this.focusPrimitiveFields();
+    this.focusOnPrimitives();
   },
 
   blur: function() {
-    this.blurPrimitiveFields();
+    this.blurOnPrimitives();
   },
 
   onFocus: function() {

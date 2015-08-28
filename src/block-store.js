@@ -63,7 +63,7 @@ module.exports = {
 
   _serializeData: function() {},
   loadData: function() {},
-  
+
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);
     EventBus.trigger("editor/block/loadData");

@@ -15,11 +15,12 @@ describe('Blocks: Heading block', function() {
 
   it('doesn\'t allow block level elements', function() {
     getSerializedData({text: 'Test Heading'});
-    expect(block._scribe.options.allowBlockElements).toBe(false);
+    expect(block.fields.text.scribe.options.allowBlockElements).toBe(false);
   });
 
   it('doesn\'t wrap content in <p> tags', function() {
     var data = getSerializedData({text: 'Test Heading'});
+    console.log(data);
     expect(data.text).not.toContain('<p>');
   });
 

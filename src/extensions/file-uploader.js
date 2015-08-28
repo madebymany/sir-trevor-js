@@ -23,7 +23,7 @@ module.exports = function(block, file, success, error) {
   data.append('attachment[file]', file);
   data.append('attachment[uid]', uid);
 
-  block.resetMessages();
+  // block.resetMessages();
 
   var callbackSuccess = function(data) {
     utils.log('Upload callback called');
@@ -33,7 +33,7 @@ module.exports = function(block, file, success, error) {
       success.apply(block, arguments, data);
     }
 
-    block.removeQueuedItem(uid);
+    // block.removeQueuedItem(uid);
   };
 
   var callbackError = function(jqXHR, status, errorThrown) {
@@ -44,7 +44,7 @@ module.exports = function(block, file, success, error) {
       error.call(block, status);
     }
 
-    block.removeQueuedItem(uid);
+    // block.removeQueuedItem(uid);
   };
 
   var url = block.uploadUrl || config.defaults.uploadUrl;
@@ -55,7 +55,7 @@ module.exports = function(block, file, success, error) {
     dataType: 'json'
   });
 
-  block.addQueuedItem(uid, xhr);
+  // block.addQueuedItem(uid, xhr);
 
   xhr.then(callbackSuccess)
      .catch(callbackError);

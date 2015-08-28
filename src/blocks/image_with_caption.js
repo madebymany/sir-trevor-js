@@ -4,12 +4,14 @@ var Block = require('../block');
 
 module.exports = Block.extend({
 
-  type: "image",
-  
+  type: "image_with_caption",
+
   title: function() { return i18n.t('blocks:image:title'); },
 
   editorHTML: [
     '<div data-primitive="image" data-ref="file" data-draggable="true"></div>',
+    '<p><b>Caption:</b></p>',
+    '<div class="st-text-block" data-ref="text" data-primitive="text"></div>'
   ].join(''),
 
   icon_name: 'image',
@@ -17,5 +19,5 @@ module.exports = Block.extend({
   onBlockRender: function() {
     this.loadPrimitives({});
   },
-  
+
 });

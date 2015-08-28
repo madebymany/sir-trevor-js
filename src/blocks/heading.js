@@ -4,7 +4,6 @@
   Heading Block
 */
 
-var _ = require('../lodash');
 var Block = require('../block');
 
 module.exports = Block.extend({
@@ -28,7 +27,7 @@ module.exports = Block.extend({
 
   onBlockRender: function() {
     var data = this._getData();
-    this.loadPrimitiveFields(data);
+    this.loadPrimitives(data);
     this.focus();
   },
   
