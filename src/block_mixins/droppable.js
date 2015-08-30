@@ -40,7 +40,7 @@ module.exports = {
     e = e.originalEvent;
 
     var el = $(e.target),
-        types = e.dataTransfer.types;
+        types = this._toArray(e.dataTransfer.types);
 
     el.removeClass('st-dropzone--dragover');
 
@@ -57,6 +57,19 @@ module.exports = {
     }
 
     EventBus.trigger('block:content:dropped', this.blockID);
+  },
+  
+  _toArray: function(obj) {
+    if (Array.isArray(obj)) return obj;
+    
+    var array = [];
+    
+    // iterate backwards ensuring that length is an UInt32
+    for (var i = obj.length >>> 0; i--;) {
+      array[i] = obj[i];
+    }
+    
+    return array;
   }
 
 };
