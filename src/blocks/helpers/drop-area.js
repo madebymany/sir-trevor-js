@@ -52,9 +52,9 @@ Object.assign(DropArea.prototype, {
         types.some(function(type) {
                      return valid_drop_file_types.includes(type);
                    }, this)) {
+      this.parent.onDrop(e.dataTransfer);
     }
 
-    this.parent.onDrop(e.dataTransfer);
   }
 
 });

@@ -9,8 +9,7 @@ module.exports = Block.extend({
   type: 'list',
   title: function() { return i18n.t('blocks:list:title'); },
   icon_name: 'list',
-  formattable: true,
-
+  
   scribeOptions: {
     default: { 
       allowBlockElements: false,

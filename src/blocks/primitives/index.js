@@ -1,6 +1,7 @@
 "use strict";
 
 module.exports = {
-  text: require('./text-field.js'),
-  image: require('./image-field.js')
+  text: require('./text-field'),
+  image: require('./image-field'),
+  input: require('./input-field')
 };

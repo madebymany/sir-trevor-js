@@ -16,7 +16,7 @@ module.exports = {
 
     [].forEach.call(this.getPrimitives(), (el) => {
       type = el.getAttribute('data-primitive');
-      ref = el.getAttribute('data-ref');
+      ref = el.getAttribute('name');
 
       this.fields[ref] = new Primitives[type](el, data[ref], this);
     });

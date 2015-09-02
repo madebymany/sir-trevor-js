@@ -4,7 +4,7 @@ var _ = require('./lodash');
 var utils = require('./utils');
 
 var bestNameFromField = function(field) {
-  var msg = field.getAttribute("data-st-name") || field.getAttribute("name");
+  var msg = field.ref;
 
   if (!msg) {
     msg = 'Field';
@@ -27,10 +27,8 @@ module.exports = {
   performValidations: function() {
     this.resetErrors();
 
-    var required_fields = this.$('.st-required');
-    Array.prototype.forEach.call(required_fields, function (f, i) {
-      this.validateField(f);
-    }.bind(this));
+    this.fields.forEach( (field) => this.validateField(field) );
+    
     this.validations.forEach(this.runValidator, this);
 
     this.el.classList.toggle('st-block--with-errors', this.errors.length > 0);
@@ -40,10 +38,7 @@ module.exports = {
   validations: [],
 
   validateField: function(field) {
-    
-    var content = field.getAttribute('contenteditable') ? field.textContent : field.value;
-
-    if (content.length === 0) {
+    if (!field.validate()) {
       this.setError(field, i18n.t("errors:block_empty",
                                  { name: bestNameFromField(field) }));
     }
@@ -57,14 +52,14 @@ module.exports = {
 
   setError: function(field, reason) {
     var msg = this.addMessage(reason, "st-msg--error");
-    field.classList.add('st-error');
+    field.addError();
 
     this.errors.push({ field: field, reason: reason, msg: msg });
   },
 
   resetErrors: function() {
     this.errors.forEach(function(error){
-      error.field.classList.remove('st-error');
+      error.field.removeError();
       error.msg.remove();
     });
 

@@ -55,11 +55,13 @@ Object.assign(TextField.prototype, {
       this.id = _.uniqueId('editor-');
       this.el.dataset.editorId = this.id;
     }
-    this.ref = this.el.getAttribute('data-ref');
+    this.ref = this.el.getAttribute('name');
+    this.required = this.el.hasAttribute('data-required');
+    this.formattable = this.el.hasAttribute('data-formattable');
   },
 
   setupFormatting: function() {
-    if (!this.el.getAttribute('data-formattable')) {
+    if (!this.formattable) {
       return;
     }
 
@@ -143,7 +145,19 @@ Object.assign(TextField.prototype, {
 
   blur: function() {
     this.el.blur();
-  }
+  },
+
+  validate: function() {
+    return this.required && this.el.textContent.length === 0;
+  },
+
+  addError: function() {
+    this.el.classList.add('st-error');
+  },
+
+  removeError: function() {
+    this.el.classList.remove('st-error');
+  },
 
 });
 

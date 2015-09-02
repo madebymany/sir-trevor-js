@@ -9,13 +9,15 @@ module.exports = Block.extend({
   title: function() { return i18n.t('blocks:image:title'); },
 
   editorHTML: [
-    '<div data-primitive="image" data-ref="file" data-draggable="true"></div>',
+    '<div data-primitive="image" name="file" data-draggable="true"></div>',
   ].join(''),
 
   icon_name: 'image',
 
   onBlockRender: function() {
-    this.loadPrimitives({});
+    var data = this._getData();
+    this.loadPrimitives(data);
+    this.focus();
   },
   
 });

@@ -12,7 +12,7 @@ module.exports = Block.extend({
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
-  editorHTML: '<h2 class="st-text-block st-text-block--heading" data-ref="text" data-primitive="text"></h2>',
+  editorHTML: '<h2 class="st-text-block st-text-block--heading" name="text" data-primitive="text"></h2>',
 
   scribeOptions: {
     default: { 

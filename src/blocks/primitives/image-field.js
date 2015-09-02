@@ -41,7 +41,8 @@ Object.assign(ImageField.prototype, {
     
     this.el.appendChild(this.inputs);
 
-    this.ref = this.el.getAttribute('data-ref');
+    this.ref = this.el.getAttribute('name');
+    this.required = this.el.hasAttribute('data-required');
   },
 
   setupEvents: function() {
@@ -95,6 +96,18 @@ Object.assign(ImageField.prototype, {
   focus: function() {},
 
   blur: function() {},
+
+  validate: function() {
+    return this.required && !_.isEmpty(this.getData);
+  },
+
+  addError: function() {
+    this.el.classList.add('st-error');
+  },
+
+  removeError: function() {
+    this.el.classList.remove('st-error');
+  },
 
 });
 

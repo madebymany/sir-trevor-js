@@ -45,12 +45,7 @@ module.exports = Block.extend({
   },
 
   onContentPasted: function(event){
-    // Content pasted. Delegate to the drop parse method
-    var input = event.target,
-    val = input.value;
-
-    // Pass this to the same handler as onDrop
-    this.handleTwitterDropPaste(val);
+    this.handleTwitterDropPaste(event.target.value);
   },
 
   handleTwitterDropPaste: function(url){
