@@ -24,12 +24,12 @@ Alternatively, grab the following files and include them in your project:
   * [jQuery](http://jquery.com/download)
   * [Underscore.js](https://github.com/jashkenas/underscore/blob/master/underscore.js)
   * [Eventable](https://github.com/madebymany/eventable/blob/master/eventable.js)
-  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.js)
+  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.js)
 
-And you'll need the following CSS files too:
 
-  * [Sir Trevor](https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.css)
-  * [Sir Trevor Icons](https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor-icons.css)
+And you'll need the following CSS file too:
+
+  * [Sir Trevor](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.css)
 
 <a name="1-2"></a>
 ## Initialising
