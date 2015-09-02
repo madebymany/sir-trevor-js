@@ -48,7 +48,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   initialize: function() {},
 
-  createBlock: function(type, data, id) {
+  createBlock: function(type, data, previousSibling) {
     type = utils.classify(type);
 
     // Run validations
@@ -59,7 +59,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);
-    this.renderBlock(block, id);
+    this.renderBlock(block, previousSibling);
 
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
@@ -84,9 +84,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     EventBus.trigger("block:remove");
   },
 
-  renderBlock: function(block, previousBlockId) {
+  renderBlock: function(block, previousSibling) {
     // REFACTOR: this will have to do until we're able to address the block manager
-    var previousSibling = document.getElementById(previousBlockId);
     if (previousSibling) {
       Dom.insertAfter(block.render().el, previousSibling);
     } else {

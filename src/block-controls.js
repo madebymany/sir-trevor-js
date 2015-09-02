@@ -29,6 +29,7 @@ function render(Blocks, availableTypes) {
 }
 
 module.exports.create = function(SirTrevor) {
+
   // REFACTOR - should probably not know about blockManager
   var el = render(Blocks, SirTrevor.blockManager.blockTypes);
 
@@ -37,7 +38,7 @@ module.exports.create = function(SirTrevor) {
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:create", this.dataset.type, null, el.parentNode.id
+      "block:create", this.dataset.type, null, el.parentNode.id ? el.parentNode : el
     );
   }
 
