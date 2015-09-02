@@ -26,6 +26,19 @@ These are the 2 required fields for a primitive. Firstly the type of primitive a
 - **data-primitive** - type of primitive
 - **name** - reference and json name field for the primitive
 
+## editorHTML
+
+```
+editorHTML = '
+<div>
+  <label>Body</label>
+  <div data-primitive="text" name="body"></div>
+  <label>Value</label>
+  <input type="text" data-primitive="input" name="value" />
+</div>
+';
+```
+
 ## Configuring a text area
 
 There are certain settings that you can set on a primitive.
@@ -117,3 +130,29 @@ primitiveOptions: {
     }
   }
 }
+```
+
+## Dynamic creation
+
+If you prefer to create your primitives dynamically then you can do so. You'll wither pass a template to the 
+
+```
+var TextField = require('./primitives/text-field');
+
+newFields = [];
+
+onBlockRender = function() {
+  var field = new TextField('<input type="text" data-primitive="input" />', 'Default text', {}, this);
+  this.newFields.push(field);
+  field = new InputField('<input type="text" data-primitive="input" />', 'Default value', {}, this);
+  this.newFields.push(field);
+}
+
+_serializeData = function() {
+  var data = {};
+  this.newFields.forEach((field) => {
+    data[field.ref] = field.getData();
+  });
+  return data;
+}
+```

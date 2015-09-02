@@ -14,11 +14,13 @@ module.exports = Block.extend({
 
   editorHTML: '<h2 class="st-text-block st-text-block--heading" name="text" data-primitive="text"></h2>',
 
-  scribeOptions: {
-    default: { 
-      allowBlockElements: false,
-      tags: {
-        p: false
+  primitiveOptions: {
+    default: {
+      scribeOptions: {
+        allowBlockElements: false,
+        tags: {
+          p: false
+        }
       }
     }
   },

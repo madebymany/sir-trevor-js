@@ -1,34 +1,43 @@
 "use strict";
 
 const _ = require('../../lodash');
+const Dom = require('../../packages/dom');
 
 const TYPE = 'input';
 
-var InputField = function(template_or_node, content, block) {
+var InputField = function(content, options, block) {
   
   this.type = TYPE;
 
   this.block = block;
-  this.options = this.block.options;
   
-  this.setElement(template_or_node);
+  this.setElement(this.options.template_or_node, content);
+
+  this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
+
   this.setupPaste();
 };
 
 Object.assign(InputField.prototype, {
 
-  setElement: function(template_or_node) {
-    if (template_or_node.nodeType) {
-      this.el = template_or_node;
+  setElement: function(template_or_node, content) {
+    if (template_or_node) {
+      if (template_or_node.nodeType) {
+        this.el = template_or_node;
+      } else {
+        var wrapper = Dom.createElement('div', {html: template_or_node});
+        this.el = wrapper.querySelector('[data-primitive]');
+      }
+      this.ref = this.el.getAttribute('name');
+      this.required = this.el.hasAttribute('data-required');
+      this.pastable = this.el.hasAttribute('data-pastable');
     } else {
-      var wrapper = document.createElement('div');
-      wrapper.innerHTML = template_or_node;
-      this.el = wrapper.querySelector('[data-primitive]');
-      this.node = wrapper ? wrapper.removeChild(wrapper.firstChild) : null;
+      this.el = Dom.createElement('input', {type: 'text'});
+      this.ref = this.options.name,
+      this.required = this.options.required,
+      this.pastable = this.options.pastable
     }
-    this.ref = this.el.getAttribute('name');
-    this.required = this.el.hasAttribute('data-required');
-    this.pastable = this.el.hasAttribute('data-pastable');
+    this.el.value = content;
   },
 
   setupPaste: function() {

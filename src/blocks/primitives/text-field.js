@@ -6,16 +6,19 @@ const FormatBar = require('../helpers/format-bar');
 
 const TYPE = 'text';
 
-var TextField = function(template_or_node, content, block) {
+var TextField = function(template_or_node, content, options, block) {
   
   this.type = TYPE;
 
   this.block = block;
-  this.options = this.block.options;
-  this.scribeOptions = this.block.scribeOptions || {};
-  this.configureScribe = this.block.configureScribe || {};
-
+  
   this.setElement(template_or_node);
+
+  this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
+
+  this.scribeOptions = this.options.scribeOptions || {};
+  this.configureScribe = this.options.configureScribe;
+
   this.setupScribe(content);
   this.setupFormatting();
 };
@@ -24,24 +27,10 @@ Object.assign(TextField.prototype, {
 
   setupScribe: function(content) {
     this.scribe = ScribeInterface.initScribeInstance(
-      this.el, this.getScribeOptions(), this.getConfigureScribe()
+      this.el, this.scribeOptions, _.isFunction(this.configureScribe) ? this.configureScribe : null
     );
 
     this.scribe.setContent(content || "");
-  },
-
-  getScribeOptions: function() {
-    return this.scribeOptions[this.ref] || this.scribeOptions.default;
-  },
-
-  getConfigureScribe: function() {
-    var func = null;
-    ['default', this.ref].forEach( (ref) => {
-      if (_.isFunction(this.configureScribe[ref])) {
-        func = this.configureScribe[ref].bind(this);
-      }
-    });
-    return func;
   },
 
   setElement: function(template_or_node) {

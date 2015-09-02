@@ -8,18 +8,20 @@ const DropArea = require('../helpers/drop-area');
 
 const TYPE = 'image';
 
-var ImageField = function(template_or_node, content, block) {
+var ImageField = function(template_or_node, content, options, block) {
   
   this.type = TYPE;
 
   this.data = {};
 
   this.block = block;
-  this.options = this.block.options;
+  
+  this.setElement(template_or_node);
+
+  this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
 
   this.uploadUrl = this.options.uploadUrl;
 
-  this.setElement(template_or_node);
   this.setupEvents();
 };
 

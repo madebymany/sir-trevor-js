@@ -18,7 +18,7 @@ module.exports = {
       type = el.getAttribute('data-primitive');
       ref = el.getAttribute('name');
 
-      this.fields[ref] = new Primitives[type](el, data[ref], this);
+      this.fields[ref] = new Primitives[type](el, data[ref], {}, this);
     });
     type = ref = null;
   },
