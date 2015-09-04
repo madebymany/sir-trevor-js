@@ -1,6 +1,5 @@
 "use strict";
 
-const _ = require('../../lodash');
 const Dom = require('../../packages/dom');
 
 const TYPE = 'input';
@@ -12,6 +11,7 @@ var InputField = function(content, options, block) {
   this.block = block;
   
   this.setElement(this.options.template_or_node, content);
+  this.setContent(content);
 
   this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
 
@@ -33,10 +33,13 @@ Object.assign(InputField.prototype, {
       this.pastable = this.el.hasAttribute('data-pastable');
     } else {
       this.el = Dom.createElement('input', {type: 'text'});
-      this.ref = this.options.name,
-      this.required = this.options.required,
-      this.pastable = this.options.pastable
+      this.ref = this.options.name;
+      this.required = this.options.required;
+      this.pastable = this.options.pastable;
     }
+  },
+
+  setContent: function(content) {
     this.el.value = content;
   },
 
@@ -67,7 +70,7 @@ Object.assign(InputField.prototype, {
   },
 
   validate: function() {
-    return this.required && this.el.value.length === 0;
+    return !(this.required && this.el.value.length === 0);
   },
 
   addError: function() {

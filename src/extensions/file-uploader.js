@@ -12,25 +12,23 @@ var Ajax = require('../packages/ajax');
 
 var EventBus = require('../event-bus');
 
-module.exports = function(block, file, success, error) {
+module.exports = function(parent, uploadUrl, file, success, error) {
 
   EventBus.trigger('onUploadStart');
 
-  var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
+  var uid  = [parent.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
 
   data.append('attachment[name]', file.name);
   data.append('attachment[file]', file);
   data.append('attachment[uid]', uid);
 
-  // block.resetMessages();
-
   var callbackSuccess = function(data) {
     utils.log('Upload callback called');
     EventBus.trigger('onUploadStop', data);
 
     if (!_.isUndefined(success) && _.isFunction(success)) {
-      success.apply(block, arguments, data);
+      success.apply(parent, arguments, data);
     }
 
     // block.removeQueuedItem(uid);
@@ -41,13 +39,13 @@ module.exports = function(block, file, success, error) {
     EventBus.trigger('onUploadStop', undefined, errorThrown, status, jqXHR);
 
     if (!_.isUndefined(error) && _.isFunction(error)) {
-      error.call(block, status);
+      error.call(parent, status);
     }
 
     // block.removeQueuedItem(uid);
   };
 
-  var url = block.uploadUrl || config.defaults.uploadUrl;
+  var url = uploadUrl || config.defaults.uploadUrl;
 
   var xhr = Ajax.fetch(url, {
     body: data,

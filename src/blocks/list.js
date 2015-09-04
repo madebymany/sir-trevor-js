@@ -100,7 +100,8 @@ module.exports = Block.extend({
     content = content || '';
     if (content.trim() === "<br>") { content = ''; }
 
-    var editor = new TextField(this.listItemEditorHTML, content, this);
+    var editor = new TextField(this.listItemEditorHTML, {}, this);
+    editor.setContent(content);
 
     if (after && this.ul.lastchild !== after.node) {
       var before = after.node.nextSibling;

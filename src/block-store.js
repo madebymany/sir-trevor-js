@@ -62,7 +62,15 @@ module.exports = {
   },
 
   _serializeData: function() {},
-  loadData: function() {},
+  loadData: function(data) {
+    var field;
+    Object.keys(data).forEach( (key) => {
+      field = this.fields[key];
+      if (field) {
+        this.fields[key].setContent(data[key]);
+      }
+    });
+  },
 
   beforeLoadingData: function() {
     utils.log("loadData for " + this.blockID);

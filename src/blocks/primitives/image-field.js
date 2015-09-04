@@ -8,20 +8,17 @@ const DropArea = require('../helpers/drop-area');
 
 const TYPE = 'image';
 
-var ImageField = function(template_or_node, content, options, block) {
+var ImageField = function(template_or_node, options, block) {
   
   this.type = TYPE;
 
   this.data = {};
 
   this.block = block;
-  
-  this.setElement(template_or_node);
 
   this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
 
-  this.uploadUrl = this.options.uploadUrl;
-
+  this.setElement(template_or_node);
   this.setupEvents();
 };
 
@@ -47,6 +44,12 @@ Object.assign(ImageField.prototype, {
     this.required = this.el.hasAttribute('data-required');
   },
 
+  setContent: function(data) {
+    Dom.remove(this.image);
+    this.image = Dom.createElement('img', { src: data.file.url });
+    this.el.appendChild(this.image);
+  },
+
   setupEvents: function() {
     Array.prototype.forEach.call(this.el.querySelectorAll('button'), function(button) {
       button.addEventListener('click', function(ev){ ev.preventDefault(); });
@@ -63,9 +66,8 @@ Object.assign(ImageField.prototype, {
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
 
-    // Handle one upload at a time
+    
     if (/image/.test(file.type)) {
-      
       Dom.hide(this.inputs);
       this.image = Dom.createElement('img', { src: urlAPI.createObjectURL(file) });
       this.el.appendChild(this.image);
@@ -80,11 +82,13 @@ Object.assign(ImageField.prototype, {
           Dom.show(this.inputs);
         }
       );
+    } else {
+
     }
   },
 
   uploader: function(file, success, failure){
-    return fileUploader(this, file, success, failure);
+    return fileUploader(this, this.options.uploadUrl, file, success, failure);
   },
 
   getData: function() {
@@ -100,7 +104,7 @@ Object.assign(ImageField.prototype, {
   blur: function() {},
 
   validate: function() {
-    return this.required && !_.isEmpty(this.getData);
+    return !(this.required && !_.isEmpty(this.getData));
   },
 
   addError: function() {

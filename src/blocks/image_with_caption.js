@@ -16,8 +16,4 @@ module.exports = Block.extend({
 
   icon_name: 'image',
 
-  onBlockRender: function() {
-    this.loadPrimitives({});
-  },
-
 });

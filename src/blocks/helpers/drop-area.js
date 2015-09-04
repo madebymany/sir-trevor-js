@@ -40,8 +40,7 @@ Object.assign(DropArea.prototype, {
     e.preventDefault();
     e.stopPropagation();
 
-    var el = e.target,
-        types = e.dataTransfer.types;
+    var types = e.dataTransfer.types;
 
     /*
       Check the type we just received,

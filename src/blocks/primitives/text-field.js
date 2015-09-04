@@ -6,7 +6,7 @@ const FormatBar = require('../helpers/format-bar');
 
 const TYPE = 'text';
 
-var TextField = function(template_or_node, content, options, block) {
+var TextField = function(template_or_node, options, block) {
   
   this.type = TYPE;
 
@@ -19,17 +19,19 @@ var TextField = function(template_or_node, content, options, block) {
   this.scribeOptions = this.options.scribeOptions || {};
   this.configureScribe = this.options.configureScribe;
 
-  this.setupScribe(content);
+  this.setupScribe();
   this.setupFormatting();
 };
 
 Object.assign(TextField.prototype, {
 
-  setupScribe: function(content) {
+  setupScribe: function() {
     this.scribe = ScribeInterface.initScribeInstance(
       this.el, this.scribeOptions, _.isFunction(this.configureScribe) ? this.configureScribe : null
     );
+  },
 
+  setContent: function(content) {
     this.scribe.setContent(content || "");
   },
 
@@ -129,6 +131,7 @@ Object.assign(TextField.prototype, {
   },
 
   focus: function() {
+    console.log(this);
     this.el.focus();
   },
 
@@ -137,7 +140,7 @@ Object.assign(TextField.prototype, {
   },
 
   validate: function() {
-    return this.required && this.el.textContent.length === 0;
+    return !(this.required && this.el.textContent.length === 0);
   },
 
   addError: function() {

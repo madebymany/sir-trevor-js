@@ -14,10 +14,4 @@ module.exports = Block.extend({
 
   icon_name: 'image',
 
-  onBlockRender: function() {
-    var data = this._getData();
-    this.loadPrimitives(data);
-    this.focus();
-  },
-  
 });

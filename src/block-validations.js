@@ -27,7 +27,9 @@ module.exports = {
   performValidations: function() {
     this.resetErrors();
 
-    this.fields.forEach( (field) => this.validateField(field) );
+    this.getPrimitivesArray().forEach( (field) => {
+      this.validateField(field);
+    });
     
     this.validations.forEach(this.runValidator, this);
 

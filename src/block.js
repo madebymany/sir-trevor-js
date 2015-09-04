@@ -59,6 +59,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   // Build blocks from primitives
   primitives: true,
+  primitiveOptions: {},
   
   drop_options: {},
   paste_options: {},

@@ -27,10 +27,4 @@ module.exports = Block.extend({
 
   icon_name: 'heading',
 
-  onBlockRender: function() {
-    var data = this._getData();
-    this.loadPrimitives(data);
-    this.focus();
-  },
-  
 });

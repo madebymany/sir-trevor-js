@@ -22,7 +22,7 @@ module.exports = {
   },
 
   uploader: function(file, success, failure){
-    return fileUploader(this, file, success, failure);
+    return fileUploader(this, this.uploadUrl, file, success, failure);
   }
 
 };

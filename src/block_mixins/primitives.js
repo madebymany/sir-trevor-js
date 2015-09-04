@@ -1,7 +1,5 @@
 "use strict";
 
-var utils = require('../utils');
-var stToHTML = require('../to-html');
 var Primitives = require('../blocks/primitives/index');
 
 module.exports = {
@@ -9,37 +7,37 @@ module.exports = {
 
   initializePrimitives: function() {
     this.fields = {};
+    this.setupPrimitives();
   },
 
-  loadPrimitives: function(data) {
+  setupPrimitives: function() {
     var type, ref;
 
     [].forEach.call(this.getPrimitives(), (el) => {
       type = el.getAttribute('data-primitive');
       ref = el.getAttribute('name');
 
-      this.fields[ref] = new Primitives[type](el, data[ref], {}, this);
+      this.fields[ref] = new Primitives[type](el, {}, this);
     });
     type = ref = null;
   },
 
   getPrimitiveData: function() {
-    var data = {}, field;
+    var data = {};
 
-    Object.keys(this.fields).forEach( (ref) => {
-      field = this.fields[ref];
-      data[ref] = field.getData();
+    this.getPrimitivesArray().forEach( (field) => {
+      data[field.ref] = field.getData();
     });
 
     return data;
   },
 
   focusOnPrimitives: function() {
-    [].forEach.call(this.fields, (field) => field.focus);
+    this.getPrimitivesArray().forEach( (field) => field.focus());
   },
 
   blurOnPrimitives: function() {
-    [].forEach.call(this.fields, (field) => field.blur);
+    this.getPrimitivesArray().forEach( (field) => field.blur());
   },
 
   getPrimitives: function() {
@@ -47,11 +45,17 @@ module.exports = {
   },
 
   removePrimitive: function(ref) {
-    delete this.getPrimitive(ref);
+    delete this.fields[ref];
   },
 
   getPrimitive: function(ref) {
     return this.fields[ref];
   },
+
+  getPrimitivesArray: function() {
+    return Object.keys(this.fields).map( (key) => {
+      return this.fields[key];
+    });
+  }
 
 };
