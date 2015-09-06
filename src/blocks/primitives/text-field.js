@@ -1,24 +1,24 @@
 "use strict";
 
+const Dom = require('../../packages/dom');
 const _ = require('../../lodash');
 const ScribeInterface = require('../../scribe-interface');
 const FormatBar = require('../helpers/format-bar');
 
 const TYPE = 'text';
 
-var TextField = function(template_or_node, options, block) {
+var TextField = function(block, options) {
   
   this.type = TYPE;
 
   this.block = block;
   
-  this.setElement(template_or_node);
-
   this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
 
   this.scribeOptions = this.options.scribeOptions || {};
   this.configureScribe = this.options.configureScribe;
 
+  this.setElement(this.options.el);
   this.setupScribe();
   this.setupFormatting();
 };
@@ -36,19 +36,26 @@ Object.assign(TextField.prototype, {
   },
 
   setElement: function(template_or_node) {
-    if (template_or_node.nodeType) {
-      this.el = template_or_node;
+    if (template_or_node) {
+      if (template_or_node.nodeType) {
+        this.el = template_or_node;
+      } else {
+        var wrapper = Dom.createElement('div', {html: template_or_node});
+        this.el = wrapper.querySelector('[data-primitive]');
+        console.log(wrapper.firstChild);
+        this.node = wrapper ? wrapper.removeChild(wrapper.firstChild) : null;
+        this.id = _.uniqueId('editor-');
+        this.el.dataset.editorId = this.id;
+      }
+      this.ref = this.el.getAttribute('name');
+      this.required = this.el.hasAttribute('data-required');
+      this.formattable = this.el.hasAttribute('data-formattable');
     } else {
-      var wrapper = document.createElement('div');
-      wrapper.innerHTML = template_or_node;
-      this.el = wrapper.querySelector('[data-primitive]');
-      this.node = wrapper ? wrapper.removeChild(wrapper.firstChild) : null;
-      this.id = _.uniqueId('editor-');
-      this.el.dataset.editorId = this.id;
+      this.el = Dom.createElement('div', {'class': 'st-text-block'});
+      this.ref = this.options.name;
+      this.required = this.options.required;
+      this.formattable = this.options.formattable;
     }
-    this.ref = this.el.getAttribute('name');
-    this.required = this.el.hasAttribute('data-required');
-    this.formattable = this.el.hasAttribute('data-formattable');
   },
 
   setupFormatting: function() {
@@ -131,7 +138,6 @@ Object.assign(TextField.prototype, {
   },
 
   focus: function() {
-    console.log(this);
     this.el.focus();
   },
 

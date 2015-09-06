@@ -8,7 +8,7 @@ const DropArea = require('../helpers/drop-area');
 
 const TYPE = 'image';
 
-var ImageField = function(template_or_node, options, block) {
+var ImageField = function(block, options) {
   
   this.type = TYPE;
 
@@ -18,19 +18,36 @@ var ImageField = function(template_or_node, options, block) {
 
   this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
 
-  this.setElement(template_or_node);
+  this.setElement(this.options.el);
+  this.setupInputs();
   this.setupEvents();
 };
 
 Object.assign(ImageField.prototype, {
 
   setElement: function(template_or_node) {
+    if (template_or_node) {
+      if (template_or_node.nodeType) {
+        this.el = template_or_node;
+      } else {
+        var wrapper = Dom.createElement('div', {html: template_or_node});
+        this.el = wrapper.querySelector('[data-primitive]');
+      }
+      this.ref = this.el.getAttribute('name');
+      this.required = this.el.hasAttribute('data-required');
+      this.draggable = this.el.hasAttribute('data-draggable');
+    } else {
+      this.el = Dom.createElement('div');
+      this.ref = this.options.name;
+      this.required = this.options.required;
+      this.draggable = this.options.draggable;
+    }
+  },
 
-    this.el = template_or_node;
-
+  setupInputs: function() {
     this.inputs = Dom.createElement('div');
 
-    if (this.el.getAttribute('data-draggable')) {
+    if (this.draggable) {
       this.dropArea = new DropArea(this, {drop_options: this.block.drop_options});
       this.inputs.appendChild(this.dropArea.el);
     }
@@ -39,14 +56,12 @@ Object.assign(ImageField.prototype, {
     this.inputs.insertAdjacentHTML("beforeend", _.template(upload_options.html, this));
     
     this.el.appendChild(this.inputs);
-
-    this.ref = this.el.getAttribute('name');
-    this.required = this.el.hasAttribute('data-required');
   },
 
   setContent: function(data) {
+    this.setData(data);
     Dom.remove(this.image);
-    this.image = Dom.createElement('img', { src: data.file.url });
+    this.image = Dom.createElement('img', { src: this.data.file.url });
     this.el.appendChild(this.image);
   },
 
@@ -66,29 +81,34 @@ Object.assign(ImageField.prototype, {
     var file = transferData.files[0],
         urlAPI = (typeof URL !== "undefined") ? URL : (typeof webkitURL !== "undefined") ? webkitURL : null;
 
-    
     if (/image/.test(file.type)) {
       Dom.hide(this.inputs);
       this.image = Dom.createElement('img', { src: urlAPI.createObjectURL(file) });
       this.el.appendChild(this.image);
       
-      this.uploader(
-        file,
-        function(data) {
-          this.setData(data);
-        },
-        function(error) {
-          Dom.remove(this.image);
-          Dom.show(this.inputs);
-        }
-      );
+      this.uploader(file);
     } else {
-
+      this.block.addMessage(i18n.t('blocks:image:incorrect_file_type'));
     }
   },
 
-  uploader: function(file, success, failure){
-    return fileUploader(this, this.options.uploadUrl, file, success, failure);
+  onUploadSuccess: function(data) {
+    this.setData(data);
+  },
+  onUploadError: function(error) {
+    this.block.addMessage(i18n.t('blocks:image:upload_error'));
+    this.showInputs();    
+  },
+
+  showInputs: function() {
+    Dom.remove(this.image);
+    Dom.show(this.inputs);
+  },
+
+  uploader: function(file){
+    return fileUploader(this, this.options.uploadUrl, file, 
+              this.onUploadSuccess.bind(this), 
+              this.onUploadError.bind(this));
   },
 
   getData: function() {

@@ -4,23 +4,21 @@ const Dom = require('../../packages/dom');
 
 const TYPE = 'input';
 
-var InputField = function(content, options, block) {
+var InputField = function(block, options) {
   
   this.type = TYPE;
 
   this.block = block;
   
-  this.setElement(this.options.template_or_node, content);
-  this.setContent(content);
-
   this.options = Object.assign({}, options, this.block.primitiveOptions.default, this.block.primitiveOptions[this.ref]);
 
+  this.setElement(this.options.el);
   this.setupPaste();
 };
 
 Object.assign(InputField.prototype, {
 
-  setElement: function(template_or_node, content) {
+  setElement: function(template_or_node) {
     if (template_or_node) {
       if (template_or_node.nodeType) {
         this.el = template_or_node;

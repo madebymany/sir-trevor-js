@@ -39,7 +39,8 @@ var Locales = {
       },
       image: {
         'title': "Image",
-        'upload_error': "There was a problem with your upload"
+        'upload_error': "There was a problem with your upload",
+        'incorrect_file_type': "The file selected was not an image, please select another"
       },
       video: {
         'title': "Video"

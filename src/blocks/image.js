@@ -8,9 +8,7 @@ module.exports = Block.extend({
   
   title: function() { return i18n.t('blocks:image:title'); },
 
-  editorHTML: [
-    '<div data-primitive="image" name="file" data-draggable="true"></div>',
-  ].join(''),
+  editorHTML: '<div data-primitive="image" name="file" data-draggable="true"></div>',
 
   icon_name: 'image',
 

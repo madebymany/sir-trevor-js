@@ -12,7 +12,7 @@
     "dev": "grunt dev watch"
   },
   "dependencies": {
-    "es5-shim": "^4.0.3"
+    "es5-shim": "^4.1.11"
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",
@@ -35,7 +35,7 @@
     "grunt-contrib-watch": "^0.3.1",
     "grunt-jasmine-nodejs": "^1.4.2",
     "grunt-karma": "^0.9.0",
-    "grunt-webpack": "^1.0.8",
+    "grunt-webpack": "^1.0.11",
     "jsonp-promise": "^0.1.2",
     "karma": "~0.12.28",
     "karma-chrome-launcher": "^0.1.7",
@@ -62,7 +62,7 @@
     "selenium-webdriver": "^2.46.1",
     "spin.js": "^2.0.1",
     "style-loader": "^0.12.3",
-    "webpack": "^1.8.4",
+    "webpack": "^1.12.1",
     "webpack-config-merger": "0.0.3",
     "webpack-dev-server": "^1.10.1",
     "whatwg-fetch": "^0.9.0"

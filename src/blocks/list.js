@@ -26,11 +26,9 @@ module.exports = Block.extend({
   },
 
   editorHTML: '<ul class="st-list-block__list"></ul>',
-  listItemEditorHTML: [
-    '<li class="st-list-block__item">',
-    '<div class="st-list-block__editor" data-primitive="text" data-formattable="true"></div>',
-    '</li>'
-  ].join(''),
+  listItemEditorHTML: `<li class="st-list-block__item">
+    <div class="st-list-block__editor" data-primitive="text" data-formattable="true"></div>
+  </li>`,
 
   initialize: function() {
     this.editorIds = [];
@@ -83,8 +81,8 @@ module.exports = Block.extend({
   _serializeData: function() {
     var data = {format: 'html', listItems: []};
 
-    Object.keys(this.fields).forEach(function(editorId) {
-      var listItem = {content: this.fields[editorId].getData()};
+    this.getPrimitivesArray().forEach(function(primitive) {
+      var listItem = {content: primitive.getData()};
       data.listItems.push(listItem);
     }.bind(this));
 
@@ -100,7 +98,7 @@ module.exports = Block.extend({
     content = content || '';
     if (content.trim() === "<br>") { content = ''; }
 
-    var editor = new TextField(this.listItemEditorHTML, {}, this);
+    var editor = new TextField(this, {el: this.listItemEditorHTML});
     editor.setContent(content);
 
     if (after && this.ul.lastchild !== after.node) {
@@ -110,6 +108,7 @@ module.exports = Block.extend({
       var idx = this.editorIds.indexOf(after.id) + 1;
       this.editorIds.splice(idx, 0, editor.id);
     } else {
+      console.log(editor);
       this.ul.appendChild(editor.node);
       this.editorIds.push(editor.id);
     }
