@@ -8,5 +8,5 @@ module.exports = {
   List: require('./list'),
   Tweet: require('./tweet'),
   Video: require('./video'),
-  ImageWithCaption: require('./image_with_caption'),
+  Imagewithcaption: require('./image_with_caption'),
 };

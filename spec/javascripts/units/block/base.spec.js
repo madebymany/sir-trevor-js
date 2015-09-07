@@ -92,28 +92,6 @@ describe("Block", function(){
     it("calls checkAndLoadData", function(){
       expect(block.checkAndLoadData).toHaveBeenCalled();
     });
-
-    describe('initTextBlocks', function() {
-      beforeEach(function() {
-        spyOn(block, '_initTextBlocks');
-      });
-
-      it('is called when block has text block', function() {
-        block.hasTextBlock = function() { return true; };
-
-        block.render();
-
-        expect(block._initTextBlocks).toHaveBeenCalled();
-      });
-
-      it('isn\'t called when block doesn\'t have text blocks', function() {
-        block.hasTextBlock = function() { return false; };
-
-        block.render();
-
-        expect(block._initTextBlocks).not.toHaveBeenCalled();
-      });
-    });
   });
 
   describe("configuring Scribe", function() {

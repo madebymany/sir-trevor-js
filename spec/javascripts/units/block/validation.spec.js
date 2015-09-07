@@ -51,7 +51,6 @@ describe("Block:Validation", function(){
     });
 
     it("will call resetErrors", function(){
-
       expect(block.resetErrors).toHaveBeenCalled();
     });
 
@@ -59,24 +58,28 @@ describe("Block:Validation", function(){
 
   describe("validateField", function(){
 
-    var field;
+    var block2, field;
 
     beforeEach(function(){
-      field = document.createElement("input");
-      field.setAttribute('data-primitive', 'input');
-      block.setError = function(field, reason){};
-      spyOn(block, "setError");
+      block2 = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
+      block2.editorHTML = '<input name="text" data-primitive="input" data-required="true" />';
+      block2.render();
+
+      block2.setError = function(field, reason){};
+      spyOn(block2, "setError");
+
+      field = block2.getPrimitivesArray()[0];
     });
 
     it("will call setError if the field has no content", function(){
-      block.validateField(field);
-      expect(block.setError).toHaveBeenCalled();
+      block2.validateField(field);
+      expect(block2.setError).toHaveBeenCalled();
     });
 
     it("will won't call setError if the field has content", function(){
-      field.value = "Test";
-      block.validateField(field);
-      expect(block.setError).not.toHaveBeenCalled();
+      field.setContent("Test");
+      block2.validateField(field);
+      expect(block2.setError).not.toHaveBeenCalled();
     });
 
   });
