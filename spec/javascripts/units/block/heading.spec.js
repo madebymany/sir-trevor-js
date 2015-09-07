@@ -20,7 +20,6 @@ describe('Blocks: Heading block', function() {
 
   it('doesn\'t wrap content in <p> tags', function() {
     var data = getSerializedData({text: 'Test Heading'});
-    console.log(data);
     expect(data.text).not.toContain('<p>');
   });
 

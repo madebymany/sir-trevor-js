@@ -119,25 +119,33 @@ describe("Block", function(){
   describe("configuring Scribe", function() {
     describe("with a function (configureScribe)", function() {
       beforeEach(function(){
-        block.configureScribe = function(scribe){
-          scribe.allowBlockElements = false;
+        block.primitiveOptions = {
+          default: {
+            configureScribe: function(scribe){
+              scribe.allowBlockElements = false;
+            }
+          }
         };
         block.render();
       });
 
       it("configures scribe instance", function() {
-        expect(block._scribe.allowBlockElements).toBe(false);
+        expect(block.getPrimitivesArray()[0].scribe.allowBlockElements).toBe(false);
       });
     });
 
     describe("with an object (scribeOptions)", function() {
       beforeEach(function() {
-        block.scribeOptions = {allowBlockElements: false};
+        block.primitiveOptions = {
+          default: {
+            scribeOptions: {allowBlockElements: false}
+          }
+        };
         block.render();
       });
 
       it("instantiates scribe with options", function() {
-        expect(block._scribe.options.allowBlockElements).toBe(false);
+        expect(block.getPrimitivesArray()[0].scribe.options.allowBlockElements).toBe(false);
       });
     });
   });

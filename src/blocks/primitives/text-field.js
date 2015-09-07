@@ -4,6 +4,7 @@ const Dom = require('../../packages/dom');
 const _ = require('../../lodash');
 const ScribeInterface = require('../../scribe-interface');
 const FormatBar = require('../helpers/format-bar');
+const stToHTML = require('../../to-html');
 
 const TYPE = 'text';
 
@@ -32,7 +33,12 @@ Object.assign(TextField.prototype, {
   },
 
   setContent: function(content) {
-    this.scribe.setContent(content || "");
+    content = content || "";
+    if (this.block.options.convertFromMarkdown && this.block._getData().format !== "html") {
+      this.scribe.setContent(stToHTML(content, this.block.type));
+    } else {
+      this.scribe.setContent(content);
+    }
   },
 
   setElement: function(template_or_node) {
@@ -42,7 +48,6 @@ Object.assign(TextField.prototype, {
       } else {
         var wrapper = Dom.createElement('div', {html: template_or_node});
         this.el = wrapper.querySelector('[data-primitive]');
-        console.log(wrapper.firstChild);
         this.node = wrapper ? wrapper.removeChild(wrapper.firstChild) : null;
         this.id = _.uniqueId('editor-');
         this.el.dataset.editorId = this.id;

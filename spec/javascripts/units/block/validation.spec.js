@@ -7,6 +7,7 @@ describe("Block:Validation", function(){
     element = global.createBaseElement();
     editor = new SirTrevor.Editor({ el: element });
     block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
+    block.render();
   });
 
   describe("valid", function(){
@@ -50,6 +51,7 @@ describe("Block:Validation", function(){
     });
 
     it("will call resetErrors", function(){
+
       expect(block.resetErrors).toHaveBeenCalled();
     });
 
@@ -61,6 +63,7 @@ describe("Block:Validation", function(){
 
     beforeEach(function(){
       field = document.createElement("input");
+      field.setAttribute('data-primitive', 'input');
       block.setError = function(field, reason){};
       spyOn(block, "setError");
     });

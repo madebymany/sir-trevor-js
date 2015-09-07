@@ -108,7 +108,6 @@ module.exports = Block.extend({
       var idx = this.editorIds.indexOf(after.id) + 1;
       this.editorIds.splice(idx, 0, editor.id);
     } else {
-      console.log(editor);
       this.ul.appendChild(editor.node);
       this.editorIds.push(editor.id);
     }
