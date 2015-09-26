@@ -52,7 +52,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   icon_name: 'default',
 
   validationFailMsg: function() {
-    return i18n.t('errors:validation_fail', { type: this.title });
+    return i18n.t('errors:validation_fail', { type: _.isFunction(this.title) ? this.title() : this.title });
   },
 
   editorHTML: '<div class="st-block__editor"></div>',
