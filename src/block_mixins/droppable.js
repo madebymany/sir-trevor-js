@@ -40,7 +40,7 @@ module.exports = {
     e = e.originalEvent;
 
     var el = $(e.target),
-        types = e.dataTransfer.types;
+        types = [].slice.call(e.dataTransfer.types);
 
     el.removeClass('st-dropzone--dragover');
 
