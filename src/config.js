@@ -58,6 +58,7 @@ module.exports = {
     baseImageUrl: '/sir-trevor-uploads/',
     errorsContainer: undefined,
     convertFromMarkdown: true,
+    citeRequired: false,
     formatBar: {
       commands: [
         {
