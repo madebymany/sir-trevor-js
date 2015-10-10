@@ -12,12 +12,26 @@ SirTrevor.Blocks.TextLimited = SirTrevor.Blocks.Text.extend({
         var $limit_ui = $('<a class="st-block-ui-btn st-block-ui-text-limit"></a>');
         this.$ui.append($limit_ui);
         $limit_ui.html(this.text_limit);
-        this.$editor.attr('maxlength', this.text_limit);
+
+        // Trigger change event for editable elements
+        this.$editor.on('focus', function() {
+            var $this = $(this);
+            $this.data('before', $this.html());
+            return $this;
+        }).on('blur keyup paste input', function() {
+            var $this = $(this);
+            if ($this.data('before') !== $this.html()) {
+                $this.data('before', $this.html());
+                $this.trigger('change');
+            }
+            return $this;
+        });
+
         this.$editor.change({block: this}, function (e) {
             var block = e.data.block,
                 text_length = $(this).text().length;
             var dif = block.text_limit - text_length;
-            console.log(dif)
+            
             if (dif < 0) {
                 block.too_long = true;
             }
