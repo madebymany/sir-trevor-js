@@ -54,7 +54,13 @@
           "Image",
           "Video",
           "Tweet"
-        ]
+        ],
+
+        blockGroupLimit: {
+            types: ["Video", "Tweet"],
+            limit: 2
+        }
+
       });
 
       $('form').bind('submit', function () {
