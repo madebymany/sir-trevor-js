@@ -87,9 +87,14 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
         outer = this.editor.$outer.get(0),
         outerBoundary = outer.getBoundingClientRect();
 
-    coords.top = (boundary.top - outerBoundary.top) + 'px';
-    coords.left = (((boundary.left + boundary.right) / 2) -
-      (this.el.offsetWidth / 2) - outerBoundary.left) + 'px';
+    var top = boundary.top;
+    var left = ((boundary.left + boundary.right) / 2) - (this.el.offsetWidth / 2);
+    if(left < 0){
+      left = 0;
+    }
+    
+    coords.top = (top - outerBoundary.top) + 'px';
+    coords.left = (left - outerBoundary.left) + 'px';
 
     this.$el.css(coords);
   },
