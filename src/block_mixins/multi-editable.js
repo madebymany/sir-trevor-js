@@ -23,9 +23,13 @@ module.exports = {
 
     var configureScribe =
       _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
-    var scribe = ScribeInterface.initScribeInstance(
-      editor, this.scribeOptions, configureScribe
+
+    var scribeData = ScribeInterface.initScribeInstance(
+      editor, this.scribeOptions, this.textFormatting, configureScribe
     );
+
+    var scribe = scribeData.scribe;
+    this.formatBarCommands = scribeData.formatBarCommands;
 
     scribe.setContent(content);
 

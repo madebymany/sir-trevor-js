@@ -73,8 +73,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   paste_options: {},
   upload_options: {},
 
-  formattable: true,
-
   _previousSelection: '',
 
   initialize: function() {},
@@ -122,8 +120,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
         this.withMixin(BlockMixins[utils.classify(mixin)]);
       }
     }, this);
-
-    if (this.formattable) { this._initFormatting(); }
 
     this._blockPrepare();
 
@@ -303,55 +299,26 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.onBlur();
   },
 
-  _initFormatting: function() {
-
-    // Enable formatting keyboard input
-    var block = this;
-
-    if (!this.options.formatBar) {
-      return;
-    }
-
-    this.options.formatBar.commands.forEach(function(cmd) {
-      if (_.isUndefined(cmd.keyCode)) {
-        return;
-      }
-
-      var ctrlDown = false;
-
-      block.$el
-        .on('keyup','.st-text-block', function(ev) {
-          if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
-            ctrlDown = false;
-          }
-        })
-        .on('keydown','.st-text-block', {formatter: cmd}, function(ev) {
-          if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
-            ctrlDown = true;
-          }
-
-          if(ev.which === ev.data.formatter.keyCode && ctrlDown) {
-            ev.preventDefault();
-            block.execTextBlockCommand(ev.data.formatter.cmd);
-          }
-        });
-    });
-  },
-
   _initTextBlocks: function() {
     this.getTextBlock()
         .bind('keyup', this.getSelectionForFormatter)
         .bind('mouseup', this.getSelectionForFormatter)
         .bind('DOMNodeInserted', this.clearInsertedStyles);
 
+    this.textFormatting = Object.assign({}, config.defaults.textFormatting, this.textFormatting);
+
     var textBlock = this.getTextBlock().get(0);
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
 
       var configureScribe =
         _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
-      this._scribe = ScribeInterface.initScribeInstance(
-        textBlock, this.scribeOptions, configureScribe
+
+      var scribeData = ScribeInterface.initScribeInstance(
+        textBlock, this.scribeOptions, this.textFormatting, configureScribe
       );
+
+      this._scribe = scribeData.scribe;
+      this.formatBarCommands = scribeData.formatBarCommands;
     }
   },
 
