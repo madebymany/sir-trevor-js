@@ -186,7 +186,7 @@ module.exports = {
 
   configureH1: function (scribe, textFormatting, scribeConfiguration) {
     if (textFormatting.h1) {
-      scribeConfiguration.shortcuts.strikeThrough = function (event) {
+      scribeConfiguration.shortcuts.h1 = function (event) {
         return ctrlKey(event) && event.keyCode === 49; // 1
       };
       scribeConfiguration.sanitize.h1 = {};
@@ -202,7 +202,7 @@ module.exports = {
 
   configureH2: function (scribe, textFormatting, scribeConfiguration) {
     if (textFormatting.h2) {
-      scribeConfiguration.shortcuts.strikeThrough = function (event) {
+      scribeConfiguration.shortcuts.h2 = function (event) {
         return ctrlKey(event) && event.keyCode === 50; // 2
       };
       scribeConfiguration.sanitize.h2 = {};
