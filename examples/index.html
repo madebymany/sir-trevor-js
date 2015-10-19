@@ -37,6 +37,17 @@
       SirTrevor.config.debug = true;
       SirTrevor.config.scribeDebug = true;
       SirTrevor.config.language = "en";
+      SirTrevor.config.defaults.textFormatting = {
+        bold: true,
+          italic: true,
+          underline: true,
+          strikethrough: true,
+          link: true,
+          h1: true,
+          h2: true,
+          list: true,
+          blockquote: true
+      };
 
       SirTrevor.setBlockOptions("Text", {
         onBlockRender: function() {

@@ -61,13 +61,13 @@ module.exports = {
     textFormatting: {
       bold: true,
       italic: true,
-      underline: true,
-      strikethrough: true,
+      underline: false,
+      strikethrough: false,
       link: true,
-      h1: true,
-      h2: true,
-      list: true,
-      blockquote: true
+      h1: false,
+      h2: false,
+      list: false,
+      blockquote: false
     }
   }
 };
