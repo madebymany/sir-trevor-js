@@ -113,6 +113,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       this.$inputs = input_html;
     }
 
+    // This is also used by multi-editable mixin.
+    this.textFormatting = Object.assign({}, config.defaults.textFormatting, this.textFormatting);
+
     if (this.hasTextBlock()) { this._initTextBlocks(); }
 
     this.availableMixins.forEach(function(mixin) {
@@ -304,8 +307,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
         .bind('keyup', this.getSelectionForFormatter)
         .bind('mouseup', this.getSelectionForFormatter)
         .bind('DOMNodeInserted', this.clearInsertedStyles);
-
-    this.textFormatting = Object.assign({}, config.defaults.textFormatting, this.textFormatting);
 
     var textBlock = this.getTextBlock().get(0);
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
