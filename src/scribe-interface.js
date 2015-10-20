@@ -59,6 +59,10 @@ module.exports = {
       configureScribe.call(this, scribe, scribeConfiguration);
     }
 
+    if (_.isFunction(textFormatting.configure)){
+      textFormatting.configure.call(this, scribe, scribeConfiguration);
+    }
+
     scribe.use(scribePluginKeyboardShortcuts(Object.freeze(scribeConfiguration.shortcuts)));
     scribe.use(scribePluginSanitizer({tags: tags}));
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());

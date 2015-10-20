@@ -37,17 +37,6 @@
       SirTrevor.config.debug = true;
       SirTrevor.config.scribeDebug = true;
       SirTrevor.config.language = "en";
-      SirTrevor.config.defaults.textFormatting = {
-        bold: true,
-          italic: true,
-          underline: true,
-          strikethrough: true,
-          link: true,
-          h1: true,
-          h2: true,
-          list: true,
-          blockquote: true
-      };
 
       SirTrevor.setBlockOptions("Text", {
         onBlockRender: function() {
@@ -65,7 +54,30 @@
           "Image",
           "Video",
           "Tweet"
-        ]
+        ],
+        textFormatting: {
+          bold: true,
+          italic: true,
+          underline: true,
+          strikethrough: true,
+          link: true,
+          h1: true,
+          h2: true,
+          list: true,
+          blockquote: true,
+          configure: function(scribe, scribeConfiguration){
+              scribeConfiguration.formatBarCommands.push({
+                  name: "Superscript",
+                  cmd: "superscript",
+                  text: "^",
+                  title: "superscript"
+              });
+              scribeConfiguration.sanitize.sup = {};
+              scribeConfiguration.shortcuts.superscript = function (event) {
+                  return (event.metaKey || event.ctrlKey) && event.keyCode === 80; // p
+              };
+          }
+        }
       });
 
       $('form').bind('submit', function () {
