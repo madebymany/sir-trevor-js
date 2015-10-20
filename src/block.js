@@ -114,7 +114,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }
 
     // This is also used by multi-editable mixin.
-    this.textFormatting = Object.assign({}, config.defaults.textFormatting, this.textFormatting);
+    this.textFormatting = Object.assign({}, this.options.textFormatting, this.textFormatting);
 
     if (this.hasTextBlock()) { this._initTextBlocks(); }
 
