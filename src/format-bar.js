@@ -18,6 +18,7 @@ var FormatBar = function(options, mediator, editor) {
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
   this.commands = this.options.commands;
   this.mediator = mediator;
+  this.isShown = false;
 
   this._ensureElement();
   this._bindFunctions();
@@ -59,12 +60,18 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   hide: function() {
+    this.isShown = false;
+
     this.$el.removeClass('st-format-bar--is-ready');
     this.$el.remove();
   },
 
   show: function() {
-    this.hide();
+    if(this.isShown){
+      return;
+    }
+
+    this.isShown = true;
 
     this.editor.$outer.append(this.$el);
     this.$el.addClass('st-format-bar--is-ready');
