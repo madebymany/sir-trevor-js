@@ -52,7 +52,7 @@
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",
     "scribe-plugin-link-prompt-command": "^0.2.0",
     "scribe-plugin-sanitizer": "^0.1.9",
-    "selenium-webdriver": "^2.46.1",
+    "selenium-webdriver": "2.47.0",
     "spin.js": "^2.0.1",
     "webpack": "^1.8.4",
     "webpack-dev-server": "^1.8.0"
