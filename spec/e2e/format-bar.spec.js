@@ -33,7 +33,8 @@ describe('Format Bar', function() {
     var testUrl = 'http://www.example.com';
     var expectedHtmlUpToLink = '<p><b>Bold</b>, <i>Italic</i>, <a href="' + testUrl + '">Link</a>, Underline, Strikethrough</p><p>H1</p><p>H2</p><p>UL</p><p>OL</p><p>Quote</p>';
     var expectedHtmlWithLinkRemoved = '<p><b>Bold</b>, <i>Italic</i>, Link, Underline, Strikethrough</p><p>H1</p><p>H2</p><p>UL</p><p>OL</p><p>Quote</p>';
-    var expectedFinalHtml = '<p><b>Bold</b>, <i>Italic</i>, Link, <u>Underline</u>, <strike>Strikethrough</strike></p><h1>H1</h1><h2>H2</h2><ul><li>UL<br></li></ul><ol><li>OL<br></li></ol><blockquote><p>Quote</p></blockquote>';
+    var expectedFinalFirefoxHtml = '<p><b>Bold</b>, <i>Italic</i>, Link, <u>Underline</u>, <strike>Strikethrough</strike></p><h1>H1</h1><h2>H2</h2><ul><li>UL</li></ul><ol><li>OL</li></ol><blockquote><p>Quote</p></blockquote>';
+    var expectedFinalChromeHtml = '<p><b>Bold</b>, <i>Italic</i>, Link, <u>Underline</u>, <strike>Strikethrough</strike></p><h1>H1</h1><h2>H2</h2><ul><li>UL<br></li></ul><ol><li>OL<br></li></ol><blockquote><p>Quote</p></blockquote>';
 
     function selectBoldText() {
       return helpers.browser.actions()
@@ -227,7 +228,8 @@ describe('Format Bar', function() {
       .then( function() {
         return parent.getInnerHtml();
     }).then( function(html) {
-      expect(html).toBe(expectedFinalHtml);
+      var result = html === expectedFinalChromeHtml || html === expectedFinalFirefoxHtml;
+      expect(result).toBe(true);
       done();
     });
   });
