@@ -70,6 +70,10 @@ Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can
 
 ### Compiling
 
+Tests are run as part of compilation process, which require `chromedriver` to be installed on
+the machine where you are running the compilation. If you're running Homebrew on OSX this can
+be installed via `brew install chromedriver`.
+
 Before getting started please be sure to install the necessary dependencies via npm:
 
 ``$ npm install``
