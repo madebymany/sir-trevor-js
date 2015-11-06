@@ -55,11 +55,18 @@ module.exports = Block.extend({
   icon_name: 'list',
   multi_editable: true,
 
-  scribeOptions: { 
+  scribeOptions: {
     allowBlockElements: false,
     tags: {
       p: false
     }
+  },
+
+  textFormatting: {
+    h1: false,
+    h2: false,
+    list: false,
+    blockquote: false
   },
 
   configureScribe: function(scribe) {

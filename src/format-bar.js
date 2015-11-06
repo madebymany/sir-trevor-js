@@ -16,7 +16,7 @@ var utils = require('./utils');
 var FormatBar = function(options, mediator, editor) {
   this.editor = editor;
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
-  this.commands = this.options.commands;
+  this.commands = null;
   this.mediator = mediator;
   this.isShown = false;
 
@@ -42,20 +42,6 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   initialize: function() {
-    this.$btns = [];
-
-    this.commands.forEach(function(format) {
-      var btn = $("<button>", {
-        'class': 'st-format-btn st-format-btn--' + format.name + ' ' +
-          (format.iconName ? 'st-icon' : ''),
-        'text': format.text,
-        'data-cmd': format.cmd
-      });
-
-      this.$btns.push(btn);
-      btn.appendTo(this.$el);
-    }, this);
-
     this.$b = $(document);
   },
 
@@ -81,9 +67,15 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   remove: function(){ this.$el.remove(); },
 
   renderBySelection: function() {
-    this.highlightSelectedButtons();
-    this.show();
-    this.calculatePosition();
+    var block = utils.getBlockBySelection();
+    var commands = block.formatBarCommands;
+
+    if(commands && commands.length){
+      this.updateButtons(commands);
+      this.highlightSelectedButtons();
+      this.show();
+      this.calculatePosition();
+    }
   },
 
   calculatePosition: function() {
@@ -94,11 +86,37 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
         outer = this.editor.$outer.get(0),
         outerBoundary = outer.getBoundingClientRect();
 
-    coords.top = (boundary.top - outerBoundary.top) + 'px';
-    coords.left = (((boundary.left + boundary.right) / 2) -
-      (this.el.offsetWidth / 2) - outerBoundary.left) + 'px';
+    var top = boundary.top;
+    var left = ((boundary.left + boundary.right) / 2) - (this.el.offsetWidth / 2);
+    if(left < 0){
+      left = 0;
+    }
+
+    coords.top = (top - outerBoundary.top) + 'px';
+    coords.left = (left - outerBoundary.left) + 'px';
 
     this.$el.css(coords);
+  },
+
+  updateButtons: function(commands) {
+
+    if(this.commands !== commands){
+      this.commands = commands;
+      this.$btns = [];
+      this.$el.empty();
+
+      commands.forEach(function(format) {
+        var btn = $("<button>", {
+          'class': 'st-format-btn st-format-btn--' + format.name + ' ' +
+          (format.iconName ? 'st-icon' : ''),
+          'text': format.text,
+          'data-cmd': format.cmd
+        });
+
+        this.$btns.push(btn);
+        btn.appendTo(this.$el);
+      }, this);
+    }
   },
 
   highlightSelectedButtons: function() {

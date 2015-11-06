@@ -15,11 +15,19 @@ module.exports = Block.extend({
 
   editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
 
-  scribeOptions: { 
+  scribeOptions: {
     allowBlockElements: false,
     tags: {
       p: false
     }
+  },
+
+  textFormatting: {
+    bold: false,
+    h1: false,
+    h2: false,
+    list: false,
+    blockquote: false
   },
 
   icon_name: 'heading',

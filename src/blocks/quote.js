@@ -28,6 +28,10 @@ module.exports = Block.extend({
     return template(this);
   },
 
+  textFormatting: {
+    blockquote: false
+  },
+
   loadData: function(data){
     if (this.options.convertFromMarkdown && data.format !== "html") {
       this.setTextBlockHTML(stToHTML(data.text, this.type));
