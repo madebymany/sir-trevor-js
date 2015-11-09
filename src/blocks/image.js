@@ -23,7 +23,7 @@ module.exports = Block.extend({
     this.$inputs.find('button').bind('click', function(ev){ ev.preventDefault(); });
     this.$inputs.find('input').on('change', (function(ev) {
       this.onDrop(ev.currentTarget);
-    }).bind(this));
+    }).bind(this)).prop('accept','image/*');
   },
 
   onDrop: function(transferData){
