@@ -2,6 +2,8 @@
 
 ## 0.5.x
 
+* Separate block positioner select data and make it a property of editor instead of block
+
 ### 0.5.0
 
 * Added Scribe for better text formatting rather than custom markdown for better extensibility

@@ -18,6 +18,7 @@ var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
 var BlockControls = require('./block-controls');
 var BlockManager = require('./block-manager');
+var BlockPositionerSelect = require('./block-positioner-select');
 var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
@@ -31,7 +32,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
     'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'],
+    'blockLimitReached', 'onBlockCountChange', 'renderBlockPositionerSelect'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -78,12 +79,15 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
     this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
     this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
+    this.block_positioner_select = new BlockPositionerSelect(this.mediator);
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
     this.mediator.on('block-controls:reset', this.resetBlockControls);
     this.mediator.on('block:limitReached', this.blockLimitReached);
     this.mediator.on('block:render', this.renderBlock);
+    this.mediator.on("block:countUpdate", this.onBlockCountChange);
+    this.mediator.on("block-positioner-select:render", this.renderBlockPositionerSelect);
 
     this.dataStore = "Please use store.retrieve();";
 
@@ -151,6 +155,14 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   blockLimitReached: function(toggle) {
     this.$wrapper.toggleClass('st--block-limit-reached', toggle);
+  },
+
+  onBlockCountChange: function(new_count) {
+    this.block_positioner_select.onBlockCountChange(new_count);
+  },
+
+  renderBlockPositionerSelect: function(positioner) {
+    this.block_positioner_select.renderInBlock(positioner);
   },
 
   _setEvents: function() {
@@ -288,5 +300,3 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 });
 
 module.exports = Editor;
-
-
