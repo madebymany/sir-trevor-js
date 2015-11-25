@@ -173,7 +173,31 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     // Add any inputs to the data attr
     if (this.$(':input').not('.st-paste-block').length > 0) {
       this.$(':input').each(function(index,input){
-        if (input.getAttribute('name')) {
+        if (input.getAttribute('data-name')) {
+          // using data-name attribute, because name may be the same for a group of widgets (radio buttons)
+          // what causes problems during loadData when accessing fields by unique name:
+          // fields have to have different names (blockId prefix added), so data-name was introduced
+          // to overcome this problem and providing original field name
+          if (input.getAttribute('type') === 'number') {
+            data[input.getAttribute('data-name')] = parseInt(input.value);
+          }
+          else if (input.getAttribute('type') === 'checkbox') {
+            var value = "off";
+            if (input.checked === true) {
+              value = "on";
+            }
+            data[input.getAttribute('data-name')] = value;
+          }
+          else if (input.getAttribute('type') === 'radio') {
+            if (input.checked === true) {
+              data[input.getAttribute('data-name')] = input.value;
+            }
+          }
+          else {
+            data[input.getAttribute('data-name')] = input.value;
+          }
+        }
+        else if (input.getAttribute('name')) {
           data[input.getAttribute('name')] = input.value;
         }
       });
