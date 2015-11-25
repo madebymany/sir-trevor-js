@@ -6,6 +6,20 @@
 
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
+## Changes of branch "advanced_blocks"
+
+- Added data serializing for checkboxes and radio buttons (see extended _serializeData in block.js)
+
+  Feature uses data-name attribute of checkboxes/radio-buttons, because name may be the same for a
+  group of widgets (radio buttons), what causes problems during loadData-function:
+  fields have to have different names (provided by appending blockID-prefix).
+  Original field name is accessible through data-name attribute.
+
+  Example snippet in the loadData-function of a custom block (setting an image position value):
+
+        // set radio button value for position
+        this.$('input[name="' + this.blockID + '-position"][value="' + data.position + '"]').prop("checked", true);
+
 ## Upgrade guide from v0.4
 
 - [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
