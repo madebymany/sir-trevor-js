@@ -27,12 +27,18 @@ exports.createBlock = function(blockType, cb) {
     }).then(cb);
   }
 
-  exports.findElementsByCss('.st-block').then( function(blocks) {
+  exports.findBlocks().then( function(blocks) {
     if (blocks.length > 0) {
       createBlock(blocks[blocks.length-1]);
     } else {
       exports.findElementByCss('.st-top-controls').then(createBlock);
     }
+  });
+};
+
+exports.hasBlockCount = function(count) {
+  return exports.findBlocks().then( function(blocks) {
+    expect(blocks.length === count);
   });
 };
 

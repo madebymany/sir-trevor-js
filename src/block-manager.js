@@ -43,7 +43,9 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   mediatedEvents: {
     'create': 'createBlock',
     'remove': 'removeBlock',
-    'rerender': 'rerenderBlock'
+    'rerender': 'rerenderBlock',
+    'focusPrevious': 'focusPreviousBlock',
+    'focusNext': 'focusNextBlock'
   },
 
   initialize: function() {},
@@ -68,10 +70,24 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     utils.log("Block created of type " + type);
   },
 
-  removeBlock: function(blockID) {
-    var block = this.findBlockById(blockID),
-    type = utils.classify(block.type);
+  removeBlock: function(blockID, options) {
+    options = options || {};
 
+    var block = this.findBlockById(blockID);
+    var type = utils.classify(block.type);
+    
+    if (options.extractContent && block.inline_editable) {
+
+      var previousBlock = this.getPreviousBlock(block);
+
+      if (previousBlock.inline_editable) {
+        previousBlock.appendContent(
+          block.getScribeInnerContent(), {
+          keepCaretPosition: true
+        });
+      }
+    }
+    
     this.mediator.trigger('block-controls:reset');
     this.blocks = this.blocks.filter(function(item) {
       return (item.blockID !== block.blockID);
@@ -99,6 +115,54 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (!_.isUndefined(block) && !block.isEmpty() &&
         block.drop_options.re_render_on_reorder) {
       block.beforeLoadingData();
+    }
+  },
+
+  getPreviousBlock: function(block) {
+    var blockPosition = this.getBlockPosition(block.el);
+    return this.findBlockById(
+      this.wrapper.querySelectorAll('.st-block')[blockPosition - 1].getAttribute('id')
+    );
+  },
+
+  getNextBlock: function(block) {
+    var blockPosition = this.getBlockPosition(block.el);
+    return this.findBlockById(
+      this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id')
+    );
+  },
+
+  getBlockPosition: function(block) {
+    var index;
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(item, i) {
+      if (block === item) {
+        index = i;
+      }
+    });
+    return index;
+  },
+
+  focusPreviousBlock: function(blockID) {
+    var block = this.findBlockById(blockID);
+    
+    if (block.inline_editable) {
+      var previousBlock = this.getPreviousBlock(block);
+
+      if (previousBlock.inline_editable) {
+        previousBlock.focusAtEnd();
+      }
+    }
+  },
+
+  focusNextBlock: function(blockID) {
+    var block = this.findBlockById(blockID);
+    
+    if (block.inline_editable) {
+      var nextBlock = this.getNextBlock(block);
+
+      if (nextBlock.inline_editable) {
+        nextBlock.focus();
+      }
     }
   },
 

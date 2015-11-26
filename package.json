@@ -12,7 +12,8 @@
     "dev": "grunt dev watch"
   },
   "dependencies": {
-    "es5-shim": "^4.0.3"
+    "es5-shim": "^4.0.3",
+    "selection-range": "^1.0.1"
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",
