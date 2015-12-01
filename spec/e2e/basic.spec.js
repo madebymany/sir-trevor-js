@@ -78,7 +78,7 @@ describe('Existing data', function() {
     });
   });
 
-  describe('should allow reordering of blocks', function(done) {
+  describe('should allow reordering of blocks', function() {
 
     var blocks;
 
