@@ -10,6 +10,7 @@
   position: relative;
   width:80%;
   margin:auto;
+  overflow: hidden;
 }
 
 .st-block--with-errors .st-block__inner,
@@ -107,6 +108,8 @@
   font-size: 2.2em;
   min-height: 1em;
   font-weight: 700;
+  margin: 0.58em 0;
+  overflow: visible;
 }
 
 .st-text-block--heading p {
