@@ -1,10 +1,3 @@
-.st-block__ui,
-.st-block__ui-delete-controls {
-  position: absolute;
-  bottom: 0;  right: 0;
-  opacity: 0;
-}
-
 .st-block__control-ui {
   position: absolute;
   bottom: 0; left: 0;
@@ -16,31 +9,49 @@
   opacity: 1;
 }
 
-.st-block-ui-btn {
-  display: block;
-  float: left;
-  width: 3em;
-  height: 2.5em;
-  line-height: 2.5em;
-  font-size: 1.4em;
-  color: $accent-color;
-  background: #fff;
-  text-align: center;
-  border: $default-border;
-  border-right: 0;
-  border-bottom: 0;
-  margin-bottom: 0;
-  cursor: pointer;
+.st-block-ui__confirm {
+  color: $error-color;
+  border:1px solid $error-color;
+  background:none;
+  padding: 0.15em .4em;
+  margin: 0 0.1em;
+  font-size:.9em;
+  cursor:pointer;
+}
 
+%st-block-ui-btn {
+  @extend .st-icon;
+  display: block;
+  cursor: pointer;
+  width: 1em;
+  height: 1em;
+  position: absolute;
+  top: 1em;
+  color:$block-controls-color;
+}
+
+.st-block-ui-btn__reorder {
+  @extend %st-block-ui-btn;
+  left: 2em;
   &:hover,
-  &.active {
-    color: #fff;
-    background: $accent-color;
+  &:focus {
+    color:$accent-color;
+  }
+}
+
+.st-block-ui-btn__delete {
+  @extend %st-block-ui-btn;
+  right: 1em;
+  top:.5em;
+  font-size:1.5em;
+  &:hover,
+  &:focus {
+    color:$error-color;
   }
 }
 
 .st-block-control-ui-btn {
-  @extend .st-block-ui-btn;
+  @extend %st-block-ui-btn;
   width: 2em;
   font-size: 1.5em;
   line-height: 1.25em;
@@ -50,8 +61,6 @@
   border-bottom: 0;
 }
 
-.st-block--with-errors .st-block-ui-btn,
-.st-block--delete-active .st-block-ui-btn,
 .st-block--with-errors .st-block-control-ui-btn,
 .st-block--delete-active .st-block-control-ui-btn {
   color: $error-color;
@@ -64,21 +73,25 @@
   }
 }
 
-.st-block--with-errors,
-.st-block--delete-active {
-  .st-block__ui-delete-controls {
-    opacity: 1;
-    z-index: 2;
+.st-block__ui-delete-controls {
+  @include ui-popup;
+  right: 4em;
+  top: 0.4em;
+  padding: 0.3em .5em;
+  border-color:$error-color;
+
+  &:before {
+    left:auto;
+    right:-0.3em;
+    border-color:$error-color;
   }
 }
 
+.st-block--with-errors {
+  opacity: 1;
+  z-index: 2;
+}
+
 .st-block__delete-label {
-  display: block;
-  border: $border-size $border-style $error-color;
-  border-bottom: none;
-  border-right: none;
-  text-align: center;
-  background: #fff;
   color: $error-color;
-  padding: 0.4em 0;
 }

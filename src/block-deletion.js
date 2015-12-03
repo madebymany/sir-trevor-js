@@ -8,11 +8,11 @@ var BlockDeletion = function() {
 Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./renderable'), {
 
   tagName: 'a',
-  className: 'st-block-ui-btn st-block-ui-btn--delete st-icon',
+  className: 'st-block-ui-btn__delete',
 
   attributes: {
     html: 'delete',
-    'data-icon': 'bin'
+    'data-icon': 'close'
   }
 
 });

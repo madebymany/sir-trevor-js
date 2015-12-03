@@ -16,7 +16,7 @@ var FormEvents = {
       // a new object, but otherwise `this` won't be set in the Submittable
       // initialiser. Bit weird.
       new Submittable(form); // jshint ignore:line
-      form.bind('submit', this.onFormSubmit);
+      form.addEventListener('submit', this.onFormSubmit);
       formBound = true;
     }
   },

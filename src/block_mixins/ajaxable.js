@@ -33,7 +33,7 @@ module.exports = {
   resolveAllInQueue: function() {
     this._queued.forEach(function(item){
       utils.log("Aborting queued request: " + item.name);
-      item.deferred.abort();
+      item.deferred.cancel();
     }, this);
   }
 

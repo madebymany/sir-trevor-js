@@ -1,13 +1,10 @@
 "use strict";
 
-var _ = require('./lodash');
-
 // ES6 shims
 require('object.assign').shim();
 require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
-
-require('./helpers/event'); // extends jQuery itself
+require('es6-promise').polyfill();
 
 var utils = require('./utils');
 
@@ -16,6 +13,7 @@ var SirTrevor = {
   config: require('./config'),
 
   log: utils.log,
+
   Locales: require('./locales'),
 
   Events: require('./events'),
@@ -38,10 +36,6 @@ var SirTrevor = {
 
   Blocks: require('./blocks'),
 
-  BlockControl: require('./block-control'),
-  BlockControls: require('./block-controls'),
-  FloatingBlockControls: require('./floating-block-controls'),
-
   FormatBar: require('./format-bar'),
   Editor: require('./editor'),
 
@@ -57,7 +51,7 @@ var SirTrevor = {
   setBlockOptions: function(type, options) {
     var block = SirTrevor.Blocks[type];
 
-    if (_.isUndefined(block)) {
+    if (typeof block === "undefined") {
       return;
     }
 

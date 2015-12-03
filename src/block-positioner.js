@@ -7,9 +7,9 @@ var template = [
   "</div>"
 ].join("\n");
 
-var BlockPositioner = function(block_element, mediator) {
+var BlockPositioner = function(block, mediator) {
   this.mediator = mediator;
-  this.$block = block_element;
+  this.block = block;
 
   this._ensureElement();
   this._bindFunctions();
@@ -24,13 +24,13 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   bound: ['onBlockCountChange', 'onSelectChange', 'toggle', 'show', 'hide'],
 
   className: 'st-block-positioner',
-  visibleClass: 'st-block-positioner--is-visible',
+  visibleClass: 'active',
 
   initialize: function(){
-    this.$el.append(template);
-    this.$select = this.$('.st-block-positioner__select');
+    this.el.insertAdjacentHTML("beforeend", template);
+    this.select = this.$('.st-block-positioner__select')[0];
 
-    this.$select.on('change', this.onSelectChange);
+    this.select.addEventListener('change', this.onSelectChange);
 
     this.mediator.on("block:countUpdate", this.onBlockCountChange);
   },
@@ -43,10 +43,10 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
   },
 
   onSelectChange: function() {
-    var val = this.$select.val();
+    var val = this.select.value;
     if (val !== 0) {
       this.mediator.trigger(
-        "block:changePosition", this.$block, val,
+        "block:changePosition", this.block, val,
         (val === 1 ? 'before' : 'after'));
       this.toggle();
     }
@@ -57,20 +57,20 @@ Object.assign(BlockPositioner.prototype, require('./function-bind'), require('./
     for(var i = 1; i <= this.total_blocks; i++) {
       inner += "<option value="+i+">"+i+"</option>";
     }
-    this.$select.html(inner);
+    this.select.innerHTML = inner;
   },
 
   toggle: function() {
-    this.$select.val(0);
-    this.$el.toggleClass(this.visibleClass);
+    this.select.value = 0;
+    this.el.classList.toggle(this.visibleClass);
   },
 
   show: function(){
-    this.$el.addClass(this.visibleClass);
+    this.el.classList.add(this.visibleClass);
   },
 
   hide: function(){
-    this.$el.removeClass(this.visibleClass);
+    this.el.classList.remove(this.visibleClass);
   }
 
 });

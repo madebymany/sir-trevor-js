@@ -9,25 +9,24 @@
  * This will be triggered *by anything* so it needs to subscribe to events.
  */
 
-var $ = require('jquery');
 var utils = require('../utils');
 
 var EventBus = require('../event-bus');
 
-var Submittable = function($form) {
-  this.$form = $form;
+var Submittable = function(form) {
+  this.form = form;
   this.initialize();
 };
 
 Object.assign(Submittable.prototype, {
 
   initialize: function(){
-    this.submitBtn = this.$form.find("input[type='submit']");
+    this.submitBtns = this.form.querySelectorAll("input[type='submit']");
 
     var btnTitles = [];
 
-    this.submitBtn.each(function(i, btn){
-      btnTitles.push($(btn).attr('value'));
+    Array.prototype.forEach.call(this.submitBtns, function(btn, i){
+      btnTitles.push(btn.getAttribute('value'));
     });
 
     this.submitBtnTitles = btnTitles;
@@ -37,13 +36,15 @@ Object.assign(Submittable.prototype, {
   },
 
   setSubmitButton: function(e, message) {
-    this.submitBtn.attr('value', message);
+    Array.prototype.forEach.call(this.submitBtns, function(btn, i){
+      btn.setAttribute('value', message);
+    });
   },
 
   resetSubmitButton: function(){
     var titles = this.submitBtnTitles;
-    this.submitBtn.each(function(index, item) {
-      $(item).attr('value', titles[index]);
+    Array.prototype.forEach.call(this.submitBtns, function(item, index){
+      item.setAttribute('value', titles[index]);
     });
   },
 
@@ -73,16 +74,18 @@ Object.assign(Submittable.prototype, {
 
   _disableSubmitButton: function(message){
     this.setSubmitButton(null, message || i18n.t("general:wait"));
-    this.submitBtn
-    .attr('disabled', 'disabled')
-    .addClass('disabled');
+    Array.prototype.forEach.call(this.submitBtns, function(btn, i){
+      btn.setAttribute('disabled', 'disabled');
+      btn.classList.add('disabled');
+    });
   },
 
   _enableSubmitButton: function(){
     this.resetSubmitButton();
-    this.submitBtn
-    .removeAttr('disabled')
-    .removeClass('disabled');
+    Array.prototype.forEach.call(this.submitBtns, function(btn, i){
+      btn.removeAttribute('disabled');
+      btn.classList.remove('disabled');
+    });
   },
 
   _events : {
