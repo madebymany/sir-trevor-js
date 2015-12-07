@@ -394,7 +394,14 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   setTextBlockHTML: function(html) {
-    return this._scribe.setContent(html);
+    var returnVal = this._scribe.setContent(html);
+
+    // Remove any whitespace in the first node, otherwise selections won't work.
+    var firstNode = this._scribe.node.firstDeepestChild(this._scribe.el);
+    if (firstNode.nodeName === '#text') {
+      firstNode.textContent = firstNode.textContent.trim();
+    }
+    return returnVal;
   },
 
   isEmpty: function() {

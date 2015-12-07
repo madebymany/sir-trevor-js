@@ -25,8 +25,9 @@ var ScribeTextBlockPlugin = function(block) {
       
       stripFirstEmptyElement(div);
 
+      // Sometimes you'll get an empty tag at the start of the block.
       if (div.firstChild.nodeName !== '#text') {
-        div = div.firstChild;
+        div = div.lastChild;
       }
 
       return div.innerHTML.trim();
@@ -76,6 +77,7 @@ var ScribeTextBlockPlugin = function(block) {
           text: rangeToHTML(selectToEnd(), true)
         };
 
+        // If the block is left empty then we need to reset the placeholder content.
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }

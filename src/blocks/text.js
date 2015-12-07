@@ -39,10 +39,6 @@ module.exports = Block.extend({
       this.setTextBlockHTML(stToHTML(data.text, this.type));
     } else {
       this.setTextBlockHTML(data.text);
-      var firstNode = this._scribe.node.firstDeepestChild(this._scribe.el);
-      if (firstNode.nodeName === '#text') {
-        firstNode.textContent = firstNode.textContent.trim();
-      }
     }
   }
 });
