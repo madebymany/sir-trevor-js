@@ -103,7 +103,7 @@ var ScribeTextBlockPlugin = function(block) {
         ev.preventDefault();
 
         block.mediator.trigger('block:remove', block.blockID, {
-          extractContent: true
+          transposeContent: true
         });
 
         isAtStart = false;

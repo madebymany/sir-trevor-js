@@ -76,11 +76,11 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     var block = this.findBlockById(blockID);
     var type = utils.classify(block.type);
     
-    if (options.extractContent && block.inline_editable) {
+    if (options.transposeContent && block.textable) {
 
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock && previousBlock.inline_editable) {
+      if (previousBlock && previousBlock.textable) {
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
@@ -123,7 +123,6 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
     var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
-    console.log(previousBlock);
     return this.findBlockById(
       previousBlock.getAttribute('id')
     );
@@ -137,22 +136,16 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   getBlockPosition: function(block) {
-    var index;
-    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(item, i) {
-      if (block === item) {
-        index = i;
-      }
-    });
-    return index;
+    return Array.prototype.indexOf.call(this.wrapper.querySelectorAll('.st-block'), block);
   },
 
   focusPreviousBlock: function(blockID) {
     var block = this.findBlockById(blockID);
     
-    if (block.inline_editable) {
+    if (block.textable) {
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock && previousBlock.inline_editable) {
+      if (previousBlock && previousBlock.textable) {
         previousBlock.focusAtEnd();
       }
     }
@@ -161,10 +154,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   focusNextBlock: function(blockID) {
     var block = this.findBlockById(blockID);
     
-    if (block && block.inline_editable) {
+    if (block && block.textable) {
       var nextBlock = this.getNextBlock(block);
 
-      if (nextBlock && nextBlock.inline_editable) {
+      if (nextBlock && nextBlock.textable) {
         nextBlock.focus();
       }
     }

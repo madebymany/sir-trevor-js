@@ -3,9 +3,9 @@
 var selectionRange = require('selection-range');
 
 module.exports = {
-  mixinName: 'InlineEditable',
+  mixinName: 'Textable',
 
-  initializeInlineEditable: function() {},
+  initializeTextable: function() {},
 
   focusAtEnd: function() {
     this.focus();

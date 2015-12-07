@@ -20,7 +20,7 @@ module.exports = Block.extend({
 
   icon_name: 'text',
 
-  inline_editable: true,
+  textable: true,
 
   configureScribe: function(scribe) {
     scribe.use(new ScribeTextBlockPlugin(this));

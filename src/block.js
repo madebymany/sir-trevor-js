@@ -52,7 +52,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   toolbarEnabled: true,
 
   availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
-    'ajaxable', 'controllable', 'multi_editable', 'inline_editable'],
+    'ajaxable', 'controllable', 'multi_editable', 'textable'],
 
   droppable: false,
   pastable: false,
@@ -60,7 +60,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   fetchable: false,
   ajaxable: false,
   multi_editable: false,
-  inline_editable: false,
+  textable: false,
 
   drop_options: {},
   paste_options: {},
@@ -401,6 +401,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     if (firstNode.nodeName === '#text') {
       firstNode.textContent = firstNode.textContent.trim();
     }
+
+    // Firefox adds empty br tags at the end of content.
+    while(this._scribe.el.lastChild && this._scribe.el.lastChild.nodeName === 'BR') {
+      this._scribe.el.removeChild(this._scribe.el.lastChild);
+    }
+
     return returnVal;
   },
 

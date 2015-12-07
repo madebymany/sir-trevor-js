@@ -21,7 +21,7 @@ module.exports = Block.extend({
     scribe.use(new ScribeTextBlockPlugin(this));
   },
 
-  inline_editable: true,
+  textable: true,
 
   scribeOptions: { 
     allowBlockElements: false,

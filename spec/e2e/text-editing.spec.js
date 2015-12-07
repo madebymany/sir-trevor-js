@@ -48,11 +48,8 @@ var enterText = function(text) {
 var getTextFromBlock = function(blocks) {
   var str = 'return [';
   str += blocks.map( function(index) {
-    if (index > 0) {
-      str += ',';
-    }
     return 'window.editor.blockManager.blocks[' + index + '].getTextBlockHTML()';
-  });
+  }).join(',');
   str += '];';
   return helpers.browser.executeScript(str);
 };
@@ -157,7 +154,7 @@ describe('Text block', function() {
       });
     });
 
-    it('should delete the block when caret is at the start of the block and there is a block above', function(done) {
+    it('should transpose the block content when caret is at the start of the block and there is a block above', function(done) {
       helpers.createBlock('text', function() {
         helpers.hasBlockCount(2).then( function() {
           return focusOnTextBlock(1);
