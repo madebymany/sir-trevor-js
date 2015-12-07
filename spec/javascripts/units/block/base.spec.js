@@ -4,16 +4,24 @@ describe("Block", function(){
 
   var element, editor, block, block_two, block_three;
 
-  SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
-    type: "complex_type"
-  });
-
   beforeEach(function(){
-    element = $("<textarea>");
-    editor = new SirTrevor.Editor({ el: element });
+
+    SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
+      type: "complex_type"
+    });
+
+    element = global.createBaseElement();
+    editor  = new SirTrevor.Editor({
+      el: element,
+      blockTypes: ["Text"]
+    });
     block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
     block_two = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
     block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID, editor.mediator);
+  });
+
+  afterEach(function(){
+    delete SirTrevor.Blocks.ComplexType;
   });
 
   it("block is instance of ST.Block", function(){
@@ -42,11 +50,11 @@ describe("Block", function(){
 
   describe("dom functions", function(){
 
-    it("has an $el associated with it", function(){
-      expect(block.$el).not.toBe(undefined);
+    it("has an el associated with it", function(){
+      expect(block.el).not.toBe(undefined);
     });
 
-    it("has have a shorthand method for selecting elements under the $el", function(){
+    it("has a shorthand method for selecting elements under the el", function(){
       expect(typeof block.$).toBe('function');
     });
 
@@ -65,16 +73,16 @@ describe("Block", function(){
       expect(typeof block.render).toBe('function');
     });
 
-    it("has an $inner element", function(){
-      expect(block.$inner).not.toBe(undefined);
+    it("has an inner element", function(){
+      expect(block.inner).not.toBe(undefined);
     });
 
-    it("has an $editor element", function(){
-      expect(block.$editor).not.toBe(undefined);
+    it("has an editor element", function(){
+      expect(block.editor).not.toBe(undefined);
     });
 
     it("has a ready class", function(){
-      expect(block.$el.hasClass('st-item-ready')).toBe(true);
+      expect(block.el.classList.contains('st-item-ready')).toBe(true);
     });
 
     it("calls beforeBlockRender", function(){

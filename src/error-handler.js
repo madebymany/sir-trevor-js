@@ -1,19 +1,20 @@
 "use strict";
 
 var _ = require('./lodash');
-var $ = require('jquery');
+var Dom = require('./packages/dom');
 
-var ErrorHandler = function($wrapper, mediator, container) {
-  this.$wrapper = $wrapper;
+var ErrorHandler = function(wrapper, mediator, container) {
+  this.wrapper = wrapper;
   this.mediator = mediator;
-  this.$el = container;
-
-  if (_.isUndefined(this.$el)) {
+  this.el = container;
+  
+  if (_.isUndefined(this.el)) {
     this._ensureElement();
-    this.$wrapper.prepend(this.$el);
+    this.wrapper.insertBefore(this.el, this.wrapper.firstChild);
   }
 
-  this.$el.hide();
+  Dom.hide(this.el);
+
   this._bindFunctions();
   this._bindMediatedEvents();
 
@@ -33,21 +34,26 @@ Object.assign(ErrorHandler.prototype, require('./function-bind'), require('./med
   },
 
   initialize: function() {
-    var $list = $("<ul>");
-    this.$el.append("<p>" + i18n.t("errors:title") + "</p>")
-    .append($list);
-    this.$list = $list;
+    var list = document.createElement("ul");
+    var p = document.createElement("p");
+    p.innerHTML = i18n.t("errors:title");
+
+    this.el.appendChild(p)
+    .appendChild(list);
+    this.list = list;
   },
 
   render: function() {
     if (this.errors.length === 0) { return false; }
     this.errors.forEach(this.createErrorItem, this);
-    this.$el.show();
+    Dom.show(this.el);
   },
 
-  createErrorItem: function(error) {
-    var $error = $("<li>", { class: "st-errors__msg", html: error.text });
-    this.$list.append($error);
+  createErrorItem: function(errorObj) {
+    var error = document.createElement("li");
+    error.classList.add("st-errors__msg");
+    error.innerHTML = errorObj.text;
+    this.list.appendChild(error);
   },
 
   addMessage: function(error) {
@@ -57,8 +63,8 @@ Object.assign(ErrorHandler.prototype, require('./function-bind'), require('./med
   reset: function() {
     if (this.errors.length === 0) { return false; }
     this.errors = [];
-    this.$list.html('');
-    this.$el.hide();
+    this.list.innerHTML = '';
+    Dom.hide(this.el);
   }
 
 });

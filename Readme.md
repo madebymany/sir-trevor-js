@@ -94,6 +94,16 @@ Concatenates scripts, compiles the Sass, runs the Jasmine tests and minifies the
 
 Please ensure any pull requests have relevant Jasmine tests (where applicable).
 
+## Current browser support tests
+
+matrix:
+  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='OSX 10.9'
+  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='Windows 7'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='OSX 10.9'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='Windows 7'
+  - BROWSER_NAME='internet explorer' BROWSER_VERSION='11' PLATFORM='Windows 10'
+  - BROWSER_NAME='safari' BROWSER_VERSION='8' PLATFORM='OSX 10.10'
+
 ## License
 
 Sir Trevor is released under the MIT license:

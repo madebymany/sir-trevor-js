@@ -4,7 +4,7 @@ module.exports = function(config) {
   config.set({
 
     // base path, that will be used to resolve files and exclude
-    basePath: 'spec/',
+    basePath: '../spec/',
 
     // frameworks to use
     frameworks: ['jasmine'],
@@ -61,6 +61,20 @@ module.exports = function(config) {
     },
 
     webpack: {
+      module: {
+        loaders: [{
+          test: /\.js?$/,
+          exclude: /(node_modules|bower_components)/,
+          loader: 'babel?optional[]=runtime'
+        }],
+        preLoaders: [{
+          test: /\.scss$/,
+          loader: 'css!autoprefixer!sass?outputStyle=compressed'
+        }],
+        loaders: [
+          { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel?stage=0&optional=runtime' },
+        ]
+      }
     },
 
     webpackMiddleware: {

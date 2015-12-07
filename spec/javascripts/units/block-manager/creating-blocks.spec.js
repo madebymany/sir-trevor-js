@@ -2,30 +2,30 @@
 
 describe("BlockManager::Creating blocks", function(){
 
-  var manager, options, mediator, block;
+  var manager;
 
-  Object.keys(SirTrevor.Blocks).forEach(function createBlockTest(blockName){
+  Object.keys(SirTrevor.Blocks).forEach(function createBlockTest(blockName, i, blocks){
 
     describe("create " + blockName + "  with no editor options", function(){
 
       beforeEach(function(){
-        mediator = _.extend({}, SirTrevor.Events);
-        options = { defaultType: false };
-        manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
-        block = new SirTrevor.Block();
+        var element = global.createBaseElement();
+        var editor  = new SirTrevor.Editor({
+          el: element,
+          blockTypes: [blockName]
+        });
+        manager = editor.blockManager;
 
-        spyOn(SirTrevor.Blocks, blockName).and.returnValue(block);
         spyOn(SirTrevor.EventBus, 'trigger').and.callThrough();
-
-        manager.createBlock(blockName.toLowerCase());
-      });
-
-      it("instantiates a block of the type specified", function(){
-        expect(SirTrevor.Blocks[blockName]).toHaveBeenCalled();
+        manager.createBlock(blockName);
       });
 
       it("adds a block to the local block store", function(){
         expect(manager.blocks.length).toBe(1);
+      });
+
+      it("creates a block of the type specified", function(){
+        expect(manager.blocks[0].type).toEqual(blockName.toLowerCase());
       });
 
       it("increments the block type count", function(){
@@ -34,7 +34,6 @@ describe("BlockManager::Creating blocks", function(){
 
       it("fires a create:new block event", function() {
         var lastEvent = SirTrevor.EventBus.trigger.calls.mostRecent();
-
         expect(lastEvent.args[0]).toBe('block:create:new');
       });
 
@@ -45,9 +44,14 @@ describe("BlockManager::Creating blocks", function(){
   describe("createBlock with overall block limit", function(){
 
     beforeEach(function(){
-      mediator = _.extend({}, SirTrevor.Events);
-      options = { defaultType: false, blockLimit: 1 };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      var element = global.createBaseElement();
+      var editor  = new SirTrevor.Editor({
+        el: element,
+        defaultType: false,
+        blockLimit: 1,
+        blockTypes: ["Text"]
+      });
+      manager = editor.blockManager;
 
       manager.createBlock('Text');
     });
@@ -62,9 +66,13 @@ describe("BlockManager::Creating blocks", function(){
   describe("createBlock with blockTypes set", function(){
 
     beforeEach(function(){
-      mediator = _.extend({}, SirTrevor.Events);
-      options = { defaultType: false, blockTypes: ['Text'] };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      var element = global.createBaseElement();
+      var editor  = new SirTrevor.Editor({
+        el: element,
+        defaultType: false,
+        blockTypes: ["Text"]
+      });
+      manager = editor.blockManager;
     });
 
     it("will only create a block where the type is available", function(){
@@ -80,9 +88,14 @@ describe("BlockManager::Creating blocks", function(){
   describe("createBlock with blockTypeLimits set", function(){
 
     beforeEach(function(){
-      mediator = _.extend({}, SirTrevor.Events);
-      options = { defaultType: false, blockTypeLimits: { 'Text': 1 } };
-      manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+      var element = global.createBaseElement();
+      var editor  = new SirTrevor.Editor({
+        el: element,
+        defaultType: false,
+        blockTypeLimits: { 'Text': 1 },
+        blockTypes: ["Text"]
+      });
+      manager = editor.blockManager;
     });
 
     it("adheres to the blockType limit", function(){

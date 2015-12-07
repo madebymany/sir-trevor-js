@@ -31,7 +31,7 @@ describe("BlockManager::Options", function(){
     });
 
     it("sets the object to the specified option", function(){
-      expect(manager.blockTypes.Text).toBeTruthy();
+      expect(manager.blockTypes).toEqual(["Text"]);
     });
 
     it("won't be the default set of blocks", function(){
@@ -67,7 +67,12 @@ describe("BlockManager::Options", function(){
   });
 
   function managerWithOptions(options) {
-    manager = new SirTrevor.BlockManager(_.extend({}, SirTrevor.config.defaults, options), '', mediator);
+    var element = global.createBaseElement();
+    var editor  = new SirTrevor.Editor(Object.assign({
+      el: element,
+      blockTypes: ["Text"]
+    }, options));
+    manager = editor.blockManager;
   }
 
 });

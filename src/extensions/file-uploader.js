@@ -6,9 +6,9 @@
 */
 
 var _ = require('../lodash');
-var $ = require('jquery');
 var config = require('../config');
 var utils = require('../utils');
+var Ajax = require('../packages/ajax');
 
 var EventBus = require('../event-bus');
 
@@ -32,6 +32,8 @@ module.exports = function(block, file, success, error) {
     if (!_.isUndefined(success) && _.isFunction(success)) {
       success.apply(block, arguments, data);
     }
+
+    block.removeQueuedItem(uid);
   };
 
   var callbackError = function(jqXHR, status, errorThrown) {
@@ -41,25 +43,22 @@ module.exports = function(block, file, success, error) {
     if (!_.isUndefined(error) && _.isFunction(error)) {
       error.call(block, status);
     }
+
+    block.removeQueuedItem(uid);
   };
 
   var url = block.uploadUrl || config.defaults.uploadUrl;
 
-  var xhr = $.ajax({
-    url: url,
-    data: data,
-    cache: false,
-    contentType: false,
-    processData: false,
-    dataType: 'json',
-    type: 'POST'
+  var xhr = Ajax.fetch(url, {
+    body: data,
+    method: 'POST',
+    dataType: 'json'
   });
 
   block.addQueuedItem(uid, xhr);
 
-  xhr.done(callbackSuccess)
-     .fail(callbackError)
-     .always(block.removeQueuedItem.bind(block, uid));
+  xhr.then(callbackSuccess)
+     .catch(callbackError);
 
   return xhr;
 };

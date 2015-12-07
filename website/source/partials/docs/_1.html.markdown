@@ -21,7 +21,6 @@ Then run `bower install` on your project to install the necessary dependencies.
 
 Alternatively, grab the following files and include them in your project:
 
-  * [jQuery](http://jquery.com/download)
   * [Underscore.js](https://github.com/jashkenas/underscore/blob/master/underscore.js)
   * [Eventable](https://github.com/madebymany/eventable/blob/master/eventable.js)
   * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.js)

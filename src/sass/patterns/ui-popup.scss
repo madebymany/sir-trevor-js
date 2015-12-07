@@ -1,0 +1,38 @@
+@mixin ui-popup {
+  border: $default-border;
+  position: absolute;
+  z-index: 2;
+  background: #fff;
+  display:none;
+
+  &.active {
+    display:block;
+  }
+
+  &:after {
+    content: '';
+    display: block;
+    background-color:#fff;
+    position:absolute;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    z-index: -1;
+  }
+
+  &:before {
+    content: '';
+    display: block;
+    width: 0.4em;
+    height: 0.4em;
+    position: absolute;
+    left: -0.3em;
+    top: 50%;
+    z-index: -1;
+    border: $default-border;
+    background: #fff;
+    transform: translateY(-50%) rotate(45deg);
+  }
+}
+

@@ -3,7 +3,7 @@
 var driver = require('selenium-webdriver');
 
 var APP_URL = 'http://localhost:8000/spec/app/index.html';
-var USE_SAUCELABS = false;
+var USE_SAUCELABS = true;
 
 exports.findElementByCss = function(css, parent) {
   return (parent || exports.browser).findElement(driver.By.css(css));
@@ -13,38 +13,25 @@ exports.findElementsByCss = function(css, parent) {
   return (parent || exports.browser).findElements(driver.By.css(css));
 };
 
+exports.findBlocks = function() {
+  return exports.findElementsByCss('.st-block');
+};
+
 exports.createBlock = function(blockType, cb) {
 
-  function createSecondaryBlock(parent) {
-    var height;
-    parent.getSize().then( function(size) {
-      height = size.height;
-    }).then( function() {
-      return exports.browser.actions().mouseMove(parent, {x: 0, y: height - 10}).click().perform();
-    }).then( function() {
-      return exports.findElementByCss('.st-block-control[data-type="'+blockType+'"]', parent).click();
+  function createBlock(parent) {
+    exports.findElementByCss('.st-block-addition', parent).click().then( function() {
+      return exports.findElementByCss('.st-block-controls__button[data-type="'+blockType+'"]', parent).click();
     }).then( function() {
       return exports.findElementByCss('.st-block[data-type="'+blockType+'"]');
     }).then(cb);
   }
 
-  function createFirstBlock() {
-    var parent;
-    exports.findElementByCss('.st-block-controls__top').then( function(element) {
-      parent = element;
-      return parent.click();
-    }).then( function() {
-      return exports.findElementByCss('.st-block-control[data-type="'+blockType+'"]', parent).click();
-    }).then( function() {
-      return exports.findElementByCss('.st-block[data-type="'+blockType+'"]');
-    }).then(cb);
-  }
-    
   exports.findElementsByCss('.st-block').then( function(blocks) {
     if (blocks.length > 0) {
-      createSecondaryBlock(blocks[blocks.length-1]);
+      createBlock(blocks[blocks.length-1]);
     } else {
-      createFirstBlock();
+      exports.findElementByCss('.st-top-controls').then(createBlock);
     }
   });
 };
@@ -65,7 +52,7 @@ exports.initSirTrevor = function(data) {
   javascriptString.push(
     /*jshint multistr: true */
     "window.editor = new SirTrevor.Editor({ \
-      el: $('.sir-trevor'), \
+      el: document.querySelector('.sir-trevor'), \
       blockTypes: ['Heading', 'Text', 'List', 'Quote', 'Image', 'Video', 'Tweet'] \
     });"
   );
@@ -74,6 +61,8 @@ exports.initSirTrevor = function(data) {
     return exports.findElementByCss('.st-outer');
   });
 };
+
+exports.catchError = function(err) { return false; };
 
 exports.completeAlertPopup = function(text) {
   return exports.browser.wait(driver.until.alertIsPresent()).then( function() {
@@ -96,6 +85,12 @@ beforeAll(function() {
     capabilities.browserName = 'firefox';
 
     if (USE_SAUCELABS) {
+
+      Object.assign(capabilities, {
+        browserName: process.env.BROWSER_NAME,
+        version: process.env.BROWSER_VERSION,
+        platform: process.env.PLATFORM
+      });
 
       serverUrl = 'http://ondemand.saucelabs.com:80/wd/hub';
 

@@ -1,17 +1,19 @@
 'use strict';
 
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
+
 var helpers = require('./helpers');
 
-var blockTypes = ["Heading", "text", "list", "quote", "image", "video", "tweet"]; // jshint ignore:line
+var blockTypes = ["heading", "text", "list", "quote", "image", "video", "tweet"]; // jshint ignore:line
 
 describe('Empty data', function() {
 
-  beforeEach( function() {
-    helpers.initSirTrevor();
+  beforeEach( function(done) {
+    helpers.initSirTrevor().then(done);
   });
 
   it('should render with no blocks', function(done) {
-    helpers.findElementsByCss('.st-block').then( function(blocks) {
+    helpers.findBlocks().then( function(blocks) {
       expect(blocks.length).toBe(0);
       done();
     });
@@ -33,30 +35,12 @@ describe('Empty data', function() {
 
   it('should allow removal of block', function(done) {
     helpers.createBlock(blockTypes[0], function() {
-      helpers.findElementByCss('.st-block-ui-btn--delete').click().then( function() {
-        return helpers.findElementByCss('.st-block-ui-btn--confirm-delete').click();
-      }).then( function() {
+      helpers.findElementByCss('.st-block-ui-btn__delete').click().then( function() {
+        return helpers.findElementByCss('.js-st-block-confirm-delete').click();
+      }, helpers.catchError).then( function() {
         return helpers.findElementByCss('.st-block');
-      }).then( null, function(err) {
+      }, helpers.catchError).then( null, function(err) {
         done();
-      });
-    });
-  });
-
-  it('should allow reordering of blocks', function(done) {
-    helpers.createBlock(blockTypes[0], function() {
-      helpers.createBlock(blockTypes[1], function(parent) {
-        helpers.findElementByCss('.st-block-ui-btn--reorder', parent).click().then( function() {
-          return helpers.findElementByCss('.st-block-positioner__select > option[value=\'1\']', parent).click();
-        }).then( function() {
-          return helpers.findElementsByCss('.st-block');
-        }).then( function(elements) {
-          elements[0].getAttribute('data-type').then( function(attr) {
-            if (attr === blockTypes[1]) {
-              done();
-            }
-          });
-        });
       });
     });
   });
@@ -65,7 +49,7 @@ describe('Empty data', function() {
 
 describe('Existing data', function() {
 
-  beforeEach(function() {
+  beforeEach(function(done) {
 
     var data = {
       "data": [
@@ -84,13 +68,81 @@ describe('Existing data', function() {
       ]
     };
 
-    helpers.initSirTrevor(data);
+    helpers.initSirTrevor(data).then(done);
   });
 
   it('should be populated with 2 text blocks', function(done) {
-    helpers.findElementsByCss('.st-block').then( function(blocks) {
+    helpers.findBlocks().then( function(blocks) {
       expect(blocks.length).toBe(2);
       done();
+    });
+  });
+
+  describe('should allow reordering of blocks', function() {
+
+    var blocks;
+
+    beforeEach(function(done) {
+      helpers.findBlocks().then( function(elements) {
+        blocks = elements;
+        done();
+      });
+    });
+
+    it('with select box', function(done) {
+      helpers.findElementByCss('.st-block-ui-btn__reorder', blocks[1]).click().then( function() {
+        return helpers.findElementByCss('.st-block-positioner__select > option[value=\'1\']', blocks[1]).click();
+      }).then(helpers.findBlocks)
+        .then( function(elements) {
+        elements[0].getAttribute('data-type').then( function(attr) {
+          if (attr === blockTypes[1]) {
+            done();
+          }
+        });
+      });
+    });
+
+    it('with drag and drop', function(done) {
+      return helpers.browser.executeScript( function() {
+        var elements = document.querySelectorAll('.st-block');
+        window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: elements[0]});
+      }).then(helpers.findBlocks)
+        .then( function(elements) {
+        elements[0].getAttribute('data-type').then( function(attr) {
+          if (attr === blockTypes[1]) {
+            done();
+          }
+        });
+      });
+    }, 20000);
+      
+  });
+
+});
+
+describe('Block tests', function() {
+
+  beforeEach( function(done) {
+    helpers.initSirTrevor().then(done);
+  });
+
+  it('should allow drag and drop in a block', function(done) {
+    helpers.createBlock(blockTypes[4], function(block) {
+      helpers.browser.executeScript( function() {
+        window.simulateDragDrop(undefined, {
+          dropTarget: document.querySelector('.st-block__dropzone'),
+          dataTransfer: {
+            types: ['File'],
+            files: [
+              new Blob(['image-data'], {type: 'image/gif'}) // jshint ignore:line
+            ]
+          }
+        });
+      }).then( function() {
+        return helpers.findElementByCss('.st-block__editor > img', block);
+      }).then( function() {
+        done();
+      });
     });
   });
 

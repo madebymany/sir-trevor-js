@@ -14,8 +14,11 @@ describe("SirTrevor", function(){
       SirTrevor.setBlockOptions("Test", { test: false });
     });
 
+    afterEach(function(){
+      delete SirTrevor.Blocks.Test;
+    });
+
     it("can set an option on a specific block", function(){
-      SirTrevor.setBlockOptions("Test", { test: false });
       expect(SirTrevor.Blocks.Test.prototype.test).toBe(false);
     });
 

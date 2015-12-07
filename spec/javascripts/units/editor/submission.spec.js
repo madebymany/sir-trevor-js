@@ -6,7 +6,7 @@ describe("Editor:Submission", function(){
 
   beforeEach(function(){
     SirTrevor.instances = [];
-    element = $("<textarea>");
+    element = global.createBaseElement();
     editor = new SirTrevor.Editor({
       el: element, defaultType: false
     });
@@ -25,9 +25,9 @@ describe("Editor:Submission", function(){
   });
 
   it("calls the validateBlockTypesExist method", function(){
-    spyOn(editor.block_manager, "validateBlockTypesExist");
+    spyOn(editor.blockManager, "validateBlockTypesExist");
     editor.onFormSubmit();
-    expect(editor.block_manager.validateBlockTypesExist).toHaveBeenCalled();
+    expect(editor.blockManager.validateBlockTypesExist).toHaveBeenCalled();
   });
 
   it("calls toString on the store", function(){

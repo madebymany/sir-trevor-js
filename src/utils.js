@@ -1,8 +1,8 @@
 "use strict";
 
-var $ = require('jquery');
 var _ = require('./lodash');
 var config = require('./config');
+var Dom = require('./packages/dom');
 
 var urlRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
 
@@ -24,13 +24,13 @@ var utils = {
 
   getInstanceBySelection: function() {
     return utils.getInstance(
-      $(window.getSelection().anchorNode).
-        parents('.st-block').data('instance'));
+      Dom.getClosest(window.getSelection().anchorNode.parentNode, '.st-block').getAttribute('data-instance')
+    );
   },
 
   getBlockBySelection: function() {
     return utils.getInstanceBySelection().findBlockById(
-      $(window.getSelection().anchorNode).parents('.st-block').get(0).id
+      Dom.getClosest(window.getSelection().anchorNode.parentNode, '.st-block').id
     );
   },
 
