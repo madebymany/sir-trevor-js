@@ -166,7 +166,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   changeBlockPosition: function(block, selectedPosition) {
     selectedPosition = selectedPosition - 1;
 
-    var blockPosition = this.getBlockPosition(block),
+    var blockPosition = this.blockManager.getBlockPosition(block),
     blockBy = this.wrapper.querySelectorAll('.st-block')[selectedPosition];
 
     if(blockBy && blockBy.getAttribute('id') !== block.getAttribute('id')) {
@@ -237,13 +237,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   getBlockPosition: function(block) {
-    var index;
-    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(item, i) {
-      if (block === item) {
-        index = i;
-      }
-    });
-    return index;
+    utils.log("This method has been moved to blockManager.getBlockPosition()");
+    return this.blockManager.getBlockPosition(block);
   },
 
   _ensureAndSetElements: function() {

@@ -43,7 +43,9 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   mediatedEvents: {
     'create': 'createBlock',
     'remove': 'removeBlock',
-    'rerender': 'rerenderBlock'
+    'rerender': 'rerenderBlock',
+    'focusPrevious': 'focusPreviousBlock',
+    'focusNext': 'focusNextBlock'
   },
 
   initialize: function() {},
@@ -68,14 +70,30 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     utils.log("Block created of type " + type);
   },
 
-  removeBlock: function(blockID) {
-    var block = this.findBlockById(blockID),
-    type = utils.classify(block.type);
+  removeBlock: function(blockID, options) {
+    options = options || {};
 
+    var block = this.findBlockById(blockID);
+    var type = utils.classify(block.type);
+    
+    if (options.transposeContent && block.textable) {
+
+      var previousBlock = this.getPreviousBlock(block);
+
+      if (previousBlock && previousBlock.textable) {
+        previousBlock.appendContent(
+          block.getScribeInnerContent(), {
+          keepCaretPosition: true
+        });
+      }
+    }
+    
     this.mediator.trigger('block-controls:reset');
     this.blocks = this.blocks.filter(function(item) {
       return (item.blockID !== block.blockID);
     });
+
+    block.remove();
 
     this._decrementBlockTypeCount(type);
     this.triggerBlockCountUpdate();
@@ -99,6 +117,49 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (!_.isUndefined(block) && !block.isEmpty() &&
         block.drop_options.re_render_on_reorder) {
       block.beforeLoadingData();
+    }
+  },
+
+  getPreviousBlock: function(block) {
+    var blockPosition = this.getBlockPosition(block.el);
+    var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
+    return this.findBlockById(
+      previousBlock.getAttribute('id')
+    );
+  },
+
+  getNextBlock: function(block) {
+    var blockPosition = this.getBlockPosition(block.el);
+    return this.findBlockById(
+      this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id')
+    );
+  },
+
+  getBlockPosition: function(block) {
+    return Array.prototype.indexOf.call(this.wrapper.querySelectorAll('.st-block'), block);
+  },
+
+  focusPreviousBlock: function(blockID) {
+    var block = this.findBlockById(blockID);
+    
+    if (block.textable) {
+      var previousBlock = this.getPreviousBlock(block);
+
+      if (previousBlock && previousBlock.textable) {
+        previousBlock.focusAtEnd();
+      }
+    }
+  },
+
+  focusNextBlock: function(blockID) {
+    var block = this.findBlockById(blockID);
+    
+    if (block && block.textable) {
+      var nextBlock = this.getNextBlock(block);
+
+      if (nextBlock && nextBlock.textable) {
+        nextBlock.focus();
+      }
     }
   },
 

@@ -85,4 +85,17 @@ describe("BlockManager", function() {
 
   });
 
+  describe("getBlockPosition", function(){
+
+    beforeEach(function(){
+      manager.createBlock("Text");
+      manager.createBlock("Text");
+    });
+
+    it("returns correct position for block", function(){
+      expect(manager.getBlockPosition(manager.blocks[0].el)).toBe(0);
+      expect(manager.getBlockPosition(manager.blocks[1].el)).toBe(1);
+    });
+  });
+
 });

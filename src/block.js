@@ -52,7 +52,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   toolbarEnabled: true,
 
   availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
-    'ajaxable', 'controllable', 'multi_editable'],
+    'ajaxable', 'controllable', 'multi_editable', 'textable'],
 
   droppable: false,
   pastable: false,
@@ -60,6 +60,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   fetchable: false,
   ajaxable: false,
   multi_editable: false,
+  textable: false,
 
   drop_options: {},
   paste_options: {},
@@ -221,7 +222,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   onDeleteConfirm: function(e) {
     e.preventDefault();
     this.mediator.trigger('block:remove', this.blockID);
-    this.remove();
   },
 
   // REFACTOR: have one set of delete controls that moves around like the 
@@ -394,7 +394,20 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   setTextBlockHTML: function(html) {
-    return this._scribe.setContent(html);
+    var returnVal = this._scribe.setContent(html);
+
+    // Remove any whitespace in the first node, otherwise selections won't work.
+    var firstNode = this._scribe.node.firstDeepestChild(this._scribe.el);
+    if (firstNode.nodeName === '#text') {
+      firstNode.textContent = firstNode.textContent.trim();
+    }
+
+    // Firefox adds empty br tags at the end of content.
+    while(this._scribe.el.lastChild && this._scribe.el.lastChild.nodeName === 'BR') {
+      this._scribe.el.removeChild(this._scribe.el.lastChild);
+    }
+
+    return returnVal;
   },
 
   isEmpty: function() {
