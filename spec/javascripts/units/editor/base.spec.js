@@ -130,8 +130,8 @@ describe("Editor", function(){
       editor = new SirTrevor.Editor({ el: element });
 
       editor.blockManager.blocks = [
-        { blockID: 1 },
-        { blockID: 2 }
+        { blockID: 1, remove: () => {} },
+        { blockID: 2, remove: () => {} }
       ];
     });
 

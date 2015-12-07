@@ -80,7 +80,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock.inline_editable) {
+      if (previousBlock && previousBlock.inline_editable) {
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
@@ -92,6 +92,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.blocks = this.blocks.filter(function(item) {
       return (item.blockID !== block.blockID);
     });
+
+    block.remove();
 
     this._decrementBlockTypeCount(type);
     this.triggerBlockCountUpdate();
@@ -120,8 +122,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
+    var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
+    console.log(previousBlock);
     return this.findBlockById(
-      this.wrapper.querySelectorAll('.st-block')[blockPosition - 1].getAttribute('id')
+      previousBlock.getAttribute('id')
     );
   },
 
@@ -148,7 +152,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (block.inline_editable) {
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock.inline_editable) {
+      if (previousBlock && previousBlock.inline_editable) {
         previousBlock.focusAtEnd();
       }
     }
@@ -157,10 +161,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   focusNextBlock: function(blockID) {
     var block = this.findBlockById(blockID);
     
-    if (block.inline_editable) {
+    if (block && block.inline_editable) {
       var nextBlock = this.getNextBlock(block);
 
-      if (nextBlock.inline_editable) {
+      if (nextBlock && nextBlock.inline_editable) {
         nextBlock.focus();
       }
     }

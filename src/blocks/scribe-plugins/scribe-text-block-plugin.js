@@ -103,7 +103,6 @@ var ScribeTextBlockPlugin = function(block) {
         block.mediator.trigger('block:remove', block.blockID, {
           extractContent: true
         });
-        block.remove();
 
         isAtStart = false;
       }
