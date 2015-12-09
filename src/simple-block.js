@@ -68,8 +68,6 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
     this.el.insertAdjacentHTML("beforeend", this.block_template(editor_html));
 
     this.inner = this.el.querySelector('.st-block__inner');
-    this.inner.addEventListener('click', function(e){ e.stopPropagation(); });
-    this.inner.addEventListener('mouseover', function(e){ e.stopPropagation(); });
   },
 
   render: function() {
