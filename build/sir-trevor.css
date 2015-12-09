@@ -186,7 +186,7 @@
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 0.4em 0 0.4em 0.6em;
+  border-width: .4em 0 .4em .6em;
   border-color: rgba(255, 255, 255, 0);
   border-left-color: #949494;
   top: 50%;
@@ -238,7 +238,7 @@
 
 .st-block-controls__button .st-icon, .st-block-controls__button .st-block-addition__button, .st-block-controls__button .st-block-ui-btn__reorder, .st-block-controls__button .st-block-ui-btn__delete, .st-block-controls__button .st-block-control-ui-btn {
   font-size: 2.25em;
-  margin: 0 0 0.2em 0;
+  margin: 0 0 .2em 0;
   display: block; }
 
 .st-block-controls__button:hover {
@@ -253,7 +253,8 @@
 .st-block__inner {
   position: relative;
   width: 80%;
-  margin: auto; }
+  margin: auto;
+  overflow: hidden; }
 
 .st-block--with-errors .st-block__inner,
 .st-block--delete-active .st-block__inner {
@@ -335,7 +336,9 @@
   line-height: 1.1;
   font-size: 2.2em;
   min-height: 1em;
-  font-weight: 700; }
+  font-weight: 700;
+  margin: 0.58em 0;
+  overflow: visible; }
 
 .st-text-block--heading p {
   margin: .5em 0; }
@@ -441,7 +444,7 @@ ul.st-text-block {
 .st-block__messages {
   display: none;
   position: relative;
-  padding: 0.3em 0.5em;
+  padding: .3em .5em;
   border: 2px solid #0078FF;
   border-left: none;
   border-top: none;
@@ -522,7 +525,7 @@ ul.st-text-block {
   color: #d70014;
   border: 1px solid #d70014;
   background: none;
-  padding: 0.15em 0.4em;
+  padding: 0.15em .4em;
   margin: 0 0.1em;
   font-size: .9em;
   cursor: pointer; }
@@ -538,16 +541,14 @@ ul.st-text-block {
 
 .st-block-ui-btn__reorder {
   left: 2em; }
-  .st-block-ui-btn__reorder:hover,
-  .st-block-ui-btn__reorder:focus {
+  .st-block-ui-btn__reorder:hover, .st-block-ui-btn__reorder:focus {
     color: #0078FF; }
 
 .st-block-ui-btn__delete {
   right: 1em;
   top: .5em;
   font-size: 1.5em; }
-  .st-block-ui-btn__delete:hover,
-  .st-block-ui-btn__delete:focus {
+  .st-block-ui-btn__delete:hover, .st-block-ui-btn__delete:focus {
     color: #d70014; }
 
 .st-block-control-ui-btn {
@@ -563,8 +564,7 @@ ul.st-text-block {
 .st-block--delete-active .st-block-control-ui-btn {
   color: #d70014;
   border-color: #d70014; }
-  .st-block--with-errors .st-block-control-ui-btn:hover,
-  .st-block--with-errors .st-block-control-ui-btn.active,
+  .st-block--with-errors .st-block-control-ui-btn:hover, .st-block--with-errors .st-block-control-ui-btn.active,
   .st-block--delete-active .st-block-control-ui-btn:hover,
   .st-block--delete-active .st-block-control-ui-btn.active {
     color: #fff;
@@ -578,7 +578,7 @@ ul.st-text-block {
   display: none;
   right: 4em;
   top: 0.4em;
-  padding: 0.3em 0.5em;
+  padding: 0.3em .5em;
   border-color: #d70014; }
   .st-block__ui-delete-controls.active {
     display: block; }
