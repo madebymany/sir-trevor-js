@@ -1,0 +1,42 @@
+.st-block-replacer {
+  position: absolute;
+  text-align: center;
+  transform: translateY(-50%);
+  outline:none;
+  border:none;
+  font-size:1.3em;
+  display:none;
+  background-color:transparent;
+  padding:0;
+  z-index: 2;
+  top: 50%;
+  left: 35px;
+  
+  &::-moz-focus-inner {
+    padding:0;
+    margin:0;
+    margin-left:-1px;
+  }
+
+  .st-block--textable.st-block--empty & {
+    display: block;
+  }
+
+}
+
+.st-block-replacer__button {
+  transition: all $animation-speed ease-in-out;
+  position:relative;
+  box-sizing:border-box;
+  display: inline-block;
+  margin: 0 auto;
+  width: 41px;
+  height: 41px;
+  cursor: pointer;
+  
+  transform:translateZ(0);
+
+  .st-block--controls-active & {
+    transform: rotate(45deg);
+  }
+}

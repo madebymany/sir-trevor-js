@@ -10,7 +10,9 @@
 @import 'errors';
 
 // Block Controls
-@import 'block-control';
+@import 'block-addition';
+@import 'block-controls';
+@import 'block-replacer';
 
 // Blocks
 @import 'block';

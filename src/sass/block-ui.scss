@@ -33,6 +33,7 @@
 .st-block-ui-btn__reorder {
   @extend %st-block-ui-btn;
   left: 2em;
+  display: none;
   &:hover,
   &:focus {
     color:$accent-color;
@@ -42,11 +43,15 @@
 .st-block-ui-btn__delete {
   @extend %st-block-ui-btn;
   right: 1em;
-  top:.5em;
+  top:0;
   font-size:1.5em;
   &:hover,
   &:focus {
     color:$error-color;
+  }
+
+  .st-block--textable & {
+    display: none;
   }
 }
 

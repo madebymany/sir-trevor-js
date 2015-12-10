@@ -44,6 +44,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     'create': 'createBlock',
     'remove': 'removeBlock',
     'rerender': 'rerenderBlock',
+    'replace': 'replaceBlock',
     'focusPrevious': 'focusPreviousBlock',
     'focusNext': 'focusNextBlock'
   },
@@ -100,6 +101,13 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
     EventBus.trigger("block:remove");
+  },
+
+  replaceBlock: function(blockNode, type, data) {
+    var block = this.findBlockById(blockNode.id);
+    this.createBlock(type, data || null, blockNode);
+    this.removeBlock(blockNode.id);
+    block.remove();
   },
 
   renderBlock: function(block, previousSibling) {

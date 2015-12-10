@@ -1,4 +1,5 @@
 .st-blocks {
+  overflow: hidden;
   position:relative;
 }
 
@@ -8,9 +9,30 @@
 
 .st-block__inner {
   position: relative;
-  width:80%;
-  margin:auto;
+  margin: 0 110px;
   overflow: hidden;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.st-block__inner {
+  .st-block[data-type="image"] &,
+  .st-block[data-type="video"] &,
+  .st-block[data-type="tweet"] & {
+    border: 1px solid $blocks-control-border-color;
+    background: $blocks-control-bg-color;
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+}
+
+.st-block__inner {
+  .st-block[data-type="quote"] & {
+    margin-left: 155px;
+    margin-right: 155px;
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
 }
 
 .st-block--with-errors .st-block__inner,
@@ -93,19 +115,24 @@
 .st-text-block {
   @include st-input;
   @include st-input-active;
-  min-height: 3em;
   font-size: $text-block-font-size;
   line-height: 1.45;
-  overflow:auto;
+  overflow:visible;
+
+  .st-block--empty & {
+    line-height: 55px;
+  }
 }
 
 .st-text-block p {
-  margin: 1em 0;
+  display: inline;
+  margin: 0;
+  vertical-align: 14%;
 }
 
 .st-text-block--heading {
-  line-height: 1.1;
-  font-size: 2.2em;
+  line-height: 1.45;
+  font-size: 1.5em;
   min-height: 1em;
   font-weight: 700;
   margin: 0.58em 0;
@@ -116,23 +143,32 @@
   margin:.5em 0;
 }
 
+.st-text-block--quote {
+  font-size: 1.875em;
+  line-height: 1.3;
+  margin-bottom: 1.8em;
+}
+
 ul.st-text-block {
   margin-left: 1.875em;
 }
 
 .st-list-block__list {
   font-size: $text-block-font-size;
+  margin: 0;
+  padding-left: 1em;
 }
 
 .st-list-block__editor {
   display: inline;
   width: 100%;
+  line-height: 1.8em;
+  vertical-align: 14%;
 }
 
 .st-block__inputs {
   padding: 1.6em 0 1em;
   border-radius: 0.2em;
-  background: $blocks-control-bg-color;
   border-top: $border-size $border-style transparent;
 }
 

@@ -11,7 +11,7 @@ Object.assign(BlockDeletion.prototype, require('./function-bind'), require('./re
   className: 'st-block-ui-btn__delete',
 
   attributes: {
-    html: 'delete',
+    html: '<svg role="img" class="st-icon"><use xlink:href="../src/icons/sir-trevor-icons.svg#cross"/></svg>',
     'data-icon': 'close'
   }
 

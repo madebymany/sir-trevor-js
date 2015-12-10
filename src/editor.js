@@ -17,6 +17,7 @@ var Events = require('./events');
 var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
 var BlockControls = require('./block-controls');
+var BlockAddition = require('./block-addition');
 var BlockManager = require('./block-manager');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
@@ -75,6 +76,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.store = new EditorStore(this.el.value, this.mediator);
 
     this.blockManager = new BlockManager(this);
+    this.blockAddition = BlockAddition.create(this);
     this.blockControls = BlockControls.create(this);
 
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
@@ -111,6 +113,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   destroy: function() {
     // Destroy the rendered sub views
     this.formatBar.destroy();
+    this.blockAddition.destroy();
     this.blockControls.destroy();
 
     // Destroy all blocks
@@ -149,6 +152,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   hideAllTheThings: function(e) {
     this.blockControls.hide();
+    this.blockAddition.hide();
     this.formatBar.hide();
   },
 
