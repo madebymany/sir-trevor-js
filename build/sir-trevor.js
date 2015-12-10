@@ -18296,7 +18296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var BLOCK_REPLACER_TEMPLATE = __webpack_require__(282);
 
 	module.exports = function (editor_html) {
-	  return "\n    <div class='st-block__inner'>\n      " + editor_html + "\n    </div>\n    " + BLOCK_REPLACER_TEMPLATE + "\n    " + BLOCK_ADDITION_TEMPLATE + "\n  ";
+	  return "\n    <div class='st-block__inner'>\n      " + editor_html + "\n    </div>\n    " + BLOCK_REPLACER_TEMPLATE() + "\n    " + BLOCK_ADDITION_TEMPLATE() + "\n  ";
 	};
 
 /***/ },
@@ -18307,7 +18307,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var config = __webpack_require__(82);
 
-	module.exports = "\n  <button class=\"st-block-addition\" type=\"button\">\n    <span class=\"st-block-addition__button\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#plus\"/>\n      </svg>\n    </span>\n  </button>\n";
+	module.exports = function () {
+	  return "\n    <button class=\"st-block-addition\" type=\"button\">\n      <span class=\"st-block-addition__button\">\n        <svg role=\"img\" class=\"st-icon\">\n          <use xlink:href=\"" + config.defaults.iconUrl + "#plus\"/>\n        </svg>\n      </span>\n    </button>\n  ";
+	};
 
 /***/ },
 /* 282 */
@@ -18317,7 +18319,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var config = __webpack_require__(82);
 
-	module.exports = '\n  <button class="st-block-replacer" type="button">\n    <span class="st-block-replacer__button">\n      <svg role="img" class="st-icon">\n        <use xlink:href="' + config.defaults.iconUrl + '#add-block"/>\n      </svg>\n    </span>\n  </button>\n';
+	module.exports = function () {
+	  return '\n    <button class="st-block-replacer" type="button">\n      <span class="st-block-replacer__button">\n        <svg role="img" class="st-icon">\n          <use xlink:href="' + config.defaults.iconUrl + '#add-block"/>\n        </svg>\n      </span>\n    </button>\n  ';
+	};
 
 /***/ },
 /* 283 */
@@ -20399,7 +20403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    SirTrevor = null;
 	  }
 
-	  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE);
+	  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
 
 	  Events.delegate(SirTrevor.wrapper, ".st-block-addition", "click", createBlock);
 
@@ -20414,7 +20418,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(281);
 
-	module.exports = "\n  <div id=\"st_top\" class=\"st-top-controls\">\n    " + BLOCK_ADDITION_TEMPLATE + "\n  </div>\n";
+	module.exports = function () {
+	  return "\n    <div id=\"st_top\" class=\"st-top-controls\">\n      " + BLOCK_ADDITION_TEMPLATE() + "\n    </div>\n  ";
+	};
 
 /***/ },
 /* 310 */

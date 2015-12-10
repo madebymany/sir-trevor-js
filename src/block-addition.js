@@ -28,7 +28,7 @@ module.exports.create = function(SirTrevor) {
     SirTrevor = null;
   }
 
-  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE);
+  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
 
   Events.delegate(
     SirTrevor.wrapper, ".st-block-addition", "click", createBlock

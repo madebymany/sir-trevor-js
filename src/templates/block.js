@@ -8,7 +8,7 @@ module.exports = (editor_html) => {
     <div class='st-block__inner'>
       ${ editor_html }
     </div>
-    ${ BLOCK_REPLACER_TEMPLATE }
-    ${ BLOCK_ADDITION_TEMPLATE }
+    ${ BLOCK_REPLACER_TEMPLATE() }
+    ${ BLOCK_ADDITION_TEMPLATE() }
   `;
 };
