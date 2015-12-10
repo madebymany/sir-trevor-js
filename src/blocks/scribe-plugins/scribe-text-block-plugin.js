@@ -72,17 +72,37 @@ var ScribeTextBlockPlugin = function(block) {
       if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
         ev.preventDefault();
 
-        var data = {
-          format: 'html',
-          text: rangeToHTML(selectToEnd(), true)
-        };
+        if (isAtEndOfBlock()) {
+
+          selectToEnd().extractContents();
+          block.mediator.trigger("block:create", 'Text', null, block.el);
+        } else {
+
+          var fakeContent = document.createElement('div');
+          fakeContent.appendChild(selectToEnd().extractContents());
+
+          stripFirstEmptyElement(fakeContent);
+
+          if (fakeContent.childNodes.length >= 1) {
+            var nodes = Array.from(fakeContent.childNodes);
+            var data;
+            nodes.reverse().forEach(function(node) {
+              if (node.innerText !== '') {
+                data = {
+                  format: 'html',
+                  text: node.innerHTML.trim()
+                };
+                block.mediator.trigger("block:create", 'Text', data, block.el);
+              }
+            });
+          }
+        }
 
         // If the block is left empty then we need to reset the placeholder content.
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
 
-        block.mediator.trigger("block:create", 'Text', data, block.el);
       } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStartOfBlock()) {
         ev.preventDefault();
 
