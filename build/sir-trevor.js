@@ -3719,37 +3719,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	      commands: [{
 	        name: "Bold",
 	        title: "bold",
+	        iconName: "fmt-bold",
 	        cmd: "bold",
 	        keyCode: 66,
 	        text: "B"
 	      }, {
 	        name: "Italic",
 	        title: "italic",
+	        iconName: "fmt-italic",
 	        cmd: "italic",
 	        keyCode: 73,
 	        text: "i"
 	      }, {
 	        name: "Link",
 	        title: "link",
-	        iconName: "link",
+	        iconName: "fmt-link",
 	        cmd: "linkPrompt",
 	        text: "link"
 	      }, {
 	        name: "Unlink",
 	        title: "unlink",
-	        iconName: "link",
+	        iconName: "fmt-link",
 	        cmd: "unlink",
 	        text: "link"
 	      }, {
 	        name: "Heading",
 	        title: "heading",
-	        iconName: "heading",
+	        iconName: "fmt-heading",
 	        cmd: "heading",
 	        text: "heading"
 	      }, {
 	        name: "Quote",
 	        title: "quote",
-	        iconName: "quote",
+	        iconName: "fmt-quote",
 	        cmd: "quote",
 	        text: "quote"
 	      }]
@@ -18305,7 +18307,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var config = __webpack_require__(82);
 
-	module.exports = "\n  <button class=\"st-block-addition\" type=\"button\">\n    <span class=\"st-block-addition__button\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#add\"/>\n      </svg>\n    </span>\n  </button>\n";
+	module.exports = "\n  <button class=\"st-block-addition\" type=\"button\">\n    <span class=\"st-block-addition__button\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#plus\"/>\n      </svg>\n    </span>\n  </button>\n";
 
 /***/ },
 /* 282 */
@@ -18315,7 +18317,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var config = __webpack_require__(82);
 
-	module.exports = '\n  <button class="st-block-replacer" type="button">\n    <span class="st-block-replacer__button">\n      <svg role="img" class="st-icon">\n        <use xlink:href="' + config.defaults.iconUrl + '#add"/>\n      </svg>\n    </span>\n  </button>\n';
+	module.exports = '\n  <button class="st-block-replacer" type="button">\n    <span class="st-block-replacer__button">\n      <svg role="img" class="st-icon">\n        <use xlink:href="' + config.defaults.iconUrl + '#add-block"/>\n      </svg>\n    </span>\n  </button>\n';
 
 /***/ },
 /* 283 */
@@ -19894,7 +19896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      throw "Associated block not found";
 	    }
 
-	    var btn = ev.target,
+	    var btn = ev.currentTarget,
 	        cmd = btn.getAttribute('data-cmd');
 
 	    if (_.isUndefined(cmd)) {
