@@ -9,13 +9,12 @@
 const Blocks = require("./blocks");
 const Events = require("./packages/events");
 
-const BLOCK_CONTROL_TEMPLATE  = require("./templates/block-control");
-const BLOCK_ADDITION_TEMPLATE = require("./templates/top-block-addition");
+const BLOCK_REPLACER_CONTROL_TEMPLATE  = require("./templates/block-control");
 
 function generateBlocksHTML(Blocks, availableTypes) {
   return availableTypes.reduce((memo, type) => {
     if (Blocks.hasOwnProperty(type) && Blocks[type].prototype.toolbarEnabled) {
-      return memo += BLOCK_CONTROL_TEMPLATE(Blocks[type].prototype);
+      return memo += BLOCK_REPLACER_CONTROL_TEMPLATE(Blocks[type].prototype);
     }
     return memo;
   }, "");
@@ -23,9 +22,13 @@ function generateBlocksHTML(Blocks, availableTypes) {
 
 function render(Blocks, availableTypes) {
   var el = document.createElement('div');
-  el.className = "st-block-controls";
+  el.className = "st-block-controls__buttons";
   el.innerHTML = generateBlocksHTML.apply(null, arguments);
-  return el;
+
+  var elButtons = document.createElement('div');
+  elButtons.className = "st-block-controls";
+  elButtons.appendChild(el);
+  return elButtons;
 }
 
 module.exports.create = function(SirTrevor) {
@@ -33,12 +36,12 @@ module.exports.create = function(SirTrevor) {
   // REFACTOR - should probably not know about blockManager
   var el = render(Blocks, SirTrevor.blockManager.blockTypes);
 
-  function createBlock(e) {
+  function replaceBlock(e) {
     // REFACTOR: mediator so that we can trigger events directly on instance?
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:create", this.dataset.type, null, el.parentNode.id ? el.parentNode : el
+      "block:replace", el.parentNode, this.dataset.type
     );
   }
 
@@ -48,7 +51,7 @@ module.exports.create = function(SirTrevor) {
     var parent = this.parentNode;
     if (!parent || hide() === parent) { return; }
     parent.appendChild(el);
-    parent.classList.toggle("st-block--active");
+    parent.classList.toggle("st-block--controls-active");
   }
 
   // Public
@@ -56,28 +59,22 @@ module.exports.create = function(SirTrevor) {
     var parent = el.parentNode;
     if (!parent) { return; }
     parent.removeChild(el);
-    parent.classList.remove("st-block--active");
+    parent.classList.remove("st-block--controls-active");
     return parent;
   }
 
   // Public
   function destroy() {
-    SirTrevor.wrapper.removeEventListener("click", insert);
     SirTrevor = null;
     el = null;
   }
 
-  // REFACTOR: reassess how mediator works
-  SirTrevor.mediator.on('block-controls:hide', hide);
-
-  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE);
-
   Events.delegate(
-    SirTrevor.wrapper, ".st-block-addition", "click", insert
+    SirTrevor.wrapper, ".st-block-replacer", "click", insert
   );
 
   Events.delegate(
-    SirTrevor.wrapper, ".st-block-controls__button", "click", createBlock
+    SirTrevor.wrapper, ".st-block-controls__button", "click", replaceBlock
   );
 
   return {el, hide, destroy};

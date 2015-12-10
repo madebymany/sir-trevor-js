@@ -5,7 +5,9 @@ var selectionRange = require('selection-range');
 module.exports = {
   mixinName: 'Textable',
 
-  initializeTextable: function() {},
+  initializeTextable: function() {
+    this.el.classList.add('st-block--textable');
+  },
 
   focusAtEnd: function() {
     this.focus();

@@ -1,8 +1,8 @@
 .st-format-bar {
   top: 0;
   position: absolute;
-  margin: -3em 0 0 0;
-  background: #4d5358;
+  margin: -4.5em 0 0 0;
+  background: #252525;
   opacity: 0;
   visibility: hidden;
   z-index: 10;
@@ -17,13 +17,13 @@
   display: block;
   position: absolute;
   left: 50%;
-  top: 2.12em;
+  top: 3.2em;
   width: 0;
   height: 0;
-  border-left: 0.625em solid transparent;
-  border-right: 0.625em solid transparent;
-  border-top: 0.625em solid #4d5358;
-  margin-left: -0.625em;
+  border-left: 0.875em solid transparent;
+  border-right: 0.875em solid transparent;
+  border-top: 0.875em solid #252525;
+  margin-left: -0.875em;
 }
 
 .st-format-bar--is-ready {
@@ -36,13 +36,22 @@
   border: 0;
   color: #fff;
   padding: 0.5em 0.6em;
-  font-size: 1em;
+  font-size: 1.2em;
   vertical-align: middle;
-  border-right: 1px solid #3e4245;
+  text-align: center;
 }
 
-.st-format-btn:last-child {
-  border-right: none;
+.st-format-btn--Heading,
+.st-format-btn--Quote {
+  border-left: 1px solid #3e4245;
+  font-size: 1.5em;
+}
+
+.st-format-btn--Heading {
+  font-weight: bold;
+  span {
+    font-size: 0.75em;
+  }
 }
 
 .st-format-btn:hover,
@@ -50,7 +59,13 @@
   color:$accent-color;
 }
 
+.st-format-btn--Bold {
+  font-size: 1.5em;
+  font-weight:bold;
+}
+
 .st-format-btn--Italic {
+  font-size: 1.5em;
   font-style:italic;
 }
 

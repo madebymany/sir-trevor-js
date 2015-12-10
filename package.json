@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "es5-shim": "^4.0.3",
-    "selection-range": "^1.0.1"
+    "selection-range": "^1.0.1",
+    "url-loader": "^0.5.7"
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",
@@ -56,7 +57,7 @@
     "node-sass": "^3.2.0",
     "object.assign": "^1.1.1",
     "sass-loader": "^2.0.0",
-    "scribe-editor": "1.4.15",
+    "scribe-editor": "2.1.1",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",
     "scribe-plugin-link-prompt-command": "^0.2.0",
     "scribe-plugin-sanitizer": "^0.1.9",

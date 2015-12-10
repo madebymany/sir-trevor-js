@@ -4,16 +4,21 @@
   background:#fff;
 }
 
+.st-icon {
+  cursor:pointer;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
 .st-block__inner {
   ::-moz-selection {
-    background: $accent-color;
+    background: $selection-color;
     text-shadow: none;
-    color:#fff;
   }
   ::selection {
-    background: $accent-color;
+    background: $selection-color;
     text-shadow: none;
-    color:#fff;
   }
 }
 

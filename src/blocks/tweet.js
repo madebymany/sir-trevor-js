@@ -17,6 +17,7 @@ var tweet_template = _.template([
 module.exports = Block.extend({
 
   type: "tweet",
+  icon_name: "tweet",
   droppable: true,
   pastable: true,
   fetchable: true,
@@ -30,8 +31,6 @@ module.exports = Block.extend({
   fetchUrl: function(tweetID) {
     return "/tweets/?tweet_id=" + tweetID;
   },
-
-  icon_name: 'twitter',
 
   loadData: function(data) {
     if (_.isUndefined(data.status_url)) { data.status_url = ''; }

@@ -1,0 +1,83 @@
+
+$animation-speed: 0.2s;
+
+.st--block-limit-reached .st-top-controls {
+  display: none;
+}
+
+.st-top-controls {
+  position: relative;
+  z-index: 2;
+}
+
+.st-block-addition {
+  position: absolute;
+  text-align: center;
+  transform: translateY(-50%);
+  outline:none;
+  border:none;
+  font-size:1.3em;
+  display:block;
+  width:100%;
+  background-color:transparent;
+  padding:0;
+  z-index: 2;
+  display: none;
+  
+  &::-moz-focus-inner {
+    padding:0;
+    margin:0;
+    margin-left:-1px;
+  }
+
+}
+
+.st-block-addition__button {
+  transition: all $animation-speed 0.5s ease-in-out;
+  @extend .st-icon;
+  background-color:$block-controls-color;
+  position:relative;
+  box-sizing:border-box;
+  padding:.2em;
+  display: inline-block;
+  color:#fff;
+  font-size:0.8em;
+  margin: 0 auto;
+  opacity: 0;
+  width: 100%;
+
+  transform:translateZ(0);
+
+  .st-block-addition:hover &,
+  .st-block--active & {
+    background-color:$accent-color;
+    opacity: 1;
+  }
+}
+
+%st-psuedo-shape {
+  content:"";
+  display:block;
+  position: absolute;
+}
+
+.st-block-addition:before {
+  @extend %st-psuedo-shape;
+  transition: all $animation-speed ease-in-out;
+  height:1px;
+  width:100%;
+  background-color:$block-controls-color;
+  opacity:.2;
+  top:50%;
+  transform:translateY(-50%);
+}
+
+.st-block-addition:hover:before,
+.st-block--active .st-block-addition:before {
+  height:2px;
+  opacity:1;
+}
+
+.st-block-addition:hover:before {
+  background-color:$accent-color;
+}

@@ -1,0 +1,38 @@
+// Block Controls
+
+.st-block-controls {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  right: 0;
+  font-size:0.8em;
+  padding: 0px 110px;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.st-block-controls__buttons {
+  text-align: center;
+}
+
+.st-block-controls__button {
+  border:none;
+  background:transparent;
+  font-size: 12px;
+  text-transform: uppercase;
+  display: inline-block;
+  cursor: pointer;
+  margin: 0.5em;
+  text-transform: uppercase;
+}
+
+.st-block-controls__button .st-icon {
+  margin: 0 0 10px 0;
+  display: block;
+  width: 42px;
+  height: 42px;
+}
+
+.st-block-controls__button:hover {
+  color: $accent-color;
+}
