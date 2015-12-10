@@ -11,4 +11,4 @@ module.exports = ({title, type, icon_name}) => {
       ${title()}
     </button>
   `;
-};
+}
