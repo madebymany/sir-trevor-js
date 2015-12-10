@@ -1,9 +1,9 @@
 <svg style="position: absolute; width: 0; height: 0;" width="0" height="0" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
-<symbol id="add" viewBox="0 0 1024 1024">
-	<title>add</title>
-	<path fill="rgb(23, 187, 117)" class="path1" d="M512 1024c282.77 0 512-229.23 512-512s-229.23-512-512-512c-282.77 0-512 229.23-512 512s229.23 512 512 512v0zM512 986.764c-262.205 0-474.764-212.559-474.764-474.764s212.559-474.764 474.764-474.764c262.205 0 474.764 212.559 474.764 474.764s-212.559 474.764-474.764 474.764v0z"></path>
-	<path fill="rgb(23, 187, 117)" class="path2" d="M763.345 521.309c0 11.038-1.183 20.498-3.548 28.382s-9.329 11.826-20.892 11.826h-177.388v178.177c0 11.038-3.942 17.739-11.826 20.104s-17.345 3.548-28.382 3.548c-11.038 0-20.498-1.183-28.382-3.548s-11.826-9.066-11.826-20.104v-178.177h-177.388c-11.563 0-18.527-3.942-20.892-11.826s-3.548-17.345-3.548-28.382c0-11.037 1.183-20.498 3.548-28.382s9.329-11.826 20.892-11.826h177.388v-177.388c0-11.037 3.942-17.87 11.826-20.498s17.345-3.942 28.382-3.942c11.037 0 20.498 1.314 28.382 3.942s11.826 9.461 11.826 20.498v177.388h177.388c11.563 0 18.527 3.942 20.892 11.826s3.548 17.345 3.548 28.382v0 0z"></path>
+<symbol id="add-block" viewBox="0 0 1024 1024">
+	<title>add-block</title>
+	<path class="path1" d="M0 512c0 282.77 229.23 512 512 512s512-229.23 512-512c0-282.77-229.23-512-512-512s-512 229.23-512 512v0zM37.236 512c0-262.205 212.559-474.764 474.764-474.764s474.764 212.559 474.764 474.764c0 262.205-212.559 474.764-474.764 474.764s-474.764-212.559-474.764-474.764v0z"></path>
+	<path class="path2" d="M512 754.036c-11.038 0-20.498-1.183-28.382-3.548s-11.826-9.329-11.826-20.892v-177.388h-178.177c-11.038 0-17.739-3.942-20.104-11.826s-3.548-17.345-3.548-28.382c0-11.038 1.183-20.498 3.548-28.382s9.066-11.826 20.104-11.826h178.177v-177.388c0-11.563 3.942-18.527 11.826-20.892s17.345-3.548 28.382-3.548c11.037 0 20.498 1.183 28.382 3.548s11.826 9.329 11.826 20.892v177.388h177.388c11.037 0 17.87 3.942 20.498 11.826s3.942 17.345 3.942 28.382c0 11.037-1.314 20.498-3.942 28.382s-9.461 11.826-20.498 11.826h-177.388v177.388c0 11.563-3.942 18.527-11.826 20.892s-17.345 3.548-28.382 3.548v0z"></path>
 </symbol>
 <symbol id="fmt-bold" viewBox="0 0 1024 1024">
 	<title>fmt-bold</title>
@@ -40,64 +40,64 @@
 </symbol>
 <symbol id="minus" viewBox="0 0 1138 1024">
 	<title>minus</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M0 398.222v227.556h1137.778v-227.556h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M0 398.222v227.556h1137.778v-227.556h-1137.778z"></path>
 </symbol>
 <symbol id="plus" viewBox="0 0 1024 1024">
 	<title>plus</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M409.6 1024h204.8v-1024h-204.8v1024z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M0 409.6v204.8h1024v-204.8h-1024z"></path>
+	<path fill="rgb(255, 255, 255)" class="path1 fill-color2" d="M409.6 1024h204.8v-1024h-204.8v1024z"></path>
+	<path fill="rgb(255, 255, 255)" class="path2 fill-color2" d="M0 409.6v204.8h1024v-204.8h-1024z"></path>
 </symbol>
 <symbol id="rotate" viewBox="0 0 731 1024">
 	<title>rotate</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M36.571 292.571l292.571-292.571v585.143z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M329.143 219.429c222.176 0 402.286 180.109 402.286 402.286s-180.109 402.286-402.286 402.286c-116.682 0-221.761-49.676-295.243-129.033l107.361-99.365c46.761 50.5 113.63 82.112 187.882 82.112 141.385 0 256-114.615 256-256s-114.615-256-256-256v-146.286z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M36.571 292.571l292.571-292.571v585.143z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M329.143 219.429c222.176 0 402.286 180.109 402.286 402.286s-180.109 402.286-402.286 402.286c-116.682 0-221.761-49.676-295.243-129.033l107.361-99.365c46.761 50.5 113.63 82.112 187.882 82.112 141.385 0 256-114.615 256-256s-114.615-256-256-256v-146.286z"></path>
 </symbol>
 <symbol id="tick" viewBox="0 0 1229 1024">
 	<title>tick</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M409.211 705.049l-233.625-247.667-144.815 144.815 377.227 377.226 790.033-790.033-144.815-144.815-644.004 660.473z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M409.211 705.049l-233.625-247.667-144.815 144.815 377.227 377.226 790.033-790.033-144.815-144.815-644.004 660.473z"></path>
 </symbol>
 <symbol id="bottom" viewBox="0 0 931 1024">
 	<title>bottom</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M0 1024v-93.091h930.909v93.091h-930.909z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M418.909 930.909v-930.909h93.091v930.909h-93.091z"></path>
-	<path fill="rgb(68, 68, 68)" class="path3" d="M465.455 977.455l279.273-279.273h-558.545z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M0 1024v-93.091h930.909v93.091h-930.909z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M418.909 930.909v-930.909h93.091v930.909h-93.091z"></path>
+	<path fill="rgb(68, 68, 68)" class="path3 fill-color2" d="M465.455 977.455l279.273-279.273h-558.545z"></path>
 </symbol>
 <symbol id="center-align" viewBox="0 0 1138 1024">
 	<title>center-align</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M0 0v113.778h1137.778v-113.778h-1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M0 455.111v113.778h1137.778v-113.778h-1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path3" d="M0 910.222v113.778h1137.778v-113.778h-1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path4" d="M227.556 227.556v113.778h682.667v-113.778h-682.667z"></path>
-	<path fill="rgb(68, 68, 68)" class="path5" d="M227.556 682.667v113.778h682.667v-113.778h-682.667z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M0 0v113.778h1137.778v-113.778h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M0 455.111v113.778h1137.778v-113.778h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path3 fill-color2" d="M0 910.222v113.778h1137.778v-113.778h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path4 fill-color2" d="M227.556 227.556v113.778h682.667v-113.778h-682.667z"></path>
+	<path fill="rgb(68, 68, 68)" class="path5 fill-color2" d="M227.556 682.667v113.778h682.667v-113.778h-682.667z"></path>
 </symbol>
 <symbol id="left-align" viewBox="0 0 1138 1024">
 	<title>left-align</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M0 0v113.778h1137.778v-113.778h-1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M0 455.111v113.778h1137.778v-113.778h-1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path3" d="M0 910.222v113.778h1137.778v-113.778h-1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path4" d="M0 227.556v113.778h682.667v-113.778h-682.667z"></path>
-	<path fill="rgb(68, 68, 68)" class="path5" d="M0 682.667v113.778h682.667v-113.778h-682.667z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M0 0v113.778h1137.778v-113.778h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M0 455.111v113.778h1137.778v-113.778h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path3 fill-color2" d="M0 910.222v113.778h1137.778v-113.778h-1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path4 fill-color2" d="M0 227.556v113.778h682.667v-113.778h-682.667z"></path>
+	<path fill="rgb(68, 68, 68)" class="path5 fill-color2" d="M0 682.667v113.778h682.667v-113.778h-682.667z"></path>
 </symbol>
 <symbol id="middle" viewBox="0 0 788 1024">
 	<title>middle</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M0 472.615v78.769h787.692v-78.769h-787.692z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M354.462 0v1024h78.769v-1024h-78.769z"></path>
-	<path fill="rgb(68, 68, 68)" class="path3" d="M393.846 512l236.308-236.308h-472.615z"></path>
-	<path fill="rgb(68, 68, 68)" class="path4" d="M393.846 512l236.308 236.308h-472.615z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M0 472.615v78.769h787.692v-78.769h-787.692z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M354.462 0v1024h78.769v-1024h-78.769z"></path>
+	<path fill="rgb(68, 68, 68)" class="path3 fill-color2" d="M393.846 512l236.308-236.308h-472.615z"></path>
+	<path fill="rgb(68, 68, 68)" class="path4 fill-color2" d="M393.846 512l236.308 236.308h-472.615z"></path>
 </symbol>
 <symbol id="right-align" viewBox="0 0 1138 1024">
 	<title>right-align</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M1137.778 0v113.778h-1137.778v-113.778h1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M1137.778 455.111v113.778h-1137.778v-113.778h1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path3" d="M1137.778 910.222v113.778h-1137.778v-113.778h1137.778z"></path>
-	<path fill="rgb(68, 68, 68)" class="path4" d="M1137.778 227.556v113.778h-682.667v-113.778h682.667z"></path>
-	<path fill="rgb(68, 68, 68)" class="path5" d="M1137.778 682.667v113.778h-682.667v-113.778h682.667z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M1137.778 0v113.778h-1137.778v-113.778h1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M1137.778 455.111v113.778h-1137.778v-113.778h1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path3 fill-color2" d="M1137.778 910.222v113.778h-1137.778v-113.778h1137.778z"></path>
+	<path fill="rgb(68, 68, 68)" class="path4 fill-color2" d="M1137.778 227.556v113.778h-682.667v-113.778h682.667z"></path>
+	<path fill="rgb(68, 68, 68)" class="path5 fill-color2" d="M1137.778 682.667v113.778h-682.667v-113.778h682.667z"></path>
 </symbol>
 <symbol id="top" viewBox="0 0 931 1024">
 	<title>top</title>
-	<path fill="rgb(68, 68, 68)" class="path1" d="M0 0v93.091h930.909v-93.091h-930.909z"></path>
-	<path fill="rgb(68, 68, 68)" class="path2" d="M418.909 93.091v930.909h93.091v-930.909h-93.091z"></path>
-	<path fill="rgb(68, 68, 68)" class="path3" d="M465.455 46.545l279.273 279.273h-558.545z"></path>
+	<path fill="rgb(68, 68, 68)" class="path1 fill-color2" d="M0 0v93.091h930.909v-93.091h-930.909z"></path>
+	<path fill="rgb(68, 68, 68)" class="path2 fill-color2" d="M418.909 93.091v930.909h93.091v-930.909h-93.091z"></path>
+	<path fill="rgb(68, 68, 68)" class="path3 fill-color2" d="M465.455 46.545l279.273 279.273h-558.545z"></path>
 </symbol>
 <symbol id="game" viewBox="0 0 1024 1024">
 	<title>game</title>
@@ -238,15 +238,15 @@
 </symbol>
 <symbol id="default" viewBox="0 0 1024 1024">
 	<title>default</title>
-	<path fill="rgb(0, 0, 0)" class="path1" d="M365.714 365.714h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path2" d="M0 365.714h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path3" d="M0 0h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path4" d="M731.429 0h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path5" d="M365.714 0h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path6" d="M0 731.429h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path7" d="M731.429 720.53h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path8" d="M365.714 720.53h292.571v292.571h-292.571v-292.571z"></path>
-	<path fill="rgb(0, 0, 0)" class="path9" d="M731.429 365.714h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path1 fill-color1" d="M365.714 365.714h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path2 fill-color1" d="M0 365.714h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path3 fill-color1" d="M0 0h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path4 fill-color1" d="M731.429 0h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path5 fill-color1" d="M365.714 0h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path6 fill-color1" d="M0 731.429h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path7 fill-color1" d="M731.429 720.53h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path8 fill-color1" d="M365.714 720.53h292.571v292.571h-292.571v-292.571z"></path>
+	<path fill="rgb(0, 0, 0)" class="path9 fill-color1" d="M731.429 365.714h292.571v292.571h-292.571v-292.571z"></path>
 </symbol>
 </defs>
 </svg>

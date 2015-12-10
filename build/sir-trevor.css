@@ -1,4 +1,4 @@
-src/icons/sir-trevor-icons.svg.st-icon, .st-block-addition__button, .st-block-ui-btn__reorder, .st-block-ui-btn__delete, .st-block-control-ui-btn {
+src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delete, .st-block-control-ui-btn {
   cursor: pointer;
   width: 1em;
   height: 1em;
@@ -19,7 +19,7 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-addition__button, .st-block-ui
   position: relative;
   background: #fff; }
 
-.st-icon, .st-block-addition__button, .st-block-ui-btn__reorder, .st-block-ui-btn__delete, .st-block-control-ui-btn {
+.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delete, .st-block-control-ui-btn {
   cursor: pointer;
   width: 100%;
   height: 100%;
@@ -101,17 +101,17 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-addition__button, .st-block-ui
           transform: translateY(-50%);
   outline: none;
   border: none;
-  font-size: 1.3em;
   display: block;
   width: 100%;
   background-color: transparent;
   padding: 0;
-  z-index: 2;
-  display: none; }
+  z-index: 2; }
   .st-block-addition::-moz-focus-inner {
     padding: 0;
     margin: 0;
     margin-left: -1px; }
+  .st-block--textable .st-block-addition {
+    display: none; }
 
 .st-block-addition__button {
   -webkit-transition: all 0.2s 0.5s ease-in-out;
@@ -122,12 +122,16 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-addition__button, .st-block-ui
   padding: .2em;
   display: inline-block;
   color: #fff;
-  font-size: 0.8em;
   margin: 0 auto;
   opacity: 0;
   width: 100%;
+  cursor: pointer;
   -webkit-transform: translateZ(0);
           transform: translateZ(0); }
+  .st-block-addition__button .st-icon, .st-block-addition__button .st-block-ui-btn__reorder, .st-block-addition__button .st-block-ui-btn__delete, .st-block-addition__button .st-block-control-ui-btn {
+    height: 20px;
+    width: 20px;
+    color: #fff; }
   .st-block-addition:hover .st-block-addition__button,
   .st-block--active .st-block-addition__button {
     background-color: #17BB75;
@@ -183,7 +187,7 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-addition__button, .st-block-ui
   margin: 0.5em;
   text-transform: uppercase; }
 
-.st-block-controls__button .st-icon, .st-block-controls__button .st-block-addition__button, .st-block-controls__button .st-block-ui-btn__reorder, .st-block-controls__button .st-block-ui-btn__delete, .st-block-controls__button .st-block-control-ui-btn {
+.st-block-controls__button .st-icon, .st-block-controls__button .st-block-ui-btn__reorder, .st-block-controls__button .st-block-ui-btn__delete, .st-block-controls__button .st-block-control-ui-btn {
   margin: 0 0 10px 0;
   display: block;
   width: 42px;
@@ -373,7 +377,7 @@ ul.st-text-block {
   border-radius: 0.2em;
   border-top: 2px solid transparent; }
 
-.st-block__dropzone .st-icon, .st-block__dropzone .st-block-addition__button, .st-block__dropzone .st-block-ui-btn__reorder, .st-block__dropzone .st-block-ui-btn__delete, .st-block__dropzone .st-block-control-ui-btn {
+.st-block__dropzone .st-icon, .st-block__dropzone .st-block-ui-btn__reorder, .st-block__dropzone .st-block-ui-btn__delete, .st-block__dropzone .st-block-control-ui-btn {
   font-size: 4em;
   color: #42474B;
   display: block;
@@ -638,7 +642,7 @@ ul.st-text-block {
 .st-format-bar {
   top: 0;
   position: absolute;
-  margin: -4.5em 0 0 0;
+  margin: -4.8em 0 0 0;
   background: #252525;
   opacity: 0;
   visibility: hidden;
@@ -653,7 +657,7 @@ ul.st-text-block {
   display: block;
   position: absolute;
   left: 50%;
-  top: 3.2em;
+  top: 3.9em;
   width: 0;
   height: 0;
   border-left: 0.875em solid transparent;
@@ -669,32 +673,24 @@ ul.st-text-block {
   background: transparent;
   border: 0;
   color: #fff;
-  padding: 0.5em 0.6em;
-  font-size: 1.2em;
+  font-size: 1em;
+  padding: 0.8em 0.8em;
   vertical-align: middle;
   text-align: center; }
+  .st-format-btn:focus {
+    outline: 0; }
+
+.st-format-btn .st-icon, .st-format-btn .st-block-ui-btn__reorder, .st-format-btn .st-block-ui-btn__delete, .st-format-btn .st-block-control-ui-btn {
+  width: 35px;
+  height: 35px; }
 
 .st-format-btn--Heading,
 .st-format-btn--Quote {
-  border-left: 1px solid #3e4245;
-  font-size: 1.5em; }
-
-.st-format-btn--Heading {
-  font-weight: bold; }
-  .st-format-btn--Heading span {
-    font-size: 0.75em; }
+  border-left: 1px solid #3e4245; }
 
 .st-format-btn:hover,
 .st-format-btn--is-active {
   color: #17BB75; }
-
-.st-format-btn--Bold {
-  font-size: 1.5em;
-  font-weight: bold; }
-
-.st-format-btn--Italic {
-  font-size: 1.5em;
-  font-style: italic; }
 
 .st-format-btn--Unlink {
   text-decoration: line-through; }
