@@ -25,7 +25,7 @@ module.exports = {
     Dom.hide(this.editor);
 
     this.inputs.insertAdjacentHTML("beforeend", _.template(this.drop_options.html,
-                                                    { block: this, _: _ }));
+                                                    { block: this, _: _, config: config }));
 
     // Bind our drop event
     dropEvents
