@@ -1,5 +1,8 @@
 // Karma configuration
 //
+
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
 module.exports = function(config) {
   config.set({
 
@@ -12,6 +15,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'javascripts/**/*.js',
+      { pattern: 'src/sir-trevor-icons.svg', included: false, served: true, watched: false, nocache: true }
     ],
 
     // test results reporter to use
@@ -73,6 +77,7 @@ module.exports = function(config) {
         }],
         loaders: [
           { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel?stage=0&optional=runtime' },
+          { test: /\.svg$/, loader: 'file' }
         ]
       }
     },

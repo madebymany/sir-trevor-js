@@ -116,7 +116,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
       throw "Associated block not found";
     }
 
-    var btn = ev.target,
+    var btn = ev.currentTarget,
         cmd = btn.getAttribute('data-cmd');
 
     if (_.isUndefined(cmd)) {

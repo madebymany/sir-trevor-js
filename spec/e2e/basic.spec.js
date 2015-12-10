@@ -4,7 +4,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 
 var helpers = require('./helpers');
 
-var blockTypes = ["heading", "text", "list", "quote", "image", "video", "tweet"]; // jshint ignore:line
+var blockTypes = ["list", "image", "video", "tweet"]; // jshint ignore:line
 
 describe('Empty data', function() {
 
@@ -14,7 +14,7 @@ describe('Empty data', function() {
 
   it('should render with no blocks', function(done) {
     helpers.findBlocks().then( function(blocks) {
-      expect(blocks.length).toBe(0);
+      expect(blocks.length).toBe(1);
       done();
     });
   });

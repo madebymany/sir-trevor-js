@@ -20,7 +20,7 @@ exports.findBlocks = function() {
 exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {
-    exports.findElementByCss('.st-block-addition', parent).click().then( function() {
+    exports.findElementByCss('.st-block-replacer', parent).click().then( function() {
       return exports.findElementByCss('.st-block-controls__button[data-type="'+blockType+'"]', parent).click();
     }).then( function() {
       return exports.findElementByCss('.st-block[data-type="'+blockType+'"]');
@@ -59,7 +59,8 @@ exports.initSirTrevor = function(data) {
     /*jshint multistr: true */
     "window.editor = new SirTrevor.Editor({ \
       el: document.querySelector('.sir-trevor'), \
-      blockTypes: ['Heading', 'Text', 'List', 'Quote', 'Image', 'Video', 'Tweet'] \
+      blockTypes: ['Heading', 'Text', 'List', 'Quote', 'Image', 'Video', 'Tweet'], \
+      defaultType: 'Text' \
     });"
   );
 

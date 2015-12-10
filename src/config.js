@@ -64,6 +64,7 @@ module.exports = {
         {
           name: "Bold",
           title: "bold",
+          iconName: "fmt-bold",
           cmd: "bold",
           keyCode: 66,
           text : "B"
@@ -71,6 +72,7 @@ module.exports = {
         {
           name: "Italic",
           title: "italic",
+          iconName: "fmt-italic",
           cmd: "italic",
           keyCode: 73,
           text : "i"
@@ -78,28 +80,28 @@ module.exports = {
         {
           name: "Link",
           title: "link",
-          iconName: "link",
+          iconName: "fmt-link",
           cmd: "linkPrompt",
           text : "link",
         },
         {
           name: "Unlink",
           title: "unlink",
-          iconName: "link",
+          iconName: "fmt-link",
           cmd: "unlink",
           text : "link",
         },
         {
           name: "Heading",
           title: "heading",
-          iconName: "heading",
+          iconName: "fmt-heading",
           cmd: "heading",
           text: "heading"
         },
         {
           name: "Quote",
           title: "quote",
-          iconName: "quote",
+          iconName: "fmt-quote",
           cmd: "quote",
           text: "quote"
         }
