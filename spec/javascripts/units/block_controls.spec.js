@@ -23,10 +23,18 @@ describe("BlockControls", function(){
     });
 
     it("sets the available types", function(){
+
       editor.blockManager.blockTypes.forEach(function(blockType){
-        expect(
-          blockControls.el.querySelector("[data-type=" + blockType.toLowerCase() + "]")
-        ).not.toBe(null);
+
+        if (SirTrevor.Blocks[blockType].prototype.toolbarEnabled) {
+          expect(
+            blockControls.el.querySelector("[data-type=" + blockType.toLowerCase() + "]")
+          ).not.toBe(null);
+        } else {
+          expect(
+            blockControls.el.querySelector("[data-type=" + blockType.toLowerCase() + "]")
+          ).toBe(null);
+        }
       });
     });
 

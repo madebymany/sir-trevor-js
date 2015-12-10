@@ -1,7 +1,7 @@
 .st-format-bar {
   top: 0;
   position: absolute;
-  margin: -4.5em 0 0 0;
+  margin: -4.8em 0 0 0;
   background: #252525;
   opacity: 0;
   visibility: hidden;
@@ -17,7 +17,7 @@
   display: block;
   position: absolute;
   left: 50%;
-  top: 3.2em;
+  top: 3.9em;
   width: 0;
   height: 0;
   border-left: 0.875em solid transparent;
@@ -35,38 +35,28 @@
   background: transparent;
   border: 0;
   color: #fff;
-  padding: 0.5em 0.6em;
-  font-size: 1.2em;
+  font-size: 1em;
+  padding: 0.8em 0.8em;
   vertical-align: middle;
   text-align: center;
+
+  &:focus {
+    outline: 0;
+  }
+}
+.st-format-btn .st-icon {
+  width: 35px;
+  height: 35px;
 }
 
 .st-format-btn--Heading,
 .st-format-btn--Quote {
   border-left: 1px solid #3e4245;
-  font-size: 1.5em;
-}
-
-.st-format-btn--Heading {
-  font-weight: bold;
-  span {
-    font-size: 0.75em;
-  }
 }
 
 .st-format-btn:hover,
 .st-format-btn--is-active {
   color:$accent-color;
-}
-
-.st-format-btn--Bold {
-  font-size: 1.5em;
-  font-weight:bold;
-}
-
-.st-format-btn--Italic {
-  font-size: 1.5em;
-  font-style:italic;
 }
 
 .st-format-btn--Unlink {

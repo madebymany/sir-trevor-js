@@ -16,13 +16,11 @@ $animation-speed: 0.2s;
   transform: translateY(-50%);
   outline:none;
   border:none;
-  font-size:1.3em;
   display:block;
   width:100%;
   background-color:transparent;
   padding:0;
   z-index: 2;
-  display: none;
   
   &::-moz-focus-inner {
     padding:0;
@@ -30,23 +28,31 @@ $animation-speed: 0.2s;
     margin-left:-1px;
   }
 
+  .st-block--textable & {
+    display: none;
+  }
 }
 
 .st-block-addition__button {
   transition: all $animation-speed 0.5s ease-in-out;
-  @extend .st-icon;
   background-color:$block-controls-color;
   position:relative;
   box-sizing:border-box;
   padding:.2em;
   display: inline-block;
   color:#fff;
-  font-size:0.8em;
   margin: 0 auto;
   opacity: 0;
   width: 100%;
+  cursor: pointer;
 
   transform:translateZ(0);
+
+  .st-icon {
+    height: 20px;
+    width: 20px;
+    color:#fff;
+  }
 
   .st-block-addition:hover &,
   .st-block--active & {
