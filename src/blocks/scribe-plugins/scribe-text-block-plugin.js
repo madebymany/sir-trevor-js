@@ -42,6 +42,8 @@ var ScribeTextBlockPlugin = function(block) {
     };
 
     var isAtStartOfBlock = function() {
+      if (scribe.getTextContent() === '') { return true; }
+
       var selection = new scribe.api.Selection();
       var range = selection.range.cloneRange();
 
@@ -65,6 +67,34 @@ var ScribeTextBlockPlugin = function(block) {
       return (getTotalLength() === currentRange.end) && (currentRange.start === currentRange.end);
     };
 
+    var createBlocksFromParagraphs = function() {
+      var fakeContent = document.createElement('div');
+      fakeContent.appendChild(selectToEnd().extractContents());
+
+      stripFirstEmptyElement(fakeContent);
+
+      // Add wrapper div which is missing in non blockElement scribe.
+      if (!scribe.allowsBlockElements()) {
+        var tempContent = document.createElement('div');
+        tempContent.appendChild(fakeContent);
+        fakeContent = tempContent;
+      }
+
+      if (fakeContent.childNodes.length >= 1) {
+        var data;
+        var nodes = Array.from(fakeContent.childNodes);
+        nodes.reverse().forEach(function(node) {
+          if (node.innerText !== '') {
+            data = {
+              format: 'html',
+              text: node.innerHTML.trim()
+            };
+            block.mediator.trigger("block:create", 'Text', data, block.el);
+          }
+        });
+      }
+    };
+
     var isAtStart = false;
 
     scribe.el.addEventListener('keydown', function(ev) {
@@ -72,17 +102,20 @@ var ScribeTextBlockPlugin = function(block) {
       if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
         ev.preventDefault();
 
-        var data = {
-          format: 'html',
-          text: rangeToHTML(selectToEnd(), true)
-        };
+        if (isAtEndOfBlock()) {
+
+          // Remove any bad characters after current selection.
+          selectToEnd().extractContents();
+          block.mediator.trigger("block:create", 'Text', null, block.el);
+        } else {
+          createBlocksFromParagraphs();
+        }
 
         // If the block is left empty then we need to reset the placeholder content.
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
 
-        block.mediator.trigger("block:create", 'Text', data, block.el);
       } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStartOfBlock()) {
         ev.preventDefault();
 

@@ -399,7 +399,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     // Remove any whitespace in the first node, otherwise selections won't work.
     var firstNode = this._scribe.node.firstDeepestChild(this._scribe.el);
     if (firstNode.nodeName === '#text') {
-      firstNode.textContent = firstNode.textContent.trim();
+      firstNode.textContent = utils.leftTrim(firstNode.textContent);
+    }
+
+    // Remove all empty nodes at the front to get blocks working.
+    while(this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '') {
+      this._scribe.el.removeChild(this._scribe.el.firstChild);
     }
 
     // Firefox adds empty br tags at the end of content.

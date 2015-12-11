@@ -80,7 +80,15 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock && previousBlock.textable) {
+      // Don't allow removal of first block.
+      if (!previousBlock) { return; }
+
+      // If block is empty then always allow removal.
+      if (block.getScribeInnerContent() !== '') {
+
+        // If block above is not textable then cancel.
+        if (!previousBlock.textable) { return; }
+
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
@@ -122,6 +130,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
+    if (blockPosition === 0) { return; }
     var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
     return this.findBlockById(
       previousBlock.getAttribute('id')
@@ -130,6 +139,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getNextBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
+    if (blockPosition === this.blocks.length - 1) { return; }
     return this.findBlockById(
       this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id')
     );
