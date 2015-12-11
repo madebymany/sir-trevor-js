@@ -73,6 +73,7 @@ var ScribeTextBlockPlugin = function(block) {
 
       stripFirstEmptyElement(fakeContent);
 
+      // Add wrapper div which is missing in non blockElement scribe.
       if (!scribe.allowsBlockElements()) {
         var tempContent = document.createElement('div');
         tempContent.appendChild(fakeContent);

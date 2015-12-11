@@ -80,17 +80,19 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock) {
-        if (previousBlock.textable) {
-          previousBlock.appendContent(
-            block.getScribeInnerContent(), {
-            keepCaretPosition: true
-          });
-        } else if (block.getScribeInnerContent() !== '') {
-          return;
-        }
-      } else {
-        return;
+      // Don't allow removal of first block.
+      if (!previousBlock) { return; }
+
+      // If block is empty then always allow removal.
+      if (block.getScribeInnerContent() !== '') {
+
+        // If block above is not textable then cancel.
+        if (!previousBlock.textable) { return; }
+
+        previousBlock.appendContent(
+          block.getScribeInnerContent(), {
+          keepCaretPosition: true
+        });
       }
     }
     
