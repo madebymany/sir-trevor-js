@@ -42,6 +42,8 @@ var ScribeTextBlockPlugin = function(block) {
     };
 
     var isAtStartOfBlock = function() {
+      if (scribe.getTextContent() === '') { return true; }
+
       var selection = new scribe.api.Selection();
       var range = selection.range.cloneRange();
 
@@ -71,9 +73,15 @@ var ScribeTextBlockPlugin = function(block) {
 
       stripFirstEmptyElement(fakeContent);
 
+      if (!scribe.allowsBlockElements()) {
+        var tempContent = document.createElement('div');
+        tempContent.appendChild(fakeContent);
+        fakeContent = tempContent;
+      }
+
       if (fakeContent.childNodes.length >= 1) {
-        var nodes = Array.from(fakeContent.childNodes);
         var data;
+        var nodes = Array.from(fakeContent.childNodes);
         nodes.reverse().forEach(function(node) {
           if (node.innerText !== '') {
             data = {
