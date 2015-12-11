@@ -82,6 +82,10 @@ var utils = {
     .toLowerCase()
     .replace(/[^\w ]+/g,'')
     .replace(/ +/g,'-');
+  },
+
+  leftTrim: function(str) {
+    return str.replace(/^\s+/,'');
   }
 
 };

@@ -1939,6 +1939,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  toSlug: function toSlug(str) {
 	    return str.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+	  },
+
+	  leftTrim: function leftTrim(str) {
+	    return str.replace(/^\s+/, '');
 	  }
 
 	};
@@ -17386,10 +17390,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var previousBlock = this.getPreviousBlock(block);
 
-	      if (previousBlock && previousBlock.textable) {
-	        previousBlock.appendContent(block.getScribeInnerContent(), {
-	          keepCaretPosition: true
-	        });
+	      if (previousBlock) {
+	        if (previousBlock.textable) {
+	          previousBlock.appendContent(block.getScribeInnerContent(), {
+	            keepCaretPosition: true
+	          });
+	        } else if (block.getScribeInnerContent() !== '') {
+	          return;
+	        }
+	      } else {
+	        return;
 	      }
 	    }
 
@@ -17426,12 +17436,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getPreviousBlock: function getPreviousBlock(block) {
 	    var blockPosition = this.getBlockPosition(block.el);
+	    if (blockPosition === 0) {
+	      return;
+	    }
 	    var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
 	    return this.findBlockById(previousBlock.getAttribute('id'));
 	  },
 
 	  getNextBlock: function getNextBlock(block) {
 	    var blockPosition = this.getBlockPosition(block.el);
+	    if (blockPosition === this.blocks.length - 1) {
+	      return;
+	    }
 	    return this.findBlockById(this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id'));
 	  },
 
@@ -17618,7 +17634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var stToHTML = __webpack_require__(284);
 
 	var ScribeTextBlockPlugin = __webpack_require__(285);
-	var ScribePastePlugin = __webpack_require__(286);
+	var ScribePastePlugin = __webpack_require__(289);
 
 	module.exports = Block.extend({
 
@@ -18070,7 +18086,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Remove any whitespace in the first node, otherwise selections won't work.
 	    var firstNode = this._scribe.node.firstDeepestChild(this._scribe.el);
 	    if (firstNode.nodeName === '#text') {
-	      firstNode.textContent = firstNode.textContent.trim();
+	      firstNode.textContent = utils.leftTrim(firstNode.textContent);
+	    }
+
+	    // Remove all empty nodes at the front to get blocks working.
+	    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '') {
+	      this._scribe.el.removeChild(this._scribe.el.firstChild);
 	    }
 
 	    // Firefox adds empty br tags at the end of content.
@@ -18780,6 +18801,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
+	var _Array$from = __webpack_require__(286)['default'];
+
 	var selectionRange = __webpack_require__(263);
 
 	var ScribeTextBlockPlugin = function ScribeTextBlockPlugin(block) {
@@ -18845,6 +18868,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return getTotalLength() === currentRange.end && currentRange.start === currentRange.end;
 	    };
 
+	    var createBlocksFromParagraphs = function createBlocksFromParagraphs() {
+	      var fakeContent = document.createElement('div');
+	      fakeContent.appendChild(selectToEnd().extractContents());
+
+	      stripFirstEmptyElement(fakeContent);
+
+	      if (fakeContent.childNodes.length >= 1) {
+	        var nodes = _Array$from(fakeContent.childNodes);
+	        var data;
+	        nodes.reverse().forEach(function (node) {
+	          if (node.innerText !== '') {
+	            data = {
+	              format: 'html',
+	              text: node.innerHTML.trim()
+	            };
+	            block.mediator.trigger("block:create", 'Text', data, block.el);
+	          }
+	        });
+	      }
+	    };
+
 	    var isAtStart = false;
 
 	    scribe.el.addEventListener('keydown', function (ev) {
@@ -18853,17 +18897,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // enter pressed
 	        ev.preventDefault();
 
-	        var data = {
-	          format: 'html',
-	          text: rangeToHTML(selectToEnd(), true)
-	        };
+	        if (isAtEndOfBlock()) {
+
+	          // Remove any bad characters after current selection.
+	          selectToEnd().extractContents();
+	          block.mediator.trigger("block:create", 'Text', null, block.el);
+	        } else {
+	          createBlocksFromParagraphs();
+	        }
 
 	        // If the block is left empty then we need to reset the placeholder content.
 	        if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
 	          scribe.setContent('<p><br></p>');
 	        }
-
-	        block.mediator.trigger("block:create", 'Text', data, block.el);
 	      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStartOfBlock()) {
 	        ev.preventDefault();
 
@@ -18899,66 +18945,18 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	/*
-	When content is pasted into a block take the sanitized html and create a block for each
-	paragraph that has been added.
-	*/
-
-	var _Array$from = __webpack_require__(287)['default'];
-
-	var scribePastePlugin = function scribePastePlugin(block) {
-	  return function (scribe) {
-	    var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
-
-	    insertHTMLCommandPatch.execute = function (value) {
-	      var _this = this;
-
-	      scribe.transactionManager.run(function () {
-	        scribe.api.CommandPatch.prototype.execute.call(_this, value);
-
-	        var fakeContent = document.createElement('div');
-	        fakeContent.innerHTML = scribe.getContent();
-
-	        if (fakeContent.childNodes.length > 1) {
-
-	          var nodes = _Array$from(fakeContent.childNodes);
-	          scribe.setContent(nodes.shift().innerHTML);
-	          nodes.reverse().forEach(function (node) {
-	            var data = {
-	              format: 'html',
-	              text: node.innerHTML
-	            };
-	            block.mediator.trigger("block:create", 'Text', data, block.el);
-	          });
-	          scribe.el.focus();
-	        }
-	      });
-	    };
-
-	    scribe.commandPatches.insertHTML = insertHTMLCommandPatch;
-	  };
-	};
-
-	module.exports = scribePastePlugin;
+	module.exports = { "default": __webpack_require__(287), __esModule: true };
 
 /***/ },
 /* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(288), __esModule: true };
-
-/***/ },
-/* 288 */
-/***/ function(module, exports, __webpack_require__) {
-
 	__webpack_require__(99);
-	__webpack_require__(289);
+	__webpack_require__(288);
 	module.exports = __webpack_require__(7).Array.from;
 
 /***/ },
-/* 289 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18998,6 +18996,54 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
+
+/***/ },
+/* 289 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	/*
+	When content is pasted into a block take the sanitized html and create a block for each
+	paragraph that has been added.
+	*/
+
+	var _Array$from = __webpack_require__(286)['default'];
+
+	var scribePastePlugin = function scribePastePlugin(block) {
+	  return function (scribe) {
+	    var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
+
+	    insertHTMLCommandPatch.execute = function (value) {
+	      var _this = this;
+
+	      scribe.transactionManager.run(function () {
+	        scribe.api.CommandPatch.prototype.execute.call(_this, value);
+
+	        var fakeContent = document.createElement('div');
+	        fakeContent.innerHTML = scribe.getContent();
+
+	        if (fakeContent.childNodes.length > 1) {
+
+	          var nodes = _Array$from(fakeContent.childNodes);
+	          scribe.setContent(nodes.shift().innerHTML);
+	          nodes.reverse().forEach(function (node) {
+	            var data = {
+	              format: 'html',
+	              text: node.innerHTML
+	            };
+	            block.mediator.trigger("block:create", 'Text', data, block.el);
+	          });
+	          scribe.el.focus();
+	        }
+	      });
+	    };
+
+	    scribe.commandPatches.insertHTML = insertHTMLCommandPatch;
+	  };
+	};
+
+	module.exports = scribePastePlugin;
 
 /***/ },
 /* 290 */

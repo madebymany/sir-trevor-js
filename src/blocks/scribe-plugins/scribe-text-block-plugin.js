@@ -65,6 +65,27 @@ var ScribeTextBlockPlugin = function(block) {
       return (getTotalLength() === currentRange.end) && (currentRange.start === currentRange.end);
     };
 
+    var createBlocksFromParagraphs = function() {
+      var fakeContent = document.createElement('div');
+      fakeContent.appendChild(selectToEnd().extractContents());
+
+      stripFirstEmptyElement(fakeContent);
+
+      if (fakeContent.childNodes.length >= 1) {
+        var nodes = Array.from(fakeContent.childNodes);
+        var data;
+        nodes.reverse().forEach(function(node) {
+          if (node.innerText !== '') {
+            data = {
+              format: 'html',
+              text: node.innerHTML.trim()
+            };
+            block.mediator.trigger("block:create", 'Text', data, block.el);
+          }
+        });
+      }
+    };
+
     var isAtStart = false;
 
     scribe.el.addEventListener('keydown', function(ev) {
@@ -74,28 +95,11 @@ var ScribeTextBlockPlugin = function(block) {
 
         if (isAtEndOfBlock()) {
 
+          // Remove any bad characters after current selection.
           selectToEnd().extractContents();
           block.mediator.trigger("block:create", 'Text', null, block.el);
         } else {
-
-          var fakeContent = document.createElement('div');
-          fakeContent.appendChild(selectToEnd().extractContents());
-
-          stripFirstEmptyElement(fakeContent);
-
-          if (fakeContent.childNodes.length >= 1) {
-            var nodes = Array.from(fakeContent.childNodes);
-            var data;
-            nodes.reverse().forEach(function(node) {
-              if (node.innerText !== '') {
-                data = {
-                  format: 'html',
-                  text: node.innerHTML.trim()
-                };
-                block.mediator.trigger("block:create", 'Text', data, block.el);
-              }
-            });
-          }
+          createBlocksFromParagraphs();
         }
 
         // If the block is left empty then we need to reset the placeholder content.

@@ -80,11 +80,17 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock && previousBlock.textable) {
-        previousBlock.appendContent(
-          block.getScribeInnerContent(), {
-          keepCaretPosition: true
-        });
+      if (previousBlock) {
+        if (previousBlock.textable) {
+          previousBlock.appendContent(
+            block.getScribeInnerContent(), {
+            keepCaretPosition: true
+          });
+        } else if (block.getScribeInnerContent() !== '') {
+          return;
+        }
+      } else {
+        return;
       }
     }
     
@@ -122,6 +128,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
+    if (blockPosition === 0) { return; }
     var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
     return this.findBlockById(
       previousBlock.getAttribute('id')
@@ -130,6 +137,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getNextBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
+    if (blockPosition === this.blocks.length - 1) { return; }
     return this.findBlockById(
       this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id')
     );
