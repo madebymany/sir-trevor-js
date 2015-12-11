@@ -17390,16 +17390,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var previousBlock = this.getPreviousBlock(block);
 
-	      if (previousBlock) {
-	        if (previousBlock.textable) {
-	          previousBlock.appendContent(block.getScribeInnerContent(), {
-	            keepCaretPosition: true
-	          });
-	        } else if (block.getScribeInnerContent() !== '') {
+	      // Don't allow removal of first block.
+	      if (!previousBlock) {
+	        return;
+	      }
+
+	      // If block is empty then always allow removal.
+	      if (block.getScribeInnerContent() !== '') {
+
+	        // If block above is not textable then cancel.
+	        if (!previousBlock.textable) {
 	          return;
 	        }
-	      } else {
-	        return;
+
+	        previousBlock.appendContent(block.getScribeInnerContent(), {
+	          keepCaretPosition: true
+	        });
 	      }
 	    }
 
@@ -18845,6 +18851,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    var isAtStartOfBlock = function isAtStartOfBlock() {
+	      if (scribe.getTextContent() === '') {
+	        return true;
+	      }
+
 	      var selection = new scribe.api.Selection();
 	      var range = selection.range.cloneRange();
 
@@ -18874,9 +18884,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      stripFirstEmptyElement(fakeContent);
 
+	      // Add wrapper div which is missing in non blockElement scribe.
+	      if (!scribe.allowsBlockElements()) {
+	        var tempContent = document.createElement('div');
+	        tempContent.appendChild(fakeContent);
+	        fakeContent = tempContent;
+	      }
+
 	      if (fakeContent.childNodes.length >= 1) {
-	        var nodes = _Array$from(fakeContent.childNodes);
 	        var data;
+	        var nodes = _Array$from(fakeContent.childNodes);
 	        nodes.reverse().forEach(function (node) {
 	          if (node.innerText !== '') {
 	            data = {
