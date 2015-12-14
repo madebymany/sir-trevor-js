@@ -33,6 +33,8 @@ module.exports = {
       .addEventListener('drop', this._handleDrop.bind(this));
 
     this.inner.classList.add('st-block__inner--droppable');
+
+    this._setupKeyEvents();
   },
 
   _handleDrop: function(e) {
@@ -57,6 +59,27 @@ module.exports = {
     }
 
     EventBus.trigger('block:content:dropped', this.blockID);
-  }
+  },
 
+  focus: function() {
+    this.inner.focus();
+  },
+
+  /**
+    Allow this block to be managed with the keyboard
+  **/
+
+  _setupKeyEvents: function() {
+    this.inner.setAttribute('tabindex', 0);
+    this.inner.addEventListener('keyup', (e) => {
+      switch(e.keyCode) {
+        case 13:
+          this.mediator.trigger("block:create", 'Text', null, this.el);
+          break;
+        case 8:
+          this.mediator.trigger('block:remove', this.blockID);
+          return;
+      }
+    });
+  }
 };

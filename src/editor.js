@@ -88,7 +88,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this._setEvents();
 
+    // External event listeners
     window.addEventListener('click', this.hideAllTheThings);
+    document.body.addEventListener('keydown', this.disableBackButton);
 
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
@@ -129,6 +131,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     config.instances = config.instances.filter(function(instance) {
       return instance.ID !== this.ID;
     }, this);
+
+    // Remove external event listeners
+    window.removeEventListener('click', this.hideAllTheThings);
+    document.body.removeEventListener('keydown', this.disableBackButton);
 
     // Clear the store
     this.store.reset();
@@ -216,6 +222,22 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.el.value = this.store.toString();
 
     return this.errorHandler.errors.length;
+  },
+
+  /*
+   * Disable back button so when a block loses focus the user
+   * pressing backspace multiple times doesn't close the page.
+   */
+  disableBackButton: function(e) {
+    if (e.keyCode === 8) {
+      console.log(e);
+      if (e.srcElement.getAttribute('contenteditable') ||
+          e.srcElement.tagName === 'INPUT') {
+        return;
+      }
+
+      e.preventDefault();
+    }
   },
 
   validateBlocks: function(shouldValidate) {

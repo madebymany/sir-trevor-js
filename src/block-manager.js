@@ -84,8 +84,11 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       // Don't allow removal of first block.
       if (!previousBlock) { return; }
 
-      // If block is empty then always allow removal.
-      if (block.getScribeInnerContent() !== '') {
+      // If block is empty then always allow removal
+      // and set focus.
+      if (block.getScribeInnerContent() === '') {
+        previousBlock.focus();
+      } else {
 
         // If block above is not textable then cancel.
         if (!previousBlock.textable) { return; }

@@ -33,7 +33,6 @@
 .st-block-ui-btn__reorder {
   @extend %st-block-ui-btn;
   left: 2em;
-  display: none;
   &:hover,
   &:focus {
     color:$accent-color;

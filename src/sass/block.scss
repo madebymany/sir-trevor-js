@@ -15,14 +15,15 @@
   margin-bottom: 1em;
 }
 
-.st-block__inner {
-  .st-block[data-type="image"] &,
-  .st-block[data-type="video"] &,
-  .st-block[data-type="tweet"] & {
-    border: 1px solid $blocks-control-border-color;
-    background: $blocks-control-bg-color;
-    margin-top: 2em;
-    margin-bottom: 2em;
+.st-block__inner--droppable {
+  border: 1px solid $blocks-control-border-color;
+  background: $blocks-control-bg-color;
+  margin-top: 2em;
+  margin-bottom: 2em;
+
+  &:focus {
+    border-color: $accent-color;
+    outline: none;
   }
 }
 

@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require('../config');
 
 module.exports = () => {
@@ -10,4 +12,4 @@ module.exports = () => {
       </span>
     </button>
   `;
-}
+};

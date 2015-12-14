@@ -5,6 +5,8 @@ var dropEvents = require('./helpers/drop-events');
 var EventBus = require('./event-bus');
 var Dom = require('./packages/dom');
 
+var config = require('./config');
+
 var BlockReorder = function(block_element, mediator) {
   this.block = block_element;
   this.blockID = this.block.getAttribute('id');
@@ -25,7 +27,9 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
   attributes: function() {
     return {
-      'html': 'reorder',
+      'html': `<svg role="img" class="st-icon">
+                 <use xlink:href="${config.defaults.iconUrl}#move"/>
+               </svg>`,
       'draggable': 'true',
       'data-icon': 'move'
     };

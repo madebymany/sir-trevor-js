@@ -8,4 +8,4 @@ module.exports = () => {
       ${BLOCK_ADDITION_TEMPLATE()}
     </div>
   `;
-}
+};
