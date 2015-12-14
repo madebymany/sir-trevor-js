@@ -17,6 +17,12 @@ exports.findBlocks = function() {
   return exports.findElementsByCss('.st-block');
 };
 
+exports.hasClassName = function(element, className) {
+  return element.getAttribute('class').then( function(classes) {
+    return classes.split(' ').indexOf(className) > -1;
+  });
+}
+
 exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {
@@ -29,7 +35,19 @@ exports.createBlock = function(blockType, cb) {
 
   exports.findBlocks().then( function(blocks) {
     if (blocks.length > 0) {
-      createBlock(blocks[blocks.length-1]);
+      exports.hasClassName(blocks[blocks.length-1], 'st-block--textable')
+        .then( function(isTextable) {
+          if (isTextable) {
+            return createBlock(blocks[blocks.length-1]);
+          } else {
+            exports.findElementByCss('.st-block-addition', blocks[blocks.length-1])
+                      .click()
+                      .then(exports.findBlocks)
+                      .then(function(blocks) {
+                        return createBlock(blocks[blocks.length-1]);
+                      });
+          }
+      });
     } else {
       exports.findElementByCss('.st-top-controls').then(createBlock);
     }

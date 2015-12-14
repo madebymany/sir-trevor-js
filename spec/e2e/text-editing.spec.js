@@ -77,7 +77,7 @@ var getTextBeforeCaret = function(index) {
 };
 
 var textblockHasFocus = function(textBlock) {
-  var str = "console.log(arguments[0]); console.log(document.activeElement); console.log(arguments[0] === document.activeElement); return document.activeElement === arguments[0];";
+  var str = "return document.activeElement === arguments[0];";
   return helpers.browser.executeScript(str, textBlock);
 };
 

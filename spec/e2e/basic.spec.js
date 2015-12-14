@@ -108,11 +108,12 @@ describe('Existing data', function() {
         window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: elements[0]});
       }).then(helpers.findBlocks)
         .then( function(elements) {
-        elements[0].getAttribute('data-type').then( function(attr) {
-          if (attr === blockTypes[1]) {
-            done();
-          }
-        });
+          console.log(elements);
+          elements[0].getAttribute('data-type').then( function(attr) {
+            if (attr === blockTypes[1]) {
+              done();
+            }
+          });
       });
     }, 20000);
       
