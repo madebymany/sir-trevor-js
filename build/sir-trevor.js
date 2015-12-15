@@ -6267,7 +6267,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Bind our drop event
 	    dropEvents.dropArea(this.inputs.lastElementChild).addEventListener('drop', this._handleDrop.bind(this));
 
+	    this.el.classList.add('st-block--droppable');
 	    this.inner.classList.add('st-block__inner--droppable');
+
+	    this._setupKeyEvents();
 	  },
 
 	  _handleDrop: function _handleDrop(e) {
@@ -6291,8 +6294,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    EventBus.trigger('block:content:dropped', this.blockID);
-	  }
+	  },
 
+	  focus: function focus() {
+	    this.inner.focus();
+	  },
+
+	  /**
+	    Allow this block to be managed with the keyboard
+	  **/
+
+	  _setupKeyEvents: function _setupKeyEvents() {
+	    var _this = this;
+
+	    this.inner.setAttribute('tabindex', 0);
+	    this.inner.addEventListener('keyup', function (e) {
+	      switch (e.keyCode) {
+	        case 13:
+	          _this.mediator.trigger("block:create", 'Text', null, _this.el);
+	          break;
+	        case 8:
+	          _this.mediator.trigger('block:remove', _this.blockID);
+	          return;
+	      }
+	    });
+	  }
 	};
 
 /***/ },
@@ -17040,6 +17066,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var EventBus = __webpack_require__(89);
 	var Dom = __webpack_require__(83);
 
+	var config = __webpack_require__(82);
+
 	var BlockReorder = function BlockReorder(block_element, mediator) {
 	  this.block = block_element;
 	  this.blockID = this.block.getAttribute('id');
@@ -17060,7 +17088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  attributes: function attributes() {
 	    return {
-	      'html': 'reorder',
+	      'html': '<svg role="img" class="st-icon">\n                 <use xlink:href="' + config.defaults.iconUrl + '#move"/>\n               </svg>',
 	      'draggable': 'true',
 	      'data-icon': 'move'
 	    };
@@ -17426,17 +17454,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      // If block is empty then always allow removal.
-	      if (block.getScribeInnerContent() !== '') {
-
-	        // If block above is not textable then cancel.
-	        if (!previousBlock.textable) {
-	          return;
-	        }
-
+	      // If previous block can transpose content then append content.
+	      if (previousBlock.textable) {
 	        previousBlock.appendContent(block.getScribeInnerContent(), {
 	          keepCaretPosition: true
 	        });
+	      } else {
+	        // If there's content and the block above isn't textable then cancel remove.
+	        if (block.getScribeInnerContent() !== '') {
+	          return;
+	        }
 	      }
 	    }
 
@@ -18346,12 +18373,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	var config = __webpack_require__(82);
 
 	module.exports = function () {
-	  return '\n    <button class="st-block-replacer" type="button">\n      <span class="st-block-replacer__button">\n        <svg role="img" class="st-icon">\n          <use xlink:href="' + config.defaults.iconUrl + '#add-block"/>\n        </svg>\n      </span>\n    </button>\n  ';
+	  return "\n    <button class=\"st-block-replacer\" type=\"button\">\n      <span class=\"st-block-replacer__button\">\n        <svg role=\"img\" class=\"st-icon\">\n          <use xlink:href=\"" + config.defaults.iconUrl + "#add-block\"/>\n        </svg>\n      </span>\n    </button>\n  ";
 	};
 
 /***/ },
@@ -19608,19 +19635,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // enter pressed
 	        ev.preventDefault();
 
-	        content = rangeToHTML(selectToEnd());
-	        block.addListItemAfterCurrent(content);
-	      } else if (!block.isLastListItem()) {
-	        // don't remove if last item
-	        if (ev.keyCode === 8 && currentPosition() === 0) {
-	          ev.preventDefault();
+	        if (scribe.getTextContent().length === 0) {
+	          block.removeCurrentListItem();
+	          block.mediator.trigger("block:create", 'Text', null, block.el);
+	        } else {
+	          content = rangeToHTML(selectToEnd());
+	          block.addListItemAfterCurrent(content);
+	        }
+	      } else if (ev.keyCode === 8 && currentPosition() === 0) {
+	        ev.preventDefault();
 
+	        if (block.isLastListItem()) {
+	          block.mediator.trigger('block:remove', block.blockID);
+	        } else {
 	          content = scribe.getContent();
 	          block.removeCurrentListItem();
 	          block.appendToCurrentItem(content);
-	        } else if (ev.keyCode === 46) {
-	          // TODO: Pressing del from end of list item
 	        }
+	      } else if (ev.keyCode === 46) {
+	        // TODO: Pressing del from end of list item
 	      }
 	    });
 	  };
@@ -20100,7 +20133,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this._setEvents();
 
+	    // External event listeners
 	    window.addEventListener('click', this.hideAllTheThings);
+	    document.body.addEventListener('keydown', this.disableBackButton);
 
 	    this.createBlocks();
 	    this.wrapper.classList.add('st-ready');
@@ -20141,6 +20176,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    config.instances = config.instances.filter(function (instance) {
 	      return instance.ID !== this.ID;
 	    }, this);
+
+	    // Remove external event listeners
+	    window.removeEventListener('click', this.hideAllTheThings);
+	    document.body.removeEventListener('keydown', this.disableBackButton);
 
 	    // Clear the store
 	    this.store.reset();
@@ -20229,6 +20268,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.el.value = this.store.toString();
 
 	    return this.errorHandler.errors.length;
+	  },
+
+	  /*
+	   * Disable back button so when a block loses focus the user
+	   * pressing backspace multiple times doesn't close the page.
+	   */
+	  disableBackButton: function disableBackButton(e) {
+	    if (e.keyCode === 8) {
+	      console.log(e);
+	      if (e.srcElement.getAttribute('contenteditable') || e.srcElement.tagName === 'INPUT') {
+	        return;
+	      }
+
+	      e.preventDefault();
+	    }
 	  },
 
 	  validateBlocks: function validateBlocks(shouldValidate) {

@@ -110,7 +110,9 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
     padding: 0;
     margin: 0;
     margin-left: -1px; }
-  .st-block--textable .st-block-addition {
+  .st-block--textable .st-block-addition,
+  .st-block--droppable .st-block-addition,
+  .st-block[data-type="list"] .st-block-addition {
     display: none; }
 
 .st-block-addition__button {
@@ -245,17 +247,21 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
 .st-block__inner {
   position: relative;
   margin: 0 110px;
-  overflow: hidden;
   margin-top: 1em;
   margin-bottom: 1em; }
+  .st-block--textable .st-block__inner {
+    margin-top: 0;
+    margin-bottom: 0; }
 
-.st-block[data-type="image"] .st-block__inner,
-.st-block[data-type="video"] .st-block__inner,
-.st-block[data-type="tweet"] .st-block__inner {
-  border: 1px solid #17BB75;
+.st-block__inner--droppable {
+  border: 1px solid #ddd;
   background: #F7F7F7;
+  cursor: pointer;
   margin-top: 2em;
   margin-bottom: 2em; }
+  .st-block__inner--droppable:focus {
+    border-color: #17BB75;
+    outline: none; }
 
 .st-block[data-type="quote"] .st-block__inner {
   margin-left: 155px;
@@ -338,8 +344,6 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
     line-height: 55px; }
 
 .st-text-block p {
-  display: inline;
-  margin: 0;
   vertical-align: 14%; }
 
 .st-text-block--heading {
@@ -486,7 +490,7 @@ ul.st-text-block {
   z-index: 2;
   background: #fff;
   display: none;
-  left: 4em;
+  right: 4em;
   top: 0.5em; }
   .st-block-positioner.active {
     display: block; }
@@ -514,6 +518,9 @@ ul.st-text-block {
     -webkit-transform: translateY(-50%) rotate(45deg);
         -ms-transform: translateY(-50%) rotate(45deg);
             transform: translateY(-50%) rotate(45deg); }
+  .st-block-positioner:before {
+    left: auto;
+    right: -0.3em; }
 
 .st-block-positioner__inner {
   background: #fff;
@@ -558,18 +565,26 @@ ul.st-text-block {
   color: #9B9B9B; }
 
 .st-block-ui-btn__reorder {
-  left: 2em;
-  display: none; }
+  right: 2em;
+  -webkit-transform: scaleX(-1);
+      -ms-transform: scaleX(-1);
+          transform: scaleX(-1);
+  top: 0.5em;
+  opacity: 0.5;
+  -webkit-transition: opacity 0.3s ease-in-out;
+          transition: opacity 0.3s ease-in-out; }
   .st-block-ui-btn__reorder:hover, .st-block-ui-btn__reorder:focus {
-    color: #17BB75; }
+    color: #17BB75;
+    opacity: 1; }
 
 .st-block-ui-btn__delete {
   right: 1em;
-  top: 0;
+  top: 1.5em;
   font-size: 1.5em; }
   .st-block-ui-btn__delete:hover, .st-block-ui-btn__delete:focus {
     color: #d70014; }
-  .st-block--textable .st-block-ui-btn__delete {
+  .st-block--textable .st-block-ui-btn__delete,
+  .st-block[data-type="list"] .st-block-ui-btn__delete {
     display: none; }
 
 .st-block-control-ui-btn {
