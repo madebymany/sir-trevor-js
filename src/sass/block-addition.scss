@@ -27,10 +27,13 @@ $animation-speed: 0.2s;
     margin:0;
     margin-left:-1px;
   }
-
-  .st-block--textable & {
+  
+  .st-block--textable &,
+  .st-block--droppable &,
+  .st-block[data-type="list"] & {
     display: none;
   }
+  
 }
 
 .st-block-addition__button {

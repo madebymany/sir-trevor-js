@@ -32,6 +32,7 @@ module.exports = {
       .dropArea(this.inputs.lastElementChild)
       .addEventListener('drop', this._handleDrop.bind(this));
 
+    this.el.classList.add('st-block--droppable');
     this.inner.classList.add('st-block__inner--droppable');
 
     this._setupKeyEvents();

@@ -10,14 +10,19 @@
 .st-block__inner {
   position: relative;
   margin: 0 110px;
-  overflow: hidden;
   margin-top: 1em;
   margin-bottom: 1em;
+
+  .st-block--textable & {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 .st-block__inner--droppable {
   border: 1px solid $blocks-control-border-color;
   background: $blocks-control-bg-color;
+  cursor: pointer;
   margin-top: 2em;
   margin-bottom: 2em;
 
@@ -126,8 +131,8 @@
 }
 
 .st-text-block p {
-  display: inline;
-  margin: 0;
+  // display: inline;
+  // margin: 0;
   vertical-align: 14%;
 }
 

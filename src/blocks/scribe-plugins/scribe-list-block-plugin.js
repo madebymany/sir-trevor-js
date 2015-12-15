@@ -28,18 +28,26 @@ var ScribeListBlockPlugin = function(block) {
       if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
         ev.preventDefault();
 
-        content = rangeToHTML(selectToEnd());
-        block.addListItemAfterCurrent(content);
-      } else if (!block.isLastListItem()) { // don't remove if last item
-        if (ev.keyCode === 8 && currentPosition() === 0) {
-          ev.preventDefault();
+        if (scribe.getTextContent().length === 0) {
+          block.removeCurrentListItem();
+          block.mediator.trigger("block:create", 'Text', null, block.el);
+        } else {
+          content = rangeToHTML(selectToEnd());
+          block.addListItemAfterCurrent(content);
+        }
 
+      } else if (ev.keyCode === 8 && currentPosition() === 0) {
+        ev.preventDefault();
+
+        if (block.isLastListItem()) {
+          block.mediator.trigger('block:remove', block.blockID);
+        } else {
           content = scribe.getContent();
           block.removeCurrentListItem();
           block.appendToCurrentItem(content);
-        } else if (ev.keyCode === 46) {
-          // TODO: Pressing del from end of list item
         }
+      } else if (ev.keyCode === 46) {
+        // TODO: Pressing del from end of list item
       }
     });
   };

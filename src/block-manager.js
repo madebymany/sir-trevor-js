@@ -84,19 +84,17 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       // Don't allow removal of first block.
       if (!previousBlock) { return; }
 
-      // If block is empty then always allow removal
-      // and set focus.
-      if (block.getScribeInnerContent() === '') {
-        previousBlock.focus();
-      } else {
-
-        // If block above is not textable then cancel.
-        if (!previousBlock.textable) { return; }
-
+      // If previous block can transpose content then append content.
+      if (previousBlock.textable) {
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
         });
+      } else {
+        // If there's content and the block above isn't textable then cancel remove.
+        if (block.getScribeInnerContent() !== '') {
+          return;
+        }
       }
     }
     
