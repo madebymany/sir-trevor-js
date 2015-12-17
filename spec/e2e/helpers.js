@@ -23,6 +23,12 @@ exports.hasClassName = function(element, className) {
   });
 }
 
+var pressEnter = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.ENTER)
+    .perform();
+};
+
 exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {
@@ -35,18 +41,34 @@ exports.createBlock = function(blockType, cb) {
 
   exports.findBlocks().then( function(blocks) {
     if (blocks.length > 0) {
-      exports.hasClassName(blocks[blocks.length-1], 'st-block--textable')
-        .then( function(isTextable) {
-          if (isTextable) {
-            return createBlock(blocks[blocks.length-1]);
+      var element = blocks[blocks.length-1];
+      var classes, type;
+      element.getAttribute('class').then( function(className) {
+        classes = className.split(' ');
+        return element.getAttribute('data-type');
+      }).then( function(res) {
+        type = res;
+        if (classes.indexOf('st-block--textable') > -1) {
+          if (blockType === 'text') {
+            return pressEnter().then(cb);
           } else {
-            exports.findElementByCss('.st-block-addition', blocks[blocks.length-1])
-                      .click()
-                      .then(exports.findBlocks)
-                      .then(function(blocks) {
-                        return createBlock(blocks[blocks.length-1]);
-                      });
+            return createBlock(element);
           }
+        } else if (type === 'list') {
+
+          return pressEnter()
+            .then(exports.findBlocks)
+            .then( function(blocks2) {
+              return createBlock(blocks2[blocks2.length-1]);
+            });
+        } else if (classes.indexOf('st-block--droppable') > -1) {
+          return exports.findElementByCss('.st-block__inner--droppable', element).click()
+            .then(pressEnter)
+            .then(exports.findBlocks)
+            .then( function(blocks2) {
+              return createBlock(blocks2[blocks2.length-1]);
+            });
+        }
       });
     } else {
       exports.findElementByCss('.st-top-controls').then(createBlock);

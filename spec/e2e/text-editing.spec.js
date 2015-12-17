@@ -58,7 +58,7 @@ var focusOnTextBlock = function(index) {
   index = index || 0;
   return helpers.findElementsByCss('.st-text-block').then(function(elements) {
     return helpers.browser.actions()
-              .mouseMove(elements[index], {x: 5, y: 30})
+              .mouseMove(elements[index], {x: 5, y: 10})
               .click()
               .perform();
   });
@@ -144,33 +144,39 @@ describe('Text block', function() {
     });
 
     it('should delete the block when caret is at the start of the block and there is a block above', function(done) {
-      helpers.createBlock('text', function() {
-        helpers.hasBlockCount(2).then( function() {
-          return focusOnTextBlock(1);
-        }).then(pressBackSpace)
-          .then(function() {
-            return helpers.hasBlockCount(1);
-          }).then(done);
-      });
+      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+        .then( function() {
+          helpers.createBlock('text', function() {
+            helpers.hasBlockCount(2).then( function() {
+              return focusOnTextBlock(1);
+            }).then(pressBackSpace)
+              .then(function() {
+                return helpers.hasBlockCount(1);
+              }).then(done);
+          });
+        });
     });
 
     it('should transpose the block content when caret is at the start of the block and there is a block above', function(done) {
-      helpers.createBlock('text', function() {
-        helpers.hasBlockCount(2).then( function() {
-          return focusOnTextBlock(1);
-        }).then( function() {
-          return enterText("Two");
-        }).then(pressLeft)
-          .then(pressLeft)
-          .then(pressLeft)
-          .then(pressBackSpace)
-          .then(function() {
-            return getTextFromBlock([0]);
-          }).then(function(htmlArr) {
-            expect(htmlArr[0]).toBe("<p>OneTwo</p>");
-            done();
+      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+        .then( function() {
+          helpers.createBlock('text', function() {
+            helpers.hasBlockCount(2).then( function() {
+              return focusOnTextBlock(1);
+            }).then( function() {
+              return enterText("Two");
+            }).then(pressLeft)
+              .then(pressLeft)
+              .then(pressLeft)
+              .then(pressBackSpace)
+              .then(function() {
+                return getTextFromBlock([0]);
+              }).then(function(htmlArr) {
+                expect(htmlArr[0]).toBe("<p>OneTwo</p>");
+                done();
+              });
           });
-      });
+        });
     });
 
   });
@@ -194,21 +200,24 @@ describe('Text block', function() {
     });
 
     it('should at the start of the block move to the previous block', function(done) {
-      helpers.createBlock('text', function() {
-        focusOnTextBlock(1)
-          .then(function() {
-            return getTextBeforeCaret(1);
-          })
-          .then(function(text) {
-            expect(text).toBe("");
-          })
-          .then(pressLeft)
-          .then(getTextBeforeCaret)
-          .then(function(text) {
-            expect(text).toBe("One");
-            done();
+      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+        .then( function() {
+          helpers.createBlock('text', function() {
+          focusOnTextBlock(1)
+            .then(function() {
+              return getTextBeforeCaret(1);
+            })
+            .then(function(text) {
+              expect(text).toBe("");
+            })
+            .then(pressLeft)
+            .then(getTextBeforeCaret)
+            .then(function(text) {
+              expect(text).toBe("One");
+              done();
+            });
           });
-      });
+        });
     });
 
   });
@@ -232,32 +241,35 @@ describe('Text block', function() {
 
     it('should at the end of the block move to the next block', function(done) {
       var textfield;
-      helpers.createBlock('text', function() {
-        helpers.findElementsByCss('.st-text-block')
-          .then(function(fields) {
-            textfield = fields[fields.length-1];
-          })
-          .then(function() {
-            return focusOnTextBlock(0);
-          })
-          .then(function() {
-            return getTextBeforeCaret(0);
-          })
-          .then(function(text) {
-            expect(text).toBe("");
-          })
-          .then(pressRight)
-          .then(pressRight)
-          .then(pressRight)
-          .then(pressRight)
-          .then(function() {
-            return textblockHasFocus(textfield);
-          })
-          .then(function(result) {
-            expect(result).toBe(true);
-            done();
+      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+        .then( function() {
+          helpers.createBlock('text', function() {
+            helpers.findElementsByCss('.st-text-block')
+              .then(function(fields) {
+                textfield = fields[fields.length-1];
+              })
+              .then(function() {
+                return focusOnTextBlock(0);
+              })
+              .then(function() {
+                return getTextBeforeCaret(0);
+              })
+              .then(function(text) {
+                expect(text).toBe("");
+              })
+              .then(pressRight)
+              .then(pressRight)
+              .then(pressRight)
+              .then(pressRight)
+              .then(function() {
+                return textblockHasFocus(textfield);
+              })
+              .then(function(result) {
+                expect(result).toBe(true);
+                done();
+              });
           });
-      });
+        })
     });
 
   });

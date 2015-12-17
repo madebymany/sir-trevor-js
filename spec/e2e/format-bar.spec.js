@@ -85,7 +85,7 @@ describe('Format Bar', function() {
     helpers.findElementByCss('.st-text-block').then( function(element) {
       parent = element;
       return helpers.browser.actions()
-                .mouseMove(parent, {x: 0, y: 30})
+                .mouseMove(parent, {x: 0, y: 10})
                 .click()
                 .perform();
     }).then(selectBoldText)
