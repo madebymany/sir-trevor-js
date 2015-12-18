@@ -6314,7 +6314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.mediator.trigger("block:create", 'Text', null, _this.el);
 	          break;
 	        case 8:
-	          _this.mediator.trigger('block:remove', _this.blockID);
+	          _this.mediator.trigger('block:remove', _this.blockID, { focusOnPrevious: true });
 	          return;
 	      }
 	    });
@@ -17440,14 +17440,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  removeBlock: function removeBlock(blockID, options) {
-	    options = options || {};
+	    options = _Object$assign({
+	      transposeContent: false,
+	      focusOnPrevious: false
+	    }, options);
 
 	    var block = this.findBlockById(blockID);
 	    var type = utils.classify(block.type);
+	    var previousBlock = this.getPreviousBlock(block);
 
 	    if (options.transposeContent && block.textable) {
-
-	      var previousBlock = this.getPreviousBlock(block);
 
 	      // Don't allow removal of first block.
 	      if (!previousBlock) {
@@ -17464,6 +17466,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (block.getScribeInnerContent() !== '') {
 	          return;
 	        }
+
+	        // If block before isn't textable then we want to still focus.
+	        previousBlock.focusAtEnd();
 	      }
 	    }
 
@@ -17473,6 +17478,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    block.remove();
+
+	    if (options.focusOnPrevious && previousBlock) {
+	      previousBlock.focusAtEnd();
+	    }
 
 	    this._decrementBlockTypeCount(type);
 	    this.triggerBlockCountUpdate();
@@ -17717,7 +17726,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return i18n.t('blocks:text:title');
 	  },
 
-	  editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
+	  editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
 
 	  icon_name: 'text',
 
@@ -17755,6 +17764,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  toggleEmptyClass: function toggleEmptyClass() {
 	    this.el.classList.toggle('st-block--empty', this._scribe.getTextContent().length === 0);
+	  },
+
+	  isEmpty: function isEmpty() {
+	    return this._scribe.getTextContent() === '';
 	  }
 	});
 
@@ -17956,6 +17969,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Array.prototype.forEach.call(this.getTextBlock(), function (el) {
 	      el.focus();
 	    });
+	  },
+
+	  focusAtEnd: function focusAtEnd() {
+	    this.focus();
 	  },
 
 	  blur: function blur() {
@@ -19177,13 +19194,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return block.type === 'heading';
 	    };
 
+	    var getBlockType = function getBlockType() {
+	      return headingCommand.queryState() ? 'Text' : 'Heading';
+	    };
+
 	    headingCommand.execute = function headingCommandExecute(value) {
 	      var data = {
 	        format: 'html',
 	        text: block.getScribeInnerContent()
 	      };
 
-	      block.mediator.trigger("block:replace", block.el, this.queryState() ? 'Text' : 'Heading', data);
+	      block.mediator.trigger("block:replace", block.el, getBlockType(), data);
 	    };
 
 	    scribe.commands.heading = headingCommand;
@@ -19209,13 +19230,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return block.type === 'quote';
 	    };
 
-	    quoteCommand.execute = function headingCommandExecute(value) {
+	    var getBlockType = function getBlockType() {
+	      return quoteCommand.queryState() ? 'Text' : 'Quote';
+	    };
+
+	    quoteCommand.execute = function quoteCommandExecute(value) {
 	      var data = {
 	        format: 'html',
 	        text: block.getScribeInnerContent()
 	      };
 
-	      block.mediator.trigger("block:replace", block.el, this.queryState() ? 'Text' : 'Quote', data);
+	      block.mediator.trigger("block:replace", block.el, getBlockType(), data);
 	    };
 
 	    scribe.commands.quote = quoteCommand;
@@ -19552,6 +19577,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      range.setStartAfter(lastChild, 1);
 	      range.collapse(false);
 	    }
+	  },
+
+	  focusAtEnd: function focusAtEnd() {
+	    console.log('focusAtEnd()');
+	    var lastEditorId = this.editorIds[this.editorIds.length - 1];
+	    this.appendToTextEditor(lastEditorId);
 	  },
 
 	  removeCurrentListItem: function removeCurrentListItem() {
@@ -20243,6 +20274,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
+	    if (block.type === 'text' && block.isEmpty()) {
+	      return;
+	    }
+
 	    var blockData = block.getData();
 	    utils.log("Adding data for block " + block.blockID + " to block store:", blockData);
 	    this.store.addData(blockData);
@@ -20276,7 +20311,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  disableBackButton: function disableBackButton(e) {
 	    if (e.keyCode === 8) {
-	      console.log(e);
 	      if (e.srcElement.getAttribute('contenteditable') || e.srcElement.tagName === 'INPUT') {
 	        return;
 	      }

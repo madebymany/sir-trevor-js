@@ -54,16 +54,6 @@ var getTextFromBlock = function(blocks) {
   return helpers.browser.executeScript(str);
 };
 
-var focusOnTextBlock = function(index) {
-  index = index || 0;
-  return helpers.findElementsByCss('.st-text-block').then(function(elements) {
-    return helpers.browser.actions()
-              .mouseMove(elements[index], {x: 5, y: 10})
-              .click()
-              .perform();
-  });
-};
-
 var getTextBeforeCaret = function(index) {
   index = index || 0;
   var str = "var currentSelection = function(scribe) {";
@@ -101,14 +91,14 @@ describe('Text block', function() {
   describe('Pressing Enter', function() {
 
     it('should create a new block', function(done) {
-      focusOnTextBlock().then(pressEnter)
+      helpers.focusOnTextBlock().then(pressEnter)
         .then(function() {
           return helpers.hasBlockCount(2);
         }).then(done);
     });
 
     it('should copy the text after the caret to a new block', function(done) {
-      focusOnTextBlock().then(pressRight)
+      helpers.focusOnTextBlock().then(pressRight)
         .then(pressEnter)
         .then(function() {
           return getTextFromBlock([0, 1]);
@@ -120,7 +110,7 @@ describe('Text block', function() {
     });
 
     it('should add a breakline when combined with shift', function(done) {
-      focusOnTextBlock().then(pressShiftEnter).then(pressShift)
+      helpers.focusOnTextBlock().then(pressShiftEnter).then(pressShift)
         .then(function() {
           return getTextFromBlock([0]);
         }).then(function(htmlArr) {
@@ -134,7 +124,7 @@ describe('Text block', function() {
   describe('Pressing Backspace', function() {
 
     it('should delete a character', function(done) {
-      focusOnTextBlock().then(pressRight).then(pressBackSpace)
+      helpers.focusOnTextBlock().then(pressRight).then(pressBackSpace)
         .then(function() {
           return getTextFromBlock([0]);
         }).then(function(htmlArr) {
@@ -144,11 +134,11 @@ describe('Text block', function() {
     });
 
     it('should delete the block when caret is at the start of the block and there is a block above', function(done) {
-      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
             helpers.hasBlockCount(2).then( function() {
-              return focusOnTextBlock(1);
+              return helpers.focusOnTextBlock(1);
             }).then(pressBackSpace)
               .then(function() {
                 return helpers.hasBlockCount(1);
@@ -158,11 +148,11 @@ describe('Text block', function() {
     });
 
     it('should transpose the block content when caret is at the start of the block and there is a block above', function(done) {
-      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
             helpers.hasBlockCount(2).then( function() {
-              return focusOnTextBlock(1);
+              return helpers.focusOnTextBlock(1);
             }).then( function() {
               return enterText("Two");
             }).then(pressLeft)
@@ -184,7 +174,7 @@ describe('Text block', function() {
   describe('Pressing Left', function() {
 
     it('should move 1 character to the left', function(done) {
-      focusOnTextBlock().then( function() {
+      helpers.focusOnTextBlock().then( function() {
         return enterText("T");
       })
       .then(getTextBeforeCaret)
@@ -200,10 +190,10 @@ describe('Text block', function() {
     });
 
     it('should at the start of the block move to the previous block', function(done) {
-      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
-          focusOnTextBlock(1)
+          helpers.focusOnTextBlock(1)
             .then(function() {
               return getTextBeforeCaret(1);
             })
@@ -225,7 +215,7 @@ describe('Text block', function() {
     describe('Pressing Right', function() {
 
     it('should move right 1 character', function(done) {
-      focusOnTextBlock()
+      helpers.focusOnTextBlock()
         .then(getTextBeforeCaret)
         .then(function(text) {
           expect(text).toBe("");
@@ -241,7 +231,7 @@ describe('Text block', function() {
 
     it('should at the end of the block move to the next block', function(done) {
       var textfield;
-      focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
             helpers.findElementsByCss('.st-text-block')
@@ -249,7 +239,7 @@ describe('Text block', function() {
                 textfield = fields[fields.length-1];
               })
               .then(function() {
-                return focusOnTextBlock(0);
+                return helpers.focusOnTextBlock(0);
               })
               .then(function() {
                 return getTextBeforeCaret(0);
@@ -269,7 +259,7 @@ describe('Text block', function() {
                 done();
               });
           });
-        })
+        });
     });
 
   });

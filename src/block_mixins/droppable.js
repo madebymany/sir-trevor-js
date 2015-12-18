@@ -78,7 +78,7 @@ module.exports = {
           this.mediator.trigger("block:create", 'Text', null, this.el);
           break;
         case 8:
-          this.mediator.trigger('block:remove', this.blockID);
+          this.mediator.trigger('block:remove', this.blockID, {focusOnPrevious: true});
           return;
       }
     });

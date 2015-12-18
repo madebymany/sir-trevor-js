@@ -72,14 +72,16 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   removeBlock: function(blockID, options) {
-    options = options || {};
+    options = Object.assign({
+      transposeContent: false,
+      focusOnPrevious: false
+    }, options);
 
     var block = this.findBlockById(blockID);
     var type = utils.classify(block.type);
+    var previousBlock = this.getPreviousBlock(block);
     
     if (options.transposeContent && block.textable) {
-
-      var previousBlock = this.getPreviousBlock(block);
 
       // Don't allow removal of first block.
       if (!previousBlock) { return; }
@@ -95,6 +97,9 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
         if (block.getScribeInnerContent() !== '') {
           return;
         }
+
+        // If block before isn't textable then we want to still focus.
+        previousBlock.focusAtEnd();
       }
     }
     
@@ -104,6 +109,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     });
 
     block.remove();
+
+    if (options.focusOnPrevious && previousBlock) {
+      previousBlock.focusAtEnd();
+    }
 
     this._decrementBlockTypeCount(type);
     this.triggerBlockCountUpdate();

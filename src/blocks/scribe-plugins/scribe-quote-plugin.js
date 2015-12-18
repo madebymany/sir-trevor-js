@@ -11,13 +11,17 @@ var scribeQuotePlugin = function(block) {
       return block.type === 'quote';
     };
 
-    quoteCommand.execute = function headingCommandExecute(value) {
+    const getBlockType = function() {
+      return quoteCommand.queryState() ? 'Text' : 'Quote';
+    };
+
+    quoteCommand.execute = function quoteCommandExecute(value) {
       var data = {
         format: 'html',
         text: block.getScribeInnerContent()
       };
 
-      block.mediator.trigger("block:replace", block.el, this.queryState() ? 'Text' : 'Quote', data);
+      block.mediator.trigger("block:replace", block.el, getBlockType(), data);
     };
 
     scribe.commands.quote = quoteCommand;

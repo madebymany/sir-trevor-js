@@ -21,7 +21,7 @@ exports.hasClassName = function(element, className) {
   return element.getAttribute('class').then( function(classes) {
     return classes.split(' ').indexOf(className) > -1;
   });
-}
+};
 
 var pressEnter = function() {
   return exports.browser.actions()
@@ -79,6 +79,16 @@ exports.createBlock = function(blockType, cb) {
 exports.hasBlockCount = function(count) {
   return exports.findBlocks().then( function(blocks) {
     expect(blocks.length === count);
+  });
+};
+
+exports.focusOnTextBlock = function(index) {
+  index = index || 0;
+  return exports.findElementsByCss('.st-text-block').then(function(elements) {
+    return exports.browser.actions()
+              .mouseMove(elements[index], {x: 5, y: 10})
+              .click()
+              .perform();
   });
 };
 

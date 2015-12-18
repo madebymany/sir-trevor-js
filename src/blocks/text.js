@@ -18,7 +18,7 @@ module.exports = Block.extend({
 
   title: function() { return i18n.t('blocks:text:title'); },
 
-  editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
+  editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
 
   icon_name: 'text',
 
@@ -56,5 +56,9 @@ module.exports = Block.extend({
 
   toggleEmptyClass: function() {
     this.el.classList.toggle('st-block--empty', this._scribe.getTextContent().length === 0);
+  },
+
+  isEmpty: function() {
+    return this._scribe.getTextContent() === '';
   }
 });

@@ -196,6 +196,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       return;
     }
 
+    if (block.type === 'text' && block.isEmpty()) {
+      return;
+    }
+
     var blockData = block.getData();
     utils.log("Adding data for block " + block.blockID + " to block store:",
               blockData);
@@ -230,7 +234,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
    */
   disableBackButton: function(e) {
     if (e.keyCode === 8) {
-      console.log(e);
       if (e.srcElement.getAttribute('contenteditable') ||
           e.srcElement.tagName === 'INPUT') {
         return;

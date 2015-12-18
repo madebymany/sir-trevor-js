@@ -4,6 +4,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 
 var helpers = require('./helpers');
 
+// Only set to blocks that are controllable.
 var blockTypes = ["list", "image", "video", "tweet"]; // jshint ignore:line
 
 describe('Empty data', function() {
