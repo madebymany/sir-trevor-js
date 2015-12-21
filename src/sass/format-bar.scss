@@ -1,7 +1,7 @@
 .st-format-bar {
   top: 0;
   position: absolute;
-  margin: -4.8em 0 0 0;
+  margin: -4.5em 0 0 0;
   background: #252525;
   opacity: 0;
   visibility: hidden;
@@ -17,7 +17,7 @@
   display: block;
   position: absolute;
   left: 50%;
-  top: 3.9em;
+  top: 3.3em;
   width: 0;
   height: 0;
   border-left: 0.875em solid transparent;
@@ -36,7 +36,8 @@
   border: 0;
   color: #fff;
   font-size: 1em;
-  padding: 0.8em 0.8em;
+  line-height: 1;
+  padding: 0.5em 0.6em;
   vertical-align: middle;
   text-align: center;
 

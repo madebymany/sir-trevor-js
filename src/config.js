@@ -87,7 +87,7 @@ module.exports = {
         {
           name: "Unlink",
           title: "unlink",
-          iconName: "fmt-link",
+          iconName: "fmt-unlink",
           cmd: "unlink",
           text : "link",
         },
