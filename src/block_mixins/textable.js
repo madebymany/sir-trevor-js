@@ -16,8 +16,12 @@ module.exports = {
 
   selectText: function() {
     var range = document.createRange();
+    if (this._scribe.allowsBlockElements()) {
+      range.setStartAfter(this._scribe.el.firstChild, 0);
+    } else {
+      range.selectNodeContents(this._scribe.el);
+    }
     range.collapse(false);
-    range.setStartAfter(this._scribe.el.firstChild, 0);
     var selection = new this._scribe.api.Selection();
     selection.selection.removeAllRanges();
     selection.selection.addRange(range);

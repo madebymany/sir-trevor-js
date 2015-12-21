@@ -26,6 +26,7 @@
 
 .st-block-replacer__button {
   transition: all $animation-speed ease-in-out;
+  color: $accent-color;
   position:relative;
   box-sizing:border-box;
   display: inline-block;

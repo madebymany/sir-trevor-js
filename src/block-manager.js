@@ -148,7 +148,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
-    if (blockPosition === 0) { return; }
+    if (blockPosition < 1) { return; }
     var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
     return this.findBlockById(
       previousBlock.getAttribute('id')

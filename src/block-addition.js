@@ -35,7 +35,7 @@ module.exports.create = function(SirTrevor) {
 
   SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
 
-  const topControls = document.querySelector('.st-top-controls');
+  const topControls = SirTrevor.wrapper.querySelector('.st-top-controls');
 
   function onDrop(ev) {
     ev.preventDefault();
