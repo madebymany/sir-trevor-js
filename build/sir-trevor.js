@@ -19580,7 +19580,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  focusAtEnd: function focusAtEnd() {
-	    console.log('focusAtEnd()');
 	    var lastEditorId = this.editorIds[this.editorIds.length - 1];
 	    this.appendToTextEditor(lastEditorId);
 	  },
