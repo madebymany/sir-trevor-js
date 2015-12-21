@@ -94,11 +94,7 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
   z-index: 2; }
 
 .st-block-addition {
-  position: absolute;
   text-align: center;
-  -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-          transform: translateY(-50%);
   outline: none;
   border: none;
   display: block;
@@ -116,45 +112,28 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
     display: none; }
 
 .st-block-addition__button {
-  -webkit-transition: all 0.2s 0.5s ease-in-out;
-          transition: all 0.2s 0.5s ease-in-out;
-  background-color: #9B9B9B;
+  -webkit-transition: all 0.2s 0.3s ease-in-out;
+          transition: all 0.2s 0.3s ease-in-out;
+  border: 1px solid transparent;
+  color: #444444;
   position: relative;
   box-sizing: border-box;
   padding: .2em;
   display: inline-block;
-  color: #fff;
   margin: 0 auto;
-  opacity: 0;
   width: 100%;
   cursor: pointer;
+  opacity: 0.2;
   -webkit-transform: translateZ(0);
           transform: translateZ(0); }
   .st-block-addition__button .st-icon, .st-block-addition__button .st-block-ui-btn__reorder, .st-block-addition__button .st-block-ui-btn__delete, .st-block-addition__button .st-block-control-ui-btn {
     height: 20px;
     width: 20px;
-    color: #fff; }
+    color: inherit; }
   .st-block-addition:hover .st-block-addition__button,
   .st-block--active .st-block-addition__button {
-    background-color: #17BB75;
+    color: #17BB75;
     opacity: 1; }
-
-.st-block-addition:before {
-  content: "";
-  display: block;
-  position: absolute; }
-
-.st-block-addition:before {
-  -webkit-transition: all 0.2s ease-in-out;
-          transition: all 0.2s ease-in-out;
-  height: 1px;
-  width: 100%;
-  background-color: #9B9B9B;
-  opacity: .2;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-          transform: translateY(-50%); }
 
 .st-block-addition:hover:before,
 .st-block--active .st-block-addition:before {
@@ -223,6 +202,7 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
 .st-block-replacer__button {
   -webkit-transition: all 0.2s ease-in-out;
           transition: all 0.2s ease-in-out;
+  color: #17BB75;
   position: relative;
   box-sizing: border-box;
   display: inline-block;
@@ -301,7 +281,7 @@ src/icons/sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-
 
 .st-block.st-drag-over:after,
 .st-block.st-drag-over:last-child:after,
-.st-block-controls__top.st-drag-over:before {
+.st-top-controls.st-drag-over:before {
   content: "";
   background: transparent;
   display: block;
@@ -371,7 +351,7 @@ ul.st-text-block {
   padding-left: 1em; }
 
 .st-list-block__editor {
-  display: inline;
+  display: inline-block;
   width: 100%;
   line-height: 1.8em;
   vertical-align: 14%; }
@@ -570,7 +550,7 @@ ul.st-text-block {
       -ms-transform: scaleX(-1);
           transform: scaleX(-1);
   top: 0.5em;
-  opacity: 0.5;
+  opacity: 0.2;
   -webkit-transition: opacity 0.3s ease-in-out;
           transition: opacity 0.3s ease-in-out; }
   .st-block-ui-btn__reorder:hover, .st-block-ui-btn__reorder:focus {
@@ -657,7 +637,7 @@ ul.st-text-block {
 .st-format-bar {
   top: 0;
   position: absolute;
-  margin: -4.8em 0 0 0;
+  margin: -4.5em 0 0 0;
   background: #252525;
   opacity: 0;
   visibility: hidden;
@@ -672,7 +652,7 @@ ul.st-text-block {
   display: block;
   position: absolute;
   left: 50%;
-  top: 3.9em;
+  top: 3.3em;
   width: 0;
   height: 0;
   border-left: 0.875em solid transparent;
@@ -689,7 +669,8 @@ ul.st-text-block {
   border: 0;
   color: #fff;
   font-size: 1em;
-  padding: 0.8em 0.8em;
+  line-height: 1;
+  padding: 0.5em 0.6em;
   vertical-align: middle;
   text-align: center; }
   .st-format-btn:focus {

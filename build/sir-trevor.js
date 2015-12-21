@@ -3743,7 +3743,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }, {
 	        name: "Unlink",
 	        title: "unlink",
-	        iconName: "fmt-link",
+	        iconName: "fmt-unlink",
 	        cmd: "unlink",
 	        text: "link"
 	      }, {
@@ -16311,8 +16311,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  selectText: function selectText() {
 	    var range = document.createRange();
+	    if (this._scribe.allowsBlockElements()) {
+	      range.setStartAfter(this._scribe.el.firstChild, 0);
+	    } else {
+	      range.selectNodeContents(this._scribe.el);
+	    }
 	    range.collapse(false);
-	    range.setStartAfter(this._scribe.el.firstChild, 0);
 	    var selection = new this._scribe.api.Selection();
 	    selection.selection.removeAllRanges();
 	    selection.selection.addRange(range);
@@ -17136,7 +17140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    block.parentNode.appendChild(this.dragEl);
 
 	    ev.dataTransfer.setDragImage(this.dragEl, 0, 0);
-	    ev.dataTransfer.setData('Text', this.blockId());
+	    ev.dataTransfer.setData("text/plain", this.blockId());
 	    this.mediator.trigger("block-controls:hide");
 
 	    EventBus.trigger("block:reorder:dragstart");
@@ -17448,27 +17452,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var block = this.findBlockById(blockID);
 	    var type = utils.classify(block.type);
 	    var previousBlock = this.getPreviousBlock(block);
+	    var nextBlock = this.getNextBlock(block);
 
 	    if (options.transposeContent && block.textable) {
 
-	      // Don't allow removal of first block.
-	      if (!previousBlock) {
+	      // Don't allow removal of first block if it's the only block.
+	      if (!previousBlock && this.blocks.length === 1) {
 	        return;
 	      }
 
 	      // If previous block can transpose content then append content.
-	      if (previousBlock.textable) {
+	      if (previousBlock && previousBlock.textable) {
 	        previousBlock.appendContent(block.getScribeInnerContent(), {
 	          keepCaretPosition: true
 	        });
 	      } else {
-	        // If there's content and the block above isn't textable then cancel remove.
+	        // If there's content and the block above isn't textable then
+	        // cancel remove.
 	        if (block.getScribeInnerContent() !== '') {
 	          return;
 	        }
 
 	        // If block before isn't textable then we want to still focus.
-	        previousBlock.focusAtEnd();
+	        if (previousBlock) {
+	          previousBlock.focusAtEnd();
+	        } else if (nextBlock) {
+	          // If there wasn't a previous block then
+	          // we'll want to focus on the next block.
+	          nextBlock.focus();
+	        }
 	      }
 	    }
 
@@ -17498,7 +17510,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  renderBlock: function renderBlock(block, previousSibling) {
-	    // REFACTOR: this will have to do until we're able to address the block manager
+	    // REFACTOR: this will have to do until we're able to address
+	    // the block manager
 	    if (previousSibling) {
 	      Dom.insertAfter(block.render().el, previousSibling);
 	    } else {
@@ -17516,7 +17529,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getPreviousBlock: function getPreviousBlock(block) {
 	    var blockPosition = this.getBlockPosition(block.el);
-	    if (blockPosition === 0) {
+	    if (blockPosition < 1) {
 	      return;
 	    }
 	    var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
@@ -17525,7 +17538,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  getNextBlock: function getNextBlock(block) {
 	    var blockPosition = this.getBlockPosition(block.el);
-	    if (blockPosition === this.blocks.length - 1) {
+	    if (blockPosition < 0 || blockPosition >= this.blocks.length - 1) {
 	      return;
 	    }
 	    return this.findBlockById(this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id'));
@@ -18982,7 +18995,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var selection = new scribe.api.Selection();
 	      var range = selection.range.cloneRange();
 	      range.selectNodeContents(scribe.el);
-	      range.setEndAfter(scribe.el.lastChild, 0);
 
 	      return range.toString().length;
 	    };
@@ -20537,6 +20549,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Gives an interface for adding new Sir Trevor blocks.
 	 */
 
+	var dropEvents = __webpack_require__(147);
+
+	var EventBus = __webpack_require__(89);
+
+	var Dom = __webpack_require__(83);
 	var Events = __webpack_require__(145);
 
 	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(309);
@@ -20558,6 +20575,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
+
+	  var topControls = SirTrevor.wrapper.querySelector('.st-top-controls');
+
+	  function onDrop(ev) {
+	    ev.preventDefault();
+
+	    var dropped_on = topControls,
+	        item_id = ev.dataTransfer.getData("text/plain"),
+	        block = document.querySelector('#' + item_id);
+
+	    if ((!!item_id, !!block, dropped_on.id !== item_id)) {
+	      Dom.insertAfter(block, dropped_on);
+	    }
+	    SirTrevor.mediator.trigger("block:rerender", item_id);
+	    EventBus.trigger("block:reorder:dropped", item_id);
+	  }
+
+	  dropEvents.dropArea(topControls);
+	  topControls.addEventListener('drop', onDrop);
 
 	  Events.delegate(SirTrevor.wrapper, ".st-block-addition", "click", createBlock);
 
