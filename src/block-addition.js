@@ -6,6 +6,11 @@
  * Gives an interface for adding new Sir Trevor blocks.
  */
 
+const dropEvents = require('./helpers/drop-events');
+
+const EventBus = require('./event-bus');
+
+const Dom = require('./packages/dom');
 const Events = require("./packages/events");
 
 const BLOCK_ADDITION_TEMPLATE = require("./templates/top-block-addition");
@@ -29,6 +34,25 @@ module.exports.create = function(SirTrevor) {
   }
 
   SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
+
+  const topControls = SirTrevor.wrapper.querySelector('.st-top-controls');
+
+  function onDrop(ev) {
+    ev.preventDefault();
+
+    var dropped_on = topControls,
+      item_id = ev.dataTransfer.getData("text/plain"),
+      block = document.querySelector('#' + item_id);
+
+    if (!!item_id, !!block, dropped_on.id !== item_id) {
+      Dom.insertAfter(block, dropped_on);
+    }
+    SirTrevor.mediator.trigger("block:rerender", item_id);
+    EventBus.trigger("block:reorder:dropped", item_id);
+  }
+
+  dropEvents.dropArea(topControls);
+  topControls.addEventListener('drop', onDrop);
 
   Events.delegate(
     SirTrevor.wrapper, ".st-block-addition", "click", createBlock

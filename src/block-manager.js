@@ -80,26 +80,34 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     var block = this.findBlockById(blockID);
     var type = utils.classify(block.type);
     var previousBlock = this.getPreviousBlock(block);
+    var nextBlock = this.getNextBlock(block);
     
     if (options.transposeContent && block.textable) {
 
-      // Don't allow removal of first block.
-      if (!previousBlock) { return; }
+      // Don't allow removal of first block if it's the only block.
+      if (!previousBlock && this.blocks.length === 1) { return; }
 
       // If previous block can transpose content then append content.
-      if (previousBlock.textable) {
+      if (previousBlock && previousBlock.textable) {
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
         });
       } else {
-        // If there's content and the block above isn't textable then cancel remove.
+        // If there's content and the block above isn't textable then 
+        // cancel remove.
         if (block.getScribeInnerContent() !== '') {
           return;
         }
 
         // If block before isn't textable then we want to still focus.
-        previousBlock.focusAtEnd();
+        if (previousBlock) {
+          previousBlock.focusAtEnd();
+        } else if (nextBlock) {
+          // If there wasn't a previous block then 
+          // we'll want to focus on the next block.
+          nextBlock.focus();
+        }
       }
     }
     
@@ -129,7 +137,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   renderBlock: function(block, previousSibling) {
-    // REFACTOR: this will have to do until we're able to address the block manager
+    // REFACTOR: this will have to do until we're able to address 
+    // the block manager
     if (previousSibling) {
       Dom.insertAfter(block.render().el, previousSibling);
     } else {
@@ -148,7 +157,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
-    if (blockPosition === 0) { return; }
+    if (blockPosition < 1) { return; }
     var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
     return this.findBlockById(
       previousBlock.getAttribute('id')
@@ -157,7 +166,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getNextBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
-    if (blockPosition === this.blocks.length - 1) { return; }
+    if (blockPosition < 0 || blockPosition >= this.blocks.length - 1) { return; }
     return this.findBlockById(
       this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id')
     );

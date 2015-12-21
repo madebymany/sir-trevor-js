@@ -34,16 +34,60 @@ describe('Empty data', function() {
     createNextBlock(0);
   });
 
-  xit('should allow removal of block', function(done) {
-    helpers.createBlock(blockTypes[0], function() {
-      helpers.findElementByCss('.st-block-ui-btn__delete').click().then( function() {
-        return helpers.findElementByCss('.js-st-block-confirm-delete').click();
-      }, helpers.catchError).then( function() {
-        return helpers.findElementByCss('.st-block');
-      }, helpers.catchError).then( null, function(err) {
+  it('should allow removal of block', function(done) {
+    var classes, type;
+    function deleteBlock(currentBlock) {
+      if (currentBlock === blockTypes.length) {
         done();
+        return;
+      }
+      helpers.createBlock(blockTypes[currentBlock], function(block) {
+        block.getAttribute('class').then( function(className) {
+          classes = className.split(' ');
+          return block.getAttribute('data-type');
+        }).then( function(res) {
+          type = res;
+          if (classes.indexOf('st-block--textable') > -1) {
+            return helpers.focusOnTextBlock()
+                    .then(helpers.pressBackSpace)
+                    .then(helpers.findBlocks)
+                    .then(function(blocks) {
+                      if (blocks.length === 0) {
+                        deleteBlock(currentBlock + 1);
+                      }
+                    });
+          } else if (type === 'list') {
+            return helpers.focusOnListBlock()
+                    .then(helpers.pressBackSpace)
+                    .then(helpers.findBlocks)
+                    .then(function(blocks) {
+                      if (blocks.length === 0) {
+                        deleteBlock(currentBlock + 1);
+                      }
+                    });
+          } else if (classes.indexOf('st-block--droppable') > -1) {
+            return helpers.findElementByCss('.st-block__inner--droppable', block).click()
+              .then(helpers.pressBackSpace)
+              .then(helpers.findBlocks)
+              .then(function(blocks) {
+                if (blocks.length === 0) {
+                  deleteBlock(currentBlock + 1);
+                }
+              });
+          } else {
+            return helpers.findElementByCss('.st-block-ui-btn__delete', block).click().then(function() {
+              return helpers.findElementByCss('.js-st-block-confirm-delete', block).click();
+            }).then(helpers.findBlocks)
+              .then(function(blocks) {
+                if (blocks.length === 0) {
+                  deleteBlock(currentBlock + 1);
+                }
+              });
+          }
+        });
       });
-    });
+    }
+    deleteBlock(0);
   });
 
 });
@@ -108,14 +152,16 @@ describe('Existing data', function() {
       });
     });
 
-    xit('with drag and drop', function(done) {
+    it('with drag and drop', function(done) {
       var id;
       return blocks[1].getAttribute('id').then( function(res) {
         id = res;
       }).then( function() {
         return helpers.browser.executeScript( function() {
           var elements = document.querySelectorAll('.st-block');
-          window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: elements[0]});
+          var topControls = document.querySelector('.st-top-controls');
+          console.log(topControls);
+          window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: topControls});
         });
       }).then(helpers.findBlocks)
         .then( function(elements) {

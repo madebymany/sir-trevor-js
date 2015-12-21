@@ -11,9 +11,7 @@ $animation-speed: 0.2s;
 }
 
 .st-block-addition {
-  position: absolute;
   text-align: center;
-  transform: translateY(-50%);
   outline:none;
   border:none;
   display:block;
@@ -37,29 +35,29 @@ $animation-speed: 0.2s;
 }
 
 .st-block-addition__button {
-  transition: all $animation-speed 0.5s ease-in-out;
-  background-color:$block-controls-color;
+  transition: all $animation-speed 0.3s ease-in-out;
+  border: 1px solid transparent;
+  color: #444444;
   position:relative;
   box-sizing:border-box;
   padding:.2em;
   display: inline-block;
-  color:#fff;
   margin: 0 auto;
-  opacity: 0;
   width: 100%;
   cursor: pointer;
+  opacity: 0.2;
 
   transform:translateZ(0);
 
   .st-icon {
     height: 20px;
     width: 20px;
-    color:#fff;
+    color: inherit;
   }
 
   .st-block-addition:hover &,
   .st-block--active & {
-    background-color:$accent-color;
+    color: $accent-color;
     opacity: 1;
   }
 }
@@ -68,17 +66,6 @@ $animation-speed: 0.2s;
   content:"";
   display:block;
   position: absolute;
-}
-
-.st-block-addition:before {
-  @extend %st-psuedo-shape;
-  transition: all $animation-speed ease-in-out;
-  height:1px;
-  width:100%;
-  background-color:$block-controls-color;
-  opacity:.2;
-  top:50%;
-  transform:translateY(-50%);
 }
 
 .st-block-addition:hover:before,
