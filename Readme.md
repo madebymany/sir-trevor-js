@@ -6,10 +6,10 @@
 
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
-## Upgrade guide from v0.4
+## Upgrade guide from v0.5
 
 - [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
-- [Migration docs](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md)
+- Migration docs [0.4-0.5](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md), [0.5-0.6](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.6.md)
 
 ## Quick start
 
@@ -101,7 +101,6 @@ matrix:
   - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='Windows 7'
   - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='OSX 10.9'
   - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='Windows 7'
-  - BROWSER_NAME='internet explorer' BROWSER_VERSION='11' PLATFORM='Windows 10'
   - BROWSER_NAME='safari' BROWSER_VERSION='8' PLATFORM='OSX 10.10'
 
 ## License

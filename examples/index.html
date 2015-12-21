@@ -45,6 +45,9 @@
       SirTrevor.config.debug = true;
       SirTrevor.config.scribeDebug = true;
       SirTrevor.config.language = "en";
+      SirTrevor.setDefaults({
+        iconUrl: '../src/icons/sir-trevor-icons.svg'
+      });
 
       window.editor = new SirTrevor.Editor({
         el: document.querySelector('.sir-trevor'),
