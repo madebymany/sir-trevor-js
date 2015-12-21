@@ -28,6 +28,11 @@ var pressEnter = function() {
     .sendKeys(driver.Key.ENTER)
     .perform();
 };
+exports.pressBackSpace = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.BACK_SPACE)
+    .perform();
+};
 
 exports.createBlock = function(blockType, cb) {
 
@@ -40,6 +45,7 @@ exports.createBlock = function(blockType, cb) {
   }
 
   exports.findBlocks().then( function(blocks) {
+    console.log(blocks.length, blockType);
     if (blocks.length > 0) {
       var element = blocks[blocks.length-1];
       var classes, type;
@@ -55,7 +61,6 @@ exports.createBlock = function(blockType, cb) {
             return createBlock(element);
           }
         } else if (type === 'list') {
-
           return pressEnter()
             .then(exports.findBlocks)
             .then( function(blocks2) {
@@ -65,13 +70,17 @@ exports.createBlock = function(blockType, cb) {
           return exports.findElementByCss('.st-block__inner--droppable', element).click()
             .then(pressEnter)
             .then(exports.findBlocks)
-            .then( function(blocks2) {
+            .then(function(blocks2) {
               return createBlock(blocks2[blocks2.length-1]);
             });
         }
       });
     } else {
-      exports.findElementByCss('.st-top-controls').then(createBlock);
+      exports.findElementByCss('.st-top-controls > .st-block-addition').click()
+        .then(exports.findBlocks)
+        .then(function(elements) {
+          createBlock(elements[0]);
+        });
     }
   });
 };
@@ -87,6 +96,16 @@ exports.focusOnTextBlock = function(index) {
   return exports.findElementsByCss('.st-text-block').then(function(elements) {
     return exports.browser.actions()
               .mouseMove(elements[index], {x: 5, y: 10})
+              .click()
+              .perform();
+  });
+};
+
+exports.focusOnListBlock = function(index) {
+  index = index || 0;
+  return exports.findElementsByCss('.st-list-block__list').then(function(elements) {
+    return exports.browser.actions()
+              .mouseMove(elements[index])
               .click()
               .perform();
   });
