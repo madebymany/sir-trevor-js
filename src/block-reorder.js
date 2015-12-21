@@ -77,7 +77,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
     block.parentNode.appendChild(this.dragEl);
 
     ev.dataTransfer.setDragImage(this.dragEl, 0, 0);
-    ev.dataTransfer.setData('Text', this.blockId());
+    ev.dataTransfer.setData("text/plain", this.blockId());
     this.mediator.trigger("block-controls:hide");
 
     EventBus.trigger("block:reorder:dragstart");

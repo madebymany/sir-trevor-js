@@ -108,14 +108,16 @@ describe('Existing data', function() {
       });
     });
 
-    xit('with drag and drop', function(done) {
+    it('with drag and drop', function(done) {
       var id;
       return blocks[1].getAttribute('id').then( function(res) {
         id = res;
       }).then( function() {
         return helpers.browser.executeScript( function() {
           var elements = document.querySelectorAll('.st-block');
-          window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: elements[0]});
+          var topControls = document.querySelector('.st-top-controls');
+          console.log(topControls);
+          window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: topControls});
         });
       }).then(helpers.findBlocks)
         .then( function(elements) {
