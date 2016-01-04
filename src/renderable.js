@@ -1,7 +1,7 @@
 "use strict";
 
 var _ = require('./lodash');
-var $ = require('jquery');
+var Dom = require('./packages/dom');
 
 module.exports = {
   tagName: 'div',
@@ -9,7 +9,7 @@ module.exports = {
   attributes: {},
 
   $: function(selector) {
-    return this.$el.find(selector);
+    return this.el.querySelectorAll(selector);
   },
 
   render: function() {
@@ -18,31 +18,24 @@ module.exports = {
 
   destroy: function() {
     if (!_.isUndefined(this.stopListening)) { this.stopListening(); }
-    this.$el.remove();
+    Dom.remove(this.el);
   },
 
   _ensureElement: function() {
     if (!this.el) {
-      var attrs = Object.assign({}, _.result(this, 'attributes')),
-      html;
+      var attrs = Object.assign({}, _.result(this, 'attributes'));
       if (this.id) { attrs.id = this.id; }
       if (this.className) { attrs['class'] = this.className; }
 
-      if (attrs.html) {
-        html = attrs.html;
-        delete attrs.html;
-      }
-      var $el = $('<' + this.tagName + '>').attr(attrs);
-      if (html) { $el.html(html); }
-      this._setElement($el);
+      var el = Dom.createElement(this.tagName, attrs);
+      this._setElement(el);
     } else {
       this._setElement(this.el);
     }
   },
 
   _setElement: function(element) {
-    this.$el = $(element);
-    this.el = this.$el[0];
+    this.el = element;
     return this;
   }
 };

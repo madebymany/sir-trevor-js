@@ -6,7 +6,7 @@ describe("Editor", function(){
 
   beforeEach(function(){
     SirTrevor.instances = [];
-    element = $("<textarea>");
+    element = global.createBaseElement();
   });
 
   describe("instantiating without an element", function(){
@@ -41,16 +41,16 @@ describe("Editor", function(){
       editor = new SirTrevor.Editor({ el: element });
     });
 
-    it("creates a $form element", function(){
-      expect(editor.$form).toBeDefined();
+    it("creates a form element", function(){
+      expect(editor.form).toBeDefined();
     });
 
-    it("creates an $outer element", function(){
-      expect(editor.$outer).toBeDefined();
+    it("creates an outer element", function(){
+      expect(editor.outer).toBeDefined();
     });
 
-    it("creates a $wrapper element", function(){
-      expect(editor.$wrapper).toBeDefined();
+    it("creates a wrapper element", function(){
+      expect(editor.wrapper).toBeDefined();
     });
 
   });
@@ -62,11 +62,7 @@ describe("Editor", function(){
     });
 
     it("creates a new BlockControl", function(){
-      expect(editor.block_controls).toBeDefined();
-    });
-
-    it("creates a new FloatingBlockControl", function(){
-      expect(editor.fl_block_controls).toBeDefined();
+      expect(editor.blockControls).toBeDefined();
     });
 
     it("creates a new FormatBar", function(){
@@ -80,7 +76,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -101,7 +97,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { type: "Text" },
         { type: "Image" }
       ];
@@ -117,7 +113,7 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
+      editor.blockManager.blocks = [
         { blockID: 1 },
         { blockID: 2 }
       ];
@@ -133,15 +129,15 @@ describe("Editor", function(){
     beforeEach(function(){
       editor = new SirTrevor.Editor({ el: element });
 
-      editor.block_manager.blocks = [
-        { blockID: 1 },
-        { blockID: 2 }
+      editor.blockManager.blocks = [
+        { blockID: 1, remove: () => {} },
+        { blockID: 2, remove: () => {} }
       ];
     });
 
     it("clears the blocks", function(){
       editor.destroy();
-      expect(editor.block_manager.blocks.length).toBe(0);
+      expect(editor.blockManager.blocks.length).toBe(0);
     });
   });
 

@@ -3,51 +3,7 @@
 var Block = require('../block');
 var stToHTML = require('../to-html');
 
-var ScribeListBlockPlugin = function(block) {
-  return function(scribe) {
-    scribe.el.addEventListener('keydown', function(ev) {
-      var rangeToHTML = function(range) {
-        var div = document.createElement('div');
-        div.appendChild(range.extractContents());
-
-        return div.innerHTML;
-      };
-
-      var selectToEnd = function() {
-        var selection = new scribe.api.Selection();
-        var range = selection.range.cloneRange();
-        range.setEndAfter(scribe.el.lastChild, 0);
-
-        return range;
-      };
-
-      var currentPosition = function() {
-        var selection = new scribe.api.Selection();
-        return selection.range.startOffset;
-      };
-
-      var content;
-
-      if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
-        ev.preventDefault();
-
-        content = rangeToHTML(selectToEnd());
-        block.addListItemAfterCurrent(content);
-      } else if (!block.isLastListItem()) { // don't remove if last item
-        if (ev.keyCode === 8 && currentPosition() === 0) {
-          ev.preventDefault();
-
-          content = scribe.getContent();
-          block.removeCurrentListItem();
-          block.appendToCurrentItem(content);
-        } else if (ev.keyCode === 46) {
-          // TODO: Pressing del from end of list item
-        }
-      }
-    });
-  };
-};
-
+var ScribeListBlockPlugin = require('./scribe-plugins/scribe-list-block-plugin');
 
 module.exports = Block.extend({
   type: 'list',
@@ -86,8 +42,7 @@ module.exports = Block.extend({
   },
 
   setupListVariables: function() {
-    this.$ul = this.$inner.find('ul');
-    this.ul = this.$ul.get(0);
+    this.ul = this.inner.querySelector('ul');
   },
 
   loadData: function(data) {
@@ -147,11 +102,11 @@ module.exports = Block.extend({
       var idx = this.editorIds.indexOf(after.id) + 1;
       this.editorIds.splice(idx, 0, editor.id);
     } else {
-      this.$ul.append(editor.node);
+      this.ul.appendChild(editor.node);
       this.editorIds.push(editor.id);
     }
 
-    this.focusOn(editor);
+    !content && this.focusOn(editor); // jshint ignore:line
   },
 
   focusOnNeighbor: function(item) {
@@ -177,6 +132,11 @@ module.exports = Block.extend({
       range.setStartAfter(lastChild, 1);
       range.collapse(false);
     }
+  },
+
+  focusAtEnd: function() {
+    var lastEditorId = this.editorIds[this.editorIds.length - 1];
+    this.appendToTextEditor(lastEditorId);
   },
 
   removeCurrentListItem: function() {

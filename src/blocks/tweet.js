@@ -1,8 +1,8 @@
 "use strict";
 
 var _ = require('../lodash');
-var $ = require('jquery');
 var utils = require('../utils');
+var Dom = require('../packages/dom');
 
 var Block = require('../block');
 
@@ -11,13 +11,13 @@ var tweet_template = _.template([
   "<p><%= text %></p>",
   "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
   "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
-  "</blockquote>",
-  '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
+  "</blockquote>"
 ].join("\n"));
 
 module.exports = Block.extend({
 
   type: "tweet",
+  icon_name: "tweet",
   droppable: true,
   pastable: true,
   fetchable: true,
@@ -32,18 +32,21 @@ module.exports = Block.extend({
     return "/tweets/?tweet_id=" + tweetID;
   },
 
-  icon_name: 'twitter',
-
   loadData: function(data) {
     if (_.isUndefined(data.status_url)) { data.status_url = ''; }
-    this.$inner.find('iframe').remove();
-    this.$inner.prepend(tweet_template(data));
+    var iframe = this.inner.querySelector('iframe');
+    Dom.remove(iframe);
+
+    this.inner.insertAdjacentHTML("afterbegin", tweet_template(data));
+
+    var script = Dom.createElement('script', {src: '//platform.twitter.com/widgets.js'});
+    this.inner.appendChild(script);
   },
 
   onContentPasted: function(event){
     // Content pasted. Delegate to the drop parse method
-    var input = $(event.target),
-    val = input.val();
+    var input = event.target,
+    val = input.value;
 
     // Pass this to the same handler as onDrop
     this.handleTwitterDropPaste(val);
@@ -61,12 +64,7 @@ module.exports = Block.extend({
       this.loading();
       tweetID = tweetID[0];
 
-      var ajaxOptions = {
-        url: this.fetchUrl(tweetID),
-        dataType: "json"
-      };
-
-      this.fetch(ajaxOptions, this.onTweetSuccess, this.onTweetFail);
+      this.fetch(this.fetchUrl(tweetID), {dataType: 'json'}, this.onTweetSuccess, this.onTweetFail);
     }
   },
 

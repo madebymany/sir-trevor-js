@@ -2,9 +2,12 @@
 
 var _ = require('./lodash');
 var utils = require('./utils');
-var $ = require('jquery');
+var Dom = require('./packages/dom');
+var Events = require('./packages/events');
 
 var BlockReorder = require('./block-reorder');
+
+const BLOCK_TEMPLATE = require('./templates/block');
 
 var SimpleBlock = function(data, instance_id, mediator, options) {
   this.createStore(data);
@@ -27,9 +30,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   className: 'st-block',
 
-  block_template: _.template(
-    "<div class='st-block__inner'><%= editor_html %></div>"
-  ),
+  block_template: BLOCK_TEMPLATE,
 
   attributes: function() {
     return {
@@ -64,12 +65,9 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   _setBlockInner : function() {
     var editor_html = _.result(this, 'editorHTML');
 
-    this.$el.append(
-      this.block_template({ editor_html: editor_html })
-    );
+    this.el.insertAdjacentHTML("beforeend", this.block_template(editor_html));
 
-    this.$inner = this.$el.find('.st-block__inner');
-    this.$inner.bind('click mouseover', function(e){ e.stopPropagation(); });
+    this.inner = this.el.querySelector('.st-block__inner');
   },
 
   render: function() {
@@ -87,45 +85,45 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
     this.checkAndLoadData();
 
-    this.$el.addClass('st-item-ready');
+    this.el.classList.add('st-item-ready');
     this.on("onRender", this.onBlockRender);
     this.save();
   },
 
   _withUIComponent: function(component, className, callback) {
-    this.$ui.append(component.render().$el);
+    this.ui.appendChild(component.render().el);
     if (className && callback) {
-      this.$ui.on('click', className, callback);
+      Events.delegate(this.ui, className, 'click', callback);
     }
   },
 
   _initUI : function() {
-    var ui_element = $("<div>", { 'class': 'st-block__ui' });
-    this.$inner.append(ui_element);
-    this.$ui = ui_element;
+    var ui_element = Dom.createElement("div", { 'class': 'st-block__ui' });
+    this.el.appendChild(ui_element);
+    this.ui = ui_element;
     this._initUIComponents();
   },
 
   _initMessages: function() {
-    var msgs_element = $("<div>", { 'class': 'st-block__messages' });
-    this.$inner.prepend(msgs_element);
-    this.$messages = msgs_element;
+    var msgs_element = Dom.createElement("div", { 'class': 'st-block__messages' });
+    this.inner.insertBefore(msgs_element, this.inner.firstChild);
+    this.messages = msgs_element;
   },
 
   addMessage: function(msg, additionalClass) {
-    var $msg = $("<span>", { html: msg, class: "st-msg " + additionalClass });
-    this.$messages.append($msg)
-    .addClass('st-block__messages--is-visible');
-    return $msg;
+    msg = Dom.createElement("span", { html: msg, class: "st-msg " + additionalClass });
+    this.messages.appendChild(msg);
+    this.messages.classList.add('st-block__messages--is-visible');
+    return msg;
   },
 
   resetMessages: function() {
-    this.$messages.html('')
-    .removeClass('st-block__messages--is-visible');
+    this.messages.innerHTML = '';
+    this.messages.classList.remove('st-block__messages--is-visible');
   },
 
   _initUIComponents: function() {
-    this._withUIComponent(new BlockReorder(this.$el));
+    this._withUIComponent(new BlockReorder(this.el));
   }
 
 });

@@ -6,7 +6,7 @@ describe("Editor:Editor with options", function(){
 
   beforeEach(function(){
     SirTrevor.config.instances = [];
-    element = $("<textarea>");
+    element = global.createBaseElement();
   });
 
   describe("setting the block limit", function(){

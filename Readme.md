@@ -6,10 +6,10 @@
 
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
-## Upgrade guide from v0.4
+## Upgrade guide from v0.5
 
 - [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
-- [Migration docs](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md)
+- Migration docs [0.4-0.5](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md), [0.5-0.6](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.6.md)
 
 ## Quick start
 
@@ -70,6 +70,10 @@ Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can
 
 ### Compiling
 
+Tests are run as part of compilation process, which require `chromedriver` to be installed on
+the machine where you are running the compilation. If you're running Homebrew on OSX this can
+be installed via `brew install chromedriver`.
+
 Before getting started please be sure to install the necessary dependencies via npm:
 
 ``$ npm install``
@@ -89,6 +93,15 @@ Runs the linter and test suite, just like the CI server does.
 Concatenates scripts, compiles the Sass, runs the Jasmine tests and minifies the project.
 
 Please ensure any pull requests have relevant Jasmine tests (where applicable).
+
+## Current browser support tests
+
+matrix:
+  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='OSX 10.9'
+  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='Windows 7'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='OSX 10.9'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='Windows 7'
+  - BROWSER_NAME='safari' BROWSER_VERSION='8' PLATFORM='OSX 10.10'
 
 ## License
 

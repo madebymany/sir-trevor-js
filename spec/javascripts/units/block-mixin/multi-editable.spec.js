@@ -5,9 +5,13 @@ describe("Block Mixin: MultiEditable", function() {
   var tpl = '<div class="st-block__editor"></div>';
 
   beforeEach(function() {
-    element = $("<textarea>");
-    editor = new SirTrevor.Editor({ el: element });
-    var options = editor.block_manager.blockOptions;
+    element = global.createBaseElement();
+    editor = new SirTrevor.Editor({ 
+      el: element,
+      blockTypes: ["Text"]
+    });
+
+    var options = editor.blockManager.blockOptions;
 
     SirTrevor.Blocks.MultiBlock = SirTrevor.Block.extend({
       multi_editable: true
@@ -19,7 +23,11 @@ describe("Block Mixin: MultiEditable", function() {
                                                 options);
 
     spyOn(block, 'withMixin').and.callThrough();
-    editor.renderBlock(block);
+    editor.blockManager.renderBlock(block);
+  });
+
+  afterEach(function() {
+    delete SirTrevor.Blocks.MultiBlock;
   });
 
   describe('setup', function() {
