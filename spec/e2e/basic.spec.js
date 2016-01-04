@@ -160,7 +160,6 @@ describe('Existing data', function() {
         return helpers.browser.executeScript( function() {
           var elements = document.querySelectorAll('.st-block');
           var topControls = document.querySelector('.st-top-controls');
-          console.log(topControls);
           window.simulateDragDrop(elements[1].querySelector('.st-block-ui-btn__reorder'), {dropTarget: topControls});
         });
       }).then(helpers.findBlocks)

@@ -45,7 +45,6 @@ exports.createBlock = function(blockType, cb) {
   }
 
   exports.findBlocks().then( function(blocks) {
-    console.log(blocks.length, blockType);
     if (blocks.length > 0) {
       var element = blocks[blocks.length-1];
       var classes, type;
