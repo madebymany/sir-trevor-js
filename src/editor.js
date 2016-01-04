@@ -17,6 +17,7 @@ var Events = require('./events');
 var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
 var BlockControls = require('./block-controls');
+var BlockAddition = require('./block-addition');
 var BlockManager = require('./block-manager');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
@@ -75,6 +76,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.store = new EditorStore(this.el.value, this.mediator);
 
     this.blockManager = new BlockManager(this);
+    this.blockAddition = BlockAddition.create(this);
     this.blockControls = BlockControls.create(this);
 
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
@@ -86,7 +88,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this._setEvents();
 
+    // External event listeners
     window.addEventListener('click', this.hideAllTheThings);
+    document.body.addEventListener('keydown', this.disableBackButton);
 
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
@@ -111,6 +115,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   destroy: function() {
     // Destroy the rendered sub views
     this.formatBar.destroy();
+    this.blockAddition.destroy();
     this.blockControls.destroy();
 
     // Destroy all blocks
@@ -126,6 +131,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     config.instances = config.instances.filter(function(instance) {
       return instance.ID !== this.ID;
     }, this);
+
+    // Remove external event listeners
+    window.removeEventListener('click', this.hideAllTheThings);
+    document.body.removeEventListener('keydown', this.disableBackButton);
 
     // Clear the store
     this.store.reset();
@@ -149,6 +158,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   hideAllTheThings: function(e) {
     this.blockControls.hide();
+    this.blockAddition.hide();
     this.formatBar.hide();
   },
 
@@ -186,6 +196,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       return;
     }
 
+    if (block.type === 'text' && block.isEmpty()) {
+      return;
+    }
+
     var blockData = block.getData();
     utils.log("Adding data for block " + block.blockID + " to block store:",
               blockData);
@@ -212,6 +226,21 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.el.value = this.store.toString();
 
     return this.errorHandler.errors.length;
+  },
+
+  /*
+   * Disable back button so when a block loses focus the user
+   * pressing backspace multiple times doesn't close the page.
+   */
+  disableBackButton: function(e) {
+    if (e.keyCode === 8) {
+      if (e.srcElement.getAttribute('contenteditable') ||
+          e.srcElement.tagName === 'INPUT') {
+        return;
+      }
+
+      e.preventDefault();
+    }
   },
 
   validateBlocks: function(shouldValidate) {

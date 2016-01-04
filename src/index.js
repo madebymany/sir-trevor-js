@@ -1,5 +1,7 @@
 "use strict";
 
+require("./icons/sir-trevor-icons.svg");
+
 // ES6 shims
 require('object.assign').shim();
 require('array.prototype.find');

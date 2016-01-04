@@ -56,7 +56,6 @@ var ScribeTextBlockPlugin = function(block) {
       var selection = new scribe.api.Selection();
       var range = selection.range.cloneRange();
       range.selectNodeContents(scribe.el);
-      range.setEndAfter(scribe.el.lastChild, 0);
 
       return range.toString().length;
     };

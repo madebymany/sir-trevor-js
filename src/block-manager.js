@@ -44,6 +44,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     'create': 'createBlock',
     'remove': 'removeBlock',
     'rerender': 'rerenderBlock',
+    'replace': 'replaceBlock',
     'focusPrevious': 'focusPreviousBlock',
     'focusNext': 'focusNextBlock'
   },
@@ -71,28 +72,42 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   removeBlock: function(blockID, options) {
-    options = options || {};
+    options = Object.assign({
+      transposeContent: false,
+      focusOnPrevious: false
+    }, options);
 
     var block = this.findBlockById(blockID);
     var type = utils.classify(block.type);
+    var previousBlock = this.getPreviousBlock(block);
+    var nextBlock = this.getNextBlock(block);
     
     if (options.transposeContent && block.textable) {
 
-      var previousBlock = this.getPreviousBlock(block);
+      // Don't allow removal of first block if it's the only block.
+      if (!previousBlock && this.blocks.length === 1) { return; }
 
-      // Don't allow removal of first block.
-      if (!previousBlock) { return; }
-
-      // If block is empty then always allow removal.
-      if (block.getScribeInnerContent() !== '') {
-
-        // If block above is not textable then cancel.
-        if (!previousBlock.textable) { return; }
-
+      // If previous block can transpose content then append content.
+      if (previousBlock && previousBlock.textable) {
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
         });
+      } else {
+        // If there's content and the block above isn't textable then 
+        // cancel remove.
+        if (block.getScribeInnerContent() !== '') {
+          return;
+        }
+
+        // If block before isn't textable then we want to still focus.
+        if (previousBlock) {
+          previousBlock.focusAtEnd();
+        } else if (nextBlock) {
+          // If there wasn't a previous block then 
+          // we'll want to focus on the next block.
+          nextBlock.focus();
+        }
       }
     }
     
@@ -103,6 +118,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     block.remove();
 
+    if (options.focusOnPrevious && previousBlock) {
+      previousBlock.focusAtEnd();
+    }
+
     this._decrementBlockTypeCount(type);
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
@@ -110,8 +129,16 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     EventBus.trigger("block:remove");
   },
 
+  replaceBlock: function(blockNode, type, data) {
+    var block = this.findBlockById(blockNode.id);
+    this.createBlock(type, data || null, blockNode);
+    this.removeBlock(blockNode.id);
+    block.remove();
+  },
+
   renderBlock: function(block, previousSibling) {
-    // REFACTOR: this will have to do until we're able to address the block manager
+    // REFACTOR: this will have to do until we're able to address 
+    // the block manager
     if (previousSibling) {
       Dom.insertAfter(block.render().el, previousSibling);
     } else {
@@ -130,7 +157,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getPreviousBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
-    if (blockPosition === 0) { return; }
+    if (blockPosition < 1) { return; }
     var previousBlock = this.wrapper.querySelectorAll('.st-block')[blockPosition - 1];
     return this.findBlockById(
       previousBlock.getAttribute('id')
@@ -139,7 +166,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   getNextBlock: function(block) {
     var blockPosition = this.getBlockPosition(block.el);
-    if (blockPosition === this.blocks.length - 1) { return; }
+    if (blockPosition < 0 || blockPosition >= this.blocks.length - 1) { return; }
     return this.findBlockById(
       this.wrapper.querySelectorAll('.st-block')[blockPosition + 1].getAttribute('id')
     );

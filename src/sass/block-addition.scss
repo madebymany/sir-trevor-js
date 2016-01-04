@@ -1,0 +1,79 @@
+
+$animation-speed: 0.2s;
+
+.st--block-limit-reached .st-top-controls {
+  display: none;
+}
+
+.st-top-controls {
+  position: relative;
+  z-index: 2;
+}
+
+.st-block-addition {
+  text-align: center;
+  outline:none;
+  border:none;
+  display:block;
+  width:100%;
+  background-color:transparent;
+  padding:0;
+  z-index: 2;
+  
+  &::-moz-focus-inner {
+    padding:0;
+    margin:0;
+    margin-left:-1px;
+  }
+  
+  .st-block--textable &,
+  .st-block--droppable &,
+  .st-block[data-type="list"] & {
+    display: none;
+  }
+  
+}
+
+.st-block-addition__button {
+  transition: all $animation-speed 0.3s ease-in-out;
+  border: 1px solid transparent;
+  color: #444444;
+  position:relative;
+  box-sizing:border-box;
+  padding:.2em;
+  display: inline-block;
+  margin: 0 auto;
+  width: 100%;
+  cursor: pointer;
+  opacity: 0.2;
+
+  transform:translateZ(0);
+
+  .st-icon {
+    height: 20px;
+    width: 20px;
+    color: inherit;
+  }
+
+  .st-block-addition:hover &,
+  .st-block--active & {
+    color: $accent-color;
+    opacity: 1;
+  }
+}
+
+%st-psuedo-shape {
+  content:"";
+  display:block;
+  position: absolute;
+}
+
+.st-block-addition:hover:before,
+.st-block--active .st-block-addition:before {
+  height:2px;
+  opacity:1;
+}
+
+.st-block-addition:hover:before {
+  background-color:$accent-color;
+}

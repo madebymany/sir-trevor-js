@@ -17,10 +17,27 @@ exports.findBlocks = function() {
   return exports.findElementsByCss('.st-block');
 };
 
+exports.hasClassName = function(element, className) {
+  return element.getAttribute('class').then( function(classes) {
+    return classes.split(' ').indexOf(className) > -1;
+  });
+};
+
+var pressEnter = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.ENTER)
+    .perform();
+};
+exports.pressBackSpace = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.BACK_SPACE)
+    .perform();
+};
+
 exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {
-    exports.findElementByCss('.st-block-addition', parent).click().then( function() {
+    exports.findElementByCss('.st-block-replacer', parent).click().then( function() {
       return exports.findElementByCss('.st-block-controls__button[data-type="'+blockType+'"]', parent).click();
     }).then( function() {
       return exports.findElementByCss('.st-block[data-type="'+blockType+'"]');
@@ -29,9 +46,40 @@ exports.createBlock = function(blockType, cb) {
 
   exports.findBlocks().then( function(blocks) {
     if (blocks.length > 0) {
-      createBlock(blocks[blocks.length-1]);
+      var element = blocks[blocks.length-1];
+      var classes, type;
+      element.getAttribute('class').then( function(className) {
+        classes = className.split(' ');
+        return element.getAttribute('data-type');
+      }).then( function(res) {
+        type = res;
+        if (classes.indexOf('st-block--textable') > -1) {
+          if (blockType === 'text') {
+            return pressEnter().then(cb);
+          } else {
+            return createBlock(element);
+          }
+        } else if (type === 'list') {
+          return pressEnter()
+            .then(exports.findBlocks)
+            .then( function(blocks2) {
+              return createBlock(blocks2[blocks2.length-1]);
+            });
+        } else if (classes.indexOf('st-block--droppable') > -1) {
+          return exports.findElementByCss('.st-block__inner--droppable', element).click()
+            .then(pressEnter)
+            .then(exports.findBlocks)
+            .then(function(blocks2) {
+              return createBlock(blocks2[blocks2.length-1]);
+            });
+        }
+      });
     } else {
-      exports.findElementByCss('.st-top-controls').then(createBlock);
+      exports.findElementByCss('.st-top-controls > .st-block-addition').click()
+        .then(exports.findBlocks)
+        .then(function(elements) {
+          createBlock(elements[0]);
+        });
     }
   });
 };
@@ -39,6 +87,28 @@ exports.createBlock = function(blockType, cb) {
 exports.hasBlockCount = function(count) {
   return exports.findBlocks().then( function(blocks) {
     expect(blocks.length === count);
+  });
+};
+
+exports.focusOnTextBlock = function(index) {
+  index = index || 0;
+  return exports.findElementsByCss('.st-text-block').then(function(elements) {
+    return exports.browser.actions()
+              .mouseMove(elements[index], {x: 5, y: 10})
+              .click()
+              .perform();
+  });
+};
+
+exports.focusOnListBlock = function(index) {
+  index = index || 0;
+  return exports.findElementsByCss('.st-list-block__list').then(function(elements) {
+    return exports.findElementsByCss('.st-list-block__editor', elements[index]);
+  }).then(function(elements) {
+    return exports.browser.actions()
+              .mouseMove(elements[0], {x: 5, y: 10})
+              .click()
+              .perform();
   });
 };
 
@@ -59,7 +129,8 @@ exports.initSirTrevor = function(data) {
     /*jshint multistr: true */
     "window.editor = new SirTrevor.Editor({ \
       el: document.querySelector('.sir-trevor'), \
-      blockTypes: ['Heading', 'Text', 'List', 'Quote', 'Image', 'Video', 'Tweet'] \
+      blockTypes: ['Heading', 'Text', 'List', 'Quote', 'Image', 'Video', 'Tweet'], \
+      defaultType: 'Text' \
     });"
   );
 

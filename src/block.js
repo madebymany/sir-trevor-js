@@ -188,6 +188,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     });
   },
 
+  focusAtEnd: function() {
+    this.focus();
+  },
+
   blur: function() {
     Array.prototype.forEach.call(this.getTextBlock(), function(el) {
       el.blur();

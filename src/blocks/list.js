@@ -134,6 +134,11 @@ module.exports = Block.extend({
     }
   },
 
+  focusAtEnd: function() {
+    var lastEditorId = this.editorIds[this.editorIds.length - 1];
+    this.appendToTextEditor(lastEditorId);
+  },
+
   removeCurrentListItem: function() {
     if (this.editorIds.length === 1) { return; }
 

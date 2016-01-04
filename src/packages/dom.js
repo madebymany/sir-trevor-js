@@ -1,5 +1,7 @@
 "use strict";
 
+var _ = require('../lodash');
+
 // disabling undefined warnings until jshint can handle argument destructing
 
 let Dom = Object.create(null);
@@ -7,7 +9,7 @@ let Dom = Object.create(null);
 Dom.setAttributes = (el, attributes = {}) => {
 
   if (attributes.html) {
-    el.innerHTML = attributes.html;
+    el.innerHTML = _.result(attributes, 'html');
     delete attributes.html;
   }
 

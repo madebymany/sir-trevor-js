@@ -25,14 +25,17 @@ module.exports = {
     Dom.hide(this.editor);
 
     this.inputs.insertAdjacentHTML("beforeend", _.template(this.drop_options.html,
-                                                    { block: this, _: _ }));
+                                                    { block: this, _: _, config: config }));
 
     // Bind our drop event
     dropEvents
       .dropArea(this.inputs.lastElementChild)
       .addEventListener('drop', this._handleDrop.bind(this));
 
+    this.el.classList.add('st-block--droppable');
     this.inner.classList.add('st-block__inner--droppable');
+
+    this._setupKeyEvents();
   },
 
   _handleDrop: function(e) {
@@ -57,6 +60,27 @@ module.exports = {
     }
 
     EventBus.trigger('block:content:dropped', this.blockID);
-  }
+  },
 
+  focus: function() {
+    this.inner.focus();
+  },
+
+  /**
+    Allow this block to be managed with the keyboard
+  **/
+
+  _setupKeyEvents: function() {
+    this.inner.setAttribute('tabindex', 0);
+    this.inner.addEventListener('keyup', (e) => {
+      switch(e.keyCode) {
+        case 13:
+          this.mediator.trigger("block:create", 'Text', null, this.el);
+          break;
+        case 8:
+          this.mediator.trigger('block:remove', this.blockID, {focusOnPrevious: true});
+          return;
+      }
+    });
+  }
 };
