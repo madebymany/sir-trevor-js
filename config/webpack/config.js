@@ -24,7 +24,7 @@ module.exports = {
     },
     {
       test: /\.svg$/,
-      loader: ExtractTextPlugin.extract("file?name=[path][name].[ext]")
+      loader: ExtractTextPlugin.extract("file?name=[name].[ext]")
     }],
     preLoaders: [{
       test: /\.scss$/,
