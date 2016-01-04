@@ -103,8 +103,10 @@ exports.focusOnTextBlock = function(index) {
 exports.focusOnListBlock = function(index) {
   index = index || 0;
   return exports.findElementsByCss('.st-list-block__list').then(function(elements) {
+    return exports.findElementsByCss('.st-list-block__editor', elements[index]);
+  }).then(function(elements) {
     return exports.browser.actions()
-              .mouseMove(elements[index])
+              .mouseMove(elements[0], {x: 5, y: 10})
               .click()
               .perform();
   });
