@@ -29,7 +29,7 @@ module.exports = {
 
     // Bind our drop event
     dropEvents
-      .dropArea(this.inputs.lastElementChild)
+      .dropArea(this.inner)
       .addEventListener('drop', this._handleDrop.bind(this));
 
     this.el.classList.add('st-block--droppable');

@@ -51,8 +51,15 @@ module.exports.create = function(SirTrevor) {
     EventBus.trigger("block:reorder:dropped", item_id);
   }
 
-  dropEvents.dropArea(topControls);
-  topControls.addEventListener('drop', onDrop);
+  SirTrevor.mediator.on('block-reorder:dragstart', () => {
+    dropEvents.dropArea(topControls);
+    topControls.addEventListener('drop', onDrop);
+  });
+
+  SirTrevor.mediator.on('block-reorder:dragend', () => {
+    dropEvents.noDropArea(topControls);
+    topControls.removeEventListener('drop', onDrop);
+  });
 
   Events.delegate(
     SirTrevor.wrapper, ".st-block-addition", "click", createBlock

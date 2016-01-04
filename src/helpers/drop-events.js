@@ -28,9 +28,9 @@ module.exports = {
   },
 
   noDropArea: function(el) {
-    el.removeEventListener("dragenter");
-    el.removeEventListener("dragover");
-    el.removeEventListener("dragleave");
+    el.removeEventListener("dragenter", dragEnter);
+    el.removeEventListener("dragover",  dragOver);
+    el.removeEventListener("dragleave", dragLeave);
     return el;
   }
 

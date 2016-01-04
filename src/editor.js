@@ -100,6 +100,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     window.addEventListener('click', this.hideAllTheThings);
     document.body.addEventListener('keydown', this.disableBackButton);
 
+    this._disableGlobalDragAndDrop();
+
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
 
@@ -344,8 +346,20 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.wrapper = this.outer.querySelector('.st-blocks');
 
     return true;
-  }
+  },
 
+  _disableGlobalDragAndDrop: function() {
+    function stopEvent(e) {
+      if (e.dataTransfer.types && e.dataTransfer.types[0] !== 'text/plain') {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+    this.wrapper.addEventListener('drop', stopEvent);
+    this.wrapper.addEventListener('dragenter', stopEvent);
+    this.wrapper.addEventListener('dragleave', stopEvent);
+    this.wrapper.addEventListener('dragover', stopEvent);
+  }
 });
 
 module.exports = Editor;

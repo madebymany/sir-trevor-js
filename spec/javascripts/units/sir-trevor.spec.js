@@ -5,6 +5,9 @@ describe("SirTrevor", function(){
   describe("setBlockOptions", function(){
 
     var block;
+    var mockMediator = {
+      on: () => {}
+    };
 
     beforeEach(function(){
       SirTrevor.Blocks.Test = SirTrevor.Block.extend({
@@ -23,7 +26,7 @@ describe("SirTrevor", function(){
     });
 
     it("has the property set when we instantiate a block", function(){
-      block = new SirTrevor.Blocks.Test();
+      block = new SirTrevor.Blocks.Test(null, '1', mockMediator);
       expect(block.test).toBe(false);
     });
 

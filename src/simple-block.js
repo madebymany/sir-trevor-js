@@ -4,8 +4,10 @@ var _ = require('./lodash');
 var utils = require('./utils');
 var Dom = require('./packages/dom');
 var Events = require('./packages/events');
+var dropEvents = require('./helpers/drop-events');
 
 var BlockReorder = require('./block-reorder');
+var EventBus = require('./event-bus');
 
 const BLOCK_TEMPLATE = require('./templates/block');
 
@@ -18,6 +20,7 @@ var SimpleBlock = function(data, instance_id, mediator, options) {
 
   this._ensureElement();
   this._bindFunctions();
+  this._bindDragEvents();
 
   this.initialize.apply(this, arguments);
 };
@@ -125,6 +128,39 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
 
   _initUIComponents: function() {
     this._withUIComponent(new BlockReorder(this.el));
+  },
+
+  _bindDragEvents: function() {
+    this.mediator.on('block-reorder:dragstart', this._enableDragEvents.bind(this));
+    this.mediator.on('block-reorder:dragend', this._disableDragEvents.bind(this));
+  },
+
+  _enableDragEvents: function(blockID) {
+    if (this.blockID === blockID) { return; }
+
+    this.el.classList.add('st-block--can-drop');
+    dropEvents.dropArea(this.el);
+    this.el.addEventListener('drop', this._onDrop.bind(this));
+  },
+
+  _disableDragEvents: function() {
+    this.el.classList.remove('st-block--can-drop');
+    dropEvents.noDropArea(this.el);
+    this.el.removeEventListener('drop', this._onDrop.bind(this));
+  },
+
+  _onDrop: function(ev) {
+    ev.preventDefault();
+
+    var dropped_on = this.el,
+    var item_id = ev.dataTransfer.getData("text/plain");
+    var block = document.querySelector('#' + item_id);
+
+    if (!!item_id && !!block && dropped_on.id !== item_id) {
+      Dom.insertAfter(block, dropped_on);
+    }
+    this.mediator.trigger("block:rerender", item_id);
+    EventBus.trigger("block:reorder:dropped", item_id);
   }
 
 });

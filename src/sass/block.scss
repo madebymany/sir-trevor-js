@@ -26,7 +26,8 @@
   margin-top: 2em;
   margin-bottom: 2em;
 
-  &:focus {
+  &:focus,
+  &.st-drag-over {
     border-color: $accent-color;
     outline: none;
   }
@@ -87,11 +88,12 @@
   content: "";
   background: transparent;
   display:block;
-  width:100%;
-  height:3px;
+  
+  height:2px;
   position:absolute;
-  bottom:0;
-  left:0;
+  bottom: -10px;
+  left: 110px;
+  right: 0;
   background:$accent-color;
 }
 
@@ -198,10 +200,6 @@ ul.st-text-block {
 
 .st-block__dropzone p span {
   font-weight: 700;
-}
-
-.st-drag-over .st-block__inputs {
-  border-top-color: darken($blocks-control-bg-color, 15%);
 }
 
 .st-block .st-block__paste-input[type="text"] {
