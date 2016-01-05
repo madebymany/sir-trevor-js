@@ -111,8 +111,8 @@ if [[ $action = "build" ]]; then
   echoinfo "Building distribution files"
   npm run dist
 
-  mv -f build/* .
-  rm -r build/
+  # mv -f build/* .
+  # rm -r build/
 
   git add --all :/
   git commit -m "Added distribution files for $new_version
