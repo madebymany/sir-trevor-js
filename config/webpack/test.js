@@ -9,5 +9,11 @@ module.exports = webpackConfigMerger(require('./config'), {
   },
   plugins: [
     new ExtractTextPlugin("sir-trevor.test.css")
-  ]
+  ],
+  module: {
+    loaders: [{
+      test: /\.svg$/,
+      loader: ExtractTextPlugin.extract("file?name=[name].test.[ext]")
+    }]
+  }
 });

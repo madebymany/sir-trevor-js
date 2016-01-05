@@ -9,7 +9,13 @@ var config = webpackConfigMerger(require('./config'), {
   plugins: [
     // Include so we can share config, but disable
     new ExtractTextPlugin("sir-trevor.css"),
-  ]
+  ],
+  module: {
+    loaders: [{
+      test: /\.svg$/,
+      loader: ExtractTextPlugin.extract("file?name=[name].[ext]")
+    }]
+  }
 });
 
 config.module.preLoaders = [{
