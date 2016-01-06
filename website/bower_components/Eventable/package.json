@@ -1,13 +1,15 @@
 {
-  "name"          : "Eventable",
-  "description"   : "Events straight out of backbone",
+  "name": "eventablejs",
+  "version": "1.0.5",
+  "description": "The events part of Backbone",
+  "license": "MIT",
+  "main": "eventable.js",
+  "repository": "madebymany/eventable",
   "devDependencies": {
+    "underscore": "~1.4.4",
     "phantomjs": "1.9.0-1"
   },
   "scripts": {
     "test": "phantomjs test/vendor/runner.js test/index.html?noglobals=true"
-  },
-  "main"          : "eventable.js",
-  "version"       : "1.0.2",
-  "license"       : "MIT"
+  }
 }
