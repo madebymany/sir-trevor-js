@@ -25,5 +25,6 @@
     "commit": "601f1a055a1ef39527dfcdbaf2456633c51d5976"
   },
   "_source": "git://github.com/components/underscore.git",
-  "_target": "1.4.4"
+  "_target": "1.4.4",
+  "_originalSource": "git://github.com/components/underscore.git"
 }

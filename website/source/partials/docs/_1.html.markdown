@@ -23,12 +23,16 @@ Alternatively, grab the following files and include them in your project:
 
   * [Underscore.js](https://github.com/jashkenas/underscore/blob/master/underscore.js)
   * [Eventable](https://github.com/madebymany/eventable/blob/master/eventable.js)
-  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.js)
+  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.js)
 
 
-And you'll need the following CSS file too:
+You'll need the following CSS file too:
 
-  * [Sir Trevor](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.css)
+  * [Sir Trevor CSS](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.css)
+
+And the icons file:
+
+  * [Sir Trevor Icons](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor-icons.svg) [Configure icon url](#1-5)
 
 <a name="1-2"></a>
 ## Initialising
@@ -42,7 +46,11 @@ A Sir Trevor element must be contained inside a form like follows:
 Then to transform this element to a Sir Trevor instance:
 
     <script>
-      new SirTrevor.Editor({ el: $('.js-st-instance') });
+      var editor = new SirTrevor.Editor({
+        el: document.querySelector('.js-st-instance'),
+        defaultType: 'Text',
+        iconUrl: 'build/sir-trevor-icons.svg'
+      });
     </script>
 
 <a name="1-3"></a>
@@ -70,8 +78,15 @@ For a server-side example, please see our [Sir Trevor Rails gem](http://github.c
 <a name="1-4"></a>
 ## Retrieving Editor Instances
 
-You can retrieve `SirTrevor.Editor` instances using the `SirTrevor.getInstance` method.
+You can retrieve `SirTrevor.Editor` instance by assigning the editor to a variable.
 
-    SirTrevor.getInstance(); // Gets the first instance
-    SirTrevor.getInstance('st-editor-11') // Gets editor by it's identifier
-    SirTrevor.getInstance(0) // Gets by it's position
+    var editor = new SirTrevor.Editor({});
+
+<a name="1-5"></a>
+## Configuring icon url
+
+Icons are included using an external svg file. This will need a url so that the icons can be found. This is set using default.
+  
+    SirTrevor.setDefaults({
+      iconUrl: "sir-trevor-icons.svg"
+    });
