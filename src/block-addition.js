@@ -13,7 +13,7 @@ const EventBus = require('./event-bus');
 const Dom = require('./packages/dom');
 const Events = require("./packages/events");
 
-const BLOCK_ADDITION_TEMPLATE = require("./templates/top-block-addition");
+const TOP_CONTROLS_TEMPLATE = require("./templates/top-controls");
 
 module.exports.create = function(SirTrevor) {
 
@@ -22,7 +22,7 @@ module.exports.create = function(SirTrevor) {
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:create", 'Text', null, this.parentNode.id ? this.parentNode : this
+      "block:create", 'Text', null, this.parentNode.parentNode.id ? this.parentNode.parentNode : this
     );
   }
 
@@ -33,7 +33,7 @@ module.exports.create = function(SirTrevor) {
     SirTrevor = null;
   }
 
-  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
+  SirTrevor.wrapper.insertAdjacentHTML("beforeend", TOP_CONTROLS_TEMPLATE());
 
   const topControls = SirTrevor.wrapper.querySelector('.st-top-controls');
 
@@ -55,7 +55,7 @@ module.exports.create = function(SirTrevor) {
   topControls.addEventListener('drop', onDrop);
 
   Events.delegate(
-    SirTrevor.wrapper, ".st-block-addition", "click", createBlock
+    SirTrevor.wrapper, ".st-block-addition__button", "click", createBlock
   );
 
   return {destroy, hide};
