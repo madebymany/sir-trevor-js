@@ -235,7 +235,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   disableBackButton: function(e) {
     if (e.keyCode === 8) {
       if (e.srcElement.getAttribute('contenteditable') ||
-          e.srcElement.tagName === 'INPUT') {
+          e.srcElement.tagName === 'INPUT' ||
+          e.srcElement.tagName === 'TEXTAREA') {
         return;
       }
 
