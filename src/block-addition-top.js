@@ -31,7 +31,7 @@ module.exports.create = function(SirTrevor) {
   );
 
   Events.delegate(
-    SirTrevor.wrapper, ".st-block-addition-top__button-icon", "click", createBlock
+    SirTrevor.wrapper, ".st-block-addition-top__icon", "click", createBlock
   );
 
   return {destroy, hide};

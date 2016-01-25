@@ -18,7 +18,7 @@
   }
 
   position: absolute;
-  top: -2.5em;
+  top: -2em;
   height: 30px;
   opacity: 0;
   display: block;
@@ -46,7 +46,7 @@
 
   .st-block--textable &,
   .st-block[data-type="list"] & {
-    top: -2em;
+    top: -1.5em;
   }
 
   .st-block:nth-child(3) & {

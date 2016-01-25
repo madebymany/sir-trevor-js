@@ -22,7 +22,7 @@ module.exports.create = function(SirTrevor) {
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:create", 'Text', null, this.parentNode.parentNode.id ? this.parentNode.parentNode : this
+      "block:create", 'Text', null, this.parentNode.parentNode.id ? this.parentNode.parentNode : this.parentNode
     );
   }
 
@@ -55,7 +55,7 @@ module.exports.create = function(SirTrevor) {
   topControls.addEventListener('drop', onDrop);
 
   Events.delegate(
-    SirTrevor.wrapper, ".st-block-addition__button", "click", createBlock
+    SirTrevor.wrapper, ".st-block-addition", "click", createBlock
   );
 
   return {destroy, hide};
