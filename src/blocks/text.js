@@ -55,7 +55,7 @@ module.exports = Block.extend({
   },
 
   toggleEmptyClass: function() {
-    this.el.classList.toggle('st-block--empty', this._scribe.getTextContent().length === 0);
+    this.el.classList.toggle('st-block--empty', this.isEmpty());
   },
 
   isEmpty: function() {

@@ -1,5 +1,6 @@
 "use strict";
 
+const BLOCK_ADDITION_TOP_TEMPLATE = require("./block-addition-top");
 const BLOCK_ADDITION_TEMPLATE = require("./block-addition");
 const BLOCK_REPLACER_TEMPLATE = require("./block-replacer");
 
@@ -9,6 +10,7 @@ module.exports = (editor_html) => {
       ${ editor_html }
     </div>
     ${ BLOCK_REPLACER_TEMPLATE() }
+    ${ BLOCK_ADDITION_TOP_TEMPLATE() }
     ${ BLOCK_ADDITION_TEMPLATE() }
   `;
 };

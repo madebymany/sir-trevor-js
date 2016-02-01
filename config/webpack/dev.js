@@ -10,7 +10,13 @@ var config = webpackConfigMerger(require('./config'), {
   },
   plugins: [
     new ExtractTextPlugin("sir-trevor.debug.css")
-  ]
+  ],
+  module: {
+    loaders: [{
+      test: /\.svg$/,
+      loader: ExtractTextPlugin.extract("file?name=[name].debug.[ext]")
+    }]
+  }
 });
 
 config.module.preLoaders = [{

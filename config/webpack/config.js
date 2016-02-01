@@ -21,10 +21,6 @@ module.exports = {
       test: /\.js?$/,
       exclude: /(node_modules|bower_components)/,
       loader: 'babel?optional[]=runtime'
-    },
-    {
-      test: /\.svg$/,
-      loader: ExtractTextPlugin.extract("file?name=[name].[ext]")
     }],
     preLoaders: [{
       test: /\.scss$/,
