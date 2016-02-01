@@ -12,7 +12,8 @@
     "dev": "grunt dev watch"
   },
   "dependencies": {
-    "es5-shim": "^4.0.3"
+    "es5-shim": "^4.0.3",
+    "file-loader": "^0.8.5"
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",
