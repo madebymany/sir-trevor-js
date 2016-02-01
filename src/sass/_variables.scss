@@ -1,4 +1,5 @@
 $text-block-font-size: 1.275em;
+$text-block-font-size-mobile: 1em;
 
 $text-block-font-color: #282D31;
 $accent-color: #17BB75;
@@ -19,3 +20,10 @@ $border-size: 2px;
 $border-style: solid;
 $default-border: $border-size $border-style $accent-color;
 
+@mixin mobile {
+  @media screen and (max-width: 480px) {
+    .st-responsive & {
+      @content;
+    }
+  }
+}

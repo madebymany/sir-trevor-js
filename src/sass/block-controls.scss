@@ -9,6 +9,11 @@
   padding: 0px 110px;
   transform: translateY(-50%);
   z-index: 1;
+
+  @include mobile {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
 }
 
 .st-block-controls__buttons {
@@ -31,8 +36,21 @@
   display: block;
   width: 42px;
   height: 42px;
+
+  @include mobile {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .st-block-controls__button:hover {
   color: $accent-color;
+}
+
+.st-block-controls__button-title {
+  @include mobile {
+    width: 20px;
+    height: 20px;
+  }
 }

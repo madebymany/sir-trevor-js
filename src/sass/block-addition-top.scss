@@ -56,6 +56,10 @@
   .st-block--empty + .st-block & {
     display: none;
   }
+
+  @include mobile {
+    display: none;
+  }
 }
 
 .st-block-addition-top__icon {

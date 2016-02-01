@@ -8,7 +8,7 @@ module.exports = ({title, type, icon_name}) => {
       <svg role="img" class="st-icon">
         <use xlink:href="${config.defaults.iconUrl}#${icon_name}"/>
       </svg>
-      ${title()}
+      <span class="st-block-controls__button-title">${title()}</span>
     </button>
   `;
 };

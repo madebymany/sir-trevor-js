@@ -22,6 +22,9 @@
     display: block;
   }
 
+  @include mobile {
+    left: 0;
+  }
 }
 
 .st-block-replacer__button {
@@ -39,5 +42,10 @@
 
   .st-block--controls-active & {
     transform: rotate(45deg);
+  }
+
+  @include mobile {
+    width: 20px;
+    height: 20px;
   }
 }

@@ -59,6 +59,7 @@ module.exports = {
     iconUrl: '../src/icons/sir-trevor-icons.svg',
     errorsContainer: undefined,
     convertFromMarkdown: true,
+    responsive: true,
     formatBar: {
       commands: [
         {

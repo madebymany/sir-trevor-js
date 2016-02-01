@@ -93,6 +93,18 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     // External event listeners
     window.addEventListener('click', this.hideAllTheThings);
     document.body.addEventListener('keydown', this.disableBackButton);
+    document.addEventListener('selectionchange', () => {
+      var block = utils.getBlockBySelection();
+      if (block) {
+        console.log('bad');
+        var selection = window.getSelection(),
+          selectionStr = selection.toString().trim(),
+          en = 'formatter:' + ((selectionStr === '') ? 'hide' : 'position');
+        console.log(selectionStr, '1');
+        this.mediator.trigger(en, block);
+        EventBus.trigger(en, block);
+      }
+    });
 
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
@@ -286,6 +298,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
                   'id': this.ID, 
                   'class': 'st-outer notranslate', 
                   'dropzone': 'copy link move'});
+
+    if (this.options.responsive) {
+      outer.classList.add('st-responsive');
+    }
 
     var wrapper = Dom.createElement("div", {'class': 'st-blocks'});
 

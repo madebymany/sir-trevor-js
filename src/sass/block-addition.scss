@@ -35,6 +35,14 @@ $animation-speed: 0.2s;
   }
 }
 
+.st-block:not(.st-block--empty):not(.st-block--textable):not([data-type="list"]) {
+  @include mobile {
+    .st-block-addition {
+      display: block;
+    }
+  }
+}
+
 .st-block-addition__button {
   transition: all $animation-speed 0.3s ease-in-out;
   border: 1px solid transparent;

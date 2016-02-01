@@ -6,6 +6,10 @@
     left: auto;
     right: -0.3em;
   }
+
+  @include mobile {
+    right: 2em;
+  }
 }
 
 .st-block-positioner__inner {

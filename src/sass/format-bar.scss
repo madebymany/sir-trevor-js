@@ -10,6 +10,16 @@
   padding: 0;
 
   transition: opacity 0.2s ease-in-out;
+
+  @include mobile {
+    position: fixed !important;
+    margin: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    border-radius: 0;
+    text-align: center;
+  }
 }
 
 .st-format-bar:before {
@@ -24,6 +34,10 @@
   border-right: 0.875em solid transparent;
   border-top: 0.875em solid #252525;
   margin-left: -0.875em;
+
+  @include mobile {
+    display: none !important;
+  }
 }
 
 .st-format-bar--is-ready {
@@ -48,6 +62,11 @@
 .st-format-btn .st-icon {
   width: 35px;
   height: 35px;
+
+  @include mobile {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .st-format-btn--Heading,
