@@ -1,8 +1,11 @@
 
 $animation-speed: 0.2s;
 
-.st--block-limit-reached .st-top-controls {
-  display: none;
+.st--block-limit-reached {
+  .st-top-controls,
+  .st-block-addition {
+    display: none;
+  }
 }
 
 .st-top-controls {
@@ -14,7 +17,7 @@ $animation-speed: 0.2s;
   text-align: center;
   outline:none;
   border:none;
-  display:block;
+  display:none;
   width:100%;
   background-color:transparent;
   padding:0;
@@ -25,13 +28,11 @@ $animation-speed: 0.2s;
     margin:0;
     margin-left:-1px;
   }
-  
-  .st-block--textable &,
-  .st-block--droppable &,
-  .st-block[data-type="list"] & {
-    display: none;
+
+  .st-top-controls &,
+  .st-block:last-child:not(.st-block--empty):not(.st-block--textable) & {
+    display: block;
   }
-  
 }
 
 .st-block-addition__button {
@@ -46,6 +47,7 @@ $animation-speed: 0.2s;
   width: 100%;
   cursor: pointer;
   opacity: 0.2;
+  cursor: pointer;
 
   transform:translateZ(0);
 
@@ -60,20 +62,4 @@ $animation-speed: 0.2s;
     color: $accent-color;
     opacity: 1;
   }
-}
-
-%st-psuedo-shape {
-  content:"";
-  display:block;
-  position: absolute;
-}
-
-.st-block-addition:hover:before,
-.st-block--active .st-block-addition:before {
-  height:2px;
-  opacity:1;
-}
-
-.st-block-addition:hover:before {
-  background-color:$accent-color;
 }

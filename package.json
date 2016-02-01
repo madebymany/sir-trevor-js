@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.6.0-beta2",
+  "version": "0.6.0-beta3",
   "main": "build/sir-trevor.js",
   "repository": {
     "type": "git",
@@ -12,7 +12,8 @@
     "dev": "grunt dev watch"
   },
   "dependencies": {
-    "es5-shim": "^4.0.3"
+    "es5-shim": "^4.0.3",
+    "file-loader": "^0.8.5"
   },
   "devDependencies": {
     "array.prototype.find": "^1.0.0",

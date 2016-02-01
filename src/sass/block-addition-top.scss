@@ -1,0 +1,95 @@
+.st-block-addition-top {
+  transition: all $animation-speed 0.2s ease-in-out;
+  text-align: left;
+  outline:none;
+  border:none;
+  width:100%;
+  background-color:transparent;
+  padding:0;
+  z-index: 2;
+  position: relative;
+  cursor: text;
+  display: none;
+  
+  &::-moz-focus-inner {
+    padding:0;
+    margin:0;
+    margin-left:-1px;
+  }
+
+  position: absolute;
+  top: -2em;
+  height: 30px;
+  opacity: 0;
+  display: block;
+
+  &:before {
+    transition: all $animation-speed 0.1s ease-in-out;
+    background: $accent-color;
+    position: absolute;
+    height: 2px;
+    top: 50%;
+    left: 110px;
+    right: 110px;
+    content: "";
+    display: block;
+    transform: translateY(-50%) translateZ(0);
+  }
+
+  .st-block--empty & {
+    display: none !important;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+
+  .st-block--textable &,
+  .st-block[data-type="list"] & {
+    top: -1.5em;
+  }
+
+  .st-block:nth-child(3) & {
+    display: none;
+  }
+
+  .st-block--empty + .st-block & {
+    display: none;
+  }
+}
+
+.st-block-addition-top__icon {
+  transition: all $animation-speed 0.1s ease-in-out;
+  border: 1px solid transparent;
+  color: #444444;
+  position:absolute;
+  top: 50%;
+  box-sizing:border-box;
+  padding-left: 35px;
+  display: inline-block;
+  margin: 0 auto;
+  cursor: pointer;
+  opacity: 0.2;
+  transform: translateY(-50%) translateZ(0);
+
+  .st-icon {
+    width: 41px;
+    height: 41px;
+    color: inherit;
+  }
+
+  .st-block-addition-top:hover &,
+  .st-block--active & {
+    color: $accent-color;
+    opacity: 1;
+  }
+}
+
+.st-block-addition-top__button {
+  position: absolute;
+  top: 0;
+  left: 76px;
+  right: 0;
+  bottom: 0;
+  display: inline-block;
+}

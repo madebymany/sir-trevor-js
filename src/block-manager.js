@@ -314,8 +314,6 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (!this.isBlockTypeAvailable(t)) { return 0; }
     return parseInt((_.isUndefined(this.options.blockTypeLimits[t])) ? 0 : this.options.blockTypeLimits[t], 10);
   }
-
 });
 
 module.exports = BlockManager;
-

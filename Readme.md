@@ -9,7 +9,7 @@ Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chr
 ## Upgrade guide from v0.5
 
 - [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
-- Migration docs [0.4-0.5](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md), [0.5-0.6](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.6.md)
+- Migration docs [0.4-0.5](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md), [0.5-0.6](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.5-0.6.md)
 
 ## Quick start
 

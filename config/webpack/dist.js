@@ -27,6 +27,11 @@ module.exports = webpackConfigMerger(require('./config'), {
       mangle: false
     }),
     new webpack.BannerPlugin(banner, {raw: true})
-  ]
-
+  ],
+  module: {
+    loaders: [{
+      test: /\.svg$/,
+      loader: ExtractTextPlugin.extract("file?name=[name].[ext]")
+    }]
+  }
 });
