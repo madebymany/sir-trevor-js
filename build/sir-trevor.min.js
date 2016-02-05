@@ -1,10 +1,10 @@
 /*!
- * Sir Trevor JS v0.6.0-beta3
+ * Sir Trevor JS v0.6.0-beta4
  *
  * Released under the MIT license
  * www.opensource.org/licenses/MIT
  *
- * 2016-02-01
+ * 2016-02-05
  */
 
 
