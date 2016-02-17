@@ -192,7 +192,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   validateAndSaveBlock: function(block, shouldValidate) {
-    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+    if (!config.skipValidation && shouldValidate && !block.valid()) {
       this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
       utils.log("Block " + block.blockID + " failed validation");
       return;
@@ -283,8 +283,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.form = Dom.getClosest(this.el, 'form');
 
     var outer = Dom.createElement("div", {
-                  'id': this.ID, 
-                  'class': 'st-outer notranslate', 
+                  'id': this.ID,
+                  'class': 'st-outer notranslate',
                   'dropzone': 'copy link move'});
 
     var wrapper = Dom.createElement("div", {'class': 'st-blocks'});
