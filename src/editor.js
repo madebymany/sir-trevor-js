@@ -31,7 +31,7 @@ var Editor = function(options) {
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
-    'removeBlockDragOver', 'blockLimitReached'],
+    'removeBlockDragOver', 'blockLimitReached', 'blockOrderUpdated'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -85,6 +85,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
     this.mediator.on('block:limitReached', this.blockLimitReached);
+
+    // Apply specific classes when block order is updated
+    this.mediator.on('block:rerender', this.blockOrderUpdated);
+    this.mediator.on('block:create', this.blockOrderUpdated);
+    this.mediator.on('block:remove', this.blockOrderUpdated);
+    this.mediator.on('block:replace', this.blockOrderUpdated);
 
     this.dataStore = "Please use store.retrieve();";
 
@@ -150,6 +156,22 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
   blockLimitReached: function(toggle) {
     this.wrapper.classList.toggle('st--block-limit-reached', toggle);
+  },
+
+  blockOrderUpdated: function() {
+    // Detect first block and decide whether to hide top controls
+    var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
+    var block;
+    if (blockElement) {
+      block = this.blockManager.findBlockById(
+        blockElement.getAttribute('id')
+      );
+    }
+    this._toggleHideTopControls(blockElement && block.textable);
+  },
+
+  _toggleHideTopControls: function(toggle) {
+    this.wrapper.classList.toggle('st--hide-top-controls', toggle);
   },
 
   _setEvents: function() {
