@@ -19,6 +19,15 @@ module.exports = {
 
     this.upload_options = Object.assign({}, config.defaults.Block.upload_options, this.upload_options);
     this.inputs.insertAdjacentHTML("beforeend", _.template(this.upload_options.html, this));
+
+    Array.prototype.forEach.call(this.inputs.querySelectorAll('button'), function(button) {
+      button.addEventListener('click', function(ev){ ev.preventDefault(); });
+    });
+    Array.prototype.forEach.call(this.inputs.querySelectorAll('input'), function(input) {
+      input.addEventListener('change', (function(ev) {
+        this.onDrop(ev.currentTarget);
+      }).bind(this));
+    }.bind(this));
   },
 
   uploader: function(file, success, failure){
