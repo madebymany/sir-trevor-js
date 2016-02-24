@@ -1,5 +1,3 @@
-//= require underscore/underscore
-//= require Eventable/eventable
 //= require sir-trevor-js/build/sir-trevor
 
 (function() {

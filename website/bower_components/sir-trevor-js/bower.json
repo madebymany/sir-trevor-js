@@ -8,16 +8,18 @@
     "spec",
     "examples",
     "website",
-    "BrowserRunner.html"
+    "BrowserRunner.html",
+    "config"
   ],
   "main": [
-    "sir-trevor.js",
-    "sir-trevor.css"
+    "build/sir-trevor.js",
+    "build/sir-trevor.css",
+    "build/sir-trevor-icons.svg"
   ],
   "dependencies": {
     "es5-shim": "~v4.0.3",
     "es6-shim": "~0.21.0",
     "Eventable": "~1.0.1"
   },
-  "version": "0.6.0-beta2"
+  "version": "0.6.0-beta5"
 }
