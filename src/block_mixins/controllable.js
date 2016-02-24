@@ -1,6 +1,7 @@
 "use strict";
 
 var utils = require('../utils');
+var config = require('../config');
 var Dom = require('../packages/dom');
 var Events = require('../packages/events');
 
