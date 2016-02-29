@@ -625,11 +625,14 @@ ul.st-text-block {
 .st-block-ui-btn__delete {
   right: 1em;
   top: 1.5em;
-  font-size: 1.5em; }
+  font-size: 1.5em;
+  opacity: 0.5; }
   .st-block-ui-btn__delete:hover, .st-block-ui-btn__delete:focus {
-    color: #d70014; }
-  .st-block--textable .st-block-ui-btn__delete,
-  .st-block[data-type="list"] .st-block-ui-btn__delete {
+    color: #d70014;
+    opacity: 1; }
+  .st-block--textable:not(.st-block[data-type="quote"]) .st-block-ui-btn__delete,
+  .st-block[data-type="list"] .st-block-ui-btn__delete,
+  .st-block-ui-btn__delete .st-block {
     display: none; }
 
 .st-block-control-ui-btn {
