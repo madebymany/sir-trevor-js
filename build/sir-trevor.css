@@ -630,10 +630,12 @@ ul.st-text-block {
   .st-block-ui-btn__delete:hover, .st-block-ui-btn__delete:focus {
     color: #d70014;
     opacity: 1; }
-  .st-block--textable:not(.st-block[data-type="quote"]) .st-block-ui-btn__delete,
+  .st-block--textable .st-block-ui-btn__delete,
   .st-block[data-type="list"] .st-block-ui-btn__delete,
   .st-block-ui-btn__delete .st-block {
     display: none; }
+  .st-block[data-type="quote"] .st-block-ui-btn__delete {
+    display: block; }
 
 .st-block-control-ui-btn {
   width: 2em;
