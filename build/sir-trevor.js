@@ -1870,56 +1870,24 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 29 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {
-	var NativeCustomEvent = global.CustomEvent;
+	'use strict';
 
-	function useNative () {
-	  try {
-	    var p = new NativeCustomEvent('cat', { detail: { foo: 'bar' } });
-	    return  'cat' === p.type && 'bar' === p.detail.foo;
-	  } catch (e) {
+	(function () {
+	  'use strict';
+
+	  if (typeof window.CustomEvent === "function") return false;
+
+	  function CustomEvent(event, params) {
+	    params = params || { bubbles: false, cancelable: false, detail: undefined };
+	    var evt = document.createEvent('CustomEvent');
+	    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+	    return evt;
 	  }
-	  return false;
-	}
 
-	/**
-	 * Cross-browser `CustomEvent` constructor.
-	 *
-	 * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent.CustomEvent
-	 *
-	 * @public
-	 */
+	  CustomEvent.prototype = window.Event.prototype;
 
-	module.exports = useNative() ? NativeCustomEvent :
-
-	// IE >= 9
-	'function' === typeof document.createEvent ? function CustomEvent (type, params) {
-	  var e = document.createEvent('CustomEvent');
-	  if (params) {
-	    e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
-	  } else {
-	    e.initCustomEvent(type, false, false, void 0);
-	  }
-	  return e;
-	} :
-
-	// IE <= 8
-	function CustomEvent (type, params) {
-	  var e = document.createEventObject();
-	  e.type = type;
-	  if (params) {
-	    e.bubbles = Boolean(params.bubbles);
-	    e.cancelable = Boolean(params.cancelable);
-	    e.detail = params.detail;
-	  } else {
-	    e.bubbles = false;
-	    e.cancelable = false;
-	    e.detail = void 0;
-	  }
-	  return e;
-	}
-
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	  window.CustomEvent = CustomEvent;
+	})();
 
 /***/ },
 /* 30 */
