@@ -17,7 +17,7 @@ module.exports = {
 
     var editor = wrapper.querySelector('.st-block__editor');
     var id = _.uniqueId('editor-');
-    editor.dataset.editorId = id;
+    editor.setAttribute('data-editorId', id);
     editor.addEventListener('keyup', this.getSelectionForFormatter);
     editor.addEventListener('mouseup', this.getSelectionForFormatter);
 
@@ -42,7 +42,7 @@ module.exports = {
   },
 
   getCurrentTextEditor: function() {
-    var id = document.activeElement.dataset.editorId;
+    var id = document.activeElement.getAttribute('data-editorId');
     var editor = this.getTextEditor(id);
 
     if (editor) {

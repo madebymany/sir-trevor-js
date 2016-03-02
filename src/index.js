@@ -7,6 +7,7 @@ require('object.assign').shim();
 require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 require('es6-promise').polyfill();
+require('./shims/ie-classlist-toggle');
 
 var utils = require('./utils');
 

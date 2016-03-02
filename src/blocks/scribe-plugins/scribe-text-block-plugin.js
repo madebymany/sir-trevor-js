@@ -7,6 +7,8 @@ var ScribeTextBlockPlugin = function(block) {
 
     // Remove any empty elements at the start of the range.
     var stripFirstEmptyElement = function(div) {
+      if (div.firstChild === null) { return; }
+
       var firstChild = div.firstChild.childNodes[0];
       if (firstChild && firstChild.nodeName !== '#text') {
         if (firstChild.innerText === '') {
@@ -26,7 +28,7 @@ var ScribeTextBlockPlugin = function(block) {
       stripFirstEmptyElement(div);
 
       // Sometimes you'll get an empty tag at the start of the block.
-      if (div.firstChild.nodeName !== '#text') {
+      if (div.firstChild && div.firstChild.nodeName !== '#text') {
         div = div.lastChild;
       }
 
