@@ -7,7 +7,10 @@ require('object.assign').shim();
 require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 require('es6-promise').polyfill();
+require('custom-event')
+require('webcomponents.js/MutationObserver.js')
 require('./shims/ie-classlist-toggle');
+require('./shims/dom-shims');
 
 var utils = require('./utils');
 
