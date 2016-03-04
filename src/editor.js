@@ -162,6 +162,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.blockControls.hide();
     this.blockAddition.hide();
     this.formatBar.hide();
+
+    var popupSelectors = '.st-block__ui-delete-controls';
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll(popupSelectors), function(el) {
+      el.classList.remove('active');
+    });
   },
 
   store: function(method, options){
