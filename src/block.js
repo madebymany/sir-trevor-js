@@ -32,7 +32,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   bound: [
     "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
     "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender",
-    "onDeleteConfirm"
+    "onDeleteConfirm", "onPositionerClick"
   ],
 
   className: 'st-block',
@@ -242,8 +242,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
   },
 
-  onDeleteClick: function(ev) {
-    ev.preventDefault();
+  onDeleteClick: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
     if (this.isEmpty()) {
       this.onDeleteConfirm.call(this, new Event('click'));
@@ -252,6 +253,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.deleteEl = this.el.querySelector('.st-block__ui-delete-controls');
     this.deleteEl.classList.toggle('active');
+  },
+
+  onPositionerClick: function(e) {
+    e.preventDefault();
+    
+    this.positioner.toggle();
   },
 
   beforeLoadingData: function() {
@@ -296,10 +303,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.addDeleteControls();
 
-    var positioner = new BlockPositioner(this.el, this.mediator);
+    this.positioner = new BlockPositioner(this.el, this.mediator);
 
-    this._withUIComponent(positioner, '.st-block-ui-btn__reorder',
-                          positioner.toggle);
+    this._withUIComponent(this.positioner, '.st-block-ui-btn__reorder',
+                          this.onPositionerClick);
 
     this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
