@@ -19007,7 +19007,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_Object$assign(Block.prototype, SimpleBlock.fn, __webpack_require__(243), {
 
-	  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender", "onDeleteConfirm"],
+	  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender", "onDeleteConfirm", "onPositionerClick"],
 
 	  className: 'st-block',
 
@@ -19227,8 +19227,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
 	  },
 
-	  onDeleteClick: function onDeleteClick(ev) {
-	    ev.preventDefault();
+	  onDeleteClick: function onDeleteClick(e) {
+	    e.preventDefault();
+	    e.stopPropagation();
 
 	    if (this.isEmpty()) {
 	      this.onDeleteConfirm.call(this, new Event('click'));
@@ -19237,6 +19238,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.deleteEl = this.el.querySelector('.st-block__ui-delete-controls');
 	    this.deleteEl.classList.toggle('active');
+	  },
+
+	  onPositionerClick: function onPositionerClick(e) {
+	    e.preventDefault();
+
+	    this.positioner.toggle();
 	  },
 
 	  beforeLoadingData: function beforeLoadingData() {
@@ -19281,9 +19288,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.addDeleteControls();
 
-	    var positioner = new BlockPositioner(this.el, this.mediator);
+	    this.positioner = new BlockPositioner(this.el, this.mediator);
 
-	    this._withUIComponent(positioner, '.st-block-ui-btn__reorder', positioner.toggle);
+	    this._withUIComponent(this.positioner, '.st-block-ui-btn__reorder', this.onPositionerClick);
 
 	    this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
@@ -21460,6 +21467,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.blockControls.hide();
 	    this.blockAddition.hide();
 	    this.formatBar.hide();
+
+	    var popupSelectors = '.st-block__ui-delete-controls';
+	    Array.prototype.forEach.call(this.wrapper.querySelectorAll(popupSelectors), function (el) {
+	      el.classList.remove('active');
+	    });
 	  },
 
 	  store: function store(method, options) {
