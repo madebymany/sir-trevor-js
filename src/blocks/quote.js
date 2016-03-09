@@ -26,6 +26,7 @@ module.exports = Block.extend({
 
   icon_name: 'quote',
 
+  textable: true,
   toolbarEnabled: false,
 
   editorHTML: function() {
