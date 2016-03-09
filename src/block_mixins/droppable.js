@@ -73,12 +73,14 @@ module.exports = {
   _setupKeyEvents: function() {
     this.inner.setAttribute('tabindex', 0);
     this.inner.addEventListener('keyup', (e) => {
+      if (e.target !== this.inner) { return; }
+
       switch(e.keyCode) {
         case 13:
           this.mediator.trigger("block:create", 'Text', null, this.el);
           break;
         case 8:
-          this.mediator.trigger('block:remove', this.blockID, {focusOnPrevious: true});
+          this.onDeleteClick.call(this, new Event('click'));
           return;
       }
     });
