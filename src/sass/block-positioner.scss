@@ -1,7 +1,7 @@
 .st-block-positioner {
   @include ui-popup;
   right: 4em;
-  top: 0.5em;
+  top: 0;
   &:before {
     left: auto;
     right: -0.3em;
