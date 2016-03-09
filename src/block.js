@@ -225,7 +225,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   onDeleteConfirm: function(e) {
     e.preventDefault();
-    this.mediator.trigger('block:remove', this.blockID);
+    this.mediator.trigger('block:remove', this.blockID, {focusOnPrevious: true});
   },
 
   // REFACTOR: have one set of delete controls that moves around like the 
