@@ -42,7 +42,7 @@ Dom.remove = (el) => {
 
 Dom.replaceWith = (el, referenceNode) => {
   Dom.remove(referenceNode);
-  el.outerHTML = referenceNode;
+  el.parentNode.replaceChild(referenceNode, el);
 };
 
 Dom.hide = (el) => {

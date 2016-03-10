@@ -3922,7 +3922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Dom.replaceWith = function (el, referenceNode) {
 	  Dom.remove(referenceNode);
-	  el.outerHTML = referenceNode;
+	  el.parentNode.replaceChild(referenceNode, el);
 	};
 
 	Dom.hide = function (el) {
