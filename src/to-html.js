@@ -21,7 +21,7 @@ module.exports = function(markdown, type) {
     html = "<p>" + html;
   }
 
-  html = html.replace(/\[([^\]]+)\]\(([^\)]+)\)/gm,function(match, p1, p2){
+  html = html.replace(/\[([^\]]+)\]\((\S*)\)/gm,function(match, p1, p2){
     return "<a href='"+p2+"'>"+p1.replace(/\n/g, '')+"</a>";
   });
 
