@@ -13821,7 +13821,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function isEmptyTextNode(node) {
-	    return isText(node) && node.data === '';
+	    var isEmpty = false;
+	    try {
+	      isEmpty = isText(node) && node.data === '';
+	    }
+	    catch(err) {
+	      isEmpty = true;
+	    }
+	    return isEmpty;
 	  }
 
 	  function isFragment(node) {
@@ -17542,7 +17549,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (content === '') {
-	      content = '<br>';
+	      if (!window.navigator.userAgent.match(/MSIE 10/)) {
+	        content = '<br>';
+	      }
 	    }
 
 	    this.setTextBlockHTML(content);
