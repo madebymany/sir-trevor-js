@@ -8615,7 +8615,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * browsers(?) will position the caret outside of the P when the scribe is
 	         * focused.
 	         */
-	        scribe.setContent('<p><br></p>');
+
+	        // Force IE10 to not include br otherwise a linebreak is always included
+	        // in the textarea.
+	        if(window.navigator.userAgent.match(/MSIE 10/)) {
+	          scribe.setContent('<p></p>');
+	        } else {
+	          scribe.setContent('<p><br></p>');
+	        }
 	      }
 	    };
 	  };
@@ -21708,7 +21715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // REFACTOR: mediator so that we can trigger events directly on instance?
 	    // REFACTOR: block create event expects data as second argument.
 	    /*jshint validthis:true */
-	    SirTrevor.mediator.trigger("block:replace", el.parentNode, this.dataset.type);
+	    SirTrevor.mediator.trigger("block:replace", el.parentNode, this.getAttribute('data-type'));
 	  }
 
 	  function insert(e) {
