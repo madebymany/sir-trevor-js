@@ -4402,7 +4402,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	Dom.replaceWith = function (el, referenceNode) {
 	  Dom.remove(referenceNode);
-	  el.outerHTML = referenceNode;
+	  el.parentNode.replaceChild(referenceNode, el);
 	};
 
 	Dom.hide = function (el) {
@@ -6893,12 +6893,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.inner.setAttribute('tabindex', 0);
 	    this.inner.addEventListener('keyup', function (e) {
+	      if (e.target !== _this.inner) {
+	        return;
+	      }
+
 	      switch (e.keyCode) {
 	        case 13:
 	          _this.mediator.trigger("block:create", 'Text', null, _this.el);
 	          break;
 	        case 8:
-	          _this.mediator.trigger('block:remove', _this.blockID, { focusOnPrevious: true });
+	          _this.onDeleteClick.call(_this, new Event('click'));
 	          return;
 	      }
 	    });
@@ -19234,7 +19238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  onDeleteConfirm: function onDeleteConfirm(e) {
 	    e.preventDefault();
-	    this.mediator.trigger('block:remove', this.blockID);
+	    this.mediator.trigger('block:remove', this.blockID, { focusOnPrevious: true });
 	  },
 
 	  // REFACTOR: have one set of delete controls that moves around like the

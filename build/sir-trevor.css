@@ -542,7 +542,7 @@ ul.st-text-block {
   background: #fff;
   display: none;
   right: 4em;
-  top: 0.5em; }
+  top: 0; }
   .st-block-positioner.active {
     display: block; }
   .st-block-positioner:after {
@@ -667,7 +667,7 @@ ul.st-text-block {
   background: #fff;
   display: none;
   right: 4em;
-  top: 0.4em;
+  top: 1.85em;
   padding: 0.3em .5em;
   border-color: #d70014; }
   .st-block__ui-delete-controls.active {
