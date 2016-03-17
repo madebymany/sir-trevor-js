@@ -7091,12 +7091,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.editors = {};
 	  },
 
-	  newTextEditor: function newTextEditor(template, content) {
-	    // render template outside of dom
-	    var wrapper = document.createElement('div');
-	    wrapper.innerHTML = template;
+	  newTextEditor: function newTextEditor(template_or_node, content) {
+	    var editor, isTextTemplate;
 
-	    var editor = wrapper.querySelector('.st-block__editor');
+	    isTextTemplate = template_or_node.tagName === undefined;
+
+	    if (isTextTemplate) {
+	      // render template outside of dom
+	      var wrapper = document.createElement('div');
+	      wrapper.innerHTML = template_or_node;
+
+	      editor = wrapper.querySelector('.st-block__editor');
+	    } else {
+	      editor = template_or_node;
+	    }
+
 	    var id = _.uniqueId('editor-');
 	    editor.setAttribute('data-editorId', id);
 	    editor.addEventListener('keyup', this.getSelectionForFormatter);
@@ -7108,7 +7117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scribe.setContent(content);
 
 	    var editorObject = {
-	      node: wrapper.removeChild(wrapper.firstChild),
+	      node: isTextTemplate ? wrapper.removeChild(wrapper.firstChild) : editor,
 	      el: editor,
 	      scribe: scribe,
 	      id: id
