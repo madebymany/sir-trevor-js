@@ -6902,7 +6902,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.mediator.trigger("block:create", 'Text', null, _this.el);
 	          break;
 	        case 8:
-	          _this.onDeleteClick.call(_this, new Event('click'));
+	          _this.onDeleteClick.call(_this, new CustomEvent('click'));
 	          return;
 	      }
 	    });
@@ -19261,7 +19261,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    e.stopPropagation();
 
 	    if (this.isEmpty()) {
-	      this.onDeleteConfirm.call(this, new Event('click'));
+	      this.onDeleteConfirm.call(this, new CustomEvent('click'));
 	      return;
 	    }
 
