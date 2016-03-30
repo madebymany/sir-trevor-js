@@ -72,6 +72,7 @@ module.exports = Block.extend({
 
   setupListVariables: function() {
     this.list = this.inner.querySelector('ul, ol');
+    this.listType = this.listType || 'unordered';
   },
 
   loadData: function(data) {
@@ -100,6 +101,12 @@ module.exports = Block.extend({
     } else {
       this.addListItem();
     }
+
+    this.selectListTypeBtn();
+  },
+
+  selectListTypeBtn: function() {
+    this.selectUiControl(`${this.listType}list`);
   },
 
   parseFromMarkdown: function(markdown) {
@@ -229,9 +236,9 @@ module.exports = Block.extend({
   },
 
   updateListType: function(listType) {
-    this.setAndLoadData({
-      listType: listType
-    });
+    var data = this._serializeData();
+    data.listType = listType;
+    this.setAndLoadData(data);
   }
 
 });
