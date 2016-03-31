@@ -6727,6 +6727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  initializeControllable: function initializeControllable() {
 	    utils.log("Adding controllable to block " + this.blockID);
+	    this.inner.classList.add('st-block__inner--controllable');
 	    this.control_ui = Dom.createElement('div', { 'class': 'st-block__control-ui' });
 	    _Object$keys(this.controls).forEach(function (cmd) {
 	      // Bind configured handler to current block context
@@ -6744,8 +6745,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  addUiControl: function addUiControl(cmd, handler) {
+	    var _this = this;
+
 	    this.control_ui.appendChild(this.getControlTemplate(cmd));
-	    Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, 'click', handler);
+	    Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, 'click', function (e) {
+	      _this.selectUiControl(cmd);
+	      handler(e);
+	    });
+	  },
+
+	  selectUiControl: function selectUiControl(cmd) {
+	    var _this2 = this;
+
+	    var selectedClass = 'st-block-control-ui-btn--selected';
+	    _Object$keys(this.controls).forEach(function (control) {
+	      _this2.getControlUiBtn(control).classList.remove(selectedClass);
+	    });
+	    this.getControlUiBtn(cmd).classList.add(selectedClass);
+	  },
+
+	  getControlUiBtn: function getControlUiBtn(cmd) {
+	    return this.control_ui.querySelector('.st-block-control-ui-btn--' + cmd);
 	  }
 	};
 
@@ -19357,7 +19377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (ev.which === cmd.keyCode && ctrlDown) {
 	          ev.preventDefault();
-	          block.execTextBlockCommand(cmd);
+	          block.execTextBlockCommand(cmd.cmd);
 	        }
 	      });
 	    });
@@ -20674,8 +20694,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	"use strict";
 
+	var _Object$keys = __webpack_require__(34)['default'];
+
 	var Block = __webpack_require__(248);
 	var stToHTML = __webpack_require__(257);
+	var Dom = __webpack_require__(73);
 
 	var ScribeListBlockPlugin = __webpack_require__(269);
 
@@ -20685,7 +20708,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return i18n.t('blocks:list:title');
 	  },
 	  icon_name: 'list',
+
+	  controllable: true,
 	  multi_editable: true,
+
+	  controls: {
+	    'unorderedlist': function unorderedlist(e) {
+	      e.preventDefault();
+
+	      this.updateListType('unordered');
+	    },
+	    'orderedlist': function orderedlist(e) {
+	      e.preventDefault();
+
+	      this.updateListType('ordered');
+	    }
+	  },
 
 	  scribeOptions: {
 	    allowBlockElements: false,
@@ -20698,7 +20736,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scribe.use(new ScribeListBlockPlugin(this));
 	  },
 
-	  editorHTML: '<ul class="st-list-block__list"></ul>',
+	  listTagName: function listTagName() {
+	    return this.listType === 'ordered' ? 'ol' : 'ul';
+	  },
+
+	  editorHTML: function editorHTML() {
+	    return this.createRootNode().outerHTML;
+	  },
+
+	  createRootNode: function createRootNode() {
+	    return Dom.createElement(this.listTagName(), {
+	      'class': 'st-list-block__list'
+	    });
+	  },
+
 	  listItemEditorHTML: '<li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li>',
 
 	  initialize: function initialize() {
@@ -20713,7 +20764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  onBlockRender: function onBlockRender() {
-	    if (!this.ul) {
+	    if (!this.list) {
 	      this.setupListVariables();
 	    }
 	    if (this.editorIds.length < 1) {
@@ -20722,22 +20773,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  setupListVariables: function setupListVariables() {
-	    this.ul = this.inner.querySelector('ul');
+	    this.list = this.inner.querySelector('ul, ol');
+	    this.listType = this.listType || 'unordered';
 	  },
 
 	  loadData: function loadData(data) {
-	    var block = this;
+	    var _this = this;
+
 	    if (this.options.convertFromMarkdown && data.format !== "html") {
 	      data = this.parseFromMarkdown(data.text);
 	    }
 
+	    while (_Object$keys(this.editors).length) {
+	      var item = this.editors[_Object$keys(this.editors)[0]];
+
+	      this.editorIds.splice(0, 1);
+	      this.list.removeChild(item.node);
+	      this.removeTextEditor(item.id);
+	    }
+
+	    this.listType = data.listType || 'unordered';
+
+	    Dom.replaceWith(this.list, this.createRootNode());
+
+	    this.setupListVariables();
+
 	    if (data.listItems.length) {
 	      data.listItems.forEach(function (li) {
-	        block.addListItem(li.content);
+	        _this.addListItem(li.content);
 	      });
 	    } else {
-	      block.addListItem();
+	      this.addListItem();
 	    }
+
+	    this.selectListTypeBtn();
+	  },
+
+	  selectListTypeBtn: function selectListTypeBtn() {
+	    this.selectUiControl(this.listType + 'list');
 	  },
 
 	  parseFromMarkdown: function parseFromMarkdown(markdown) {
@@ -20752,10 +20825,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  _serializeData: function _serializeData() {
-	    var data = { format: 'html', listItems: [] };
+	    var data = {
+	      format: 'html',
+	      listItems: [],
+	      listType: this.listType
+	    };
 
 	    this.editorIds.forEach((function (editorId) {
-	      var listItem = { content: this.getTextEditor(editorId).scribe.getContent() };
+	      var listItem = {
+	        content: this.getTextEditor(editorId).scribe.getContent()
+	      };
 	      data.listItems.push(listItem);
 	    }).bind(this));
 
@@ -20774,15 +20853,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    var editor = this.newTextEditor(this.listItemEditorHTML, content);
-
-	    if (after && this.ul.lastchild !== after.node) {
+	    if (after && this.list.lastchild !== after.node) {
 	      var before = after.node.nextSibling;
-	      this.ul.insertBefore(editor.node, before);
+	      this.list.insertBefore(editor.node, before);
 
 	      var idx = this.editorIds.indexOf(after.id) + 1;
 	      this.editorIds.splice(idx, 0, editor.id);
 	    } else {
-	      this.ul.appendChild(editor.node);
+	      this.list.appendChild(editor.node);
 	      this.editorIds.push(editor.id);
 	    }
 
@@ -20829,7 +20907,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.focusOnNeighbor(item);
 	    this.editorIds.splice(idx, 1);
-	    this.ul.removeChild(item.node);
+	    this.list.removeChild(item.node);
 	    this.removeTextEditor(item.id);
 	  },
 
@@ -20861,6 +20939,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    } else {
 	      return null;
 	    }
+	  },
+
+	  updateListType: function updateListType(listType) {
+	    var data = this._serializeData();
+	    data.listType = listType;
+	    this.setAndLoadData(data);
 	  }
 
 	});
