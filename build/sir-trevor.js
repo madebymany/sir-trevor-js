@@ -21285,7 +21285,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.el.insertAdjacentHTML("beforeend", buttons);
 
-	    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
+	    // We use mousedown rather than click as that allows us to keep focus on the contenteditable field.
+	    Events.delegate(this.el, '.st-format-btn', 'mousedown', this.onFormatButtonClick);
 	  },
 
 	  hide: function hide() {
@@ -21363,6 +21364,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.block.execTextBlockCommand(cmd);
 
 	    this.highlightSelectedButtons();
+
+	    // Re-select the contenteditable field.
+	    document.activeElement.focus();
 
 	    return false;
 	  }
@@ -21579,7 +21583,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hideAllTheThings: function hideAllTheThings(e) {
 	    this.blockControls.hide();
 	    this.blockAddition.hide();
-	    this.formatBar.hide();
+
+	    if (document.activeElement.getAttribute('contenteditable') === null) {
+	      this.formatBar.hide();
+	    }
 
 	    var popupSelectors = '.st-block__ui-delete-controls';
 	    Array.prototype.forEach.call(this.wrapper.querySelectorAll(popupSelectors), function (el) {
