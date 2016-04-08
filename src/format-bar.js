@@ -52,7 +52,8 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
     this.el.insertAdjacentHTML("beforeend", buttons);
 
-    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
+    // We use mousedown rather than click as that allows us to keep focus on the contenteditable field.
+    Events.delegate(this.el, '.st-format-btn', 'mousedown', this.onFormatButtonClick);
   },
 
   hide: function() {
@@ -126,6 +127,9 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
     block.execTextBlockCommand(cmd);
 
     this.highlightSelectedButtons();
+
+    // Re-select the contenteditable field.
+    document.activeElement.focus();
 
     return false;
   }
