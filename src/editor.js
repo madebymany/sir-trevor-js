@@ -183,7 +183,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   hideAllTheThings: function(e) {
     this.blockControls.hide();
     this.blockAddition.hide();
-    this.formatBar.hide();
+
+    if (document.activeElement.getAttribute('contenteditable') === null) {
+      this.formatBar.hide();
+    }
 
     var popupSelectors = '.st-block__ui-delete-controls';
     Array.prototype.forEach.call(this.wrapper.querySelectorAll(popupSelectors), function(el) {
