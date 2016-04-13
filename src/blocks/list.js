@@ -239,6 +239,15 @@ module.exports = Block.extend({
     var data = this._serializeData();
     data.listType = listType;
     this.setAndLoadData(data);
+  },
+
+  asClipboardHTML: function() {
+    var listItems = this.editorIds.map(editorId => {
+      return `<li>${this.getTextEditor(editorId).scribe.getContent()}</li>`;
+    }).join("\n");
+    return `
+      <${this.listTagName()}>${listItems}</${this.listTagName()}>
+    `;
   }
 
 });

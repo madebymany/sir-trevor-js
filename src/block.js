@@ -326,24 +326,28 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       return;
     }
 
-    this.options.formatBar.commands.forEach(function(cmd) {
+    this.options.formatBar.commands.forEach(cmd => {
       if (_.isUndefined(cmd.keyCode)) {
         return;
       }
 
       var ctrlDown = false;
 
-      Events.delegate(block.el,'.st-text-block', 'keyup', function(ev) {
+      Events.delegate(block.el,'.st-text-block', 'keyup', (ev) => {
         if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
           ctrlDown = false;
         }
       });
-      Events.delegate(block.el, '.st-text-block', 'keydown', function(ev) {
+      Events.delegate(block.el, '.st-text-block', 'keydown', (ev) => {
         if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
           ctrlDown = true;
         }
 
-        if(ev.which === cmd.keyCode && ctrlDown) {
+        // Capture ctrl + a
+        if (ev.which === 65 && ctrlDown) {
+          ev.preventDefault();
+          this.mediator.trigger('editor:copyContents');
+        } else if (ev.which === cmd.keyCode && ctrlDown) {
           ev.preventDefault();
           block.execTextBlockCommand(cmd.cmd);
         }

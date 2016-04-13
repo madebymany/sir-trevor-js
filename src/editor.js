@@ -30,8 +30,11 @@ var Editor = function(options) {
 
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
-  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
-    'removeBlockDragOver', 'blockLimitReached', 'blockOrderUpdated'],
+  bound: [
+    'onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
+    'removeBlockDragOver', 'blockLimitReached', 'blockOrderUpdated',
+    'copyContents'
+  ],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -92,6 +95,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.mediator.on('block:remove', this.blockOrderUpdated);
     this.mediator.on('block:replace', this.blockOrderUpdated);
 
+    this.mediator.on('editor:copyContents', this.copyContents);
+
     this.dataStore = "Please use store.retrieve();";
 
     this._setEvents();
@@ -105,6 +110,43 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
+    }
+  },
+
+  copyContents: function() {
+    this.onFormSubmit();
+    
+    var copyArea = Dom.createElement("div", {
+      contenteditable: true,
+      class: 'st-copy-area',
+    });
+    document.body.appendChild(copyArea);
+
+    var output = [];
+    
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), (block, idx) => {
+      var _block = this.blockManager.findBlockById(block.getAttribute('id'));
+      if (!_.isUndefined(_block)) {
+        output.push( _block.asClipboardHTML() );
+      }
+    });
+
+    copyArea.innerHTML = output.join("\n");
+    //copyArea.select();
+
+    var selection = window.getSelection();        
+    var range = document.createRange();
+    range.selectNodeContents(copyArea);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    
+    try {
+      // copy text
+      document.execCommand('copy');
+      copyArea.blur();
+    }
+    catch (err) {
+      alert('please press Ctrl/Cmd+C to copy');
     }
   },
 

@@ -73,6 +73,12 @@ module.exports = Block.extend({
   onDrop: function(transferData){
     var url = transferData.getData('text/plain');
     this.handleDropPaste(url);
+  },
+
+  asClipboardHTML: function() {
+    return `
+      <div class="st-copy-video" data-source="${this._getData().source}" data-remote-id="${this._getData().remote_id}"></div>
+    `;
   }
 });
 

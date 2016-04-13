@@ -60,5 +60,13 @@ module.exports = Block.extend({
 
   isEmpty: function() {
     return this._scribe.getTextContent() === '';
+  },
+
+  asClipboardHTML: function() {
+    return `
+      <p>
+        ${this._scribe.getTextContent()}
+      </p>
+    `;
   }
 });
