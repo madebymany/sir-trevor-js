@@ -18,16 +18,44 @@ Generally the flow for a block goes like this:
 2. Render block UI
 3. Edit some data
 4. Submit form
-5. Block validates
+5. [Validate block with validations](#4-3)
 6. Block data is serialized to the block store
 
 The methods associated with doing this are:
 
 **`loadData`**
-Takes the stored block data and presents it to the user.
+Function is called with the JSON block data when updated and allows the block to rerender as required.
+
+```js
+loadData(data) {
+  this.el.querySelector('.js-cite').value = data.cite;
+}
+```
 
 **`setData`**
 Takes a JSON object and stores it against the block.
+
+```js
+setData(data)
+```
+
+**`getBlockData`**
+Get the current block data as a JSON object
+
+```js
+getBlockData() // returns {}
+```
+
+**`_serializeData`**
+Override the block data for storage and return a JSON object.
+
+```js
+_serializeData() {
+  return {
+    cite: this.el.querySelector('.js-cite')
+  };
+}
+```
 
 <a name="4-2"></a>
 ## Mixins
@@ -52,6 +80,9 @@ Provides a second, smaller UI in the lower left block corner to control its cont
 **`fetchable`**
 Provides ajax functionality for a block. Along with a url you can pass options that will get passed to the Ajax.fetch library.
 
+**`textable`**
+Provides support for the block to be handled as an inline text block. Currently supported by `Text`, `Heading` and `Quote` blocks.
+
 The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `upload_options.html`, `drop_options.html` or `paste_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
 
 <a name="4-3"></a>
@@ -61,20 +92,14 @@ There are two types of validations with Sir Trevor, required fields and custom v
 
 If you want to create custom validators, just define the method on your block and add it to the `validations` array on the block. To trigger an error on the block, you add an error to the `errors` array using the `this.setError` method.
 
-    {
-      ...
+```js
+validations: ['myCustomValidator'],
 
-      validations: ['myCustomValidator'],
-
-      myCustomValidator: function() {
-        var someField = this.$('.field');
-
-        if (someField.val() === "BEER!") {
-          this.setError(someField, "must not contain beer");
-        }
-      }
-
-      ...
-    }
-
-
+myCustomValidator: function() {
+  var someField = this.$('.field');
+    
+  if (someField.value === "BEER!") {
+    this.setError(someField, "must not contain beer");
+  }
+}
+```

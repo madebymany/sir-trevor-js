@@ -1,19 +1,23 @@
 {
   "name": "sir-trevor-js",
-  "version": "0.3.1",
   "ignore": [
     "**/.*",
     "node_modules",
     "components",
-    "src",
+    "src/!(blocks)",
     "spec",
     "examples",
     "website",
     "BrowserRunner.html"
   ],
+  "main": [
+    "sir-trevor.js",
+    "sir-trevor.css"
+  ],
   "dependencies": {
-    "underscore": "~1.4.4",
-    "Eventable": "~1.0.1",
-    "jquery": "~1.9.1"
-  }
+    "es5-shim": "~v4.0.3",
+    "es6-shim": "~0.21.0",
+    "Eventable": "~1.0.1"
+  },
+  "version": "0.6.0-beta9"
 }

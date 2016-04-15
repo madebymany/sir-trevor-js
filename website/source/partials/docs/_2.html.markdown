@@ -7,69 +7,85 @@ The editor accepts the following options. Options are passed to the editor on in
 Specify an array of block types to use with the editor.
 *Defaults to all block types*.
 
-    {
-      blockTypes: ["Text", "Tweet", "Image"]
-    }
+```js
+{
+  blockTypes: ["Text", "Tweet", "Image"]
+}
+```
 
 **`defaultType`**
 Specify a default block to start the editor with.
 *Defaults to no block*.
 
-    {
-      defaultType: "Text"
-    }
+```js
+{
+  defaultType: "Text"
+}
+```
 
 **`blockLimit`**
 Set an overall total number of blocks that can be displayed.
 *Defaults to 0 (infinite)*.
 
-    {
-      blockLimit: 1
-    }
+```js
+{
+  blockLimit: 1
+}
+```
 
 **`blockTypeLimits`**
 Set a limit on the number of blocks that can be displayed by its type.
 *Defaults to {}*.
 
-    {
-      blockTypeLimits: {
-        "Text": 2,
-        "Image": 1
-      }
-    }
+```js
+{
+  blockTypeLimits: {
+    "Text": 2,
+    "Image": 1
+  }
+}
+```
 
 **`required`**
 Specify which block types are required for validatation.
 *Defaults to none*.
 
-    {
-      required: ["Text", "Image"]
-    }
+```js
+{
+  required: ["Text", "Image"]
+}
+```
 
 **`onEditorRender`**
 Call a function once the Editor has rendered.
 *Defaults to undefined*.
 
-    {
-      onEditorRender: function() {
-        alert('Do something');
-      }
-    }
+```js
+{
+  onEditorRender: function() {
+    alert('Do something');
+  }
+}
+```
 
 <a name="2-1"></a>
 ## Block Options
 
 You can set specific options for blocks by using the `setBlockOptions` method.
 
-    SirTrevor.setBlockOptions('Tweet', {
-      someValue: true
-    });
+```js
+SirTrevor.setBlockOptions('Tweet', {
+  someValue: true
+});
+```
 
 <a name="2-2"></a>
 ## Global Options
 
 You can also set options *globally* for all Sir Trevor instances using the `setDefaults` method.
 
-    SirTrevor.setDefaults({
-      required: ["Text"]
-    });
+```js
+SirTrevor.setDefaults({
+  required: ["Text"]
+});
+```

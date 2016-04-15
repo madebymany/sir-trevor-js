@@ -8,20 +8,24 @@ To use the Tweet block you'll need some **server side** code. This will need to 
 
 You can change the Tweet fetch URL as follows:
 
-    SirTrevor.setBlockOptions("Tweet", {
-      fetchUrl: function(tweetID) {
-        return "/tweets/?tweet_id=" + tweetID;
-      }
-    });
+```js
+SirTrevor.setBlockOptions("Tweet", {
+  fetchUrl: function(tweetID) {
+    return "/tweets/?tweet_id=" + tweetID;
+  }
+});
+```
 
 <a name="3-2"></a>
 ## Image Block
 
 The image block relies on a server side component to **store images on the server**. By default Sir Trevor will do an AJAX file upload in the background to a `/attachments` endpoint. You can change this as follows:
 
-    SirTrevor.setDefaults({
-      uploadUrl: "/images"
-    });
+```js
+SirTrevor.setDefaults({
+  uploadUrl: "/images"
+});
+```
 
 The uploader posts an `attachment` hash that has three properties:
 
@@ -39,45 +43,58 @@ There are a few hook in points per block that you can use:
 **`beforeBlockRender`**
 Called immediately when render is called.
 
-    SirTrevor.Blocks.Text.beforeBlockRender = function() {
-      alert('Do something');
-    };
+```js
+SirTrevor.Blocks.Text.beforeBlockRender = function() {
+  alert('Do something');
+};
+```
 
 **`onBlockRender`**
 Called once a block has been rendered.
 
-    SirTrevor.Blocks.Text.onBlockRender = function() {
-      alert('Do something');
-    };
+```js
+SirTrevor.Blocks.Text.onBlockRender = function() {
+  alert('Do something');
+};
+```
 
 <a name="3-4"></a>
-## Events
+## Mediated Events
 
-We use an event model to trigger actions, which can be hooked into if necessary. The events given off are as follows:
+We use events bound to an individual editor to trigger actions internally. You can use these events to hook into the inner workings of Sir Trevor. 
 
 <a name="3-4-1"></a>
-### Block Events
+### Block events
 
-* `block:create:new`
-* `block:create:existing`
+* `block:create`
 * `block:remove`
-* `block:reorder:dropped`
+* `block:changePosition`
+* `block:limitReached`
+* `block:rerender`
+* `block:replace`
+* `block:countUpdate`
 
 <a name="3-4-2"></a>
-### Formatter
+### Error events
 
-* `formatter:hide`
-* `formatter:position`
+* `errors:add`
+* `errors:render`
+* `errors:reset`
 
 <a name="3-4-3"></a>
-### Upload Events
+### Formatter events
 
-* `onUploadStart`
-* `onUploadStop`
-* `onError`
+* `formatter:position`
+* `formatter:hide`
 
-You can use these events using the `SirTrevor.EventBus` as follows:
+You can use access these events using the mediator object on an editor as follows:
 
-    SirTrevor.EventBus.on('block:create:new', function(){
-      console.log(arguments);
-    });
+```js
+var editor = SirTrevor.Editor({
+  el: document.querySelector('.js-editor')
+});
+
+editor.mediator.on('block:create', function() {
+  console.log(arguments);
+});
+```
