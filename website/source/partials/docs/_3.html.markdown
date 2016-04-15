@@ -90,7 +90,10 @@ We use events bound to an individual editor to trigger actions internally. You c
 You can use access these events using the mediator object on an editor as follows:
 
 ```js
-var editor = SirTrevor.Editor({el: document.querySelector('.js-editor')});
+var editor = SirTrevor.Editor({
+  el: document.querySelector('.js-editor')
+});
+
 editor.mediator.on('block:create', function() {
   console.log(arguments);
 });
