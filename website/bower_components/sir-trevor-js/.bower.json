@@ -8,13 +8,11 @@
     "spec",
     "examples",
     "website",
-    "BrowserRunner.html",
-    "config"
+    "BrowserRunner.html"
   ],
   "main": [
-    "build/sir-trevor.js",
-    "build/sir-trevor.css",
-    "build/sir-trevor-icons.svg"
+    "sir-trevor.js",
+    "sir-trevor.css"
   ],
   "dependencies": {
     "es5-shim": "~v4.0.3",
@@ -22,13 +20,13 @@
     "Eventable": "~1.0.1"
   },
   "homepage": "https://github.com/madebymany/sir-trevor-js",
-  "_release": "d5941f7b1d",
+  "_release": "b0062d6ade",
   "_resolution": {
     "type": "branch",
-    "branch": "new-docs",
-    "commit": "d5941f7b1de4251380dd8455eeae1911be626e6e"
+    "branch": "dist",
+    "commit": "b0062d6ade5af3d3cd6b35f18591e35016e2b62a"
   },
   "_source": "https://github.com/madebymany/sir-trevor-js.git",
-  "_target": "new-docs",
+  "_target": "dist",
   "_originalSource": "https://github.com/madebymany/sir-trevor-js.git"
 }
