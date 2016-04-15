@@ -1,109 +1,86 @@
-/*global module:false*/
+/* global module:false */
+
+require('es5-shim');
+require('es6-shim');
+
 module.exports = function(grunt) {
 
-  var banner = ['/*!',
-                 ' * Sir Trevor JS v<%= pkg.version %>',
-                 ' *',
-                 ' * Released under the MIT license',
-                 ' * www.opensource.org/licenses/MIT',
-                 ' *',
-                 ' * <%= grunt.template.today("yyyy-mm-dd") %>',
-                 ' */\n\n'
-                ].join("\n");
-
-  grunt.loadNpmTasks('grunt-rigger');
+  grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-sass');
+  grunt.loadNpmTasks('grunt-webpack');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-jasmine-nodejs');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.initConfig({
 
     pkg: grunt.file.readJSON('package.json'),
 
-    'jasmine' : {
-      'sir-trevor': {
-        src : 'sir-trevor.js',
+    webpack: {
+      dist: require('./config/webpack/dist'),
+      test: require('./config/webpack/test'),
+      uncompressed: require('./config/webpack/uncompressed')
+    },
+
+    "webpack-dev-server": {
+      start: {
+        webpack: require('./config/webpack/dev'),
+        keepalive: true,
+        hot: true,
+        contentBase: "./",
+        inline: true,
+        host: '127.0.0.1'
+      }
+    },
+
+    karma: {
+      test: {
+        configFile: './config/karma.conf.js'
+      }
+    },
+
+    jshint: require('./config/jshint.conf'),
+
+    connect: {
+      server: {
         options: {
-          vendor: ['components/jquery/jquery.js',
-                   'components/underscore/underscore.js',
-                   'components/Eventable/eventable.js'],
-          specs : 'spec/javascripts/**/*.spec.js',
-          helpers : 'spec/helpers/*.js'
+          port: 8000,
+          hostname: '127.0.0.1',
         }
       }
     },
 
-    rig: {
-      build: {
-        options: {
-          banner: banner
+    jasmine_nodejs: {
+      options: {
+        specNameSuffix: "spec.js",
+        useHelpers: false,
+        stopOnFailure: false,
+        reporters: {
+          console: {
+            colors: true,
+            cleanStack: 1,
+            verbosity: 1,
+            listStyle: "flat",
+            activity: true
+          }
         },
-        files: {
-          'sir-trevor.js': ['src/sir-trevor.js']
-        }
-      }
-    },
-
-    uglify: {
-      options: {
-        mangle: false,
-        banner: banner
       },
-      standard: {
-        files: {
-          'sir-trevor.min.js': ['sir-trevor.js']
-        }
+      test: {
+        specs: [
+          "spec/e2e/*.spec.js"
+        ]
       }
     },
 
-    watch: {
-      scripts: {
-        files: ['src/*.js', 'src/**/*.js', 'src/sass/*.scss'],
-        tasks: ['sass', 'rig']
-      }
-    },
-
-    jshint: {
-      all: ['sir-trevor.js'],
-
-      options: {
-        curly: true,
-        eqeqeq: true,
-        immed: false,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        browser: true
-      },
-      globals: {
-        jQuery: true,
-        _: true,
-        console: true
-      }
-    },
-
-    sass: {
-      dist: {
-        files: {
-          'sir-trevor.css': 'src/sass/main.scss'
-        }
-      }
+    clean: {
+      all: ["build/*.*"]
     }
-
   });
 
-  // Default task.
-  grunt.loadNpmTasks('grunt-contrib-jasmine');
-
-  grunt.registerTask('travis', ['rig', 'jasmine']);
-
-  grunt.registerTask('default', ['sass', 'rig', 'uglify', 'jasmine']);
-
-  grunt.registerTask('jasmine-browser', ['server','watch']);
-
+  grunt.registerTask('default', ['webpack:uncompressed', 'webpack:dist']);
+  grunt.registerTask('test', ['clean:all', 'jshint', 'karma', 'test-integration']);
+  grunt.registerTask('test-integration', ['webpack:test', 'connect', 'jasmine_nodejs' ])
+  grunt.registerTask('dev', ['webpack-dev-server:start']);
 };

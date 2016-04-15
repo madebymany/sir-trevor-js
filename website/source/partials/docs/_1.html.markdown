@@ -1,6 +1,6 @@
 # What is Sir Trevor?
 
-Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as markdown inside a JSON object, with the structure and the contents of the post serialized inside of it.
+Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as HTML inside a JSON object, with the structure and the contents of the post serialized inside of it.
 
 <a name="1"></a>
 # Get Started
@@ -8,42 +8,61 @@ Sir Trevor provides a means to transform a text input into a rich content editor
 <a name="1-1"></a>
 ## Installation
 
-The easiest way to install Sir Trevor is with [Bower](https://github.com/bower/bower), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
+The easier way to install Sir Trevor is with [Bower](https://github.com/bower/bower), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
 
-    {
-      "name": "your-project",
-      "dependencies": {
-        "sir-trevor-js": "0.3.2"
-      }
-    }
+```js
+{
+  "name": "your-project",
+  "dependencies": {
+    "sir-trevor-js": "0.3.2"
+  }
+}
+```
 
 Then run `bower install` on your project to install the necessary dependencies.
+
+We also provide an [npm](https://github.com/npm/npm) package
+
+```
+npm install sir-trevor
+```
 
 Alternatively, grab the following files and include them in your project:
 
   * [Underscore.js](https://github.com/jashkenas/underscore/blob/master/underscore.js)
   * [Eventable](https://github.com/madebymany/eventable/blob/master/eventable.js)
-  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.js)
+  * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.js)
 
+You'll need the following CSS file too:
 
-And you'll need the following CSS file too:
+  * [Sir Trevor CSS](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.css)
 
-  * [Sir Trevor](https://github.com/madebymany/sir-trevor-js/blob/dist/sir-trevor.css)
+And the icons file:
+
+  * [Sir Trevor Icons](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor-icons.svg) [Configure icon url](#1-5)
 
 <a name="1-2"></a>
 ## Initialising
 
 A Sir Trevor element must be contained inside a form like follows:
 
-    <form>
-      <textarea class="js-st-instance"></textarea>
-    </form>
+```html
+<form>
+  <textarea class="js-st-instance"></textarea>
+</form>
+```
 
 Then to transform this element to a Sir Trevor instance:
 
-    <script>
-      new SirTrevor.Editor({ el: $('.js-st-instance') });
-    </script>
+```html
+<script>
+  var editor = new SirTrevor.Editor({
+    el: document.querySelector('.js-st-instance'),
+    defaultType: 'Text',
+    iconUrl: 'build/sir-trevor-icons.svg'
+  });
+</script>
+```
 
 <a name="1-3"></a>
 ## The Output
@@ -52,26 +71,39 @@ Sir Trevor stores structured JSON that describes your document.
 
 A typical piece of Sir Trevor JSON looks like this:
 
-    {
-      "data": [{
-        "type": "text",
-        "data": {
-          "text": "Hello, my name is **Sir Trevor**"
-        }
-      }]
+```js
+{
+  "data": [{
+    "type": "text",
+    "data": {
+      "text": "<p>Hello, my name is <b>Sir Trevor</b></p>"
     }
+  }]
+}
+```
 
 Each piece of JSON is made up of an object that contains the *type* and *data* for the block.
 
-Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You'll need to remember to transform the markdown to HTML using a library too.
+Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial.
 
 For a server-side example, please see our [Sir Trevor Rails gem](http://github.com/madebymany/sir-trevor-rails). The ideas within this could easily be extrapolated for other languages.
 
 <a name="1-4"></a>
 ## Retrieving Editor Instances
 
-You can retrieve `SirTrevor.Editor` instances using the `SirTrevor.getInstance` method.
+You can retrieve `SirTrevor.Editor` instance by assigning the editor to a variable.
 
-    SirTrevor.getInstance(); // Gets the first instance
-    SirTrevor.getInstance('st-editor-11') // Gets editor by it's identifier
-    SirTrevor.getInstance(0) // Gets by it's position
+```js
+var editor = new SirTrevor.Editor({});
+```
+
+<a name="1-5"></a>
+## Configuring icon url
+
+Icons are included using an external svg file. This will need a url so that the icons can be found. This is set using default.
+  
+```js
+SirTrevor.setDefaults({
+  iconUrl: "sir-trevor-icons.svg"
+});
+```
