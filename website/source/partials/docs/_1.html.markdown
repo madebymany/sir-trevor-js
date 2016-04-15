@@ -1,6 +1,6 @@
 # What is Sir Trevor?
 
-Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as markdown inside a JSON object, with the structure and the contents of the post serialized inside of it.
+Sir Trevor provides a means to transform a text input into a rich content editor that's been re-imagined for the web. The content of the editor is stored as HTML inside a JSON object, with the structure and the contents of the post serialized inside of it.
 
 <a name="1"></a>
 # Get Started
@@ -8,7 +8,7 @@ Sir Trevor provides a means to transform a text input into a rich content editor
 <a name="1-1"></a>
 ## Installation
 
-The easiest way to install Sir Trevor is with [Bower](https://github.com/bower/bower), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
+The easier way to install Sir Trevor is with [Bower](https://github.com/bower/bower), the front-end package manager from Twitter. If you do use Bower, your `bower.json` file should look something like this:
 
     {
       "name": "your-project",
@@ -18,6 +18,12 @@ The easiest way to install Sir Trevor is with [Bower](https://github.com/bower/b
     }
 
 Then run `bower install` on your project to install the necessary dependencies.
+
+We also provide an [npm](https://github.com/npm/npm) package
+
+```
+npm install sir-trevor
+```
 
 Alternatively, grab the following files and include them in your project:
 
@@ -64,14 +70,14 @@ A typical piece of Sir Trevor JSON looks like this:
       "data": [{
         "type": "text",
         "data": {
-          "text": "Hello, my name is **Sir Trevor**"
+          "text": "<p>Hello, my name is <b>Sir Trevor</b></p>"
         }
       }]
     }
 
 Each piece of JSON is made up of an object that contains the *type* and *data* for the block.
 
-Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You'll need to remember to transform the markdown to HTML using a library too.
+Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial.
 
 For a server-side example, please see our [Sir Trevor Rails gem](http://github.com/madebymany/sir-trevor-rails). The ideas within this could easily be extrapolated for other languages.
 
@@ -85,7 +91,7 @@ You can retrieve `SirTrevor.Editor` instance by assigning the editor to a variab
 <a name="1-5"></a>
 ## Configuring icon url
 
-Icons are included using an external svg file. This will need a url so that the icons can be found. This is set using default.
+Icons are included using an external svg file. You will probably want to customise this url as it will vary within your code. This is set as a default for all editors on the page.
   
     SirTrevor.setDefaults({
       iconUrl: "sir-trevor-icons.svg"
