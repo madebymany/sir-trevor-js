@@ -1,6 +1,19 @@
 (function () {
   'use strict';
 
+  // The IE's "contains" method does not work when a text node is passed as argument.
+  if (/Trident/.test(navigator.userAgent)) {
+    Object.defineProperty(HTMLElement.prototype, 'contains', {
+      writable: true,
+      enumerable: false,
+      configurable: true,
+      value: function(node) {
+        if (!node) return false;
+        return this === node || !!(this.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_CONTAINED_BY);
+      }
+    });
+  }
+
   // IE does not implement `Document.prototype.contains`
   if (typeof Document.prototype.contains !== 'function') {
     Object.defineProperty(Document.prototype, 'contains', {
