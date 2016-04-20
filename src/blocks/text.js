@@ -37,7 +37,7 @@ module.exports = Block.extend({
   scribeOptions: { 
     allowBlockElements: true,
     tags: {
-      p: true
+      p: {}
     }
   },
 
@@ -52,6 +52,31 @@ module.exports = Block.extend({
   onBlockRender: function() {
     this.focus();
     this.toggleEmptyClass();
+
+    if(Object.hasOwnProperty.call(window, "ActiveXObject") && !window.ActiveXObject) {
+      this._scribe.el.addEventListener('paste', () => {
+        setTimeout(() => {
+          
+          var fakeContent = document.createElement('div');
+          fakeContent.innerHTML = this._scribe.getContent();
+
+          if (fakeContent.childNodes.length > 1) {
+
+            var nodes = Array.from(fakeContent.childNodes);
+            this._scribe.setContent( nodes.shift().innerHTML );
+            nodes.reverse().forEach((node) => {
+              var data = {
+                format: 'html',
+                text: node.innerHTML
+              };
+              this.mediator.trigger("block:create", 'Text', data, this.el);
+            });
+            this._scribe.el.focus();
+          }
+
+        }, 1);
+      });
+    }
   },
 
   toggleEmptyClass: function() {

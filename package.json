@@ -57,7 +57,7 @@
     "node-sass": "^3.2.0",
     "object.assign": "^1.1.1",
     "sass-loader": "^2.0.0",
-    "scribe-editor": "git://github.com/madebymany/scribe.git#d40aab7",
+    "scribe-editor": "git://github.com/madebymany/scribe.git#b23ddf7",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",
     "scribe-plugin-link-prompt-command": "^0.2.0",
     "scribe-plugin-sanitizer": "^0.1.9",
