@@ -18,10 +18,13 @@ module.exports = function(block, file, success, error) {
 
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
+  var attachmentName = block.attachmentName || config.defaults.attachmentName;
+  var attachmentFile = block.attachmentFile || config.defaults.attachmentFile;
+  var attachmentUid = block.attachmentUid || config.defaults.attachmentUid;
 
-  data.append('attachment[name]', file.name);
-  data.append('attachment[file]', file);
-  data.append('attachment[uid]', uid);
+  data.append(attachmentName, file.name);
+  data.append(attachmentFile, file);
+  data.append(attachmentUid, uid);
 
   block.resetMessages();
 
