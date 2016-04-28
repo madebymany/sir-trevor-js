@@ -126,7 +126,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
-    EventBus.trigger("block:remove");
+    EventBus.trigger('block:remove', blockID);
   },
 
   replaceBlock: function(blockNode, type, data) {
