@@ -192,7 +192,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   validateAndSaveBlock: function(block, shouldValidate) {
-    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+    if (!config.skipValidation && shouldValidate && !block.valid()) {
       this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
       utils.log("Block " + block.blockID + " failed validation");
       return;
