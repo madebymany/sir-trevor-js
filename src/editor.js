@@ -265,10 +265,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
    * pressing backspace multiple times doesn't close the page.
    */
   disableBackButton: function(e) {
+    var target = e.target || e.srcElement;
     if (e.keyCode === 8) {
-      if (e.srcElement.getAttribute('contenteditable') ||
-          e.srcElement.tagName === 'INPUT' ||
-          e.srcElement.tagName === 'TEXTAREA') {
+      if (target.getAttribute('contenteditable') ||
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA') {
         return;
       }
 
