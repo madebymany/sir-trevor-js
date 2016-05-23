@@ -1902,7 +1902,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Code distributed by Google as part of the polymer project is also
 	 * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 	 */
-	// @version 0.7.21
+	// @version 0.7.22
 	if (typeof WeakMap === "undefined") {
 	  (function() {
 	    var defineProperty = Object.defineProperty;
@@ -21746,8 +21746,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * pressing backspace multiple times doesn't close the page.
 	   */
 	  disableBackButton: function disableBackButton(e) {
+	    var target = e.target || e.srcElement;
 	    if (e.keyCode === 8) {
-	      if (e.srcElement.getAttribute('contenteditable') || e.srcElement.tagName === 'INPUT' || e.srcElement.tagName === 'TEXTAREA') {
+	      if (target.getAttribute('contenteditable') || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
 	        return;
 	      }
 
