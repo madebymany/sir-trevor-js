@@ -55,7 +55,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     type = utils.classify(type);
 
     // Run validations
-    if (!this.canCreateBlock(type)) { return; }
+    if (!this.canCreateBlock(type)) {
+      type = utils.classify(this.blockTypes[0]);
+      this.wrapper.classList.add("st-replacer-enable");
+    }
 
     var block = new Blocks[type](data, this.instance_scope, this.mediator,
                                  this.blockOptions);
