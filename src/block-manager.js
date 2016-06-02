@@ -119,8 +119,6 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       return (item.blockID !== block.blockID);
     });
 
-    block.remove();
-
     if (options.focusOnPrevious && previousBlock) {
       previousBlock.focusAtEnd();
     }
@@ -134,8 +132,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   replaceBlock: function(blockNode, type, data) {
     var block = this.findBlockById(blockNode.id);
-    this.createBlock(type, data || null, blockNode);
     this.removeBlock(blockNode.id);
+    this.createBlock(type, data || null, blockNode);
     block.remove();
   },
 
