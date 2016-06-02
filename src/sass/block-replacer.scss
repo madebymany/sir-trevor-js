@@ -11,7 +11,7 @@
   z-index: 2;
   top: 50%;
   left: 35px;
-  
+
   &::-moz-focus-inner {
     padding:0;
     margin:0;
@@ -22,6 +22,9 @@
     display: block;
   }
 
+  .st-replacer-enable & {
+    display: block;
+  }
 }
 
 .st-block-replacer__button {
@@ -34,7 +37,7 @@
   width: 41px;
   height: 41px;
   cursor: pointer;
-  
+
   transform:translateZ(0);
 
   .st-block--controls-active & {
