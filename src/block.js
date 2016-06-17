@@ -247,7 +247,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     e.stopPropagation();
 
     if (this.isEmpty()) {
-      this.onDeleteConfirm.call(this, new Event('click'));
+      this.onDeleteConfirm.call(this, new CustomEvent('click'));
       return;
     }
 
@@ -345,7 +345,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
         if(ev.which === cmd.keyCode && ctrlDown) {
           ev.preventDefault();
-          block.execTextBlockCommand(cmd);
+          block.execTextBlockCommand(cmd.cmd);
         }
       });
     });

@@ -80,7 +80,7 @@ module.exports = {
           this.mediator.trigger("block:create", 'Text', null, this.el);
           break;
         case 8:
-          this.onDeleteClick.call(this, new Event('click'));
+          this.onDeleteClick.call(this, new CustomEvent('click'));
           return;
       }
     });
