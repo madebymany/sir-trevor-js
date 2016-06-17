@@ -41,7 +41,7 @@ module.exports.create = function(SirTrevor) {
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:replace", el.parentNode, this.dataset.type
+      "block:replace", el.parentNode, this.getAttribute('data-type')
     );
   }
 
