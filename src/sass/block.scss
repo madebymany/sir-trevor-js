@@ -41,6 +41,11 @@
   }
 }
 
+.st-block__inner--controllable {
+  padding-bottom: 3em;
+  transition: all 0.2s;
+}
+
 .st-block--with-errors .st-block__inner,
 .st-block--delete-active .st-block__inner  {
   border-color: $error-color;
