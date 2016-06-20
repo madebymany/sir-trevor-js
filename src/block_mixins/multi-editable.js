@@ -11,13 +11,13 @@ module.exports = {
   },
 
   newTextEditor: function(template_or_node, content) {
-    var editor, isTextTemplate;
+    var editor, isTextTemplate, wrapper;
 
     isTextTemplate = (template_or_node.tagName === undefined);
 
     if (isTextTemplate) {
       // render template outside of dom
-      var wrapper = document.createElement('div');
+      wrapper = document.createElement('div');
       wrapper.innerHTML = template_or_node;
 
       editor = wrapper.querySelector('.st-block__editor');

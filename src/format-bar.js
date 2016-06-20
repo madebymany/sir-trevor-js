@@ -10,7 +10,6 @@
 var _ = require('./lodash');
 
 var config = require('./config');
-var utils = require('./utils');
 var Dom = require('./packages/dom');
 var Events = require('./packages/events');
 
@@ -102,7 +101,6 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   highlightSelectedButtons: function() {
-    var block = utils.getBlockBySelection();
     [].forEach.call(this.el.querySelectorAll(".st-format-btn"), (btn) => {
       var cmd = btn.getAttribute('data-cmd');
       btn.classList.toggle("st-format-btn--is-active",
@@ -115,7 +113,6 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
     ev.preventDefault();
     ev.stopPropagation();
 
-    var block = utils.getBlockBySelection();
     if (_.isUndefined(this.block)) {
       throw "Associated block not found";
     }

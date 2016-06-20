@@ -161,13 +161,16 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   blockOrderUpdated: function() {
     // Detect first block and decide whether to hide top controls
     var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
-    var block;
+    var hideTopControls = false;
+
     if (blockElement) {
-      block = this.blockManager.findBlockById(
+      var block = this.blockManager.findBlockById(
         blockElement.getAttribute('id')
       );
+      hideTopControls = block && block.textable;
     }
-    this._toggleHideTopControls(blockElement && block.textable);
+    
+    this._toggleHideTopControls(hideTopControls);
   },
 
   _toggleHideTopControls: function(toggle) {
