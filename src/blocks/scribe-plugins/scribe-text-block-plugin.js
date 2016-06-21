@@ -36,7 +36,7 @@ var ScribeTextBlockPlugin = function(block) {
 
       if (fakeContent.childNodes.length >= 1) {
         var data;
-        var nodes = Array.from(fakeContent.childNodes);
+        var nodes = [].slice.call(fakeContent.childNodes);
         nodes.reverse().forEach(function(node) {
           if (node.innerText !== '') {
             data = {

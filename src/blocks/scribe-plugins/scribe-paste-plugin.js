@@ -45,7 +45,7 @@ var scribePastePlugin = function(block) {
         fakeContent.innerHTML = scribe.getContent();
 
         if (fakeContent.childNodes.length > 1) {
-          var nodes = Array.from(fakeContent.childNodes);
+          var nodes = [].slice.call(fakeContent.childNodes);
           var listItemsToCreate = [];
           var listIsFirstItem = false;
 
