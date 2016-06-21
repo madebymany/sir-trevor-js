@@ -4,9 +4,14 @@ require("./icons/sir-trevor-icons.svg");
 
 // ES6 shims
 require('object.assign').shim();
-require('array.prototype.find');
+require('array.prototype.find').shim();
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 require('es6-promise').polyfill();
+
+// Old IE support
+require('./vendor/custom-event')
+require('./vendor/ie-classlist-toggle');
+require('./vendor/dom-shims');
 
 var utils = require('./utils');
 
