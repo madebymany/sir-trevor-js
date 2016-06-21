@@ -8,6 +8,12 @@ require('array.prototype.find');
 require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
 require('es6-promise').polyfill();
 
+// Old IE support
+require('webcomponents.js/MutationObserver.js')
+require('./shims/custom-event')
+require('./shims/ie-classlist-toggle');
+require('./shims/dom-shims');
+
 var utils = require('./utils');
 
 var SirTrevor = {
