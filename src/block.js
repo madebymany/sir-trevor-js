@@ -67,6 +67,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   upload_options: {},
 
   formattable: true,
+  supressKeyListeners: false,
 
   _previousSelection: '',
 
