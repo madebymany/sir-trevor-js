@@ -100,6 +100,10 @@ var ScribeTextBlockPlugin = function(block) {
 
     scribe.el.addEventListener('keydown', function(ev) {
 
+      if (block.supressKeyListeners) {
+        return;
+      }
+
       if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
         ev.preventDefault();
 
@@ -133,6 +137,11 @@ var ScribeTextBlockPlugin = function(block) {
     });
 
     scribe.el.addEventListener('keyup', function(ev) {
+
+      if (block.supressKeyListeners) {
+        return;
+      }
+
       if (ev.keyCode === 8 && isAtStart) {
         ev.preventDefault();
 

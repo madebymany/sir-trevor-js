@@ -3,6 +3,11 @@
 var ScribeListBlockPlugin = function(block) {
   return function(scribe) {
     scribe.el.addEventListener('keydown', function(ev) {
+
+      if (block.supressKeyListeners) {
+        return;
+      }
+
       var rangeToHTML = function(range) {
         var div = document.createElement('div');
         div.appendChild(range.extractContents());
