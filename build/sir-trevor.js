@@ -19145,6 +19145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  upload_options: {},
 
 	  formattable: true,
+	  supressKeyListeners: false,
 
 	  _previousSelection: '',
 
@@ -20350,6 +20351,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    scribe.el.addEventListener('keydown', function (ev) {
 
+	      if (block.supressKeyListeners) {
+	        return;
+	      }
+
 	      if (ev.keyCode === 13 && !ev.shiftKey) {
 	        // enter pressed
 	        ev.preventDefault();
@@ -20383,6 +20388,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    scribe.el.addEventListener('keyup', function (ev) {
+
+	      if (block.supressKeyListeners) {
+	        return;
+	      }
+
 	      if (ev.keyCode === 8 && isAtStart) {
 	        ev.preventDefault();
 
@@ -20950,6 +20960,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ScribeListBlockPlugin = function ScribeListBlockPlugin(block) {
 	  return function (scribe) {
 	    scribe.el.addEventListener('keydown', function (ev) {
+
+	      if (block.supressKeyListeners) {
+	        return;
+	      }
+
 	      var rangeToHTML = function rangeToHTML(range) {
 	        var div = document.createElement('div');
 	        div.appendChild(range.extractContents());
