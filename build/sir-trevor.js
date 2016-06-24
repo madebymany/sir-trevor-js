@@ -81,7 +81,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = __webpack_require__(1);
 
-	__webpack_require__(284);
+	__webpack_require__(318);
 
 /***/ },
 /* 1 */
@@ -109,37 +109,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var SirTrevor = {
 
-	  config: __webpack_require__(72),
+	  config: __webpack_require__(86),
 
 	  log: utils.log,
 
-	  Locales: __webpack_require__(76),
+	  Locales: __webpack_require__(90),
 
-	  Events: __webpack_require__(77),
-	  EventBus: __webpack_require__(79),
+	  Events: __webpack_require__(91),
+	  EventBus: __webpack_require__(93),
 
-	  EditorStore: __webpack_require__(80),
-	  Submittable: __webpack_require__(81),
-	  FileUploader: __webpack_require__(82),
+	  EditorStore: __webpack_require__(94),
+	  Submittable: __webpack_require__(95),
+	  FileUploader: __webpack_require__(96),
 
-	  BlockMixins: __webpack_require__(132),
-	  BlockPositioner: __webpack_require__(238),
-	  BlockReorder: __webpack_require__(241),
-	  BlockDeletion: __webpack_require__(242),
-	  BlockValidations: __webpack_require__(243),
-	  BlockStore: __webpack_require__(244),
-	  BlockManager: __webpack_require__(245),
+	  BlockMixins: __webpack_require__(146),
+	  BlockPositioner: __webpack_require__(272),
+	  BlockReorder: __webpack_require__(275),
+	  BlockDeletion: __webpack_require__(276),
+	  BlockValidations: __webpack_require__(277),
+	  BlockStore: __webpack_require__(278),
+	  BlockManager: __webpack_require__(279),
 
-	  SimpleBlock: __webpack_require__(249),
-	  Block: __webpack_require__(248),
+	  SimpleBlock: __webpack_require__(283),
+	  Block: __webpack_require__(282),
 
-	  Blocks: __webpack_require__(246),
+	  Blocks: __webpack_require__(280),
 
-	  FormatBar: __webpack_require__(273),
-	  Editor: __webpack_require__(275),
+	  FormatBar: __webpack_require__(307),
+	  Editor: __webpack_require__(309),
 
-	  toMarkdown: __webpack_require__(283),
-	  toHTML: __webpack_require__(257),
+	  toMarkdown: __webpack_require__(317),
+	  toHTML: __webpack_require__(291),
 
 	  setDefaults: function setDefaults(options) {
 	    _Object$assign(SirTrevor.config.defaults, options || {});
@@ -170,7 +170,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	};
 
-	_Object$assign(SirTrevor, __webpack_require__(276));
+	_Object$assign(SirTrevor, __webpack_require__(310));
 
 	module.exports = SirTrevor;
 
@@ -2366,8 +2366,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$keys = __webpack_require__(34)['default'];
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
-	var Dom = __webpack_require__(73);
+	var config = __webpack_require__(86);
+	var Dom = __webpack_require__(87);
 
 	var urlRegex = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?#]*))?(?:\?([^#]*))?(?:#(.*))?$/;
 
@@ -2499,13 +2499,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	"use strict";
 
 	exports.isEmpty = __webpack_require__(39);
-	exports.isFunction = __webpack_require__(53);
+	exports.isFunction = __webpack_require__(58);
 	exports.isObject = __webpack_require__(47);
-	exports.isString = __webpack_require__(58);
-	exports.isUndefined = __webpack_require__(59);
-	exports.result = __webpack_require__(60);
-	exports.template = __webpack_require__(61);
-	exports.uniqueId = __webpack_require__(71);
+	exports.isString = __webpack_require__(66);
+	exports.isUndefined = __webpack_require__(67);
+	exports.result = __webpack_require__(68);
+	exports.template = __webpack_require__(69);
+	exports.uniqueId = __webpack_require__(85);
 
 /***/ },
 /* 39 */
@@ -2520,7 +2520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Available under MIT license <http://lodash.com/license>
 	 */
 	var forOwn = __webpack_require__(40),
-	    isFunction = __webpack_require__(53);
+	    isFunction = __webpack_require__(58);
 
 	/** `Object#toString` result shortcuts */
 	var argsClass = '[object Arguments]',
@@ -2589,8 +2589,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Available under MIT license <http://lodash.com/license>
 	 */
 	var baseCreateCallback = __webpack_require__(41),
-	    keys = __webpack_require__(56),
-	    objectTypes = __webpack_require__(48);
+	    keys = __webpack_require__(62),
+	    objectTypes = __webpack_require__(65);
 
 	/**
 	 * Iterates over own enumerable properties of an object, executing the callback
@@ -2645,9 +2645,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Available under MIT license <http://lodash.com/license>
 	 */
 	var bind = __webpack_require__(42),
-	    identity = __webpack_require__(54),
+	    identity = __webpack_require__(59),
 	    setBindData = __webpack_require__(50),
-	    support = __webpack_require__(55);
+	    support = __webpack_require__(60);
 
 	/** Used to detected named functions */
 	var reFuncName = /^\s*function[ \n\r\t]+\w/;
@@ -2731,7 +2731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Available under MIT license <http://lodash.com/license>
 	 */
 	var createWrapper = __webpack_require__(43),
-	    slice = __webpack_require__(51);
+	    slice = __webpack_require__(53);
 
 	/**
 	 * Creates a function that, when called, invokes `func` with the `this`
@@ -2777,9 +2777,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Available under MIT license <http://lodash.com/license>
 	 */
 	var baseBind = __webpack_require__(44),
-	    baseCreateWrapper = __webpack_require__(52),
-	    isFunction = __webpack_require__(53),
-	    slice = __webpack_require__(51);
+	    baseCreateWrapper = __webpack_require__(54),
+	    isFunction = __webpack_require__(58),
+	    slice = __webpack_require__(53);
 
 	/**
 	 * Used for `Array` method references.
@@ -2891,7 +2891,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var baseCreate = __webpack_require__(45),
 	    isObject = __webpack_require__(47),
 	    setBindData = __webpack_require__(50),
-	    slice = __webpack_require__(51);
+	    slice = __webpack_require__(53);
 
 	/**
 	 * Used for `Array` method references.
@@ -2946,54 +2946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {/**
-	 * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
-	 * Build: `lodash modularize modern exports="npm" -o ./npm/`
-	 * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <http://lodash.com/license>
-	 */
-	var isNative = __webpack_require__(46),
-	    isObject = __webpack_require__(47),
-	    noop = __webpack_require__(49);
-
-	/* Native method shortcuts for methods with the same name as other `lodash` methods */
-	var nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate;
-
-	/**
-	 * The base implementation of `_.create` without support for assigning
-	 * properties to the created object.
-	 *
-	 * @private
-	 * @param {Object} prototype The object to inherit from.
-	 * @returns {Object} Returns the new object.
-	 */
-	function baseCreate(prototype, properties) {
-	  return isObject(prototype) ? nativeCreate(prototype) : {};
-	}
-	// fallback for browsers without `Object.create`
-	if (!nativeCreate) {
-	  baseCreate = (function() {
-	    function Object() {}
-	    return function(prototype) {
-	      if (isObject(prototype)) {
-	        Object.prototype = prototype;
-	        var result = new Object;
-	        Object.prototype = null;
-	      }
-	      return result || global.Object();
-	    };
-	  }());
-	}
-
-	module.exports = baseCreate;
-
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
+[320, 46, 49],
 /* 46 */
 /***/ function(module, exports) {
 
@@ -3148,8 +3101,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var isNative = __webpack_require__(46),
-	    noop = __webpack_require__(49);
+	var isNative = __webpack_require__(51),
+	    noop = __webpack_require__(52);
 
 	/** Used as the property descriptor for `__bindData__` */
 	var descriptor = {
@@ -3187,6 +3140,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 51 */
+46,
+/* 52 */
+49,
+/* 53 */
 /***/ function(module, exports) {
 
 	/**
@@ -3230,7 +3187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 52 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3241,10 +3198,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var baseCreate = __webpack_require__(45),
+	var baseCreate = __webpack_require__(55),
 	    isObject = __webpack_require__(47),
 	    setBindData = __webpack_require__(50),
-	    slice = __webpack_require__(51);
+	    slice = __webpack_require__(53);
 
 	/**
 	 * Used for `Array` method references.
@@ -3314,7 +3271,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 53 */
+/* 55 */
+[320, 56, 57],
+/* 56 */
+46,
+/* 57 */
+49,
+/* 58 */
 /***/ function(module, exports) {
 
 	/**
@@ -3347,7 +3310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 54 */
+/* 59 */
 /***/ function(module, exports) {
 
 	/**
@@ -3381,7 +3344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 55 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/**
@@ -3392,7 +3355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var isNative = __webpack_require__(46);
+	var isNative = __webpack_require__(61);
 
 	/** Used to detect functions containing a `this` reference */
 	var reThis = /\bthis\b/;
@@ -3428,93 +3391,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 56 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
-	 * Build: `lodash modularize modern exports="npm" -o ./npm/`
-	 * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <http://lodash.com/license>
-	 */
-	var isNative = __webpack_require__(46),
-	    isObject = __webpack_require__(47),
-	    shimKeys = __webpack_require__(57);
-
-	/* Native method shortcuts for methods with the same name as other `lodash` methods */
-	var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
-
-	/**
-	 * Creates an array composed of the own enumerable property names of an object.
-	 *
-	 * @static
-	 * @memberOf _
-	 * @category Objects
-	 * @param {Object} object The object to inspect.
-	 * @returns {Array} Returns an array of property names.
-	 * @example
-	 *
-	 * _.keys({ 'one': 1, 'two': 2, 'three': 3 });
-	 * // => ['one', 'two', 'three'] (property order is not guaranteed across environments)
-	 */
-	var keys = !nativeKeys ? shimKeys : function(object) {
-	  if (!isObject(object)) {
-	    return [];
-	  }
-	  return nativeKeys(object);
-	};
-
-	module.exports = keys;
-
-
-/***/ },
-/* 57 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/**
-	 * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
-	 * Build: `lodash modularize modern exports="npm" -o ./npm/`
-	 * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
-	 * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
-	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-	 * Available under MIT license <http://lodash.com/license>
-	 */
-	var objectTypes = __webpack_require__(48);
-
-	/** Used for native method references */
-	var objectProto = Object.prototype;
-
-	/** Native method shortcuts */
-	var hasOwnProperty = objectProto.hasOwnProperty;
-
-	/**
-	 * A fallback implementation of `Object.keys` which produces an array of the
-	 * given object's own enumerable property names.
-	 *
-	 * @private
-	 * @type Function
-	 * @param {Object} object The object to inspect.
-	 * @returns {Array} Returns an array of property names.
-	 */
-	var shimKeys = function(object) {
-	  var index, iterable = object, result = [];
-	  if (!iterable) return result;
-	  if (!(objectTypes[typeof object])) return result;
-	    for (index in iterable) {
-	      if (hasOwnProperty.call(iterable, index)) {
-	        result.push(index);
-	      }
-	    }
-	  return result
-	};
-
-	module.exports = shimKeys;
-
-
-/***/ },
-/* 58 */
+/* 61 */
+46,
+/* 62 */
+[321, 63, 64],
+/* 63 */
+46,
+/* 64 */
+[322, 65],
+/* 65 */
+48,
+/* 66 */
 /***/ function(module, exports) {
 
 	/**
@@ -3557,7 +3444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 59 */
+/* 67 */
 /***/ function(module, exports) {
 
 	/**
@@ -3590,7 +3477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 60 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3601,7 +3488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var isFunction = __webpack_require__(53);
+	var isFunction = __webpack_require__(58);
 
 	/**
 	 * Resolves the value of property `key` on `object`. If `key` is a function
@@ -3641,7 +3528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 61 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3652,13 +3539,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var defaults = __webpack_require__(62),
-	    escape = __webpack_require__(63),
-	    escapeStringChar = __webpack_require__(67),
-	    keys = __webpack_require__(56),
-	    reInterpolate = __webpack_require__(68),
-	    templateSettings = __webpack_require__(69),
-	    values = __webpack_require__(70);
+	var defaults = __webpack_require__(70),
+	    escape = __webpack_require__(76),
+	    escapeStringChar = __webpack_require__(81),
+	    keys = __webpack_require__(71),
+	    reInterpolate = __webpack_require__(82),
+	    templateSettings = __webpack_require__(83),
+	    values = __webpack_require__(84);
 
 	/** Used to match empty string literals in compiled template source */
 	var reEmptyStringLeading = /\b__p \+= '';/g,
@@ -3863,7 +3750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 62 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3874,8 +3761,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var keys = __webpack_require__(56),
-	    objectTypes = __webpack_require__(48);
+	var keys = __webpack_require__(71),
+	    objectTypes = __webpack_require__(75);
 
 	/**
 	 * Assigns own enumerable properties of source object(s) to the destination
@@ -3923,7 +3810,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 63 */
+/* 71 */
+[321, 72, 73],
+/* 72 */
+46,
+/* 73 */
+[322, 74],
+/* 74 */
+48,
+/* 75 */
+48,
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3934,9 +3831,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var escapeHtmlChar = __webpack_require__(64),
-	    keys = __webpack_require__(56),
-	    reUnescapedHtml = __webpack_require__(66);
+	var escapeHtmlChar = __webpack_require__(77),
+	    keys = __webpack_require__(71),
+	    reUnescapedHtml = __webpack_require__(79);
 
 	/**
 	 * Converts the characters `&`, `<`, `>`, `"`, and `'` in `string` to their
@@ -3960,7 +3857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 64 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -3971,7 +3868,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var htmlEscapes = __webpack_require__(65);
+	var htmlEscapes = __webpack_require__(78);
 
 	/**
 	 * Used by `escape` to convert characters to HTML entities.
@@ -3988,7 +3885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 65 */
+/* 78 */
 /***/ function(module, exports) {
 
 	/**
@@ -4020,7 +3917,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 66 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4031,8 +3928,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var htmlEscapes = __webpack_require__(65),
-	    keys = __webpack_require__(56);
+	var htmlEscapes = __webpack_require__(80),
+	    keys = __webpack_require__(71);
 
 	/** Used to match HTML entities and HTML characters */
 	var reUnescapedHtml = RegExp('[' + keys(htmlEscapes).join('') + ']', 'g');
@@ -4041,7 +3938,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 67 */
+/* 80 */
+78,
+/* 81 */
 /***/ function(module, exports) {
 
 	/**
@@ -4080,7 +3979,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 68 */
+/* 82 */
 /***/ function(module, exports) {
 
 	/**
@@ -4099,7 +3998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 69 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4110,8 +4009,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var escape = __webpack_require__(63),
-	    reInterpolate = __webpack_require__(68);
+	var escape = __webpack_require__(76),
+	    reInterpolate = __webpack_require__(82);
 
 	/**
 	 * By default, the template delimiters used by Lo-Dash are similar to those in
@@ -4178,7 +4077,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 70 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -4189,7 +4088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 	 * Available under MIT license <http://lodash.com/license>
 	 */
-	var keys = __webpack_require__(56);
+	var keys = __webpack_require__(71);
 
 	/**
 	 * Creates an array composed of the own enumerable property values of `object`.
@@ -4220,7 +4119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 71 */
+/* 85 */
 /***/ function(module, exports) {
 
 	/**
@@ -4260,7 +4159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 72 */
+/* 86 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -4366,12 +4265,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 73 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$create = __webpack_require__(74)['default'];
+	var _Object$create = __webpack_require__(88)['default'];
 
 	var _Object$keys = __webpack_require__(34)['default'];
 
@@ -4479,13 +4378,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Dom;
 
 /***/ },
-/* 74 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(75), __esModule: true };
+	module.exports = { "default": __webpack_require__(89), __esModule: true };
 
 /***/ },
-/* 75 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $ = __webpack_require__(11);
@@ -4494,7 +4393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 76 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4502,7 +4401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$keys = __webpack_require__(34)['default'];
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
 
 	var Locales = {
@@ -4609,15 +4508,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Locales;
 
 /***/ },
-/* 77 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	module.exports = __webpack_require__(78);
+	module.exports = __webpack_require__(92);
 
 /***/ },
-/* 78 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -4830,17 +4729,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 79 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _Object$assign = __webpack_require__(2)["default"];
 
-	module.exports = _Object$assign({}, __webpack_require__(77));
+	module.exports = _Object$assign({}, __webpack_require__(91));
 
 /***/ },
-/* 80 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4915,7 +4814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = EditorStore;
 
 /***/ },
-/* 81 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -4935,7 +4834,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var utils = __webpack_require__(33);
 
-	var EventBus = __webpack_require__(79);
+	var EventBus = __webpack_require__(93);
 
 	var Submittable = function Submittable(form) {
 	  this.form = form;
@@ -5033,7 +4932,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Submittable;
 
 /***/ },
-/* 82 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -5044,11 +4943,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	*/
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
-	var Ajax = __webpack_require__(83);
+	var Ajax = __webpack_require__(97);
 
-	var EventBus = __webpack_require__(79);
+	var EventBus = __webpack_require__(93);
 
 	module.exports = function (block, file, success, error) {
 
@@ -5104,19 +5003,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 83 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$create = __webpack_require__(74)['default'];
+	var _Object$create = __webpack_require__(88)['default'];
 
 	var _Object$assign = __webpack_require__(2)['default'];
 
-	__webpack_require__(84);
-	var fetchJsonP = __webpack_require__(85);
-	var cancellablePromise = __webpack_require__(86);
-	var config = __webpack_require__(72);
+	__webpack_require__(98);
+	var fetchJsonP = __webpack_require__(99);
+	var cancellablePromise = __webpack_require__(100);
+	var config = __webpack_require__(86);
 
 	var Ajax = _Object$create(null);
 
@@ -5142,7 +5041,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Ajax;
 
 /***/ },
-/* 84 */
+/* 98 */
 /***/ function(module, exports) {
 
 	(function() {
@@ -5478,7 +5377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 85 */
+/* 99 */
 /***/ function(module, exports) {
 
 	/**
@@ -5573,12 +5472,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 86 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Promise = __webpack_require__(87)["default"];
+	var _Promise = __webpack_require__(101)["default"];
 
 	var cancellablePromise = function cancellablePromise(promise) {
 	  var resolve, reject;
@@ -5608,36 +5507,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = cancellablePromise;
 
 /***/ },
-/* 87 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(88), __esModule: true };
+	module.exports = { "default": __webpack_require__(102), __esModule: true };
 
 /***/ },
-/* 88 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(89);
-	__webpack_require__(90);
-	__webpack_require__(106);
-	__webpack_require__(111);
+	__webpack_require__(103);
+	__webpack_require__(104);
+	__webpack_require__(120);
+	__webpack_require__(125);
 	module.exports = __webpack_require__(7).Promise;
 
 /***/ },
-/* 89 */
+/* 103 */
 /***/ function(module, exports) {
 
 	
 
 /***/ },
-/* 90 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $at  = __webpack_require__(91)(true);
+	var $at  = __webpack_require__(105)(true);
 
 	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(93)(String, 'String', function(iterated){
+	__webpack_require__(107)(String, 'String', function(iterated){
 	  this._t = String(iterated); // target
 	  this._i = 0;                // next index
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -5652,10 +5551,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 91 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var toInteger = __webpack_require__(92)
+	var toInteger = __webpack_require__(106)
 	  , defined   = __webpack_require__(13);
 	// true  -> String#at
 	// false -> String#codePointAt
@@ -5674,7 +5573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 92 */
+/* 106 */
 /***/ function(module, exports) {
 
 	// 7.1.4 ToInteger
@@ -5685,20 +5584,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 93 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var LIBRARY        = __webpack_require__(94)
+	var LIBRARY        = __webpack_require__(108)
 	  , $export        = __webpack_require__(5)
-	  , redefine       = __webpack_require__(95)
-	  , hide           = __webpack_require__(96)
-	  , has            = __webpack_require__(99)
-	  , Iterators      = __webpack_require__(100)
-	  , $iterCreate    = __webpack_require__(101)
-	  , setToStringTag = __webpack_require__(102)
+	  , redefine       = __webpack_require__(109)
+	  , hide           = __webpack_require__(110)
+	  , has            = __webpack_require__(113)
+	  , Iterators      = __webpack_require__(114)
+	  , $iterCreate    = __webpack_require__(115)
+	  , setToStringTag = __webpack_require__(116)
 	  , getProto       = __webpack_require__(11).getProto
-	  , ITERATOR       = __webpack_require__(103)('iterator')
+	  , ITERATOR       = __webpack_require__(117)('iterator')
 	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR    = '@@iterator'
 	  , KEYS           = 'keys'
@@ -5756,24 +5655,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 94 */
+/* 108 */
 /***/ function(module, exports) {
 
 	module.exports = true;
 
 /***/ },
-/* 95 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(96);
+	module.exports = __webpack_require__(110);
 
 /***/ },
-/* 96 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $          = __webpack_require__(11)
-	  , createDesc = __webpack_require__(97);
-	module.exports = __webpack_require__(98) ? function(object, key, value){
+	  , createDesc = __webpack_require__(111);
+	module.exports = __webpack_require__(112) ? function(object, key, value){
 	  return $.setDesc(object, key, createDesc(1, value));
 	} : function(object, key, value){
 	  object[key] = value;
@@ -5781,7 +5680,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 97 */
+/* 111 */
 /***/ function(module, exports) {
 
 	module.exports = function(bitmap, value){
@@ -5794,7 +5693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 98 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Thank's IE8 for his funny defineProperty
@@ -5803,7 +5702,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 99 */
+/* 113 */
 /***/ function(module, exports) {
 
 	var hasOwnProperty = {}.hasOwnProperty;
@@ -5812,23 +5711,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 100 */
+/* 114 */
 /***/ function(module, exports) {
 
 	module.exports = {};
 
 /***/ },
-/* 101 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var $              = __webpack_require__(11)
-	  , descriptor     = __webpack_require__(97)
-	  , setToStringTag = __webpack_require__(102)
+	  , descriptor     = __webpack_require__(111)
+	  , setToStringTag = __webpack_require__(116)
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(96)(IteratorPrototype, __webpack_require__(103)('iterator'), function(){ return this; });
+	__webpack_require__(110)(IteratorPrototype, __webpack_require__(117)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
 	  Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
@@ -5836,23 +5735,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 102 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var def = __webpack_require__(11).setDesc
-	  , has = __webpack_require__(99)
-	  , TAG = __webpack_require__(103)('toStringTag');
+	  , has = __webpack_require__(113)
+	  , TAG = __webpack_require__(117)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 	};
 
 /***/ },
-/* 103 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var store  = __webpack_require__(104)('wks')
-	  , uid    = __webpack_require__(105)
+	var store  = __webpack_require__(118)('wks')
+	  , uid    = __webpack_require__(119)
 	  , Symbol = __webpack_require__(6).Symbol;
 	module.exports = function(name){
 	  return store[name] || (store[name] =
@@ -5860,7 +5759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 104 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var global = __webpack_require__(6)
@@ -5871,7 +5770,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 105 */
+/* 119 */
 /***/ function(module, exports) {
 
 	var id = 0
@@ -5881,28 +5780,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 106 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(107);
-	var Iterators = __webpack_require__(100);
+	__webpack_require__(121);
+	var Iterators = __webpack_require__(114);
 	Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
 
 /***/ },
-/* 107 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var addToUnscopables = __webpack_require__(108)
-	  , step             = __webpack_require__(109)
-	  , Iterators        = __webpack_require__(100)
-	  , toIObject        = __webpack_require__(110);
+	var addToUnscopables = __webpack_require__(122)
+	  , step             = __webpack_require__(123)
+	  , Iterators        = __webpack_require__(114)
+	  , toIObject        = __webpack_require__(124);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-	module.exports = __webpack_require__(93)(Array, 'Array', function(iterated, kind){
+	module.exports = __webpack_require__(107)(Array, 'Array', function(iterated, kind){
 	  this._t = toIObject(iterated); // target
 	  this._i = 0;                   // next index
 	  this._k = kind;                // kind
@@ -5928,13 +5827,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	addToUnscopables('entries');
 
 /***/ },
-/* 108 */
+/* 122 */
 /***/ function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ },
-/* 109 */
+/* 123 */
 /***/ function(module, exports) {
 
 	module.exports = function(done, value){
@@ -5942,7 +5841,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 110 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
@@ -5953,26 +5852,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 111 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var $          = __webpack_require__(11)
-	  , LIBRARY    = __webpack_require__(94)
+	  , LIBRARY    = __webpack_require__(108)
 	  , global     = __webpack_require__(6)
 	  , ctx        = __webpack_require__(8)
-	  , classof    = __webpack_require__(112)
+	  , classof    = __webpack_require__(126)
 	  , $export    = __webpack_require__(5)
-	  , isObject   = __webpack_require__(113)
-	  , anObject   = __webpack_require__(114)
+	  , isObject   = __webpack_require__(127)
+	  , anObject   = __webpack_require__(128)
 	  , aFunction  = __webpack_require__(9)
-	  , strictNew  = __webpack_require__(115)
-	  , forOf      = __webpack_require__(116)
-	  , setProto   = __webpack_require__(121).set
-	  , same       = __webpack_require__(122)
-	  , SPECIES    = __webpack_require__(103)('species')
-	  , speciesConstructor = __webpack_require__(123)
-	  , asap       = __webpack_require__(124)
+	  , strictNew  = __webpack_require__(129)
+	  , forOf      = __webpack_require__(130)
+	  , setProto   = __webpack_require__(135).set
+	  , same       = __webpack_require__(136)
+	  , SPECIES    = __webpack_require__(117)('species')
+	  , speciesConstructor = __webpack_require__(137)
+	  , asap       = __webpack_require__(138)
 	  , PROMISE    = 'Promise'
 	  , process    = global.process
 	  , isNode     = classof(process) == 'process'
@@ -6001,7 +5900,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      works = false;
 	    }
 	    // actual V8 bug, https://code.google.com/p/v8/issues/detail?id=4162
-	    if(works && __webpack_require__(98)){
+	    if(works && __webpack_require__(112)){
 	      var thenableThenGotten = false;
 	      P.resolve($.setDesc({}, 'then', {
 	        get: function(){ thenableThenGotten = true; }
@@ -6157,7 +6056,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      $reject.call(record, err);
 	    }
 	  };
-	  __webpack_require__(129)(P.prototype, {
+	  __webpack_require__(143)(P.prototype, {
 	    // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
 	    then: function then(onFulfilled, onRejected){
 	      var reaction = new PromiseCapability(speciesConstructor(this, P))
@@ -6178,8 +6077,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	$export($export.G + $export.W + $export.F * !USE_NATIVE, {Promise: P});
-	__webpack_require__(102)(P, PROMISE);
-	__webpack_require__(130)(PROMISE);
+	__webpack_require__(116)(P, PROMISE);
+	__webpack_require__(144)(PROMISE);
 	Wrapper = __webpack_require__(7)[PROMISE];
 
 	// statics
@@ -6203,7 +6102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return capability.promise;
 	  }
 	});
-	$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(131)(function(iter){
+	$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(145)(function(iter){
 	  P.all(iter)['catch'](function(){});
 	})), PROMISE, {
 	  // 25.4.4.1 Promise.all(iterable)
@@ -6247,12 +6146,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 112 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
 	var cof = __webpack_require__(15)
-	  , TAG = __webpack_require__(103)('toStringTag')
+	  , TAG = __webpack_require__(117)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -6268,7 +6167,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 113 */
+/* 127 */
 /***/ function(module, exports) {
 
 	module.exports = function(it){
@@ -6276,17 +6175,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 114 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(113);
+	var isObject = __webpack_require__(127);
 	module.exports = function(it){
 	  if(!isObject(it))throw TypeError(it + ' is not an object!');
 	  return it;
 	};
 
 /***/ },
-/* 115 */
+/* 129 */
 /***/ function(module, exports) {
 
 	module.exports = function(it, Constructor, name){
@@ -6295,15 +6194,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 116 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx         = __webpack_require__(8)
-	  , call        = __webpack_require__(117)
-	  , isArrayIter = __webpack_require__(118)
-	  , anObject    = __webpack_require__(114)
-	  , toLength    = __webpack_require__(119)
-	  , getIterFn   = __webpack_require__(120);
+	  , call        = __webpack_require__(131)
+	  , isArrayIter = __webpack_require__(132)
+	  , anObject    = __webpack_require__(128)
+	  , toLength    = __webpack_require__(133)
+	  , getIterFn   = __webpack_require__(134);
 	module.exports = function(iterable, entries, fn, that){
 	  var iterFn = getIterFn(iterable)
 	    , f      = ctx(fn, that, entries ? 2 : 1)
@@ -6319,11 +6218,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 117 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(114);
+	var anObject = __webpack_require__(128);
 	module.exports = function(iterator, fn, value, entries){
 	  try {
 	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -6336,12 +6235,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 118 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
-	var Iterators  = __webpack_require__(100)
-	  , ITERATOR   = __webpack_require__(103)('iterator')
+	var Iterators  = __webpack_require__(114)
+	  , ITERATOR   = __webpack_require__(117)('iterator')
 	  , ArrayProto = Array.prototype;
 
 	module.exports = function(it){
@@ -6349,23 +6248,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 119 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.1.15 ToLength
-	var toInteger = __webpack_require__(92)
+	var toInteger = __webpack_require__(106)
 	  , min       = Math.min;
 	module.exports = function(it){
 	  return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
 	};
 
 /***/ },
-/* 120 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(112)
-	  , ITERATOR  = __webpack_require__(103)('iterator')
-	  , Iterators = __webpack_require__(100);
+	var classof   = __webpack_require__(126)
+	  , ITERATOR  = __webpack_require__(117)('iterator')
+	  , Iterators = __webpack_require__(114);
 	module.exports = __webpack_require__(7).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR]
 	    || it['@@iterator']
@@ -6373,14 +6272,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 121 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Works with __proto__ only. Old v8 can't work with null proto objects.
 	/* eslint-disable no-proto */
 	var getDesc  = __webpack_require__(11).getDesc
-	  , isObject = __webpack_require__(113)
-	  , anObject = __webpack_require__(114);
+	  , isObject = __webpack_require__(127)
+	  , anObject = __webpack_require__(128);
 	var check = function(O, proto){
 	  anObject(O);
 	  if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
@@ -6404,7 +6303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 122 */
+/* 136 */
 /***/ function(module, exports) {
 
 	// 7.2.9 SameValue(x, y)
@@ -6413,24 +6312,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 123 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.3.20 SpeciesConstructor(O, defaultConstructor)
-	var anObject  = __webpack_require__(114)
+	var anObject  = __webpack_require__(128)
 	  , aFunction = __webpack_require__(9)
-	  , SPECIES   = __webpack_require__(103)('species');
+	  , SPECIES   = __webpack_require__(117)('species');
 	module.exports = function(O, D){
 	  var C = anObject(O).constructor, S;
 	  return C === undefined || (S = anObject(C)[SPECIES]) == undefined ? D : aFunction(S);
 	};
 
 /***/ },
-/* 124 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var global    = __webpack_require__(6)
-	  , macrotask = __webpack_require__(125).set
+	  , macrotask = __webpack_require__(139).set
 	  , Observer  = global.MutationObserver || global.WebKitMutationObserver
 	  , process   = global.process
 	  , Promise   = global.Promise
@@ -6495,13 +6394,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 125 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx                = __webpack_require__(8)
-	  , invoke             = __webpack_require__(126)
-	  , html               = __webpack_require__(127)
-	  , cel                = __webpack_require__(128)
+	  , invoke             = __webpack_require__(140)
+	  , html               = __webpack_require__(141)
+	  , cel                = __webpack_require__(142)
 	  , global             = __webpack_require__(6)
 	  , process            = global.process
 	  , setTask            = global.setImmediate
@@ -6575,7 +6474,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 126 */
+/* 140 */
 /***/ function(module, exports) {
 
 	// fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -6596,16 +6495,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 127 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(6).document && document.documentElement;
 
 /***/ },
-/* 128 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(113)
+	var isObject = __webpack_require__(127)
 	  , document = __webpack_require__(6).document
 	  // in old IE typeof document.createElement is 'object'
 	  , is = isObject(document) && isObject(document.createElement);
@@ -6614,24 +6513,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 129 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var redefine = __webpack_require__(95);
+	var redefine = __webpack_require__(109);
 	module.exports = function(target, src){
 	  for(var key in src)redefine(target, key, src[key]);
 	  return target;
 	};
 
 /***/ },
-/* 130 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var core        = __webpack_require__(7)
 	  , $           = __webpack_require__(11)
-	  , DESCRIPTORS = __webpack_require__(98)
-	  , SPECIES     = __webpack_require__(103)('species');
+	  , DESCRIPTORS = __webpack_require__(112)
+	  , SPECIES     = __webpack_require__(117)('species');
 
 	module.exports = function(KEY){
 	  var C = core[KEY];
@@ -6642,10 +6541,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 131 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var ITERATOR     = __webpack_require__(103)('iterator')
+	var ITERATOR     = __webpack_require__(117)('iterator')
 	  , SAFE_CLOSING = false;
 
 	try {
@@ -6668,24 +6567,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 132 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	module.exports = {
-	  Ajaxable: __webpack_require__(133),
-	  Controllable: __webpack_require__(134),
-	  Droppable: __webpack_require__(136),
-	  Fetchable: __webpack_require__(138),
-	  Pastable: __webpack_require__(139),
-	  Uploadable: __webpack_require__(140),
-	  MultiEditable: __webpack_require__(141),
-	  Textable: __webpack_require__(233)
+	  Ajaxable: __webpack_require__(147),
+	  Controllable: __webpack_require__(148),
+	  Droppable: __webpack_require__(150),
+	  Fetchable: __webpack_require__(152),
+	  Pastable: __webpack_require__(153),
+	  Uploadable: __webpack_require__(154),
+	  MultiEditable: __webpack_require__(155),
+	  Textable: __webpack_require__(267)
 	};
 
 /***/ },
-/* 133 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6730,7 +6629,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 134 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6738,9 +6637,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$keys = __webpack_require__(34)['default'];
 
 	var utils = __webpack_require__(33);
-	var config = __webpack_require__(72);
-	var Dom = __webpack_require__(73);
-	var Events = __webpack_require__(135);
+	var config = __webpack_require__(86);
+	var Dom = __webpack_require__(87);
+	var Events = __webpack_require__(149);
 
 	module.exports = {
 
@@ -6791,12 +6690,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 135 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
 	var fixEvent = function fixEvent(e, target) {
 	  var obj = {};
@@ -6856,7 +6755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 136 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -6866,13 +6765,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
-	var dropEvents = __webpack_require__(137);
+	var dropEvents = __webpack_require__(151);
 
-	var EventBus = __webpack_require__(79);
+	var EventBus = __webpack_require__(93);
 
 	module.exports = {
 
@@ -6951,7 +6850,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 137 */
+/* 151 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -6993,20 +6892,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 138 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _ = __webpack_require__(38);
-	var Ajax = __webpack_require__(83);
+	var Ajax = __webpack_require__(97);
 
 	module.exports = {
 
 	  mixinName: "Fetchable",
 
 	  initializeFetchable: function initializeFetchable() {
-	    this.withMixin(__webpack_require__(133));
+	    this.withMixin(__webpack_require__(147));
 	  },
 
 	  fetch: function fetch(url, options, success, failure) {
@@ -7036,7 +6935,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 139 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7044,7 +6943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
 
 	module.exports = {
@@ -7075,7 +6974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 140 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7083,10 +6982,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
 
-	var fileUploader = __webpack_require__(82);
+	var fileUploader = __webpack_require__(96);
 
 	module.exports = {
 
@@ -7097,7 +6996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  initializeUploadable: function initializeUploadable() {
 	    utils.log("Adding uploadable to block " + this.blockID);
-	    this.withMixin(__webpack_require__(133));
+	    this.withMixin(__webpack_require__(147));
 
 	    this.upload_options = _Object$assign({}, config.defaults.Block.upload_options, this.upload_options);
 	    this.inputs.insertAdjacentHTML("beforeend", _.template(this.upload_options.html, this));
@@ -7121,13 +7020,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 141 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _ = __webpack_require__(38);
-	var ScribeInterface = __webpack_require__(142);
+	var ScribeInterface = __webpack_require__(156);
 
 	module.exports = {
 	  mixinName: 'MultiEditable',
@@ -7222,7 +7121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 142 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -7230,12 +7129,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
-	var Scribe = __webpack_require__(143);
-	var config = __webpack_require__(72);
+	var Scribe = __webpack_require__(157);
+	var config = __webpack_require__(86);
 
-	var scribePluginFormatterPlainTextConvertNewLinesToHTML = __webpack_require__(210);
-	var scribePluginLinkPromptCommand = __webpack_require__(211);
-	var scribePluginSanitizer = __webpack_require__(212);
+	var scribePluginFormatterPlainTextConvertNewLinesToHTML = __webpack_require__(224);
+	var scribePluginLinkPromptCommand = __webpack_require__(225);
+	var scribePluginSanitizer = __webpack_require__(226);
 
 	var sanitizeDefaults = {
 	  p: true,
@@ -7302,22 +7201,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 143 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(166),
-	  __webpack_require__(196),
-	  __webpack_require__(175),
 	  __webpack_require__(180),
-	  __webpack_require__(183),
-	  __webpack_require__(191),
-	  __webpack_require__(144),
-	  __webpack_require__(204),
+	  __webpack_require__(210),
+	  __webpack_require__(189),
+	  __webpack_require__(194),
+	  __webpack_require__(197),
 	  __webpack_require__(205),
-	  __webpack_require__(171),
-	  __webpack_require__(169),
-	  __webpack_require__(206)
+	  __webpack_require__(158),
+	  __webpack_require__(218),
+	  __webpack_require__(219),
+	  __webpack_require__(185),
+	  __webpack_require__(183),
+	  __webpack_require__(220)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  plugins,
 	  commands,
@@ -7598,7 +7497,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     **/
 
 	    html = this._htmlFormatterFactory.format(html);
-	    
+
 	    // is IE11
 	    if(Object.hasOwnProperty.call(window, "ActiveXObject") && !window.ActiveXObject) {
 
@@ -7625,6 +7524,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	    } else {
+
 	      // TODO: error if the selection is not within the Scribe instance? Or
 	      // focus the Scribe instance if it is not already focused?
 	      this.getCommand('insertHTML').execute(html);
@@ -7702,10 +7602,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 144 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(145)], __WEBPACK_AMD_DEFINE_RESULT__ = function (assign) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(159)], __WEBPACK_AMD_DEFINE_RESULT__ = function (assign) {
 
 	  'use strict';
 
@@ -7749,10 +7649,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 145 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(146), __webpack_require__(162)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseAssign, createAssigner) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(160), __webpack_require__(176)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseAssign, createAssigner) {
 
 	  /**
 	   * Assigns own enumerable properties of source object(s) to the destination
@@ -7790,10 +7690,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 146 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(147), __webpack_require__(148)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseCopy, keys) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(161), __webpack_require__(162)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseCopy, keys) {
 
 	  /**
 	   * The base implementation of `_.assign` without support for argument juggling,
@@ -7831,7 +7731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 147 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -7865,59 +7765,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 148 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(149), __webpack_require__(150), __webpack_require__(154), __webpack_require__(155)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isNative, isObject, shimKeys) {
-
-	  /* Native method references for those with the same name as other `lodash` methods. */
-	  var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
-
-	  /**
-	   * Creates an array of the own enumerable property names of `object`.
-	   *
-	   * **Note:** Non-object values are coerced to objects. See the
-	   * [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.keys)
-	   * for more details.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @category Object
-	   * @param {Object} object The object to inspect.
-	   * @returns {Array} Returns the array of property names.
-	   * @example
-	   *
-	   * function Foo() {
-	   *   this.a = 1;
-	   *   this.b = 2;
-	   * }
-	   *
-	   * Foo.prototype.c = 3;
-	   *
-	   * _.keys(new Foo);
-	   * // => ['a', 'b'] (iteration order is not guaranteed)
-	   *
-	   * _.keys('hi');
-	   * // => ['0', '1']
-	   */
-	  var keys = !nativeKeys ? shimKeys : function(object) {
-	    if (object) {
-	      var Ctor = object.constructor,
-	          length = object.length;
-	    }
-	    if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
-	        (typeof object != 'function' && (length && isLength(length)))) {
-	      return shimKeys(object);
-	    }
-	    return isObject(object) ? nativeKeys(object) : [];
-	  };
-
-	  return keys;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 149 */
+/* 162 */
+[323, 163, 164, 168, 169],
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -7949,107 +7799,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 150 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(151), __webpack_require__(153)], __WEBPACK_AMD_DEFINE_RESULT__ = function(escapeRegExp, isObjectLike) {
-
-	  /** `Object#toString` result references. */
-	  var funcTag = '[object Function]';
-
-	  /** Used to detect host constructors (Safari > 5). */
-	  var reHostCtor = /^\[object .+?Constructor\]$/;
-
-	  /** Used for native method references. */
-	  var objectProto = Object.prototype;
-
-	  /** Used to resolve the decompiled source of functions. */
-	  var fnToString = Function.prototype.toString;
-
-	  /**
-	   * Used to resolve the `toStringTag` of values.
-	   * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
-	   * for more details.
-	   */
-	  var objToString = objectProto.toString;
-
-	  /** Used to detect if a method is native. */
-	  var reNative = RegExp('^' +
-	    escapeRegExp(objToString)
-	    .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-	  );
-
-	  /**
-	   * Checks if `value` is a native function.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @category Lang
-	   * @param {*} value The value to check.
-	   * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
-	   * @example
-	   *
-	   * _.isNative(Array.prototype.push);
-	   * // => true
-	   *
-	   * _.isNative(_);
-	   * // => false
-	   */
-	  function isNative(value) {
-	    if (value == null) {
-	      return false;
-	    }
-	    if (objToString.call(value) == funcTag) {
-	      return reNative.test(fnToString.call(value));
-	    }
-	    return (isObjectLike(value) && reHostCtor.test(value)) || false;
-	  }
-
-	  return isNative;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 151 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(152)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseToString) {
-
-	  /**
-	   * Used to match `RegExp` special characters.
-	   * See this [article on `RegExp` characters](http://www.regular-expressions.info/characters.html#special)
-	   * for more details.
-	   */
-	  var reRegExpChars = /[.*+?^${}()|[\]\/\\]/g,
-	      reHasRegExpChars = RegExp(reRegExpChars.source);
-
-	  /**
-	   * Escapes the `RegExp` special characters "\", "^", "$", ".", "|", "?", "*",
-	   * "+", "(", ")", "[", "]", "{" and "}" in `string`.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @category String
-	   * @param {string} [string=''] The string to escape.
-	   * @returns {string} Returns the escaped string.
-	   * @example
-	   *
-	   * _.escapeRegExp('[lodash](https://lodash.com/)');
-	   * // => '\[lodash\]\(https://lodash\.com/\)'
-	   */
-	  function escapeRegExp(string) {
-	    string = baseToString(string);
-	    return (string && reHasRegExpChars.test(string))
-	      ? string.replace(reRegExpChars, '\\$&')
-	      : string;
-	  }
-
-	  return escapeRegExp;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 152 */
+/* 164 */
+[324, 165, 167],
+/* 165 */
+[325, 166],
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -8074,7 +7828,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 153 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -8095,7 +7849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 154 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -8134,144 +7888,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 155 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(156), __webpack_require__(157), __webpack_require__(158), __webpack_require__(149), __webpack_require__(159), __webpack_require__(160)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isArguments, isArray, isIndex, isLength, keysIn, support) {
-
-	  /** Used for native method references. */
-	  var objectProto = Object.prototype;
-
-	  /** Used to check objects for own properties. */
-	  var hasOwnProperty = objectProto.hasOwnProperty;
-
-	  /**
-	   * A fallback implementation of `Object.keys` which creates an array of the
-	   * own enumerable property names of `object`.
-	   *
-	   * @private
-	   * @param {Object} object The object to inspect.
-	   * @returns {Array} Returns the array of property names.
-	   */
-	  function shimKeys(object) {
-	    var props = keysIn(object),
-	        propsLength = props.length,
-	        length = propsLength && object.length;
-
-	    var allowIndexes = length && isLength(length) &&
-	      (isArray(object) || (support.nonEnumArgs && isArguments(object)));
-
-	    var index = -1,
-	        result = [];
-
-	    while (++index < propsLength) {
-	      var key = props[index];
-	      if ((allowIndexes && isIndex(key, length)) || hasOwnProperty.call(object, key)) {
-	        result.push(key);
-	      }
-	    }
-	    return result;
-	  }
-
-	  return shimKeys;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 156 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(149), __webpack_require__(153)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isObjectLike) {
-
-	  /** Used as a safe reference for `undefined` in pre-ES5 environments. */
-	  var undefined;
-
-	  /** `Object#toString` result references. */
-	  var argsTag = '[object Arguments]';
-
-	  /** Used for native method references. */
-	  var objectProto = Object.prototype;
-
-	  /**
-	   * Used to resolve the `toStringTag` of values.
-	   * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
-	   * for more details.
-	   */
-	  var objToString = objectProto.toString;
-
-	  /**
-	   * Checks if `value` is classified as an `arguments` object.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @category Lang
-	   * @param {*} value The value to check.
-	   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	   * @example
-	   *
-	   * _.isArguments(function() { return arguments; }());
-	   * // => true
-	   *
-	   * _.isArguments([1, 2, 3]);
-	   * // => false
-	   */
-	  function isArguments(value) {
-	    var length = isObjectLike(value) ? value.length : undefined;
-	    return (isLength(length) && objToString.call(value) == argsTag) || false;
-	  }
-
-	  return isArguments;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 157 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(149), __webpack_require__(150), __webpack_require__(153)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isNative, isObjectLike) {
-
-	  /** `Object#toString` result references. */
-	  var arrayTag = '[object Array]';
-
-	  /** Used for native method references. */
-	  var objectProto = Object.prototype;
-
-	  /**
-	   * Used to resolve the `toStringTag` of values.
-	   * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
-	   * for more details.
-	   */
-	  var objToString = objectProto.toString;
-
-	  /* Native method references for those with the same name as other `lodash` methods. */
-	  var nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray;
-
-	  /**
-	   * Checks if `value` is classified as an `Array` object.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @category Lang
-	   * @param {*} value The value to check.
-	   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
-	   * @example
-	   *
-	   * _.isArray([1, 2, 3]);
-	   * // => true
-	   *
-	   * _.isArray(function() { return arguments; }());
-	   * // => false
-	   */
-	  var isArray = nativeIsArray || function(value) {
-	    return (isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag) || false;
-	  };
-
-	  return isArray;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 158 */
+/* 169 */
+[326, 170, 171, 172, 163, 173, 174],
+/* 170 */
+[327, 163, 167],
+/* 171 */
+[328, 163, 164, 167],
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -8302,156 +7925,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 159 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(156), __webpack_require__(157), __webpack_require__(158), __webpack_require__(149), __webpack_require__(154), __webpack_require__(160)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isArguments, isArray, isIndex, isLength, isObject, support) {
-
-	  /** Used for native method references. */
-	  var objectProto = Object.prototype;
-
-	  /** Used to check objects for own properties. */
-	  var hasOwnProperty = objectProto.hasOwnProperty;
-
-	  /**
-	   * Creates an array of the own and inherited enumerable property names of `object`.
-	   *
-	   * **Note:** Non-object values are coerced to objects.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @category Object
-	   * @param {Object} object The object to inspect.
-	   * @returns {Array} Returns the array of property names.
-	   * @example
-	   *
-	   * function Foo() {
-	   *   this.a = 1;
-	   *   this.b = 2;
-	   * }
-	   *
-	   * Foo.prototype.c = 3;
-	   *
-	   * _.keysIn(new Foo);
-	   * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-	   */
-	  function keysIn(object) {
-	    if (object == null) {
-	      return [];
-	    }
-	    if (!isObject(object)) {
-	      object = Object(object);
-	    }
-	    var length = object.length;
-	    length = (length && isLength(length) &&
-	      (isArray(object) || (support.nonEnumArgs && isArguments(object))) && length) || 0;
-
-	    var Ctor = object.constructor,
-	        index = -1,
-	        isProto = typeof Ctor == 'function' && Ctor.prototype === object,
-	        result = Array(length),
-	        skipIndexes = length > 0;
-
-	    while (++index < length) {
-	      result[index] = (index + '');
-	    }
-	    for (var key in object) {
-	      if (!(skipIndexes && isIndex(key, length)) &&
-	          !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
-	        result.push(key);
-	      }
-	    }
-	    return result;
-	  }
-
-	  return keysIn;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(150), __webpack_require__(161)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isNative, root) {
-
-	  /** Used to detect functions containing a `this` reference. */
-	  var reThis = /\bthis\b/;
-
-	  /** Used for native method references. */
-	  var objectProto = Object.prototype;
-
-	  /** Used to detect DOM support. */
-	  var document = (document = root.window) && document.document;
-
-	  /** Native method references. */
-	  var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-	  /**
-	   * An object environment feature flags.
-	   *
-	   * @static
-	   * @memberOf _
-	   * @type Object
-	   */
-	  var support = {};
-
-	  (function(x) {
-
-	    /**
-	     * Detect if functions can be decompiled by `Function#toString`
-	     * (all but Firefox OS certified apps, older Opera mobile browsers, and
-	     * the PlayStation 3; forced `false` for Windows 8 apps).
-	     *
-	     * @memberOf _.support
-	     * @type boolean
-	     */
-	    support.funcDecomp = !isNative(root.WinRTError) && reThis.test(function() { return this; });
-
-	    /**
-	     * Detect if `Function#name` is supported (all but IE).
-	     *
-	     * @memberOf _.support
-	     * @type boolean
-	     */
-	    support.funcNames = typeof Function.name == 'string';
-
-	    /**
-	     * Detect if the DOM is supported.
-	     *
-	     * @memberOf _.support
-	     * @type boolean
-	     */
-	    try {
-	      support.dom = document.createDocumentFragment().nodeType === 11;
-	    } catch(e) {
-	      support.dom = false;
-	    }
-
-	    /**
-	     * Detect if `arguments` object indexes are non-enumerable.
-	     *
-	     * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
-	     * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
-	     * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
-	     * checks for indexes that exceed their function's formal parameters with
-	     * associated values of `0`.
-	     *
-	     * @memberOf _.support
-	     * @type boolean
-	     */
-	    try {
-	      support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
-	    } catch(e) {
-	      support.nonEnumArgs = true;
-	    }
-	  }(0, 0));
-
-	  return support;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 161 */
+/* 173 */
+[329, 170, 171, 172, 163, 168, 174],
+/* 174 */
+[330, 164, 175],
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/* WEBPACK VAR INJECTION */(function(module, global) {!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -8488,106 +7966,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(26)(module), (function() { return this; }())))
 
 /***/ },
-/* 162 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(163), __webpack_require__(165)], __WEBPACK_AMD_DEFINE_RESULT__ = function(bindCallback, isIterateeCall) {
-
-	  /**
-	   * Creates a function that assigns properties of source object(s) to a given
-	   * destination object.
-	   *
-	   * @private
-	   * @param {Function} assigner The function to assign values.
-	   * @returns {Function} Returns the new assigner function.
-	   */
-	  function createAssigner(assigner) {
-	    return function() {
-	      var args = arguments,
-	          length = args.length,
-	          object = args[0];
-
-	      if (length < 2 || object == null) {
-	        return object;
-	      }
-	      var customizer = args[length - 2],
-	          thisArg = args[length - 1],
-	          guard = args[3];
-
-	      if (length > 3 && typeof customizer == 'function') {
-	        customizer = bindCallback(customizer, thisArg, 5);
-	        length -= 2;
-	      } else {
-	        customizer = (length > 2 && typeof thisArg == 'function') ? thisArg : null;
-	        length -= (customizer ? 1 : 0);
-	      }
-	      if (guard && isIterateeCall(args[1], args[2], guard)) {
-	        customizer = length == 3 ? null : customizer;
-	        length = 2;
-	      }
-	      var index = 0;
-	      while (++index < length) {
-	        var source = args[index];
-	        if (source) {
-	          assigner(object, source, customizer);
-	        }
-	      }
-	      return object;
-	    };
-	  }
-
-	  return createAssigner;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 163 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(164)], __WEBPACK_AMD_DEFINE_RESULT__ = function(identity) {
-
-	  /**
-	   * A specialized version of `baseCallback` which only supports `this` binding
-	   * and specifying the number of arguments to provide to `func`.
-	   *
-	   * @private
-	   * @param {Function} func The function to bind.
-	   * @param {*} thisArg The `this` binding of `func`.
-	   * @param {number} [argCount] The number of arguments to provide to `func`.
-	   * @returns {Function} Returns the callback.
-	   */
-	  function bindCallback(func, thisArg, argCount) {
-	    if (typeof func != 'function') {
-	      return identity;
-	    }
-	    if (typeof thisArg == 'undefined') {
-	      return func;
-	    }
-	    switch (argCount) {
-	      case 1: return function(value) {
-	        return func.call(thisArg, value);
-	      };
-	      case 3: return function(value, index, collection) {
-	        return func.call(thisArg, value, index, collection);
-	      };
-	      case 4: return function(accumulator, value, index, collection) {
-	        return func.call(thisArg, accumulator, value, index, collection);
-	      };
-	      case 5: return function(value, other, key, object, source) {
-	        return func.call(thisArg, value, other, key, object, source);
-	      };
-	    }
-	    return function() {
-	      return func.apply(thisArg, arguments);
-	    };
-	  }
-
-	  return bindCallback;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 164 */
+/* 176 */
+[331, 177, 179],
+/* 177 */
+[332, 178],
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -8616,51 +7999,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 165 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(158), __webpack_require__(149), __webpack_require__(154)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isIndex, isLength, isObject) {
-
-	  /**
-	   * Checks if the provided arguments are from an iteratee call.
-	   *
-	   * @private
-	   * @param {*} value The potential iteratee value argument.
-	   * @param {*} index The potential iteratee index or key argument.
-	   * @param {*} object The potential iteratee object argument.
-	   * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
-	   */
-	  function isIterateeCall(value, index, object) {
-	    if (!isObject(object)) {
-	      return false;
-	    }
-	    var type = typeof index;
-	    if (type == 'number') {
-	      var length = object.length,
-	          prereq = isLength(length) && isIndex(index, length);
-	    } else {
-	      prereq = type == 'string' && index in object;
-	    }
-	    if (prereq) {
-	      var other = object[index];
-	      return value === value ? (value === other) : (other !== other);
-	    }
-	    return false;
-	  }
-
-	  return isIterateeCall;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-
-/***/ },
-/* 166 */
+/* 179 */
+[333, 172, 163, 168],
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(167),
-	  __webpack_require__(168),
-	  __webpack_require__(170),
-	  __webpack_require__(174)
+	  __webpack_require__(181),
+	  __webpack_require__(182),
+	  __webpack_require__(184),
+	  __webpack_require__(188)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  setRootPElement,
 	  enforcePElements,
@@ -8679,7 +8027,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 167 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -8717,11 +8065,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 168 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(169)
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (Immutable) {
 
 	  /**
@@ -8801,7 +8149,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 169 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -13788,12 +13136,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}));
 
 /***/ },
-/* 170 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	    __webpack_require__(171),
-	    __webpack_require__(169)
+	    __webpack_require__(185),
+	    __webpack_require__(183)
 	  ], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	    nodeHelpers,
 	    Immutable
@@ -13875,13 +13223,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 171 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(172),
-	  __webpack_require__(173),
-	  __webpack_require__(169)
+	  __webpack_require__(186),
+	  __webpack_require__(187),
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (inlineElementNames, blockElementNames, Immutable) {
 
 	  'use strict';
@@ -14064,11 +13412,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 172 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(169)
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (Immutable) {
 	  // Source: https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elemente
 	  var inlineElementNames = Immutable.Set.of('B', 'BIG', 'I', 'SMALL', 'TT',
@@ -14081,11 +13429,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 173 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(169)
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function(Immutable) {
 	  var blockElementNames = Immutable.Set.of('ADDRESS', 'ARTICLE', 'ASIDE', 'AUDIO', 'BLOCKQUOTE', 'CANVAS', 'DD',
 	                           'DIV', 'FIELDSET', 'FIGCAPTION', 'FIGURE', 'FOOTER', 'FORM', 'H1',
@@ -14098,7 +13446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 174 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -14218,12 +13566,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 175 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(176),
-	  __webpack_require__(177)
+	  __webpack_require__(190),
+	  __webpack_require__(191)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  replaceNbspCharsFormatter,
 	  escapeHtmlCharactersFormatter
@@ -14238,7 +13586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 176 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -14264,11 +13612,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 177 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(178)
+	  __webpack_require__(192)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  escape
 	) {
@@ -14285,10 +13633,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 178 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(152), __webpack_require__(179)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseToString, escapeHtmlChar) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(166), __webpack_require__(193)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseToString, escapeHtmlChar) {
 
 	  /** Used to match HTML entities and HTML characters. */
 	  var reUnescapedHtml = /[&<>"'`]/g,
@@ -14339,7 +13687,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 179 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -14370,12 +13718,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 180 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(181),
-	  __webpack_require__(169)
+	  __webpack_require__(195),
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  observeDomChanges,
 	  Immutable
@@ -14626,12 +13974,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 181 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(171),
-	  __webpack_require__(182)
+	  __webpack_require__(185),
+	  __webpack_require__(196)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (nodeHelpers, mutations) {
 
 	  var maybeWindow = typeof window === 'object' ? window : undefined;
@@ -14686,7 +14034,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 182 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -14714,17 +14062,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 183 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(184),
-	  __webpack_require__(185),
-	  __webpack_require__(186),
-	  __webpack_require__(187),
-	  __webpack_require__(188),
-	  __webpack_require__(189),
-	  __webpack_require__(190)
+	  __webpack_require__(198),
+	  __webpack_require__(199),
+	  __webpack_require__(200),
+	  __webpack_require__(201),
+	  __webpack_require__(202),
+	  __webpack_require__(203),
+	  __webpack_require__(204)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  boldCommand,
 	  indentCommand,
@@ -14759,7 +14107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 184 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -14794,7 +14142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 185 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -14866,7 +14214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 186 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -14891,7 +14239,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 187 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -14988,7 +14336,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 188 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15087,7 +14435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 189 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15132,7 +14480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 190 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15189,14 +14537,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 191 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(192),
-	  __webpack_require__(193),
-	  __webpack_require__(194),
-	  __webpack_require__(195)
+	  __webpack_require__(206),
+	  __webpack_require__(207),
+	  __webpack_require__(208),
+	  __webpack_require__(209)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  buildCommandPatch,
 	  buildCommand,
@@ -15216,7 +14564,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 192 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15249,7 +14597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 193 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15295,7 +14643,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 194 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15519,7 +14867,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 195 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15550,17 +14898,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 196 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(197),
-	  __webpack_require__(198),
-	  __webpack_require__(199),
-	  __webpack_require__(200),
-	  __webpack_require__(201),
-	  __webpack_require__(202),
-	  __webpack_require__(203)
+	  __webpack_require__(211),
+	  __webpack_require__(212),
+	  __webpack_require__(213),
+	  __webpack_require__(214),
+	  __webpack_require__(215),
+	  __webpack_require__(216),
+	  __webpack_require__(217)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  indent,
 	  insertList,
@@ -15587,7 +14935,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 197 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15621,11 +14969,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 198 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(169)
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (Immutable) {
 
 	  /**
@@ -15760,7 +15108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 199 */
+/* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15795,7 +15143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 200 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15832,7 +15180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 201 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15851,7 +15199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 202 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15870,7 +15218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 203 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -15907,11 +15255,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 204 */
+/* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(169)
+	  __webpack_require__(183)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (Immutable) {
 	  'use strict';
 
@@ -16011,10 +15359,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 205 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(169)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Immutable) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(183)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Immutable) {
 
 	  'use strict';
 
@@ -16061,11 +15409,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 206 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(207)
+	  __webpack_require__(221)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (defaults) {
 
 	  var blockModePlugins = [
@@ -16179,10 +15527,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 207 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(208), __webpack_require__(145), __webpack_require__(209)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayCopy, assign, assignDefaults) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(222), __webpack_require__(159), __webpack_require__(223)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayCopy, assign, assignDefaults) {
 
 	  /** Used as a safe reference for `undefined` in pre-ES5 environments. */
 	  var undefined;
@@ -16217,7 +15565,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 208 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -16246,7 +15594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 209 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -16268,7 +15616,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 210 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -16287,7 +15635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 211 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = function () {
@@ -16372,13 +15720,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 212 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-	  __webpack_require__(213),
-	  __webpack_require__(214),
-	  __webpack_require__(226)
+	  __webpack_require__(227),
+	  __webpack_require__(228),
+	  __webpack_require__(260)
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (
 	  HTMLJanitor,
 	  merge,
@@ -16415,7 +15763,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 213 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -16606,10 +15954,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 214 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(215), __webpack_require__(162)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseMerge, createAssigner) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(229), __webpack_require__(256)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseMerge, createAssigner) {
 
 	  /**
 	   * Recursively merges own enumerable properties of the source object(s), that
@@ -16666,10 +16014,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 215 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(216), __webpack_require__(217), __webpack_require__(220), __webpack_require__(157), __webpack_require__(149), __webpack_require__(154), __webpack_require__(153), __webpack_require__(224)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayEach, baseForOwn, baseMergeDeep, isArray, isLength, isObject, isObjectLike, isTypedArray) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(230), __webpack_require__(231), __webpack_require__(248), __webpack_require__(243), __webpack_require__(236), __webpack_require__(234), __webpack_require__(240), __webpack_require__(253)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayEach, baseForOwn, baseMergeDeep, isArray, isLength, isObject, isObjectLike, isTypedArray) {
 
 	  /** Used as a safe reference for `undefined` in pre-ES5 environments. */
 	  var undefined;
@@ -16717,7 +16065,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 216 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -16748,10 +16096,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 217 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(218), __webpack_require__(148)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseFor, keys) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(232), __webpack_require__(235)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseFor, keys) {
 
 	  /**
 	   * The base implementation of `_.forOwn` without support for callback
@@ -16771,10 +16119,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 218 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(219)], __WEBPACK_AMD_DEFINE_RESULT__ = function(toObject) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(233)], __WEBPACK_AMD_DEFINE_RESULT__ = function(toObject) {
 
 	  /**
 	   * The base implementation of `baseForIn` and `baseForOwn` which iterates
@@ -16808,10 +16156,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 219 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(154)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isObject) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(234)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isObject) {
 
 	  /**
 	   * Converts `value` to an object if it is not one.
@@ -16829,10 +16177,38 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 220 */
+/* 234 */
+168,
+/* 235 */
+[323, 236, 237, 234, 241],
+/* 236 */
+163,
+/* 237 */
+[324, 238, 240],
+/* 238 */
+[325, 239],
+/* 239 */
+166,
+/* 240 */
+167,
+/* 241 */
+[326, 242, 243, 244, 236, 245, 246],
+/* 242 */
+[327, 236, 240],
+/* 243 */
+[328, 236, 237, 240],
+/* 244 */
+172,
+/* 245 */
+[329, 242, 243, 244, 236, 234, 246],
+/* 246 */
+[330, 237, 247],
+/* 247 */
+175,
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(208), __webpack_require__(156), __webpack_require__(157), __webpack_require__(149), __webpack_require__(221), __webpack_require__(224), __webpack_require__(225)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayCopy, isArguments, isArray, isLength, isPlainObject, isTypedArray, toPlainObject) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(249), __webpack_require__(242), __webpack_require__(243), __webpack_require__(236), __webpack_require__(250), __webpack_require__(253), __webpack_require__(254)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayCopy, isArguments, isArray, isLength, isPlainObject, isTypedArray, toPlainObject) {
 
 	  /** Used as a safe reference for `undefined` in pre-ES5 environments. */
 	  var undefined;
@@ -16900,10 +16276,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 221 */
+/* 249 */
+222,
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(150), __webpack_require__(222)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isNative, shimIsPlainObject) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(237), __webpack_require__(251)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isNative, shimIsPlainObject) {
 
 	  /** `Object#toString` result references. */
 	  var objectTag = '[object Object]';
@@ -16968,10 +16346,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 222 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(223), __webpack_require__(153)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseForIn, isObjectLike) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(252), __webpack_require__(240)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseForIn, isObjectLike) {
 
 	  /** `Object#toString` result references. */
 	  var objectTag = '[object Object]';
@@ -17025,10 +16403,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 223 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(218), __webpack_require__(159)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseFor, keysIn) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(232), __webpack_require__(245)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseFor, keysIn) {
 
 	  /**
 	   * The base implementation of `_.forIn` without support for callback
@@ -17048,10 +16426,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 224 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(149), __webpack_require__(153)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isObjectLike) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(236), __webpack_require__(240)], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isObjectLike) {
 
 	  /** `Object#toString` result references. */
 	  var argsTag = '[object Arguments]',
@@ -17129,10 +16507,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 225 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(147), __webpack_require__(159)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseCopy, keysIn) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(255), __webpack_require__(245)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseCopy, keysIn) {
 
 	  /**
 	   * Converts `value` to a plain object flattening inherited enumerable
@@ -17166,10 +16544,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 226 */
+/* 255 */
+161,
+/* 256 */
+[331, 257, 259],
+/* 257 */
+[332, 258],
+/* 258 */
+178,
+/* 259 */
+[333, 244, 236, 234],
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(227), __webpack_require__(163)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseClone, bindCallback) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(261), __webpack_require__(257)], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseClone, bindCallback) {
 
 	  /**
 	   * Creates a deep clone of `value`. If `customizer` is provided it is invoked
@@ -17226,10 +16614,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 227 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(208), __webpack_require__(216), __webpack_require__(147), __webpack_require__(217), __webpack_require__(231), __webpack_require__(228), __webpack_require__(232), __webpack_require__(157), __webpack_require__(154), __webpack_require__(148)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayCopy, arrayEach, baseCopy, baseForOwn, initCloneArray, initCloneByTag, initCloneObject, isArray, isObject, keys) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(249), __webpack_require__(230), __webpack_require__(255), __webpack_require__(231), __webpack_require__(265), __webpack_require__(262), __webpack_require__(266), __webpack_require__(243), __webpack_require__(234), __webpack_require__(235)], __WEBPACK_AMD_DEFINE_RESULT__ = function(arrayCopy, arrayEach, baseCopy, baseForOwn, initCloneArray, initCloneByTag, initCloneObject, isArray, isObject, keys) {
 
 	  /** `Object#toString` result references. */
 	  var argsTag = '[object Arguments]',
@@ -17354,10 +16742,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 228 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(229)], __WEBPACK_AMD_DEFINE_RESULT__ = function(bufferClone) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(263)], __WEBPACK_AMD_DEFINE_RESULT__ = function(bufferClone) {
 
 	  /** `Object#toString` result references. */
 	  var boolTag = '[object Boolean]',
@@ -17425,10 +16813,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 229 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(230), __webpack_require__(150), __webpack_require__(161)], __WEBPACK_AMD_DEFINE_RESULT__ = function(constant, isNative, root) {
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(264), __webpack_require__(237), __webpack_require__(247)], __WEBPACK_AMD_DEFINE_RESULT__ = function(constant, isNative, root) {
 
 	  /** Native method references. */
 	  var ArrayBuffer = isNative(ArrayBuffer = root.ArrayBuffer) && ArrayBuffer,
@@ -17486,7 +16874,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 230 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -17518,7 +16906,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 231 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -17553,7 +16941,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 232 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function() {
@@ -17578,12 +16966,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 233 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var selectionRange = __webpack_require__(234);
+	var selectionRange = __webpack_require__(268);
 
 	module.exports = {
 	  mixinName: 'Textable',
@@ -17657,14 +17045,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 234 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * Module Dependencies
 	 */
 
-	var iterator = __webpack_require__(235);
+	var iterator = __webpack_require__(269);
 	var selection = window.getSelection();
 
 	/**
@@ -17756,7 +17144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 235 */
+/* 269 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -17766,15 +17154,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	var xor, props;
 
 	try {
-	  xor = __webpack_require__(236);
+	  xor = __webpack_require__(270);
 	} catch (e) {
-	  xor = __webpack_require__(236);
+	  xor = __webpack_require__(270);
 	}
 
 	try {
-	  props = __webpack_require__(237);
+	  props = __webpack_require__(271);
 	} catch (e) {
-	  props = __webpack_require__(237);
+	  props = __webpack_require__(271);
 	}
 
 	/**
@@ -18080,7 +17468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 236 */
+/* 270 */
 /***/ function(module, exports) {
 
 	/**
@@ -18108,7 +17496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 237 */
+/* 271 */
 /***/ function(module, exports) {
 
 	/**
@@ -18199,7 +17587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 238 */
+/* 272 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18218,7 +17606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.initialize();
 	};
 
-	_Object$assign(BlockPositioner.prototype, __webpack_require__(239), __webpack_require__(240), {
+	_Object$assign(BlockPositioner.prototype, __webpack_require__(273), __webpack_require__(274), {
 
 	  total_blocks: 0,
 
@@ -18277,7 +17665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = BlockPositioner;
 
 /***/ },
-/* 239 */
+/* 273 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -18294,7 +17682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 240 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18302,7 +17690,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
 	module.exports = {
 	  tagName: 'div',
@@ -18348,19 +17736,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 241 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _Object$assign = __webpack_require__(2)['default'];
 
-	var dropEvents = __webpack_require__(137);
+	var dropEvents = __webpack_require__(151);
 
-	var EventBus = __webpack_require__(79);
-	var Dom = __webpack_require__(73);
+	var EventBus = __webpack_require__(93);
+	var Dom = __webpack_require__(87);
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	var BlockReorder = function BlockReorder(block_element, mediator) {
 	  this.block = block_element;
@@ -18373,7 +17761,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.initialize();
 	};
 
-	_Object$assign(BlockReorder.prototype, __webpack_require__(239), __webpack_require__(240), {
+	_Object$assign(BlockReorder.prototype, __webpack_require__(273), __webpack_require__(274), {
 
 	  bound: ['onMouseDown', 'onDragStart', 'onDragEnd', 'onDrop'],
 
@@ -18452,21 +17840,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = BlockReorder;
 
 /***/ },
-/* 242 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _Object$assign = __webpack_require__(2)['default'];
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	var BlockDeletion = function BlockDeletion() {
 	  this._ensureElement();
 	  this._bindFunctions();
 	};
 
-	_Object$assign(BlockDeletion.prototype, __webpack_require__(239), __webpack_require__(240), {
+	_Object$assign(BlockDeletion.prototype, __webpack_require__(273), __webpack_require__(274), {
 
 	  tagName: 'a',
 	  className: 'st-block-ui-btn__delete',
@@ -18483,7 +17871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = BlockDeletion;
 
 /***/ },
-/* 243 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18562,7 +17950,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 244 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18572,7 +17960,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _ = __webpack_require__(38);
 	var utils = __webpack_require__(33);
 
-	var EventBus = __webpack_require__(79);
+	var EventBus = __webpack_require__(93);
 
 	module.exports = {
 
@@ -18653,7 +18041,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 245 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -18664,12 +18052,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _ = __webpack_require__(38);
 	var utils = __webpack_require__(33);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
-	var EventBus = __webpack_require__(79);
-	var Blocks = __webpack_require__(246);
+	var EventBus = __webpack_require__(93);
+	var Blocks = __webpack_require__(280);
 
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
 	var BLOCK_OPTION_KEYS = ['convertToMarkdown', 'convertFromMarkdown', 'formatBar'];
 
@@ -18697,7 +18085,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.initialize();
 	};
 
-	_Object$assign(BlockManager.prototype, __webpack_require__(239), __webpack_require__(272), __webpack_require__(77), {
+	_Object$assign(BlockManager.prototype, __webpack_require__(273), __webpack_require__(306), __webpack_require__(91), {
 
 	  eventNamespace: 'block',
 
@@ -18987,23 +18375,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = BlockManager;
 
 /***/ },
-/* 246 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	module.exports = {
-	  Text: __webpack_require__(247),
-	  Quote: __webpack_require__(265),
-	  Image: __webpack_require__(266),
-	  Heading: __webpack_require__(267),
-	  List: __webpack_require__(268),
-	  Tweet: __webpack_require__(270),
-	  Video: __webpack_require__(271)
+	  Text: __webpack_require__(281),
+	  Quote: __webpack_require__(299),
+	  Image: __webpack_require__(300),
+	  Heading: __webpack_require__(301),
+	  List: __webpack_require__(302),
+	  Tweet: __webpack_require__(304),
+	  Video: __webpack_require__(305)
 	};
 
 /***/ },
-/* 247 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19012,13 +18400,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Text Block
 	*/
 
-	var Block = __webpack_require__(248);
-	var stToHTML = __webpack_require__(257);
+	var Block = __webpack_require__(282);
+	var stToHTML = __webpack_require__(291);
 
-	var ScribeTextBlockPlugin = __webpack_require__(258);
-	var ScribePastePlugin = __webpack_require__(262);
-	var ScribeHeadingPlugin = __webpack_require__(263);
-	var ScribeQuotePlugin = __webpack_require__(264);
+	var ScribeTextBlockPlugin = __webpack_require__(292);
+	var ScribePastePlugin = __webpack_require__(296);
+	var ScribeHeadingPlugin = __webpack_require__(297);
+	var ScribeQuotePlugin = __webpack_require__(298);
 
 	module.exports = Block.extend({
 
@@ -19074,34 +18462,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 248 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Object$create = __webpack_require__(74)['default'];
+	var _Object$create = __webpack_require__(88)['default'];
 
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
 
-	var ScribeInterface = __webpack_require__(142);
+	var ScribeInterface = __webpack_require__(156);
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
-	var Dom = __webpack_require__(73);
-	var Events = __webpack_require__(135);
-	var BlockMixins = __webpack_require__(132);
+	var Dom = __webpack_require__(87);
+	var Events = __webpack_require__(149);
+	var BlockMixins = __webpack_require__(146);
 
-	var SimpleBlock = __webpack_require__(249);
-	var BlockReorder = __webpack_require__(241);
-	var BlockDeletion = __webpack_require__(242);
-	var BlockPositioner = __webpack_require__(238);
-	var EventBus = __webpack_require__(79);
+	var SimpleBlock = __webpack_require__(283);
+	var BlockReorder = __webpack_require__(275);
+	var BlockDeletion = __webpack_require__(276);
+	var BlockPositioner = __webpack_require__(272);
+	var EventBus = __webpack_require__(93);
 
-	var Spinner = __webpack_require__(255);
+	var Spinner = __webpack_require__(289);
 
-	var DELETE_TEMPLATE = __webpack_require__(256);
+	var DELETE_TEMPLATE = __webpack_require__(290);
 
 	var Block = function Block(data, instance_id, mediator, options) {
 	  SimpleBlock.apply(this, arguments);
@@ -19110,7 +18498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Block.prototype = _Object$create(SimpleBlock.prototype);
 	Block.prototype.constructor = Block;
 
-	_Object$assign(Block.prototype, SimpleBlock.fn, __webpack_require__(243), {
+	_Object$assign(Block.prototype, SimpleBlock.fn, __webpack_require__(277), {
 
 	  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender", "onDeleteConfirm", "onPositionerClick"],
 
@@ -19504,7 +18892,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // Remove all empty nodes at the front to get blocks working.
-	    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '') {
+	    // Don't remove nodes that can't contain text content (e.g. <input>)
+	    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '' && document.createElement(this._scribe.el.firstChild.tagName).outerHTML.indexOf("/") != -1) {
 	      this._scribe.el.removeChild(this._scribe.el.firstChild);
 	    }
 
@@ -19522,12 +18911,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	});
 
-	Block.extend = __webpack_require__(254); // Allow our Block to be extended.
+	Block.extend = __webpack_require__(288); // Allow our Block to be extended.
 
 	module.exports = Block;
 
 /***/ },
-/* 249 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19536,12 +18925,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _ = __webpack_require__(38);
 	var utils = __webpack_require__(33);
-	var Dom = __webpack_require__(73);
-	var Events = __webpack_require__(135);
+	var Dom = __webpack_require__(87);
+	var Events = __webpack_require__(149);
 
-	var BlockReorder = __webpack_require__(241);
+	var BlockReorder = __webpack_require__(275);
 
-	var BLOCK_TEMPLATE = __webpack_require__(250);
+	var BLOCK_TEMPLATE = __webpack_require__(284);
 
 	var SimpleBlock = function SimpleBlock(data, instance_id, mediator, options) {
 	  this.createStore(data);
@@ -19556,7 +18945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.initialize.apply(this, arguments);
 	};
 
-	_Object$assign(SimpleBlock.prototype, __webpack_require__(239), __webpack_require__(77), __webpack_require__(240), __webpack_require__(244), {
+	_Object$assign(SimpleBlock.prototype, __webpack_require__(273), __webpack_require__(91), __webpack_require__(274), __webpack_require__(278), {
 
 	  focus: function focus() {},
 
@@ -19667,62 +19056,62 @@ return /******/ (function(modules) { // webpackBootstrap
 	SimpleBlock.fn = SimpleBlock.prototype;
 
 	// Allow our Block to be extended.
-	SimpleBlock.extend = __webpack_require__(254);
+	SimpleBlock.extend = __webpack_require__(288);
 
 	module.exports = SimpleBlock;
 
 /***/ },
-/* 250 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var BLOCK_ADDITION_TOP_TEMPLATE = __webpack_require__(251);
-	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(252);
-	var BLOCK_REPLACER_TEMPLATE = __webpack_require__(253);
+	var BLOCK_ADDITION_TOP_TEMPLATE = __webpack_require__(285);
+	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(286);
+	var BLOCK_REPLACER_TEMPLATE = __webpack_require__(287);
 
 	module.exports = function (editor_html) {
 	  return "\n    <div class='st-block__inner'>\n      " + editor_html + "\n    </div>\n    " + BLOCK_REPLACER_TEMPLATE() + "\n    " + BLOCK_ADDITION_TOP_TEMPLATE() + "\n    " + BLOCK_ADDITION_TEMPLATE() + "\n  ";
 	};
 
 /***/ },
-/* 251 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	module.exports = function () {
 	  return "\n    <div class=\"st-block-addition-top\">\n      <div class=\"st-block-addition-top__button\" type=\"button\"></div>\n      <div class=\"st-block-addition-top__icon\">\n        <svg role=\"img\" class=\"st-icon\">\n          <use xlink:href=\"" + config.defaults.iconUrl + "#add-block\"/>\n        </svg>\n      </div>\n    </div>\n  ";
 	};
 
 /***/ },
-/* 252 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	module.exports = function () {
 	  return "\n    <button class=\"st-block-addition\" type=\"button\">\n      <span class=\"st-block-addition__button\">\n        <svg role=\"img\" class=\"st-icon\">\n          <use xlink:href=\"" + config.defaults.iconUrl + "#plus\"/>\n        </svg>\n      </span>\n    </button>\n  ";
 	};
 
 /***/ },
-/* 253 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	module.exports = function () {
 	  return "\n    <button class=\"st-block-replacer\" type=\"button\">\n      <span class=\"st-block-replacer__button\">\n        <svg role=\"img\" class=\"st-icon\">\n          <use xlink:href=\"" + config.defaults.iconUrl + "#add-block\"/>\n        </svg>\n      </span>\n    </button>\n  ";
 	};
 
 /***/ },
-/* 254 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -19777,7 +19166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 255 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -20160,7 +19549,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 256 */
+/* 290 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20168,7 +19557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = '\n  <div class="st-block__ui-delete-controls">\n    <label class="st-block__delete-label">\n      ' + i18n.t('general:delete') + '\n    </label>\n    <button class=\'st-block-ui__confirm js-st-block-confirm-delete\' type="button">\n      ' + i18n.t('general:yes') + '\n    </button>\n    <button class=\'st-block-ui__confirm js-st-block-deny-delete\' type="button">\n      ' + i18n.t('general:no') + '\n    </button>\n  </div>\n';
 
 /***/ },
-/* 257 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20180,7 +19569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // Deferring requiring these to sidestep a circular dependency:
 	  // Block -> this -> Blocks -> Block
-	  var Blocks = __webpack_require__(246);
+	  var Blocks = __webpack_require__(280);
 
 	  // MD -> HTML
 	  type = utils.classify(type);
@@ -20240,14 +19629,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 258 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var _Array$from = __webpack_require__(259)['default'];
+	var _Array$from = __webpack_require__(293)['default'];
 
-	var selectionRange = __webpack_require__(234);
+	var selectionRange = __webpack_require__(268);
 
 	var ScribeTextBlockPlugin = function ScribeTextBlockPlugin(block) {
 	  return function (scribe) {
@@ -20409,32 +19798,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ScribeTextBlockPlugin;
 
 /***/ },
-/* 259 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(260), __esModule: true };
+	module.exports = { "default": __webpack_require__(294), __esModule: true };
 
 /***/ },
-/* 260 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(90);
-	__webpack_require__(261);
+	__webpack_require__(104);
+	__webpack_require__(295);
 	module.exports = __webpack_require__(7).Array.from;
 
 /***/ },
-/* 261 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var ctx         = __webpack_require__(8)
 	  , $export     = __webpack_require__(5)
 	  , toObject    = __webpack_require__(12)
-	  , call        = __webpack_require__(117)
-	  , isArrayIter = __webpack_require__(118)
-	  , toLength    = __webpack_require__(119)
-	  , getIterFn   = __webpack_require__(120);
-	$export($export.S + $export.F * !__webpack_require__(131)(function(iter){ Array.from(iter); }), 'Array', {
+	  , call        = __webpack_require__(131)
+	  , isArrayIter = __webpack_require__(132)
+	  , toLength    = __webpack_require__(133)
+	  , getIterFn   = __webpack_require__(134);
+	$export($export.S + $export.F * !__webpack_require__(145)(function(iter){ Array.from(iter); }), 'Array', {
 	  // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
 	  from: function from(arrayLike/*, mapfn = undefined, thisArg = undefined*/){
 	    var O       = toObject(arrayLike)
@@ -20465,7 +19854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 262 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20475,7 +19864,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	paragraph that has been added.
 	*/
 
-	var _Array$from = __webpack_require__(259)['default'];
+	var _Array$from = __webpack_require__(293)['default'];
 
 	var scribePastePlugin = function scribePastePlugin(block) {
 	  return function (scribe) {
@@ -20513,7 +19902,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = scribePastePlugin;
 
 /***/ },
-/* 263 */
+/* 297 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20549,7 +19938,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = scribeHeadingPlugin;
 
 /***/ },
-/* 264 */
+/* 298 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20585,7 +19974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = scribeQuotePlugin;
 
 /***/ },
-/* 265 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20596,10 +19985,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _ = __webpack_require__(38);
 
-	var Block = __webpack_require__(248);
-	var stToHTML = __webpack_require__(257);
-	var ScribeHeadingPlugin = __webpack_require__(263);
-	var ScribeQuotePlugin = __webpack_require__(264);
+	var Block = __webpack_require__(282);
+	var stToHTML = __webpack_require__(291);
+	var ScribeHeadingPlugin = __webpack_require__(297);
+	var ScribeQuotePlugin = __webpack_require__(298);
 
 	var template = _.template(['<blockquote class="st-required st-text-block st-text-block--quote" contenteditable="true"></blockquote>', '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>', '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"', ' class="st-input-string js-cite-input" type="text" />'].join("\n"));
 
@@ -20639,13 +20028,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 266 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var Dom = __webpack_require__(73);
-	var Block = __webpack_require__(248);
+	var Dom = __webpack_require__(87);
+	var Block = __webpack_require__(282);
 
 	module.exports = Block.extend({
 
@@ -20690,7 +20079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 267 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -20699,12 +20088,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Heading Block
 	*/
 
-	var Block = __webpack_require__(248);
-	var stToHTML = __webpack_require__(257);
+	var Block = __webpack_require__(282);
+	var stToHTML = __webpack_require__(291);
 
-	var ScribeTextBlockPlugin = __webpack_require__(258);
-	var ScribeHeadingPlugin = __webpack_require__(263);
-	var ScribeQuotePlugin = __webpack_require__(264);
+	var ScribeTextBlockPlugin = __webpack_require__(292);
+	var ScribeHeadingPlugin = __webpack_require__(297);
+	var ScribeQuotePlugin = __webpack_require__(298);
 
 	module.exports = Block.extend({
 
@@ -20755,15 +20144,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 268 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var Block = __webpack_require__(248);
-	var stToHTML = __webpack_require__(257);
+	var Block = __webpack_require__(282);
+	var stToHTML = __webpack_require__(291);
 
-	var ScribeListBlockPlugin = __webpack_require__(269);
+	var ScribeListBlockPlugin = __webpack_require__(303);
 
 	module.exports = Block.extend({
 	  type: 'list',
@@ -20952,7 +20341,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 269 */
+/* 303 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21018,16 +20407,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ScribeListBlockPlugin;
 
 /***/ },
-/* 270 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _ = __webpack_require__(38);
 	var utils = __webpack_require__(33);
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
-	var Block = __webpack_require__(248);
+	var Block = __webpack_require__(282);
 
 	var tweet_template = _.template(["<blockquote class='twitter-tweet' align='center'>", "<p><%= text %></p>", "&mdash; <%= user.name %> (@<%= user.screen_name %>)", "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>", "</blockquote>"].join("\n"));
 
@@ -21125,14 +20514,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 271 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
 	var _ = __webpack_require__(38);
 	var utils = __webpack_require__(33);
-	var Block = __webpack_require__(248);
+	var Block = __webpack_require__(282);
 
 	module.exports = Block.extend({
 
@@ -21213,7 +20602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 272 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21233,7 +20622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 273 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21249,11 +20638,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _ = __webpack_require__(38);
 
-	var config = __webpack_require__(72);
-	var Dom = __webpack_require__(73);
-	var Events = __webpack_require__(135);
+	var config = __webpack_require__(86);
+	var Dom = __webpack_require__(87);
+	var Events = __webpack_require__(149);
 
-	var FORMAT_BUTTON_TEMPLATE = __webpack_require__(274);
+	var FORMAT_BUTTON_TEMPLATE = __webpack_require__(308);
 
 	var FormatBar = function FormatBar(options, mediator, editor) {
 	  this.editor = editor;
@@ -21269,7 +20658,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.initialize.apply(this, arguments);
 	};
 
-	_Object$assign(FormatBar.prototype, __webpack_require__(239), __webpack_require__(272), __webpack_require__(77), __webpack_require__(240), {
+	_Object$assign(FormatBar.prototype, __webpack_require__(273), __webpack_require__(306), __webpack_require__(91), __webpack_require__(274), {
 
 	  className: 'st-format-bar',
 
@@ -21383,12 +20772,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FormatBar;
 
 /***/ },
-/* 274 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	module.exports = function (_ref) {
 	  var name = _ref.name;
@@ -21400,7 +20789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 275 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21418,26 +20807,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$keys = __webpack_require__(34)['default'];
 
 	var _ = __webpack_require__(38);
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
-	var Events = __webpack_require__(77);
-	var EventBus = __webpack_require__(79);
-	var FormEvents = __webpack_require__(276);
-	var BlockControls = __webpack_require__(277);
-	var BlockAddition = __webpack_require__(279);
-	var BlockAdditionTop = __webpack_require__(281);
-	var BlockManager = __webpack_require__(245);
-	var FormatBar = __webpack_require__(273);
-	var EditorStore = __webpack_require__(80);
-	var ErrorHandler = __webpack_require__(282);
+	var Events = __webpack_require__(91);
+	var EventBus = __webpack_require__(93);
+	var FormEvents = __webpack_require__(310);
+	var BlockControls = __webpack_require__(311);
+	var BlockAddition = __webpack_require__(313);
+	var BlockAdditionTop = __webpack_require__(315);
+	var BlockManager = __webpack_require__(279);
+	var FormatBar = __webpack_require__(307);
+	var EditorStore = __webpack_require__(94);
+	var ErrorHandler = __webpack_require__(316);
 
 	var Editor = function Editor(options) {
 	  this.initialize(options);
 	};
 
-	_Object$assign(Editor.prototype, __webpack_require__(239), __webpack_require__(77), {
+	_Object$assign(Editor.prototype, __webpack_require__(273), __webpack_require__(91), {
 
 	  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition', 'removeBlockDragOver', 'blockLimitReached', 'blockOrderUpdated'],
 
@@ -21744,16 +21133,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Editor;
 
 /***/ },
-/* 276 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 	var utils = __webpack_require__(33);
 
-	var EventBus = __webpack_require__(79);
-	var Submittable = __webpack_require__(81);
+	var EventBus = __webpack_require__(93);
+	var Submittable = __webpack_require__(95);
 
 	var formBound = false; // Flag to tell us once we've bound our submit event
 
@@ -21794,7 +21183,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = FormEvents;
 
 /***/ },
-/* 277 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21805,10 +21194,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Gives an interface for adding new Sir Trevor blocks.
 	 */
 
-	var Blocks = __webpack_require__(246);
-	var Events = __webpack_require__(135);
+	var Blocks = __webpack_require__(280);
+	var Events = __webpack_require__(149);
 
-	var BLOCK_REPLACER_CONTROL_TEMPLATE = __webpack_require__(278);
+	var BLOCK_REPLACER_CONTROL_TEMPLATE = __webpack_require__(312);
 
 	function generateBlocksHTML(Blocks, availableTypes) {
 	  return availableTypes.reduce(function (memo, type) {
@@ -21878,12 +21267,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 278 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var config = __webpack_require__(72);
+	var config = __webpack_require__(86);
 
 	module.exports = function (_ref) {
 	  var title = _ref.title;
@@ -21894,7 +21283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 279 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21905,14 +21294,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Gives an interface for adding new Sir Trevor blocks.
 	 */
 
-	var dropEvents = __webpack_require__(137);
+	var dropEvents = __webpack_require__(151);
 
-	var EventBus = __webpack_require__(79);
+	var EventBus = __webpack_require__(93);
 
-	var Dom = __webpack_require__(73);
-	var Events = __webpack_require__(135);
+	var Dom = __webpack_require__(87);
+	var Events = __webpack_require__(149);
 
-	var TOP_CONTROLS_TEMPLATE = __webpack_require__(280);
+	var TOP_CONTROLS_TEMPLATE = __webpack_require__(314);
 
 	module.exports.create = function (SirTrevor) {
 
@@ -21957,19 +21346,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 280 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(252);
+	var BLOCK_ADDITION_TEMPLATE = __webpack_require__(286);
 
 	module.exports = function () {
 	  return "\n    <div id=\"st_top\" class=\"st-top-controls\">\n      " + BLOCK_ADDITION_TEMPLATE() + "\n    </div>\n  ";
 	};
 
 /***/ },
-/* 281 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21980,7 +21369,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Gives an interface for adding new Sir Trevor blocks.
 	 */
 
-	var Events = __webpack_require__(135);
+	var Events = __webpack_require__(149);
 
 	module.exports.create = function (SirTrevor) {
 
@@ -22006,7 +21395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 282 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -22014,7 +21403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _Object$assign = __webpack_require__(2)['default'];
 
 	var _ = __webpack_require__(38);
-	var Dom = __webpack_require__(73);
+	var Dom = __webpack_require__(87);
 
 	var ErrorHandler = function ErrorHandler(wrapper, mediator, container) {
 	  this.wrapper = wrapper;
@@ -22034,7 +21423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.initialize();
 	};
 
-	_Object$assign(ErrorHandler.prototype, __webpack_require__(239), __webpack_require__(272), __webpack_require__(240), {
+	_Object$assign(ErrorHandler.prototype, __webpack_require__(273), __webpack_require__(306), __webpack_require__(274), {
 
 	  errors: [],
 	  className: "st-errors",
@@ -22088,7 +21477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = ErrorHandler;
 
 /***/ },
-/* 283 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -22100,7 +21489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // Deferring requiring these to sidestep a circular dependency:
 	  // Block -> this -> Blocks -> Block
-	  var Blocks = __webpack_require__(246);
+	  var Blocks = __webpack_require__(280);
 
 	  type = utils.classify(type);
 
@@ -22179,8 +21568,718 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 284 */
-17
+/* 318 */
+17,
+/* 319 */,
+/* 320 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {/**
+	 * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
+	 * Build: `lodash modularize modern exports="npm" -o ./npm/`
+	 * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <http://lodash.com/license>
+	 */
+	var isNative = __webpack_require__(__webpack_module_template_argument_0__),
+	    isObject = __webpack_require__(47),
+	    noop = __webpack_require__(__webpack_module_template_argument_1__);
+
+	/* Native method shortcuts for methods with the same name as other `lodash` methods */
+	var nativeCreate = isNative(nativeCreate = Object.create) && nativeCreate;
+
+	/**
+	 * The base implementation of `_.create` without support for assigning
+	 * properties to the created object.
+	 *
+	 * @private
+	 * @param {Object} prototype The object to inherit from.
+	 * @returns {Object} Returns the new object.
+	 */
+	function baseCreate(prototype, properties) {
+	  return isObject(prototype) ? nativeCreate(prototype) : {};
+	}
+	// fallback for browsers without `Object.create`
+	if (!nativeCreate) {
+	  baseCreate = (function() {
+	    function Object() {}
+	    return function(prototype) {
+	      if (isObject(prototype)) {
+	        Object.prototype = prototype;
+	        var result = new Object;
+	        Object.prototype = null;
+	      }
+	      return result || global.Object();
+	    };
+	  }());
+	}
+
+	module.exports = baseCreate;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 321 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
+
+	/**
+	 * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
+	 * Build: `lodash modularize modern exports="npm" -o ./npm/`
+	 * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <http://lodash.com/license>
+	 */
+	var isNative = __webpack_require__(__webpack_module_template_argument_0__),
+	    isObject = __webpack_require__(47),
+	    shimKeys = __webpack_require__(__webpack_module_template_argument_1__);
+
+	/* Native method shortcuts for methods with the same name as other `lodash` methods */
+	var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
+
+	/**
+	 * Creates an array composed of the own enumerable property names of an object.
+	 *
+	 * @static
+	 * @memberOf _
+	 * @category Objects
+	 * @param {Object} object The object to inspect.
+	 * @returns {Array} Returns an array of property names.
+	 * @example
+	 *
+	 * _.keys({ 'one': 1, 'two': 2, 'three': 3 });
+	 * // => ['one', 'two', 'three'] (property order is not guaranteed across environments)
+	 */
+	var keys = !nativeKeys ? shimKeys : function(object) {
+	  if (!isObject(object)) {
+	    return [];
+	  }
+	  return nativeKeys(object);
+	};
+
+	module.exports = keys;
+
+
+/***/ },
+/* 322 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
+
+	/**
+	 * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
+	 * Build: `lodash modularize modern exports="npm" -o ./npm/`
+	 * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+	 * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+	 * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+	 * Available under MIT license <http://lodash.com/license>
+	 */
+	var objectTypes = __webpack_require__(__webpack_module_template_argument_0__);
+
+	/** Used for native method references */
+	var objectProto = Object.prototype;
+
+	/** Native method shortcuts */
+	var hasOwnProperty = objectProto.hasOwnProperty;
+
+	/**
+	 * A fallback implementation of `Object.keys` which produces an array of the
+	 * given object's own enumerable property names.
+	 *
+	 * @private
+	 * @type Function
+	 * @param {Object} object The object to inspect.
+	 * @returns {Array} Returns an array of property names.
+	 */
+	var shimKeys = function(object) {
+	  var index, iterable = object, result = [];
+	  if (!iterable) return result;
+	  if (!(objectTypes[typeof object])) return result;
+	    for (index in iterable) {
+	      if (hasOwnProperty.call(iterable, index)) {
+	        result.push(index);
+	      }
+	    }
+	  return result
+	};
+
+	module.exports = shimKeys;
+
+
+/***/ },
+/* 323 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__, __webpack_module_template_argument_2__, __webpack_module_template_argument_3__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__)), (__webpack_require__(__webpack_module_template_argument_2__)), (__webpack_require__(__webpack_module_template_argument_3__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isNative, isObject, shimKeys) {
+
+	  /* Native method references for those with the same name as other `lodash` methods. */
+	  var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
+
+	  /**
+	   * Creates an array of the own enumerable property names of `object`.
+	   *
+	   * **Note:** Non-object values are coerced to objects. See the
+	   * [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.keys)
+	   * for more details.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @category Object
+	   * @param {Object} object The object to inspect.
+	   * @returns {Array} Returns the array of property names.
+	   * @example
+	   *
+	   * function Foo() {
+	   *   this.a = 1;
+	   *   this.b = 2;
+	   * }
+	   *
+	   * Foo.prototype.c = 3;
+	   *
+	   * _.keys(new Foo);
+	   * // => ['a', 'b'] (iteration order is not guaranteed)
+	   *
+	   * _.keys('hi');
+	   * // => ['0', '1']
+	   */
+	  var keys = !nativeKeys ? shimKeys : function(object) {
+	    if (object) {
+	      var Ctor = object.constructor,
+	          length = object.length;
+	    }
+	    if ((typeof Ctor == 'function' && Ctor.prototype === object) ||
+	        (typeof object != 'function' && (length && isLength(length)))) {
+	      return shimKeys(object);
+	    }
+	    return isObject(object) ? nativeKeys(object) : [];
+	  };
+
+	  return keys;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 324 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(escapeRegExp, isObjectLike) {
+
+	  /** `Object#toString` result references. */
+	  var funcTag = '[object Function]';
+
+	  /** Used to detect host constructors (Safari > 5). */
+	  var reHostCtor = /^\[object .+?Constructor\]$/;
+
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+
+	  /** Used to resolve the decompiled source of functions. */
+	  var fnToString = Function.prototype.toString;
+
+	  /**
+	   * Used to resolve the `toStringTag` of values.
+	   * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+	   * for more details.
+	   */
+	  var objToString = objectProto.toString;
+
+	  /** Used to detect if a method is native. */
+	  var reNative = RegExp('^' +
+	    escapeRegExp(objToString)
+	    .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+	  );
+
+	  /**
+	   * Checks if `value` is a native function.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @category Lang
+	   * @param {*} value The value to check.
+	   * @returns {boolean} Returns `true` if `value` is a native function, else `false`.
+	   * @example
+	   *
+	   * _.isNative(Array.prototype.push);
+	   * // => true
+	   *
+	   * _.isNative(_);
+	   * // => false
+	   */
+	  function isNative(value) {
+	    if (value == null) {
+	      return false;
+	    }
+	    if (objToString.call(value) == funcTag) {
+	      return reNative.test(fnToString.call(value));
+	    }
+	    return (isObjectLike(value) && reHostCtor.test(value)) || false;
+	  }
+
+	  return isNative;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 325 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(baseToString) {
+
+	  /**
+	   * Used to match `RegExp` special characters.
+	   * See this [article on `RegExp` characters](http://www.regular-expressions.info/characters.html#special)
+	   * for more details.
+	   */
+	  var reRegExpChars = /[.*+?^${}()|[\]\/\\]/g,
+	      reHasRegExpChars = RegExp(reRegExpChars.source);
+
+	  /**
+	   * Escapes the `RegExp` special characters "\", "^", "$", ".", "|", "?", "*",
+	   * "+", "(", ")", "[", "]", "{" and "}" in `string`.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @category String
+	   * @param {string} [string=''] The string to escape.
+	   * @returns {string} Returns the escaped string.
+	   * @example
+	   *
+	   * _.escapeRegExp('[lodash](https://lodash.com/)');
+	   * // => '\[lodash\]\(https://lodash\.com/\)'
+	   */
+	  function escapeRegExp(string) {
+	    string = baseToString(string);
+	    return (string && reHasRegExpChars.test(string))
+	      ? string.replace(reRegExpChars, '\\$&')
+	      : string;
+	  }
+
+	  return escapeRegExp;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 326 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__, __webpack_module_template_argument_2__, __webpack_module_template_argument_3__, __webpack_module_template_argument_4__, __webpack_module_template_argument_5__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__)), (__webpack_require__(__webpack_module_template_argument_2__)), (__webpack_require__(__webpack_module_template_argument_3__)), (__webpack_require__(__webpack_module_template_argument_4__)), (__webpack_require__(__webpack_module_template_argument_5__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isArguments, isArray, isIndex, isLength, keysIn, support) {
+
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+
+	  /** Used to check objects for own properties. */
+	  var hasOwnProperty = objectProto.hasOwnProperty;
+
+	  /**
+	   * A fallback implementation of `Object.keys` which creates an array of the
+	   * own enumerable property names of `object`.
+	   *
+	   * @private
+	   * @param {Object} object The object to inspect.
+	   * @returns {Array} Returns the array of property names.
+	   */
+	  function shimKeys(object) {
+	    var props = keysIn(object),
+	        propsLength = props.length,
+	        length = propsLength && object.length;
+
+	    var allowIndexes = length && isLength(length) &&
+	      (isArray(object) || (support.nonEnumArgs && isArguments(object)));
+
+	    var index = -1,
+	        result = [];
+
+	    while (++index < propsLength) {
+	      var key = props[index];
+	      if ((allowIndexes && isIndex(key, length)) || hasOwnProperty.call(object, key)) {
+	        result.push(key);
+	      }
+	    }
+	    return result;
+	  }
+
+	  return shimKeys;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 327 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isObjectLike) {
+
+	  /** Used as a safe reference for `undefined` in pre-ES5 environments. */
+	  var undefined;
+
+	  /** `Object#toString` result references. */
+	  var argsTag = '[object Arguments]';
+
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+
+	  /**
+	   * Used to resolve the `toStringTag` of values.
+	   * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+	   * for more details.
+	   */
+	  var objToString = objectProto.toString;
+
+	  /**
+	   * Checks if `value` is classified as an `arguments` object.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @category Lang
+	   * @param {*} value The value to check.
+	   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	   * @example
+	   *
+	   * _.isArguments(function() { return arguments; }());
+	   * // => true
+	   *
+	   * _.isArguments([1, 2, 3]);
+	   * // => false
+	   */
+	  function isArguments(value) {
+	    var length = isObjectLike(value) ? value.length : undefined;
+	    return (isLength(length) && objToString.call(value) == argsTag) || false;
+	  }
+
+	  return isArguments;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 328 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__, __webpack_module_template_argument_2__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__)), (__webpack_require__(__webpack_module_template_argument_2__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isLength, isNative, isObjectLike) {
+
+	  /** `Object#toString` result references. */
+	  var arrayTag = '[object Array]';
+
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+
+	  /**
+	   * Used to resolve the `toStringTag` of values.
+	   * See the [ES spec](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-object.prototype.tostring)
+	   * for more details.
+	   */
+	  var objToString = objectProto.toString;
+
+	  /* Native method references for those with the same name as other `lodash` methods. */
+	  var nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray;
+
+	  /**
+	   * Checks if `value` is classified as an `Array` object.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @category Lang
+	   * @param {*} value The value to check.
+	   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+	   * @example
+	   *
+	   * _.isArray([1, 2, 3]);
+	   * // => true
+	   *
+	   * _.isArray(function() { return arguments; }());
+	   * // => false
+	   */
+	  var isArray = nativeIsArray || function(value) {
+	    return (isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag) || false;
+	  };
+
+	  return isArray;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 329 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__, __webpack_module_template_argument_2__, __webpack_module_template_argument_3__, __webpack_module_template_argument_4__, __webpack_module_template_argument_5__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__)), (__webpack_require__(__webpack_module_template_argument_2__)), (__webpack_require__(__webpack_module_template_argument_3__)), (__webpack_require__(__webpack_module_template_argument_4__)), (__webpack_require__(__webpack_module_template_argument_5__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isArguments, isArray, isIndex, isLength, isObject, support) {
+
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+
+	  /** Used to check objects for own properties. */
+	  var hasOwnProperty = objectProto.hasOwnProperty;
+
+	  /**
+	   * Creates an array of the own and inherited enumerable property names of `object`.
+	   *
+	   * **Note:** Non-object values are coerced to objects.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @category Object
+	   * @param {Object} object The object to inspect.
+	   * @returns {Array} Returns the array of property names.
+	   * @example
+	   *
+	   * function Foo() {
+	   *   this.a = 1;
+	   *   this.b = 2;
+	   * }
+	   *
+	   * Foo.prototype.c = 3;
+	   *
+	   * _.keysIn(new Foo);
+	   * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+	   */
+	  function keysIn(object) {
+	    if (object == null) {
+	      return [];
+	    }
+	    if (!isObject(object)) {
+	      object = Object(object);
+	    }
+	    var length = object.length;
+	    length = (length && isLength(length) &&
+	      (isArray(object) || (support.nonEnumArgs && isArguments(object))) && length) || 0;
+
+	    var Ctor = object.constructor,
+	        index = -1,
+	        isProto = typeof Ctor == 'function' && Ctor.prototype === object,
+	        result = Array(length),
+	        skipIndexes = length > 0;
+
+	    while (++index < length) {
+	      result[index] = (index + '');
+	    }
+	    for (var key in object) {
+	      if (!(skipIndexes && isIndex(key, length)) &&
+	          !(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+	        result.push(key);
+	      }
+	    }
+	    return result;
+	  }
+
+	  return keysIn;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 330 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isNative, root) {
+
+	  /** Used to detect functions containing a `this` reference. */
+	  var reThis = /\bthis\b/;
+
+	  /** Used for native method references. */
+	  var objectProto = Object.prototype;
+
+	  /** Used to detect DOM support. */
+	  var document = (document = root.window) && document.document;
+
+	  /** Native method references. */
+	  var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+	  /**
+	   * An object environment feature flags.
+	   *
+	   * @static
+	   * @memberOf _
+	   * @type Object
+	   */
+	  var support = {};
+
+	  (function(x) {
+
+	    /**
+	     * Detect if functions can be decompiled by `Function#toString`
+	     * (all but Firefox OS certified apps, older Opera mobile browsers, and
+	     * the PlayStation 3; forced `false` for Windows 8 apps).
+	     *
+	     * @memberOf _.support
+	     * @type boolean
+	     */
+	    support.funcDecomp = !isNative(root.WinRTError) && reThis.test(function() { return this; });
+
+	    /**
+	     * Detect if `Function#name` is supported (all but IE).
+	     *
+	     * @memberOf _.support
+	     * @type boolean
+	     */
+	    support.funcNames = typeof Function.name == 'string';
+
+	    /**
+	     * Detect if the DOM is supported.
+	     *
+	     * @memberOf _.support
+	     * @type boolean
+	     */
+	    try {
+	      support.dom = document.createDocumentFragment().nodeType === 11;
+	    } catch(e) {
+	      support.dom = false;
+	    }
+
+	    /**
+	     * Detect if `arguments` object indexes are non-enumerable.
+	     *
+	     * In Firefox < 4, IE < 9, PhantomJS, and Safari < 5.1 `arguments` object
+	     * indexes are non-enumerable. Chrome < 25 and Node.js < 0.11.0 treat
+	     * `arguments` object indexes as non-enumerable and fail `hasOwnProperty`
+	     * checks for indexes that exceed their function's formal parameters with
+	     * associated values of `0`.
+	     *
+	     * @memberOf _.support
+	     * @type boolean
+	     */
+	    try {
+	      support.nonEnumArgs = !propertyIsEnumerable.call(arguments, 1);
+	    } catch(e) {
+	      support.nonEnumArgs = true;
+	    }
+	  }(0, 0));
+
+	  return support;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 331 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(bindCallback, isIterateeCall) {
+
+	  /**
+	   * Creates a function that assigns properties of source object(s) to a given
+	   * destination object.
+	   *
+	   * @private
+	   * @param {Function} assigner The function to assign values.
+	   * @returns {Function} Returns the new assigner function.
+	   */
+	  function createAssigner(assigner) {
+	    return function() {
+	      var args = arguments,
+	          length = args.length,
+	          object = args[0];
+
+	      if (length < 2 || object == null) {
+	        return object;
+	      }
+	      var customizer = args[length - 2],
+	          thisArg = args[length - 1],
+	          guard = args[3];
+
+	      if (length > 3 && typeof customizer == 'function') {
+	        customizer = bindCallback(customizer, thisArg, 5);
+	        length -= 2;
+	      } else {
+	        customizer = (length > 2 && typeof thisArg == 'function') ? thisArg : null;
+	        length -= (customizer ? 1 : 0);
+	      }
+	      if (guard && isIterateeCall(args[1], args[2], guard)) {
+	        customizer = length == 3 ? null : customizer;
+	        length = 2;
+	      }
+	      var index = 0;
+	      while (++index < length) {
+	        var source = args[index];
+	        if (source) {
+	          assigner(object, source, customizer);
+	        }
+	      }
+	      return object;
+	    };
+	  }
+
+	  return createAssigner;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 332 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(identity) {
+
+	  /**
+	   * A specialized version of `baseCallback` which only supports `this` binding
+	   * and specifying the number of arguments to provide to `func`.
+	   *
+	   * @private
+	   * @param {Function} func The function to bind.
+	   * @param {*} thisArg The `this` binding of `func`.
+	   * @param {number} [argCount] The number of arguments to provide to `func`.
+	   * @returns {Function} Returns the callback.
+	   */
+	  function bindCallback(func, thisArg, argCount) {
+	    if (typeof func != 'function') {
+	      return identity;
+	    }
+	    if (typeof thisArg == 'undefined') {
+	      return func;
+	    }
+	    switch (argCount) {
+	      case 1: return function(value) {
+	        return func.call(thisArg, value);
+	      };
+	      case 3: return function(value, index, collection) {
+	        return func.call(thisArg, value, index, collection);
+	      };
+	      case 4: return function(accumulator, value, index, collection) {
+	        return func.call(thisArg, accumulator, value, index, collection);
+	      };
+	      case 5: return function(value, other, key, object, source) {
+	        return func.call(thisArg, value, other, key, object, source);
+	      };
+	    }
+	    return function() {
+	      return func.apply(thisArg, arguments);
+	    };
+	  }
+
+	  return bindCallback;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ },
+/* 333 */
+/***/ function(module, exports, __webpack_require__, __webpack_module_template_argument_0__, __webpack_module_template_argument_1__, __webpack_module_template_argument_2__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [(__webpack_require__(__webpack_module_template_argument_0__)), (__webpack_require__(__webpack_module_template_argument_1__)), (__webpack_require__(__webpack_module_template_argument_2__))], __WEBPACK_AMD_DEFINE_RESULT__ = function(isIndex, isLength, isObject) {
+
+	  /**
+	   * Checks if the provided arguments are from an iteratee call.
+	   *
+	   * @private
+	   * @param {*} value The potential iteratee value argument.
+	   * @param {*} index The potential iteratee index or key argument.
+	   * @param {*} object The potential iteratee object argument.
+	   * @returns {boolean} Returns `true` if the arguments are from an iteratee call, else `false`.
+	   */
+	  function isIterateeCall(value, index, object) {
+	    if (!isObject(object)) {
+	      return false;
+	    }
+	    var type = typeof index;
+	    if (type == 'number') {
+	      var length = object.length,
+	          prereq = isLength(length) && isIndex(index, length);
+	    } else {
+	      prereq = type == 'string' && index in object;
+	    }
+	    if (prereq) {
+	      var other = object[index];
+	      return value === value ? (value === other) : (other !== other);
+	    }
+	    return false;
+	  }
+
+	  return isIterateeCall;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+
+/***/ }
 /******/ ])))
 });
 ;
