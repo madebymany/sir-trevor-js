@@ -32,7 +32,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   bound: [
     "_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick",
     "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender",
-    "onDeleteConfirm"
+    "onDeleteConfirm", "onPositionerClick"
   ],
 
   className: 'st-block',
@@ -44,7 +44,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   icon_name: 'default',
 
   validationFailMsg: function() {
-    return i18n.t('errors:validation_fail', { type: this.title });
+    return i18n.t('errors:validation_fail', { type: _.isFunction(this.title) ? this.title() : this.title });
   },
 
   editorHTML: "<div class=\"st-block__editor\"></div>",
@@ -67,6 +67,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   upload_options: {},
 
   formattable: true,
+  supressKeyListeners: false,
 
   _previousSelection: '',
 
@@ -242,16 +243,23 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
   },
 
-  onDeleteClick: function(ev) {
-    ev.preventDefault();
+  onDeleteClick: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
 
     if (this.isEmpty()) {
-      this.onDeleteConfirm.call(this, new Event('click'));
+      this.onDeleteConfirm.call(this, new CustomEvent('click'));
       return;
     }
 
     this.deleteEl = this.el.querySelector('.st-block__ui-delete-controls');
     this.deleteEl.classList.toggle('active');
+  },
+
+  onPositionerClick: function(e) {
+    e.preventDefault();
+    
+    this.positioner.toggle();
   },
 
   beforeLoadingData: function() {
@@ -296,10 +304,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     this.addDeleteControls();
 
-    var positioner = new BlockPositioner(this.el, this.mediator);
+    this.positioner = new BlockPositioner(this.el, this.mediator);
 
-    this._withUIComponent(positioner, '.st-block-ui-btn__reorder',
-                          positioner.toggle);
+    this._withUIComponent(this.positioner, '.st-block-ui-btn__reorder',
+                          this.onPositionerClick);
 
     this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
@@ -338,7 +346,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
         if(ev.which === cmd.keyCode && ctrlDown) {
           ev.preventDefault();
-          block.execTextBlockCommand(cmd);
+          block.execTextBlockCommand(cmd.cmd);
         }
       });
     });

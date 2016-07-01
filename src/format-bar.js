@@ -10,7 +10,6 @@
 var _ = require('./lodash');
 
 var config = require('./config');
-var utils = require('./utils');
 var Dom = require('./packages/dom');
 var Events = require('./packages/events');
 
@@ -52,10 +51,13 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
     this.el.insertAdjacentHTML("beforeend", buttons);
 
-    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
+    // We use mousedown rather than click as that allows us to keep focus on the contenteditable field.
+    Events.delegate(this.el, '.st-format-btn', 'mousedown', this.onFormatButtonClick);
+    Events.delegate(this.el, '.st-format-btn', 'click', (e) => e.preventDefault());
   },
 
   hide: function() {
+    this.block = undefined;
     this.isShown = false;
 
     this.el.classList.remove('st-format-bar--is-ready');
@@ -75,7 +77,8 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
   remove: function(){ Dom.remove(this.el); },
 
-  renderBySelection: function() {
+  renderBySelection: function(block) {
+    this.block = block;
     this.highlightSelectedButtons();
     this.show();
     this.calculatePosition();
@@ -98,11 +101,10 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   highlightSelectedButtons: function() {
-    var block = utils.getBlockBySelection();
-    [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function(btn) {
+    [].forEach.call(this.el.querySelectorAll(".st-format-btn"), (btn) => {
       var cmd = btn.getAttribute('data-cmd');
       btn.classList.toggle("st-format-btn--is-active",
-                      block.queryTextBlockCommandState(cmd));
+                      this.block.queryTextBlockCommandState(cmd));
       btn = null;
     });
   },
@@ -111,8 +113,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
     ev.preventDefault();
     ev.stopPropagation();
 
-    var block = utils.getBlockBySelection();
-    if (_.isUndefined(block)) {
+    if (_.isUndefined(this.block)) {
       throw "Associated block not found";
     }
 
@@ -123,9 +124,12 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
       return false;
     }
 
-    block.execTextBlockCommand(cmd);
+    this.block.execTextBlockCommand(cmd);
 
     this.highlightSelectedButtons();
+
+    // Re-select the contenteditable field.
+    document.activeElement.focus();
 
     return false;
   }

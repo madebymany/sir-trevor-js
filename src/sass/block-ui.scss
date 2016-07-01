@@ -1,7 +1,7 @@
 .st-block__control-ui {
   position: absolute;
   bottom: 0; left: 0;
-  opacity: 0;
+  opacity: 1;
 }
 
 .st-block__inner:hover .st-block__ui,
@@ -25,13 +25,12 @@
   cursor: pointer;
   width: 1em;
   height: 1em;
-  position: absolute;
-  top: 1em;
   color:$block-controls-color;
 }
 
 .st-block-ui-btn__reorder {
   @extend %st-block-ui-btn;
+  position: absolute;
   right: 2em;
   transform: scaleX(-1);
   top: 0.5em;
@@ -46,6 +45,7 @@
 
 .st-block-ui-btn__delete {
   @extend %st-block-ui-btn;
+  position: absolute;
   right: 1em;
   top: 1.5em;
   font-size:1.5em;
@@ -69,12 +69,19 @@
 .st-block-control-ui-btn {
   @extend %st-block-ui-btn;
   width: 2em;
-  font-size: 1.5em;
   line-height: 1.25em;
   height: 1.25em;
-  border: $default-border;
-  border-left: 0;
-  border-bottom: 0;
+  font-size: 1em;
+  display: inline-block;
+  padding: 3px;
+  transition: color .1s;
+  &:hover,
+  &:focus {
+    color:$accent-color;
+  }
+}
+.st-block-control-ui-btn--selected {
+  color:$accent-color;
 }
 
 .st-block--with-errors .st-block-control-ui-btn,

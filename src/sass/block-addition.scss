@@ -1,14 +1,8 @@
 
 $animation-speed: 0.2s;
 
-.st--block-limit-reached {
-  .st-top-controls,
-  .st-block-addition {
-    display: none;
-  }
-}
-
 .st-top-controls {
+  min-height: 1.750em;
   position: relative;
   z-index: 2;
 }
@@ -32,6 +26,19 @@ $animation-speed: 0.2s;
   .st-top-controls &,
   .st-block:last-child:not(.st-block--empty):not(.st-block--textable) & {
     display: block;
+  }
+}
+
+.st--hide-top-controls {
+  .st-top-controls .st-block-addition {
+    display: none;
+  }
+}
+
+.st--block-limit-reached {
+  .st-top-controls,
+  .st-block-addition {
+    display: none;
   }
 }
 

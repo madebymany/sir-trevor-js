@@ -86,11 +86,8 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   margin-bottom: 0.5em;
   font-weight: 700; }
 
-.st--block-limit-reached .st-top-controls,
-.st--block-limit-reached .st-block-addition {
-  display: none; }
-
 .st-top-controls {
+  min-height: 1.750em;
   position: relative;
   z-index: 2; }
 
@@ -110,6 +107,13 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   .st-top-controls .st-block-addition,
   .st-block:last-child:not(.st-block--empty):not(.st-block--textable) .st-block-addition {
     display: block; }
+
+.st--hide-top-controls .st-top-controls .st-block-addition {
+  display: none; }
+
+.st--block-limit-reached .st-top-controls,
+.st--block-limit-reached .st-block-addition {
+  display: none; }
 
 .st-block-addition__button {
   -webkit-transition: all 0.2s 0.3s ease-in-out;
@@ -317,6 +321,11 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   margin-right: 155px;
   margin-top: 2em;
   margin-bottom: 2em; }
+
+.st-block__inner--controllable {
+  padding-bottom: 3em;
+  -webkit-transition: all 0.2s;
+          transition: all 0.2s; }
 
 .st-block--with-errors .st-block__inner,
 .st-block--delete-active .st-block__inner {
@@ -586,7 +595,7 @@ ul.st-text-block {
   position: absolute;
   bottom: 0;
   left: 0;
-  opacity: 0; }
+  opacity: 1; }
 
 .st-block__inner:hover .st-block__ui,
 .st-block__inner:hover .st-block__control-ui {
@@ -606,11 +615,10 @@ ul.st-text-block {
   cursor: pointer;
   width: 1em;
   height: 1em;
-  position: absolute;
-  top: 1em;
   color: #9B9B9B; }
 
 .st-block-ui-btn__reorder {
+  position: absolute;
   right: 2em;
   -webkit-transform: scaleX(-1);
           transform: scaleX(-1);
@@ -623,6 +631,7 @@ ul.st-text-block {
     opacity: 1; }
 
 .st-block-ui-btn__delete {
+  position: absolute;
   right: 1em;
   top: 1.5em;
   font-size: 1.5em;
@@ -639,12 +648,18 @@ ul.st-text-block {
 
 .st-block-control-ui-btn {
   width: 2em;
-  font-size: 1.5em;
   line-height: 1.25em;
   height: 1.25em;
-  border: 2px solid #17BB75;
-  border-left: 0;
-  border-bottom: 0; }
+  font-size: 1em;
+  display: inline-block;
+  padding: 3px;
+  -webkit-transition: color .1s;
+          transition: color .1s; }
+  .st-block-control-ui-btn:hover, .st-block-control-ui-btn:focus {
+    color: #17BB75; }
+
+.st-block-control-ui-btn--selected {
+  color: #17BB75; }
 
 .st-block--with-errors .st-block-control-ui-btn,
 .st-block--delete-active .st-block-control-ui-btn {

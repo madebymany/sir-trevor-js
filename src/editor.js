@@ -31,7 +31,7 @@ var Editor = function(options) {
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
-    'removeBlockDragOver', 'blockLimitReached'],
+    'removeBlockDragOver', 'blockLimitReached', 'blockOrderUpdated'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
@@ -85,6 +85,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
     this.mediator.on('block:limitReached', this.blockLimitReached);
+
+    // Apply specific classes when block order is updated
+    this.mediator.on('block:rerender', this.blockOrderUpdated);
+    this.mediator.on('block:create', this.blockOrderUpdated);
+    this.mediator.on('block:remove', this.blockOrderUpdated);
+    this.mediator.on('block:replace', this.blockOrderUpdated);
 
     this.dataStore = "Please use store.retrieve();";
 
@@ -152,6 +158,25 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.wrapper.classList.toggle('st--block-limit-reached', toggle);
   },
 
+  blockOrderUpdated: function() {
+    // Detect first block and decide whether to hide top controls
+    var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
+    var hideTopControls = false;
+
+    if (blockElement) {
+      var block = this.blockManager.findBlockById(
+        blockElement.getAttribute('id')
+      );
+      hideTopControls = block && block.textable;
+    }
+    
+    this._toggleHideTopControls(hideTopControls);
+  },
+
+  _toggleHideTopControls: function(toggle) {
+    this.wrapper.classList.toggle('st--hide-top-controls', toggle);
+  },
+
   _setEvents: function() {
     Object.keys(this.events).forEach(function(type) {
       EventBus.on(type, this[this.events[type]], this);
@@ -161,7 +186,15 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   hideAllTheThings: function(e) {
     this.blockControls.hide();
     this.blockAddition.hide();
-    this.formatBar.hide();
+
+    if (document.activeElement.getAttribute('contenteditable') === null) {
+      this.formatBar.hide();
+    }
+
+    var popupSelectors = '.st-block__ui-delete-controls';
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll(popupSelectors), function(el) {
+      el.classList.remove('active');
+    });
   },
 
   store: function(method, options){
@@ -192,7 +225,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   validateAndSaveBlock: function(block, shouldValidate) {
-    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+    if (!config.skipValidation && shouldValidate && !block.valid()) {
       this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
       utils.log("Block " + block.blockID + " failed validation");
       return;
@@ -235,10 +268,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
    * pressing backspace multiple times doesn't close the page.
    */
   disableBackButton: function(e) {
+    var target = e.target || e.srcElement;
     if (e.keyCode === 8) {
-      if (e.srcElement.getAttribute('contenteditable') ||
-          e.srcElement.tagName === 'INPUT' ||
-          e.srcElement.tagName === 'TEXTAREA') {
+      if (target.getAttribute('contenteditable') ||
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA') {
         return;
       }
 

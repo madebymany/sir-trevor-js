@@ -3816,6 +3816,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    blockTypeLimits: {},
 	    required: [],
 	    uploadUrl: '/attachments',
+	    attachmentName: 'attachment[name]',
+	    attachmentFile: 'attachment[file]',
+	    attachmentUid: 'attachment[uid]',
 	    baseImageUrl: '/sir-trevor-uploads/',
 	    iconUrl: '../src/icons/sir-trevor-icons.svg',
 	    errorsContainer: undefined,
@@ -4558,10 +4561,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var uid = [block.blockID, new Date().getTime(), 'raw'].join('-');
 	  var data = new FormData();
+	  var attachmentName = block.attachmentName || config.defaults.attachmentName;
+	  var attachmentFile = block.attachmentFile || config.defaults.attachmentFile;
+	  var attachmentUid = block.attachmentUid || config.defaults.attachmentUid;
 
-	  data.append('attachment[name]', file.name);
-	  data.append('attachment[file]', file);
-	  data.append('attachment[uid]', uid);
+	  data.append(attachmentName, file.name);
+	  data.append(attachmentFile, file);
+	  data.append(attachmentUid, uid);
 
 	  block.resetMessages();
 
@@ -6247,6 +6253,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  initializeControllable: function initializeControllable() {
 	    utils.log("Adding controllable to block " + this.blockID);
+	    this.inner.classList.add('st-block__inner--controllable');
 	    this.control_ui = Dom.createElement('div', { 'class': 'st-block__control-ui' });
 	    _Object$keys(this.controls).forEach(function (cmd) {
 	      // Bind configured handler to current block context
@@ -6264,8 +6271,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  addUiControl: function addUiControl(cmd, handler) {
+	    var _this = this;
+
 	    this.control_ui.appendChild(this.getControlTemplate(cmd));
-	    Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, 'click', handler);
+	    Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, 'click', function (e) {
+	      _this.selectUiControl(cmd);
+	      handler(e);
+	    });
+	  },
+
+	  selectUiControl: function selectUiControl(cmd) {
+	    var _this2 = this;
+
+	    var selectedClass = 'st-block-control-ui-btn--selected';
+	    _Object$keys(this.controls).forEach(function (control) {
+	      _this2.getControlUiBtn(control).classList.remove(selectedClass);
+	    });
+	    this.getControlUiBtn(cmd).classList.add(selectedClass);
+	  },
+
+	  getControlUiBtn: function getControlUiBtn(cmd) {
+	    return this.control_ui.querySelector('.st-block-control-ui-btn--' + cmd);
 	  }
 	};
 
@@ -6422,7 +6448,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _this.mediator.trigger("block:create", 'Text', null, _this.el);
 	          break;
 	        case 8:
-	          _this.onDeleteClick.call(_this, new Event('click'));
+	          _this.onDeleteClick.call(_this, new CustomEvent('click'));
 	          return;
 	      }
 	    });
@@ -6615,14 +6641,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.editors = {};
 	  },
 
-	  newTextEditor: function newTextEditor(template, content) {
-	    // render template outside of dom
-	    var wrapper = document.createElement('div');
-	    wrapper.innerHTML = template;
+	  newTextEditor: function newTextEditor(template_or_node, content) {
+	    var editor, isTextTemplate, wrapper;
 
-	    var editor = wrapper.querySelector('.st-block__editor');
+	    isTextTemplate = template_or_node.tagName === undefined;
+
+	    if (isTextTemplate) {
+	      // render template outside of dom
+	      wrapper = document.createElement('div');
+	      wrapper.innerHTML = template_or_node;
+
+	      editor = wrapper.querySelector('.st-block__editor');
+	    } else {
+	      editor = template_or_node;
+	    }
+
 	    var id = _.uniqueId('editor-');
-	    editor.dataset.editorId = id;
+	    editor.setAttribute('data-editorId', id);
 	    editor.addEventListener('keyup', this.getSelectionForFormatter);
 	    editor.addEventListener('mouseup', this.getSelectionForFormatter);
 
@@ -6632,7 +6667,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scribe.setContent(content);
 
 	    var editorObject = {
-	      node: wrapper.removeChild(wrapper.firstChild),
+	      node: isTextTemplate ? wrapper.removeChild(wrapper.firstChild) : editor,
 	      el: editor,
 	      scribe: scribe,
 	      id: id
@@ -6644,7 +6679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  getCurrentTextEditor: function getCurrentTextEditor() {
-	    var id = document.activeElement.dataset.editorId;
+	    var id = document.activeElement.getAttribute('data-editorId');
 	    var editor = this.getTextEditor(id);
 
 	    if (editor) {
@@ -18152,7 +18187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.triggerBlockCountUpdate();
 	    this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
-	    EventBus.trigger("block:remove");
+	    EventBus.trigger('block:remove', blockID);
 	  },
 
 	  replaceBlock: function replaceBlock(blockNode, type, data) {
@@ -18475,7 +18510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_Object$assign(Block.prototype, SimpleBlock.fn, __webpack_require__(239), {
 
-	  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender", "onDeleteConfirm"],
+	  bound: ["_handleContentPaste", "_onFocus", "_onBlur", "onDrop", "onDeleteClick", "clearInsertedStyles", "getSelectionForFormatter", "onBlockRender", "onDeleteConfirm", "onPositionerClick"],
 
 	  className: 'st-block',
 
@@ -18486,7 +18521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  icon_name: 'default',
 
 	  validationFailMsg: function validationFailMsg() {
-	    return i18n.t('errors:validation_fail', { type: this.title });
+	    return i18n.t('errors:validation_fail', { type: _.isFunction(this.title) ? this.title() : this.title });
 	  },
 
 	  editorHTML: "<div class=\"st-block__editor\"></div>",
@@ -18508,6 +18543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  upload_options: {},
 
 	  formattable: true,
+	  supressKeyListeners: false,
 
 	  _previousSelection: '',
 
@@ -18695,16 +18731,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
 	  },
 
-	  onDeleteClick: function onDeleteClick(ev) {
-	    ev.preventDefault();
+	  onDeleteClick: function onDeleteClick(e) {
+	    e.preventDefault();
+	    e.stopPropagation();
 
 	    if (this.isEmpty()) {
-	      this.onDeleteConfirm.call(this, new Event('click'));
+	      this.onDeleteConfirm.call(this, new CustomEvent('click'));
 	      return;
 	    }
 
 	    this.deleteEl = this.el.querySelector('.st-block__ui-delete-controls');
 	    this.deleteEl.classList.toggle('active');
+	  },
+
+	  onPositionerClick: function onPositionerClick(e) {
+	    e.preventDefault();
+
+	    this.positioner.toggle();
 	  },
 
 	  beforeLoadingData: function beforeLoadingData() {
@@ -18749,9 +18792,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.addDeleteControls();
 
-	    var positioner = new BlockPositioner(this.el, this.mediator);
+	    this.positioner = new BlockPositioner(this.el, this.mediator);
 
-	    this._withUIComponent(positioner, '.st-block-ui-btn__reorder', positioner.toggle);
+	    this._withUIComponent(this.positioner, '.st-block-ui-btn__reorder', this.onPositionerClick);
 
 	    this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
@@ -18789,7 +18832,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (ev.which === cmd.keyCode && ctrlDown) {
 	          ev.preventDefault();
-	          block.execTextBlockCommand(cmd);
+	          block.execTextBlockCommand(cmd.cmd);
 	        }
 	      });
 	    });
@@ -19609,6 +19652,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // Remove any empty elements at the start of the range.
 	    var stripFirstEmptyElement = function stripFirstEmptyElement(div) {
+	      if (div.firstChild === null) {
+	        return;
+	      }
+
 	      var firstChild = div.firstChild.childNodes[0];
 	      if (firstChild && firstChild.nodeName !== '#text') {
 	        if (firstChild.innerText === '') {
@@ -19628,7 +19675,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      stripFirstEmptyElement(div);
 
 	      // Sometimes you'll get an empty tag at the start of the block.
-	      if (div.firstChild.nodeName !== '#text') {
+	      if (div.firstChild && div.firstChild.nodeName !== '#text') {
 	        div = div.lastChild;
 	      }
 
@@ -19702,6 +19749,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    scribe.el.addEventListener('keydown', function (ev) {
 
+	      if (block.supressKeyListeners) {
+	        return;
+	      }
+
 	      if (ev.keyCode === 13 && !ev.shiftKey) {
 	        // enter pressed
 	        ev.preventDefault();
@@ -19735,6 +19786,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 
 	    scribe.el.addEventListener('keyup', function (ev) {
+
+	      if (block.supressKeyListeners) {
+	        return;
+	      }
+
 	      if (ev.keyCode === 8 && isAtStart) {
 	        ev.preventDefault();
 
@@ -20302,6 +20358,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var ScribeListBlockPlugin = function ScribeListBlockPlugin(block) {
 	  return function (scribe) {
 	    scribe.el.addEventListener('keydown', function (ev) {
+
+	      if (block.supressKeyListeners) {
+	        return;
+	      }
+
 	      var rangeToHTML = function rangeToHTML(range) {
 	        var div = document.createElement('div');
 	        div.appendChild(range.extractContents());
@@ -20587,7 +20648,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _ = __webpack_require__(34);
 
 	var config = __webpack_require__(68);
-	var utils = __webpack_require__(29);
 	var Dom = __webpack_require__(69);
 	var Events = __webpack_require__(131);
 
@@ -20629,10 +20689,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.el.insertAdjacentHTML("beforeend", buttons);
 
-	    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
+	    // We use mousedown rather than click as that allows us to keep focus on the contenteditable field.
+	    Events.delegate(this.el, '.st-format-btn', 'mousedown', this.onFormatButtonClick);
+	    Events.delegate(this.el, '.st-format-btn', 'click', function (e) {
+	      return e.preventDefault();
+	    });
 	  },
 
 	  hide: function hide() {
+	    this.block = undefined;
 	    this.isShown = false;
 
 	    this.el.classList.remove('st-format-bar--is-ready');
@@ -20654,7 +20719,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    Dom.remove(this.el);
 	  },
 
-	  renderBySelection: function renderBySelection() {
+	  renderBySelection: function renderBySelection(block) {
+	    this.block = block;
 	    this.highlightSelectedButtons();
 	    this.show();
 	    this.calculatePosition();
@@ -20676,10 +20742,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  highlightSelectedButtons: function highlightSelectedButtons() {
-	    var block = utils.getBlockBySelection();
+	    var _this = this;
+
 	    [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function (btn) {
 	      var cmd = btn.getAttribute('data-cmd');
-	      btn.classList.toggle("st-format-btn--is-active", block.queryTextBlockCommandState(cmd));
+	      btn.classList.toggle("st-format-btn--is-active", _this.block.queryTextBlockCommandState(cmd));
 	      btn = null;
 	    });
 	  },
@@ -20688,8 +20755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    ev.preventDefault();
 	    ev.stopPropagation();
 
-	    var block = utils.getBlockBySelection();
-	    if (_.isUndefined(block)) {
+	    if (_.isUndefined(this.block)) {
 	      throw "Associated block not found";
 	    }
 
@@ -20700,9 +20766,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    }
 
-	    block.execTextBlockCommand(cmd);
+	    this.block.execTextBlockCommand(cmd);
 
 	    this.highlightSelectedButtons();
+
+	    // Re-select the contenteditable field.
+	    document.activeElement.focus();
 
 	    return false;
 	  }
@@ -20768,7 +20837,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_Object$assign(Editor.prototype, __webpack_require__(235), __webpack_require__(73), {
 
-	  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition', 'removeBlockDragOver', 'blockLimitReached'],
+	  bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition', 'removeBlockDragOver', 'blockLimitReached', 'blockOrderUpdated'],
 
 	  events: {
 	    'block:reorder:dragend': 'removeBlockDragOver',
@@ -20823,6 +20892,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    this.mediator.on('block:changePosition', this.changeBlockPosition);
 	    this.mediator.on('block:limitReached', this.blockLimitReached);
+
+	    // Apply specific classes when block order is updated
+	    this.mediator.on('block:rerender', this.blockOrderUpdated);
+	    this.mediator.on('block:create', this.blockOrderUpdated);
+	    this.mediator.on('block:remove', this.blockOrderUpdated);
+	    this.mediator.on('block:replace', this.blockOrderUpdated);
 
 	    this.dataStore = "Please use store.retrieve();";
 
@@ -20890,6 +20965,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.wrapper.classList.toggle('st--block-limit-reached', toggle);
 	  },
 
+	  blockOrderUpdated: function blockOrderUpdated() {
+	    // Detect first block and decide whether to hide top controls
+	    var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
+	    var hideTopControls = false;
+
+	    if (blockElement) {
+	      var block = this.blockManager.findBlockById(blockElement.getAttribute('id'));
+	      hideTopControls = block && block.textable;
+	    }
+
+	    this._toggleHideTopControls(hideTopControls);
+	  },
+
+	  _toggleHideTopControls: function _toggleHideTopControls(toggle) {
+	    this.wrapper.classList.toggle('st--hide-top-controls', toggle);
+	  },
+
 	  _setEvents: function _setEvents() {
 	    _Object$keys(this.events).forEach(function (type) {
 	      EventBus.on(type, this[this.events[type]], this);
@@ -20899,7 +20991,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  hideAllTheThings: function hideAllTheThings(e) {
 	    this.blockControls.hide();
 	    this.blockAddition.hide();
-	    this.formatBar.hide();
+
+	    if (document.activeElement.getAttribute('contenteditable') === null) {
+	      this.formatBar.hide();
+	    }
+
+	    var popupSelectors = '.st-block__ui-delete-controls';
+	    Array.prototype.forEach.call(this.wrapper.querySelectorAll(popupSelectors), function (el) {
+	      el.classList.remove('active');
+	    });
 	  },
 
 	  store: function store(method, options) {
@@ -20932,7 +21032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  validateAndSaveBlock: function validateAndSaveBlock(block, shouldValidate) {
-	    if ((!config.skipValidation || shouldValidate) && !block.valid()) {
+	    if (!config.skipValidation && shouldValidate && !block.valid()) {
 	      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
 	      utils.log("Block " + block.blockID + " failed validation");
 	      return;
@@ -20974,8 +21074,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * pressing backspace multiple times doesn't close the page.
 	   */
 	  disableBackButton: function disableBackButton(e) {
+	    var target = e.target || e.srcElement;
 	    if (e.keyCode === 8) {
-	      if (e.srcElement.getAttribute('contenteditable') || e.srcElement.tagName === 'INPUT' || e.srcElement.tagName === 'TEXTAREA') {
+	      if (target.getAttribute('contenteditable') || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
 	        return;
 	      }
 
@@ -21136,7 +21237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // REFACTOR: mediator so that we can trigger events directly on instance?
 	    // REFACTOR: block create event expects data as second argument.
 	    /*jshint validthis:true */
-	    SirTrevor.mediator.trigger("block:replace", el.parentNode, this.dataset.type);
+	    SirTrevor.mediator.trigger("block:replace", el.parentNode, this.getAttribute('data-type'));
 	  }
 
 	  function insert(e) {
