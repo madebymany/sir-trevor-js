@@ -15,8 +15,6 @@ module.exports = Block.extend({
 
   type: 'heading',
 
-  title: function(){ return i18n.t('blocks:heading:title'); },
-
   editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
 
   configureScribe: function(scribe) {
