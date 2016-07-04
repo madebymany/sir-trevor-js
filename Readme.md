@@ -102,6 +102,13 @@ matrix:
   - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.10'
   - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
 
+## Build docs
+
+```
+cd website
+bundle exec rake publish PROJECT_ROOT=./ ALLOW_DIRTY=true
+```
+
 ## License
 
 Sir Trevor is released under the MIT license:
