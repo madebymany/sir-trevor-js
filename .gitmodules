@@ -1,3 +1,0 @@
-[submodule "website/build"]
-	path = website/build
-	url = git://github.com/madebymany/sir-trevor-js.git

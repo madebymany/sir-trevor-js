@@ -7,7 +7,6 @@ var ScribeListBlockPlugin = require('./scribe-plugins/scribe-list-block-plugin')
 
 module.exports = Block.extend({
   type: 'list',
-  title: function() { return i18n.t('blocks:list:title'); },
   icon_name: 'list',
   multi_editable: true,
 

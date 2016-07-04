@@ -40,10 +40,10 @@ We are keeping a list of [custom block repos here](https://github.com/madebymany
 
 Sir Trevor is only tested on the following modern browsers:
 
-- IE11+
-- Chrome 43+
-- Safari 8+
-- Firefox 40+
+- IE11+ (https://github.com/madebymany/sir-trevor-js/tree/ie-support)
+- Chrome 51+
+- Safari 9+
+- Firefox 47+
 
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
 
@@ -97,11 +97,17 @@ Please ensure any pull requests have relevant Jasmine tests (where applicable).
 ## Current browser support tests
 
 matrix:
-  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='OSX 10.9'
-  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='Windows 7'
-  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='OSX 10.9'
-  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='Windows 7'
-  - BROWSER_NAME='safari' BROWSER_VERSION='8' PLATFORM='OSX 10.10'
+  - BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='OSX 10.10'
+  - BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='Windows 7'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.10'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
+
+## Build docs
+
+```
+cd website
+bundle exec rake publish PROJECT_ROOT=./ ALLOW_DIRTY=true
+```
 
 ## License
 

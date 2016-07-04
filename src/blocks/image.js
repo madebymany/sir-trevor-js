@@ -6,8 +6,7 @@ var Block = require('../block');
 module.exports = Block.extend({
 
   type: "image",
-  title: function() { return i18n.t('blocks:image:title'); },
-
+  
   droppable: true,
   uploadable: true,
 

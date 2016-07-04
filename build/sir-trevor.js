@@ -1661,12 +1661,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	// shim for using process in browser
 
 	var process = module.exports = {};
+
+	// cached from whatever global is present so that test runners that stub it
+	// don't break things.  But we need to wrap it in a try catch in case it is
+	// wrapped in strict mode code which doesn't define any globals.  It's inside a
+	// function because try/catches deoptimize in certain engines.
+
+	var cachedSetTimeout;
+	var cachedClearTimeout;
+
+	(function () {
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
+	    }
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
+	    }
+	  }
+	} ())
 	var queue = [];
 	var draining = false;
 	var currentQueue;
 	var queueIndex = -1;
 
 	function cleanUpNextTick() {
+	    if (!draining || !currentQueue) {
+	        return;
+	    }
 	    draining = false;
 	    if (currentQueue.length) {
 	        queue = currentQueue.concat(queue);
@@ -1682,7 +1710,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = setTimeout(cleanUpNextTick);
+	    var timeout = cachedSetTimeout(cleanUpNextTick);
 	    draining = true;
 
 	    var len = queue.length;
@@ -1699,7 +1727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    clearTimeout(timeout);
+	    cachedClearTimeout(timeout);
 	}
 
 	process.nextTick = function (fun) {
@@ -1711,7 +1739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        setTimeout(drainQueue, 0);
+	        cachedSetTimeout(drainQueue, 0);
 	    }
 	};
 
@@ -18422,10 +18450,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  type: "text",
 
-	  title: function title() {
-	    return i18n.t('blocks:text:title');
-	  },
-
 	  editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
 
 	  icon_name: 'text',
@@ -20005,10 +20029,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  type: "quote",
 
-	  title: function title() {
-	    return i18n.t('blocks:quote:title');
-	  },
-
 	  icon_name: 'quote',
 
 	  textable: true,
@@ -20048,9 +20068,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = Block.extend({
 
 	  type: "image",
-	  title: function title() {
-	    return i18n.t('blocks:image:title');
-	  },
 
 	  droppable: true,
 	  uploadable: true,
@@ -20108,10 +20125,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  type: 'heading',
 
-	  title: function title() {
-	    return i18n.t('blocks:heading:title');
-	  },
-
 	  editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
 
 	  configureScribe: function configureScribe(scribe) {
@@ -20165,9 +20178,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports = Block.extend({
 	  type: 'list',
-	  title: function title() {
-	    return i18n.t('blocks:list:title');
-	  },
 	  icon_name: 'list',
 	  multi_editable: true,
 
@@ -20441,10 +20451,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    re_render_on_reorder: true
 	  },
 
-	  title: function title() {
-	    return i18n.t('blocks:tweet:title');
-	  },
-
 	  fetchUrl: function fetchUrl(tweetID) {
 	    return "/tweets/?tweet_id=" + tweetID;
 	  },
@@ -20547,9 +20553,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  type: 'video',
-	  title: function title() {
-	    return i18n.t('blocks:video:title');
-	  },
 
 	  droppable: true,
 	  pastable: true,
@@ -20691,9 +20694,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // We use mousedown rather than click as that allows us to keep focus on the contenteditable field.
 	    Events.delegate(this.el, '.st-format-btn', 'mousedown', this.onFormatButtonClick);
-	    Events.delegate(this.el, '.st-format-btn', 'click', function (e) {
-	      return e.preventDefault();
-	    });
 	  },
 
 	  hide: function hide() {
@@ -20794,7 +20794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var cmd = _ref.cmd;
 	  var iconName = _ref.iconName;
 
-	  return "\n    <button class=\"st-format-btn st-format-btn--" + name + "\" data-cmd=\"" + cmd + "\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#" + iconName + "\"/>\n      </svg>\n    </button>\n  ";
+	  return "\n    <button type=\"button\" class=\"st-format-btn st-format-btn--" + name + "\" data-cmd=\"" + cmd + "\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#" + iconName + "\"/>\n      </svg>\n    </button>\n  ";
 	};
 
 /***/ },
@@ -21283,12 +21283,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var config = __webpack_require__(68);
 
-	module.exports = function (_ref) {
-	  var title = _ref.title;
-	  var type = _ref.type;
-	  var icon_name = _ref.icon_name;
-
-	  return "\n    <button class=\"st-block-controls__button\" data-type=\"" + type + "\" type=\"button\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#" + icon_name + "\"/>\n      </svg>\n      " + title() + "\n    </button>\n  ";
+	module.exports = function (block) {
+	  return "\n    <button class=\"st-block-controls__button\" data-type=\"" + block.type + "\" type=\"button\">\n      <svg role=\"img\" class=\"st-icon\">\n        <use xlink:href=\"" + config.defaults.iconUrl + "#" + block.icon_name + "\"/>\n      </svg>\n      " + block.title() + "\n    </button>\n  ";
 	};
 
 /***/ },
