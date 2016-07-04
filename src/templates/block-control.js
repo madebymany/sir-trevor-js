@@ -2,13 +2,13 @@
 
 var config = require('../config');
 
-module.exports = ({title, type, icon_name}) => {
+module.exports = (block) => {
   return `
-    <button class="st-block-controls__button" data-type="${type}" type="button">
+    <button class="st-block-controls__button" data-type="${block.type}" type="button">
       <svg role="img" class="st-icon">
-        <use xlink:href="${config.defaults.iconUrl}#${icon_name}"/>
+        <use xlink:href="${config.defaults.iconUrl}#${block.icon_name}"/>
       </svg>
-      ${title()}
+      ${block.title()}
     </button>
   `;
 };
