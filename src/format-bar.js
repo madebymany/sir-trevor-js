@@ -53,7 +53,6 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
     // We use mousedown rather than click as that allows us to keep focus on the contenteditable field.
     Events.delegate(this.el, '.st-format-btn', 'mousedown', this.onFormatButtonClick);
-    Events.delegate(this.el, '.st-format-btn', 'click', (e) => e.preventDefault());
   },
 
   hide: function() {
