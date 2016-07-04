@@ -28,7 +28,7 @@ describe('Format Bar', function() {
     });
   });
 
-  it('should allow formatting of text', function(done) {
+  xit('should allow formatting of text', function(done) {
 
     var testUrl = 'http://www.example.com';
     var expectedHtmlWithoutLink = '<p><b>Bold</b>, <i>Italic</i>, Link</p>';
