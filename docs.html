@@ -11,7 +11,6 @@
     <title>Docs | Sir Trevor JS | Made by Many</title>
     <link href="stylesheets/normalize-6036cb9b.css" media="screen" rel="stylesheet" type="text/css" />
 <link href="stylesheets/all-25a27634.css" media="screen" rel="stylesheet" type="text/css" />
-    <script src="javascripts/modernizr.min-f7bd5ab2.js" type="text/javascript"></script>
   </head>
   <body>
 
@@ -89,7 +88,7 @@
 
     <h1>What is Sir Trevor?</h1>
 
-<p>Sir Trevor provides a means to transform a text input into a rich content editor that&rsquo;s been re-imagined for the web. The content of the editor is stored inside a JSON object, with the structure and the contents of the post serialized inside of it.</p>
+<p>Sir Trevor provides a means to transform a text input into a rich content editor that&rsquo;s been re-imagined for the web. The content of the editor is stored as HTML inside a JSON object, with the structure and the contents of the post serialized inside of it.</p>
 
 <p><a name="1"></a></p>
 
@@ -99,30 +98,41 @@
 
 <h2>Installation</h2>
 
-<p>The easiest way to install Sir Trevor is with <a href="https://github.com/bower/bower">Bower</a>, the front-end package manager from Twitter. If you do use Bower, your <code>bower.json</code> file should look something like this:</p>
+<p>The easier way to install Sir Trevor is with <a href="https://github.com/bower/bower">Bower</a>, the front-end package manager from Twitter. If you do use Bower, your <code>bower.json</code> file should look something like this:</p>
 
-<pre><code>{
+<pre><code class="js">{
   &quot;name&quot;: &quot;your-project&quot;,
   &quot;dependencies&quot;: {
-    &quot;sir-trevor-js&quot;: &quot;0.4.3&quot;
+    &quot;sir-trevor-js&quot;: &quot;0.3.2&quot;
   }
 }
 </code></pre>
 
 <p>Then run <code>bower install</code> on your project to install the necessary dependencies.</p>
 
+<p>We also provide an <a href="https://github.com/npm/npm">npm</a> package</p>
+
+<pre><code>npm install sir-trevor
+</code></pre>
+
 <p>Alternatively, grab the following files and include them in your project:</p>
 
 <ul>
-<li><a href="http://jquery.com/download">jQuery</a></li>
-<li><a href="https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.js">Sir Trevor JS</a></li>
+<li><a href="https://github.com/jashkenas/underscore/blob/master/underscore.js">Underscore.js</a></li>
+<li><a href="https://github.com/madebymany/eventable/blob/master/eventable.js">Eventable</a></li>
+<li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.js">Sir Trevor JS</a></li>
 </ul>
 
-<p>And you&rsquo;ll need the following CSS files too:</p>
+<p>You&rsquo;ll need the following CSS file too:</p>
 
 <ul>
-<li><a href="https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor.css">Sir Trevor</a></li>
-<li><a href="https://github.com/madebymany/sir-trevor-js/blob/master/sir-trevor-icons.css">Sir Trevor Icons</a></li>
+<li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.css">Sir Trevor CSS</a></li>
+</ul>
+
+<p>And the icons file:</p>
+
+<ul>
+<li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor-icons.svg">Sir Trevor Icons</a> <a href="#1-5">Configure icon url</a></li>
 </ul>
 
 <p><a name="1-2"></a></p>
@@ -131,15 +141,19 @@
 
 <p>A Sir Trevor element must be contained inside a form like follows:</p>
 
-<pre><code>&lt;form&gt;
+<pre><code class="html">&lt;form&gt;
   &lt;textarea class=&quot;js-st-instance&quot;&gt;&lt;/textarea&gt;
 &lt;/form&gt;
 </code></pre>
 
 <p>Then to transform this element to a Sir Trevor instance:</p>
 
-<pre><code>&lt;script&gt;
-  new SirTrevor.Editor({ el: $(&#39;.js-st-instance&#39;) });
+<pre><code class="html">&lt;script&gt;
+  var editor = new SirTrevor.Editor({
+    el: document.querySelector(&#39;.js-st-instance&#39;),
+    defaultType: &#39;Text&#39;,
+    iconUrl: &#39;build/sir-trevor-icons.svg&#39;
+  });
 &lt;/script&gt;
 </code></pre>
 
@@ -151,11 +165,11 @@
 
 <p>A typical piece of Sir Trevor JSON looks like this:</p>
 
-<pre><code>{
+<pre><code class="js">{
   &quot;data&quot;: [{
     &quot;type&quot;: &quot;text&quot;,
     &quot;data&quot;: {
-      &quot;text&quot;: &quot;Hello, my name is &amp;lt;b&amp;gt;Sir Trevor&amp;lt;/b&amp;gt;&quot;
+      &quot;text&quot;: &quot;&lt;p&gt;Hello, my name is &lt;b&gt;Sir Trevor&lt;/b&gt;&lt;/p&gt;&quot;
     }
   }]
 }
@@ -163,7 +177,7 @@
 
 <p>Each piece of JSON is made up of an object that contains the <em>type</em> and <em>data</em> for the block.</p>
 
-<p>Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial. You’ll need to remember to transform the markdown to HTML using a library too.</p>
+<p>Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial.</p>
 
 <p>For a server-side example, please see our <a href="http://github.com/madebymany/sir-trevor-rails">Sir Trevor Rails gem</a>. The ideas within this could easily be extrapolated for other languages.</p>
 
@@ -171,12 +185,35 @@
 
 <h2>Retrieving Editor Instances</h2>
 
-<p>You can retrieve <code>SirTrevor.Editor</code> instances using the <code>SirTrevor.getInstance</code> method.</p>
+<p>You can retrieve <code>SirTrevor.Editor</code> instance by assigning the editor to a variable.</p>
 
-<pre><code>SirTrevor.getInstance(); // Gets the first instance
-SirTrevor.getInstance(&#39;st-editor-11&#39;) // Gets editor by it&#39;s identifier
-SirTrevor.getInstance(0) // Gets by it&#39;s position
+<pre><code class="js">var editor = new SirTrevor.Editor({});
 </code></pre>
+
+<p><a name="1-5"></a></p>
+
+<h2>Icons</h2>
+
+<h3>Configuring iconUrl</h3>
+
+<p>Icons are included using an external svg file. This will need a url so that the icons can be found. This is set using default.</p>
+
+<pre><code class="js">SirTrevor.setDefaults({
+  iconUrl: &quot;sir-trevor-icons.svg&quot;
+});
+</code></pre>
+
+<h3>Customising icons</h3>
+
+<p>If you want to customise the icons, or add a custom block you&rsquo;ll want to generate a new icon file. Icons are generated using <a href="https://icomoon.io">Icomoon</a></p>
+
+<p>Source svgs are located here:<br /><br>
+https://github.com/madebymany/sir-trevor-js/tree/master/public/images/icons/src</p>
+
+<p>Icomoon project is located here:<br /><br>
+https://github.com/madebymany/sir-trevor-js/blob/master/public/images/icons/src/icomoon.json</p>
+
+<p>Once you&rsquo;ve made changes to the icomoon project you can generate the svg file. Extract the svg from the downloaded project and add to your project. You&rsquo;ll also need to set the location of <code>iconUrl</code> using the instructions above.</p>
 
     <p><a name="2"></a></p>
 
@@ -188,7 +225,7 @@ SirTrevor.getInstance(0) // Gets by it&#39;s position
 Specify an array of block types to use with the editor.<br>
 <em>Defaults to all block types</em>.</p>
 
-<pre><code>{
+<pre><code class="js">{
   blockTypes: [&quot;Text&quot;, &quot;Tweet&quot;, &quot;Image&quot;]
 }
 </code></pre>
@@ -197,7 +234,7 @@ Specify an array of block types to use with the editor.<br>
 Specify a default block to start the editor with.<br>
 <em>Defaults to no block</em>.</p>
 
-<pre><code>{
+<pre><code class="js">{
   defaultType: &quot;Text&quot;
 }
 </code></pre>
@@ -206,7 +243,7 @@ Specify a default block to start the editor with.<br>
 Set an overall total number of blocks that can be displayed.<br>
 <em>Defaults to 0 (infinite)</em>.</p>
 
-<pre><code>{
+<pre><code class="js">{
   blockLimit: 1
 }
 </code></pre>
@@ -215,7 +252,7 @@ Set an overall total number of blocks that can be displayed.<br>
 Set a limit on the number of blocks that can be displayed by its type.<br>
 <em>Defaults to {}</em>.</p>
 
-<pre><code>{
+<pre><code class="js">{
   blockTypeLimits: {
     &quot;Text&quot;: 2,
     &quot;Image&quot;: 1
@@ -227,7 +264,7 @@ Set a limit on the number of blocks that can be displayed by its type.<br>
 Specify which block types are required for validatation.<br>
 <em>Defaults to none</em>.</p>
 
-<pre><code>{
+<pre><code class="js">{
   required: [&quot;Text&quot;, &quot;Image&quot;]
 }
 </code></pre>
@@ -236,7 +273,7 @@ Specify which block types are required for validatation.<br>
 Call a function once the Editor has rendered.<br>
 <em>Defaults to undefined</em>.</p>
 
-<pre><code>{
+<pre><code class="js">{
   onEditorRender: function() {
     alert(&#39;Do something&#39;);
   }
@@ -249,7 +286,7 @@ Call a function once the Editor has rendered.<br>
 
 <p>You can set specific options for blocks by using the <code>setBlockOptions</code> method.</p>
 
-<pre><code>SirTrevor.setBlockOptions(&#39;Tweet&#39;, {
+<pre><code class="js">SirTrevor.setBlockOptions(&#39;Tweet&#39;, {
   someValue: true
 });
 </code></pre>
@@ -260,7 +297,7 @@ Call a function once the Editor has rendered.<br>
 
 <p>You can also set options <em>globally</em> for all Sir Trevor instances using the <code>setDefaults</code> method.</p>
 
-<pre><code>SirTrevor.setDefaults({
+<pre><code class="js">SirTrevor.setDefaults({
   required: [&quot;Text&quot;]
 });
 </code></pre>
@@ -277,7 +314,7 @@ Call a function once the Editor has rendered.<br>
 
 <p>You can change the Tweet fetch URL as follows:</p>
 
-<pre><code>SirTrevor.setBlockOptions(&quot;Tweet&quot;, {
+<pre><code class="js">SirTrevor.setBlockOptions(&quot;Tweet&quot;, {
   fetchUrl: function(tweetID) {
     return &quot;/tweets/?tweet_id=&quot; + tweetID;
   }
@@ -290,7 +327,7 @@ Call a function once the Editor has rendered.<br>
 
 <p>The image block relies on a server side component to <strong>store images on the server</strong>. By default Sir Trevor will do an AJAX file upload in the background to a <code>/attachments</code> endpoint. You can change this as follows:</p>
 
-<pre><code>SirTrevor.setDefaults({
+<pre><code class="js">SirTrevor.setDefaults({
   uploadUrl: &quot;/images&quot;
 });
 </code></pre>
@@ -303,7 +340,7 @@ Call a function once the Editor has rendered.<br>
 <li><code>attachment[uid]</code> – a unique identifier for this file</li>
 </ul>
 
-<p><a href="setting-up-image-uploading.html">How to set up image uploading</a> with some example implementations.</p>
+<p>There is <a href="https://gist.github.com/cjbell/7091537">an uploader example using Rails + Carrierwave</a>.</p>
 
 <p><a name="3-3"></a></p>
 
@@ -314,7 +351,7 @@ Call a function once the Editor has rendered.<br>
 <p><strong><code>beforeBlockRender</code></strong><br>
 Called immediately when render is called.</p>
 
-<pre><code>SirTrevor.Blocks.Text.beforeBlockRender = function() {
+<pre><code class="js">SirTrevor.Blocks.Text.beforeBlockRender = function() {
   alert(&#39;Do something&#39;);
 };
 </code></pre>
@@ -322,50 +359,57 @@ Called immediately when render is called.</p>
 <p><strong><code>onBlockRender</code></strong><br>
 Called once a block has been rendered.</p>
 
-<pre><code>SirTrevor.Blocks.Text.onBlockRender = function() {
+<pre><code class="js">SirTrevor.Blocks.Text.onBlockRender = function() {
   alert(&#39;Do something&#39;);
 };
 </code></pre>
 
 <p><a name="3-4"></a></p>
 
-<h2>Events</h2>
+<h2>Mediated Events</h2>
 
-<p>We use an event model to trigger actions, which can be hooked into if necessary. The events given off are as follows:</p>
+<p>We use events bound to an individual editor to trigger actions internally. You can use these events to hook into the inner workings of Sir Trevor. </p>
 
 <p><a name="3-4-1"></a></p>
 
-<h3>Block Events</h3>
+<h3>Block events</h3>
 
 <ul>
-<li><code>block:create:new</code></li>
-<li><code>block:create:existing</code></li>
+<li><code>block:create</code></li>
 <li><code>block:remove</code></li>
-<li><code>block:reorder:dropped</code></li>
+<li><code>block:changePosition</code></li>
+<li><code>block:limitReached</code></li>
+<li><code>block:rerender</code></li>
+<li><code>block:replace</code></li>
+<li><code>block:countUpdate</code></li>
 </ul>
 
 <p><a name="3-4-2"></a></p>
 
-<h3>Formatter</h3>
+<h3>Error events</h3>
 
 <ul>
-<li><code>formatter:hide</code></li>
-<li><code>formatter:position</code></li>
+<li><code>errors:add</code></li>
+<li><code>errors:render</code></li>
+<li><code>errors:reset</code></li>
 </ul>
 
 <p><a name="3-4-3"></a></p>
 
-<h3>Upload Events</h3>
+<h3>Formatter events</h3>
 
 <ul>
-<li><code>onUploadStart</code></li>
-<li><code>onUploadStop</code></li>
-<li><code>onError</code></li>
+<li><code>formatter:position</code></li>
+<li><code>formatter:hide</code></li>
 </ul>
 
-<p>You can use these events using the <code>SirTrevor.EventBus</code> as follows:</p>
+<p>You can use access these events using the mediator object on an editor as follows:</p>
 
-<pre><code>SirTrevor.EventBus.on(&#39;block:create:new&#39;, function(){
+<pre><code class="js">var editor = SirTrevor.Editor({
+  el: document.querySelector(&#39;.js-editor&#39;)
+});
+
+editor.mediator.on(&#39;block:create&#39;, function() {
   console.log(arguments);
 });
 </code></pre>
@@ -393,17 +437,41 @@ Called once a block has been rendered.</p>
 <li>Render block UI</li>
 <li>Edit some data</li>
 <li>Submit form</li>
-<li>Block validates</li>
+<li><a href="#4-3">Validate block with validations</a></li>
 <li>Block data is serialized to the block store</li>
 </ol>
 
 <p>The methods associated with doing this are:</p>
 
 <p><strong><code>loadData</code></strong><br>
-Takes the stored block data and presents it to the user.</p>
+Function is called with the JSON block data when updated and allows the block to rerender as required.</p>
+
+<pre><code class="js">loadData(data) {
+  this.el.querySelector(&#39;.js-cite&#39;).value = data.cite;
+}
+</code></pre>
 
 <p><strong><code>setData</code></strong><br>
 Takes a JSON object and stores it against the block.</p>
+
+<pre><code class="js">setData(data)
+</code></pre>
+
+<p><strong><code>getBlockData</code></strong><br>
+Get the current block data as a JSON object</p>
+
+<pre><code class="js">getBlockData() // returns {}
+</code></pre>
+
+<p><strong><code>_serializeData</code></strong><br>
+Override the block data for storage and return a JSON object.</p>
+
+<pre><code class="js">_serializeData() {
+  return {
+    cite: this.el.querySelector(&#39;.js-cite&#39;)
+  };
+}
+</code></pre>
 
 <p><a name="4-2"></a></p>
 
@@ -426,6 +494,12 @@ Gives a way to fetch content remotely through a editor managed queue.</p>
 <p><strong><code>controllable</code></strong><br>
 Provides a second, smaller UI in the lower left block corner to control its contents. Requires the <code>controls</code>-object so be specified in the block configuration (<code>&#39;command-name&#39;: handler</code>).</p>
 
+<p><strong><code>fetchable</code></strong><br>
+Provides ajax functionality for a block. Along with a url you can pass options that will get passed to the Ajax.fetch library.</p>
+
+<p><strong><code>textable</code></strong><br>
+Provides support for the block to be handled as an inline text block. Currently supported by <code>Text</code>, <code>Heading</code> and <code>Quote</code> blocks.</p>
+
 <p>The <strong>droppable, uploadable and pastable</strong> components have the ability to override the default HTML that gets built as the UI. This can easily be done through the <code>upload_options.html</code>, <code>drop_options.html</code> or <code>paste_options.html</code> objects on the block. Each takes a string that is passed to an underscore <code>_.template</code> method.</p>
 
 <p><a name="4-3"></a></p>
@@ -436,20 +510,14 @@ Provides a second, smaller UI in the lower left block corner to control its cont
 
 <p>If you want to create custom validators, just define the method on your block and add it to the <code>validations</code> array on the block. To trigger an error on the block, you add an error to the <code>errors</code> array using the <code>this.setError</code> method.</p>
 
-<pre><code>{
-  ...
+<pre><code class="js">validations: [&#39;myCustomValidator&#39;],
 
-  validations: [&#39;myCustomValidator&#39;],
+myCustomValidator: function() {
+  var someField = this.$(&#39;.field&#39;);
 
-  myCustomValidator: function() {
-    var someField = this.$(&#39;.field&#39;);
-
-    if (someField.val() === &quot;BEER!&quot;) {
-      this.setError(someField, &quot;must not contain beer&quot;);
-    }
+  if (someField.value === &quot;BEER!&quot;) {
+    this.setError(someField, &quot;must not contain beer&quot;);
   }
-
-  ...
 }
 </code></pre>
 
