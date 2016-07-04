@@ -14,7 +14,7 @@
     "tag": "v1.0.5",
     "commit": "099fcf58f95ea5f21bb174bd3a944b71dee81f50"
   },
-  "_source": "git://github.com/madebymany/eventable.git",
+  "_source": "https://github.com/madebymany/eventable.git",
   "_target": "~1.0.1",
   "_originalSource": "Eventable"
 }

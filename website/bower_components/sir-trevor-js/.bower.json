@@ -20,11 +20,11 @@
     "Eventable": "~1.0.1"
   },
   "homepage": "https://github.com/madebymany/sir-trevor-js",
-  "_release": "b0062d6ade",
+  "_release": "f2b0c7361c",
   "_resolution": {
     "type": "branch",
     "branch": "dist",
-    "commit": "b0062d6ade5af3d3cd6b35f18591e35016e2b62a"
+    "commit": "f2b0c7361cac3a6efd97739ededd7b1e06c731dc"
   },
   "_source": "https://github.com/madebymany/sir-trevor-js.git",
   "_target": "dist",
