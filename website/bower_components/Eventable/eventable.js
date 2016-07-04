@@ -1,10 +1,37 @@
-(function() {
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as a module.
+    define('eventable', function() {
+      return (root.Eventable = factory());
+    });
+  } else if (typeof exports !== 'undefined') {
+    // Node. Does not work with strict CommonJS, but only CommonJS-like
+    // enviroments that support module.exports, like Node.
+    module.exports = factory();
+  } else {
+    // Browser globals
+    root.Eventable = factory();
+  }
+}(this, function() {
 
   // Copy and pasted straight out of Backbone 1.0.0
   // We'll try and keep this updated to the latest
 
   var array = [];
   var slice = array.slice;
+
+  function once(func) {
+    var memo, times = 2;
+
+    return function() {
+      if (--times > 0) {
+        memo = func.apply(this, arguments);
+      } else {
+        func = null;
+      }
+      return memo;
+    };
+  }
 
   // Backbone.Events
   // ---------------
@@ -15,7 +42,7 @@
   // succession.
   //
   //     var object = {};
-  //     _.extend(object, Backbone.Events);
+  //     extend(object, Backbone.Events);
   //     object.on('expand', function(){ alert('expanded'); });
   //     object.trigger('expand');
   //
@@ -36,12 +63,12 @@
     once: function(name, callback, context) {
       if (!eventsApi(this, 'once', name, [callback, context]) || !callback) return this;
       var self = this;
-      var once = _.once(function() {
-        self.off(name, once);
+      var func = once(function() {
+        self.off(name, func);
         callback.apply(this, arguments);
       });
-      once._callback = callback;
-      return this.on(name, once, context);
+      func._callback = callback;
+      return this.on(name, func, context);
     },
 
     // Remove one or many callbacks. If `context` is null, removes all
@@ -56,7 +83,7 @@
         return this;
       }
 
-      names = name ? [name] : _.keys(this._events);
+      names = name ? [name] : Object.keys(this._events);
       for (i = 0, l = names.length; i < l; i++) {
         name = names[i];
         if (events = this._events[name]) {
@@ -157,25 +184,24 @@
   // Inversion-of-control versions of `on` and `once`. Tell *this* object to
   // listen to an event in another object ... keeping track of what it's
   // listening to.
-  _.each(listenMethods, function(implementation, method) {
+  function addListenMethod(method, implementation) {
     Eventable[method] = function(obj, name, callback) {
       var listeners = this._listeners || (this._listeners = {});
-      var id = obj._listenerId || (obj._listenerId = _.uniqueId('l'));
+      var id = obj._listenerId || (obj._listenerId = (new Date()).getTime());
       listeners[id] = obj;
       if (typeof name === 'object') callback = this;
       obj[implementation](name, callback, this);
       return this;
     };
-  });
+  }
+
+  addListenMethod('listenTo', 'on');
+  addListenMethod('listenToOnce', 'once');
 
   // Aliases for backwards compatibility.
   Eventable.bind   = Eventable.on;
   Eventable.unbind = Eventable.off;
 
-  if (typeof define !== "undefined" && typeof define === "function" && define.amd) {
-    define( "eventable", [], function () { return Eventable; } );
-  }
+  return Eventable;
 
-  this.Eventable = Eventable;
-
-})();
+}));

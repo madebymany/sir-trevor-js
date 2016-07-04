@@ -1,13 +1,45 @@
 # Changelog
 
-## 0.3.2
+## 0.5.x
+
+### 0.5.0
+
+* Added Scribe for better text formatting rather than custom markdown for better extensibility
+* Multieditable block mixin added for when blocks contain more than 1 formattable textarea
+* Switched build process from Browserify to Webpack
+* Added basic integration tests
+
+## 0.4.x
+
+### 0.4.0
+
+* Refactored each instance to have it's own mediator object
+* Added a new block manager that handles block creation, deletion etc
+* Clean up the block store with more logical names
+* Cleaned up file names to have `-` conventions
+* Simplified the editor store
+
+## 0.3.x
+
+### 0.3.3
+
+* Refactored upload triggers, now handled by Ajaxable mixin
+* Slight change to the `Image` block – no longer sets the button title to 'Please wait...' on upload
+* Escaped `class` names and other minor fixes so including ST doesn't blow up IE 7 / 8
+* Added `toMarkdown` `aggresiveHTMLStrip` default to not strip tags that have whitespace after the opening `<` character (#168)
+* Pass the block to the `block:remove` trigger
+* Add the block ID to all other block triggers
+
+### 0.3.2
 
 * Added new controllable mixin for adding new functionality to blocks (https://github.com/madebymany/sir-trevor-js/pull/118)
 * Removed Source Sans from the CSS file
 * Added a dataType: 'json' to the uploader
 * Added a `getInstance` method to retrieve editor instances
+* Fixed `.st-text-block--heading` class to have `min-height: 0` not `auto`.
+* Added mailto support to the link regex
 
-## 0.3.1
+### 0.3.1
 
 * Localise titles of the tweet & heading blocks
 * Defer the execution of internationalising the delete text, drop text, upload text and list block cite text until Sir Trevor has intialised.
@@ -17,7 +49,7 @@
 * Added a `destroy` and `reinitialize` method for a `SirTrevor.Editor` instance
 * Modified the Video block to allow for more providers to be added.
 
-## 0.3.0
+### 0.3.0
 
 * I18n support (in EN / DE) using the new `i18n.t` helper
 * Support for the I18next library (optional dependency)
