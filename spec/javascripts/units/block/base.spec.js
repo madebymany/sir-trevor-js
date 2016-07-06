@@ -141,4 +141,48 @@ describe("Block", function(){
       });
     });
   });
+
+  describe("_serializeData", function() {
+    it("should serialize elements", function() {
+      block_three.editorHTML = `
+        <div class="st-text-block" contenteditable="true"></div>
+        <input type="text" name="inputtext1" value="inputtext1" />
+        <textarea name="textarea1">textarea1</textarea>
+        <input type="checkbox" name="checkbox1" value="1" checked="checked" />
+        <input type="checkbox" name="checkbox2" value="2" />
+        <input type="checkbox" name="checkbox3" value="3" data-toggle="true" />
+        <input type="checkbox" name="checkbox4" value="4" checked="checked" data-toggle="true" />
+        <input type="radio" name="radio1" value="radio11" data-name="radio1" />
+        <input type="radio" name="radio1" value="radio12" data-name="radio1" checked="checked" />
+        <input type="radio" name="radio2" value="radio21" data-name="radio2" />
+        <input type="radio" name="radio2" value="radio22" data-name="radio2" />
+        <select name="select1">
+          <option>select11</option>
+          <option selected="selected">select12</option>
+        </select>
+        <select name="select2">
+          <option></option>
+          <option>select21</option>
+          <option>select22</option>
+        </select>
+      `;
+      block_three.render();
+
+      var data = {
+        text: '<p><br></p>',
+        format: 'html',
+        inputtext1: 'inputtext1', 
+        textarea1: 'textarea1', 
+        checkbox1: '1', 
+        checkbox2: '',
+        checkbox3: 'off',
+        checkbox4: 'on',
+        radio1: 'radio12', 
+        select1: 'select12',
+        'select2': ''
+      };
+
+      expect(block_three._serializeData()).toEqual(data);
+    });
+  });
 });
