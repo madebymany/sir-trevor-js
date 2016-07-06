@@ -39,7 +39,7 @@ const editor = new SirTrevor.Editor({
 
 ### Full docs
 
-[http://madebymany.github.io/sir-trevor-js/docs.html]()
+[http://madebymany.github.io/sir-trevor-js/docs.html]
 
 ### Plain JS
 
