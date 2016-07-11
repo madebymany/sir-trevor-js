@@ -21,6 +21,38 @@ Generally the flow for a block goes like this:
 5. [Validate block with validations](#4-4)
 6. Block data is serialized to the block store
 
+### 1. Create block
+
+```js
+// Trigger BlockManager to create a block of the type and data required.
+mediator.trigger('block:create', block.type, block.data)
+
+// Create a new block
+var block = new Block(data);
+
+// Render block
+block.render()
+
+// BlockManager.renderBlock then attaches the block to the dom and calls a final function
+block.onBlockRender() // Placeholder function. Could deal with focus.
+```
+
+### 2. Render block
+
+```js
+// Called when a block is first added to the dom or moved.
+block.render()
+
+block.beforeBlockRender() // Placeholder function
+block._initTextBlocks() // Initialise scribe text areas
+block.withMixin() // Load mixins for block
+block.checkAndLoadData() // 
+> block.beforeLoadingData() // Set block as loading, loadData and then set block as ready
+> > block.loadData() // Each block should implement this to populate from data
+block.save() // store current block data to the block store.
+> block.setData()
+```
+
 The methods associated with doing this are:
 
 **`loadData`**
