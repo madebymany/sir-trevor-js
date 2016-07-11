@@ -9,8 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>Docs | Sir Trevor JS | Made by Many</title>
-    <link href="stylesheets/normalize-6036cb9b.css" media="screen" rel="stylesheet" type="text/css" />
-<link href="stylesheets/all-25a27634.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="stylesheets/normalize-6197e73d.css" rel="stylesheet" /><link href="stylesheets/all-39c1d1a9.css" rel="stylesheet" />
   </head>
   <body>
 
@@ -35,6 +34,7 @@
 
   </div>
 </header>
+
 <div class="site-width docs">
   <aside class="docs__sidebar">
     <nav class="docs__navigation">
@@ -452,6 +452,36 @@ editor.mediator.on(&#39;block:create&#39;, function() {
 <li>Block data is serialized to the block store</li>
 </ol>
 
+<h3>1. Create block</h3>
+
+<pre><code class="js">// Trigger BlockManager to create a block of the type and data required.
+mediator.trigger(&#39;block:create&#39;, block.type, block.data)
+
+// Create a new block
+var block = new Block(data);
+
+// Render block
+block.render()
+
+// BlockManager.renderBlock then attaches the block to the dom and calls a final function
+block.onBlockRender() // Placeholder function. Could deal with focus.
+</code></pre>
+
+<h3>2. Render block</h3>
+
+<pre><code class="js">// Called when a block is first added to the dom or moved.
+block.render()
+
+block.beforeBlockRender() // Placeholder function
+block._initTextBlocks() // Initialise scribe text areas
+block.withMixin() // Load mixins for block
+block.checkAndLoadData() // 
+&gt; block.beforeLoadingData() // Set block as loading, loadData and then set block as ready
+&gt; &gt; block.loadData() // Each block should implement this to populate from data
+block.save() // store current block data to the block store.
+&gt; block.setData()
+</code></pre>
+
 <p>The methods associated with doing this are:</p>
 
 <p><strong><code>loadData</code></strong><br>
@@ -596,7 +626,7 @@ myCustomValidator: function() {
 </footer>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="javascripts/all-91acbb01.js" type="text/javascript"></script>
+    <script src="javascripts/all-723d5b4a.js"></script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
