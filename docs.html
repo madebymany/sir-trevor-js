@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="/images/favicon.png">
     <title>Docs | Sir Trevor JS | Made by Many</title>
-    <link href="stylesheets/normalize-6197e73d.css" rel="stylesheet" /><link href="stylesheets/all-39c1d1a9.css" rel="stylesheet" />
+    <link href="stylesheets/normalize-6197e73d.css" rel="stylesheet" /><link href="stylesheets/all-a86e2181.css" rel="stylesheet" />
   </head>
   <body>
 
@@ -101,24 +101,20 @@
 <h3>npm</h3>
 
 <p><a href="https://github.com/npm/npm">npm</a> package</p>
-
-<pre><code>npm install --save sir-trevor
+<pre class="highlight plaintext"><code>npm install --save sir-trevor
 </code></pre>
-
 <h3>Bower</h3>
 
 <p><a href="https://github.com/bower/bower">Bower</a> package.</p>
 
 <p>Your <code>bower.json</code> file should look something like this:</p>
-
-<pre><code class="js">{
-  &quot;name&quot;: &quot;your-project&quot;,
-  &quot;dependencies&quot;: {
-    &quot;sir-trevor-js&quot;: &quot;0.6.0&quot;
-  }
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"your-project"</span><span class="p">,</span>
+  <span class="s2">"dependencies"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"sir-trevor-js"</span><span class="p">:</span> <span class="s2">"0.6.0"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
-
 <p>Then run <code>bower install</code> on your project to install the necessary dependencies.</p>
 
 <p>Alternatively, grab the following files and include them in your project:</p>
@@ -144,23 +140,19 @@
 <h2>Initialising</h2>
 
 <p>A Sir Trevor element must be contained inside a form like follows:</p>
-
-<pre><code class="html">&lt;form&gt;
-  &lt;textarea class=&quot;js-st-instance&quot;&gt;&lt;/textarea&gt;
-&lt;/form&gt;
+<pre class="highlight html"><code><span class="nt">&lt;form&gt;</span>
+  <span class="nt">&lt;textarea</span> <span class="na">class=</span><span class="s">"js-st-instance"</span><span class="nt">&gt;&lt;/textarea&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
 </code></pre>
-
 <p>Then to transform this element to a Sir Trevor instance:</p>
-
-<pre><code class="html">&lt;script&gt;
-  var editor = new SirTrevor.Editor({
-    el: document.querySelector(&#39;.js-st-instance&#39;),
-    defaultType: &#39;Text&#39;,
-    iconUrl: &#39;build/sir-trevor-icons.svg&#39;
-  });
-&lt;/script&gt;
+<pre class="highlight html"><code><span class="nt">&lt;script&gt;</span>
+  <span class="kd">var</span> <span class="nx">editor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Editor</span><span class="p">({</span>
+    <span class="na">el</span><span class="p">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'.js-st-instance'</span><span class="p">),</span>
+    <span class="na">defaultType</span><span class="p">:</span> <span class="s1">'Text'</span><span class="p">,</span>
+    <span class="na">iconUrl</span><span class="p">:</span> <span class="s1">'build/sir-trevor-icons.svg'</span>
+  <span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span>
 </code></pre>
-
 <p>You&rsquo;ll also need to <a href="#1-5">configure icon url</a></p>
 
 <p><a name="1-3"></a></p>
@@ -170,18 +162,16 @@
 <p>Sir Trevor stores structured JSON that describes your document.</p>
 
 <p>A typical piece of Sir Trevor JSON looks like this:</p>
-
-<pre><code class="js">{
-  &quot;data&quot;: [{
-    &quot;type&quot;: &quot;text&quot;,
-    &quot;data&quot;: {
-      &quot;text&quot;: &quot;&lt;p&gt;Hello, my name is &lt;b&gt;Sir Trevor&lt;/b&gt;&lt;/p&gt;&quot;,
-      &quot;format&quot;: &quot;html&quot;
-    }
-  }]
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="s2">"data"</span><span class="p">:</span> <span class="p">[{</span>
+    <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text"</span><span class="p">,</span>
+    <span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"text"</span><span class="p">:</span> <span class="s2">"&lt;p&gt;Hello, my name is &lt;b&gt;Sir Trevor&lt;/b&gt;&lt;/p&gt;"</span><span class="p">,</span>
+      <span class="s2">"format"</span><span class="p">:</span> <span class="s2">"html"</span>
+    <span class="p">}</span>
+  <span class="p">}]</span>
+<span class="p">}</span>
 </code></pre>
-
 <p>Each piece of JSON is made up of an object that contains the <em>type</em> and <em>data</em> for the block.</p>
 
 <p>Generally, when rendering Sir Trevor on the server side you should map the types of the blocks to partials that define the presentation of that block, then all you have to do is loop over the JSON data and render the correct partial.</p>
@@ -193,10 +183,8 @@
 <h2>Retrieving Editor Instances</h2>
 
 <p>You can retrieve <code>SirTrevor.Editor</code> instance by assigning the editor to a variable.</p>
-
-<pre><code class="js">var editor = new SirTrevor.Editor({});
+<pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">editor</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Editor</span><span class="p">({});</span>
 </code></pre>
-
 <p><a name="1-5"></a></p>
 
 <h2>Icons</h2>
@@ -204,18 +192,14 @@
 <h3>Configuring iconUrl</h3>
 
 <p>Icons are included using an external svg file. This will need a url so that the icons can be found. This is set using default.</p>
-
-<pre><code class="js">SirTrevor.setDefaults({
-  iconUrl: &quot;sir-trevor-icons.svg&quot;
-});
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+  <span class="na">iconUrl</span><span class="p">:</span> <span class="s2">"sir-trevor-icons.svg"</span>
+<span class="p">});</span>
 </code></pre>
-
 <p>If you are using Sir Trevor in IE or a browser that doesn&rsquo;t support svg fragments showing it could be because your browser doesn&rsquo;t include svg sprite support.</p>
-
-<pre><code class="html">&lt;script src=&quot;../node_modules/svg4everybody/dist/svg4everybody.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
-&lt;script&gt;svg4everybody();&lt;/script&gt;
+<pre class="highlight html"><code><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"../node_modules/svg4everybody/dist/svg4everybody.js"</span> <span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script&gt;</span><span class="nx">svg4everybody</span><span class="p">();</span><span class="nt">&lt;/script&gt;</span>
 </code></pre>
-
 <h3>Customising icons</h3>
 
 <p>If you want to customise the icons, or add a custom block you&rsquo;ll want to generate a new icon file. Icons are generated using <a href="https://icomoon.io">Icomoon</a></p>
@@ -235,84 +219,68 @@
 <p><strong><code>blockTypes</code></strong><br>
 Specify an array of block types to use with the editor.<br>
 <em>Defaults to all block types</em>.</p>
-
-<pre><code class="js">{
-  blockTypes: [&quot;Text&quot;, &quot;Tweet&quot;, &quot;Image&quot;]
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">blockTypes</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Text"</span><span class="p">,</span> <span class="s2">"Tweet"</span><span class="p">,</span> <span class="s2">"Image"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><strong><code>defaultType</code></strong><br>
 Specify a default block to start the editor with.<br>
 <em>Defaults to no block</em>.</p>
-
-<pre><code class="js">{
-  defaultType: &quot;Text&quot;
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">defaultType</span><span class="p">:</span> <span class="s2">"Text"</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><strong><code>blockLimit</code></strong><br>
 Set an overall total number of blocks that can be displayed.<br>
 <em>Defaults to 0 (infinite)</em>.</p>
-
-<pre><code class="js">{
-  blockLimit: 1
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">blockLimit</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><strong><code>blockTypeLimits</code></strong><br>
 Set a limit on the number of blocks that can be displayed by its type.<br>
 <em>Defaults to {}</em>.</p>
-
-<pre><code class="js">{
-  blockTypeLimits: {
-    &quot;Text&quot;: 2,
-    &quot;Image&quot;: 1
-  }
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">blockTypeLimits</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">"Text"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"Image"</span><span class="p">:</span> <span class="mi">1</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><strong><code>required</code></strong><br>
 Specify which block types are required for validatation.<br>
 <em>Defaults to none</em>.</p>
-
-<pre><code class="js">{
-  required: [&quot;Text&quot;, &quot;Image&quot;]
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">required</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Text"</span><span class="p">,</span> <span class="s2">"Image"</span><span class="p">]</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><strong><code>onEditorRender</code></strong><br>
 Call a function once the Editor has rendered.<br>
 <em>Defaults to undefined</em>.</p>
-
-<pre><code class="js">{
-  onEditorRender: function() {
-    alert(&#39;Do something&#39;);
-  }
-}
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">onEditorRender</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">alert</span><span class="p">(</span><span class="s1">'Do something'</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><a name="2-1"></a></p>
 
 <h2>Block Options</h2>
 
 <p>You can set specific options for blocks by using the <code>setBlockOptions</code> method.</p>
-
-<pre><code class="js">SirTrevor.setBlockOptions(&#39;Tweet&#39;, {
-  someValue: true
-});
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">setBlockOptions</span><span class="p">(</span><span class="s1">'Tweet'</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">someValue</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">});</span>
 </code></pre>
-
 <p><a name="2-2"></a></p>
 
 <h2>Global Options</h2>
 
 <p>You can also set options <em>globally</em> for all Sir Trevor instances using the <code>setDefaults</code> method.</p>
-
-<pre><code class="js">SirTrevor.setDefaults({
-  required: [&quot;Text&quot;]
-});
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+  <span class="na">required</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Text"</span><span class="p">]</span>
+<span class="p">});</span>
 </code></pre>
-
     <p><a name="3"></a></p>
 
 <h1>Blocks</h1>
@@ -324,25 +292,21 @@ Call a function once the Editor has rendered.<br>
 <p>To use the Tweet block you&rsquo;ll need some <strong>server side</strong> code. This will need to lookup a Tweet ID and return the tweet in JSON via the Twitter API. Unfortunately, the only way to do this via the API is with an authenticated call.</p>
 
 <p>You can change the Tweet fetch URL as follows:</p>
-
-<pre><code class="js">SirTrevor.setBlockOptions(&quot;Tweet&quot;, {
-  fetchUrl: function(tweetID) {
-    return &quot;/tweets/?tweet_id=&quot; + tweetID;
-  }
-});
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">setBlockOptions</span><span class="p">(</span><span class="s2">"Tweet"</span><span class="p">,</span> <span class="p">{</span>
+  <span class="na">fetchUrl</span><span class="p">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">tweetID</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">"/tweets/?tweet_id="</span> <span class="o">+</span> <span class="nx">tweetID</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
 </code></pre>
-
 <p><a name="3-2"></a></p>
 
 <h2>Image Block</h2>
 
 <p>The image block relies on a server side component to <strong>store images on the server</strong>. By default Sir Trevor will do an AJAX file upload in the background to a <code>/attachments</code> endpoint. You can change this as follows:</p>
-
-<pre><code class="js">SirTrevor.setDefaults({
-  uploadUrl: &quot;/images&quot;
-});
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+  <span class="na">uploadUrl</span><span class="p">:</span> <span class="s2">"/images"</span>
+<span class="p">});</span>
 </code></pre>
-
 <p>The uploader posts an <code>attachment</code> hash that has three properties:</p>
 
 <ul>
@@ -361,20 +325,16 @@ Call a function once the Editor has rendered.<br>
 
 <p><strong><code>beforeBlockRender</code></strong><br>
 Called immediately when render is called.</p>
-
-<pre><code class="js">SirTrevor.Blocks.Text.beforeBlockRender = function() {
-  alert(&#39;Do something&#39;);
-};
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Blocks</span><span class="p">.</span><span class="nx">Text</span><span class="p">.</span><span class="nx">beforeBlockRender</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">alert</span><span class="p">(</span><span class="s1">'Do something'</span><span class="p">);</span>
+<span class="p">};</span>
 </code></pre>
-
 <p><strong><code>onBlockRender</code></strong><br>
 Called once a block has been rendered.</p>
-
-<pre><code class="js">SirTrevor.Blocks.Text.onBlockRender = function() {
-  alert(&#39;Do something&#39;);
-};
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Blocks</span><span class="p">.</span><span class="nx">Text</span><span class="p">.</span><span class="nx">onBlockRender</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">alert</span><span class="p">(</span><span class="s1">'Do something'</span><span class="p">);</span>
+<span class="p">};</span>
 </code></pre>
-
 <p><a name="3-4"></a></p>
 
 <h2>Mediated Events</h2>
@@ -415,16 +375,14 @@ Called once a block has been rendered.</p>
 </ul>
 
 <p>You can use access these events using the mediator object on an editor as follows:</p>
+<pre class="highlight javascript"><code><span class="kd">var</span> <span class="nx">editor</span> <span class="o">=</span> <span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Editor</span><span class="p">({</span>
+  <span class="na">el</span><span class="p">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'.js-editor'</span><span class="p">)</span>
+<span class="p">});</span>
 
-<pre><code class="js">var editor = SirTrevor.Editor({
-  el: document.querySelector(&#39;.js-editor&#39;)
-});
-
-editor.mediator.on(&#39;block:create&#39;, function() {
-  console.log(arguments);
-});
+<span class="nx">editor</span><span class="p">.</span><span class="nx">mediator</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">'block:create'</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">arguments</span><span class="p">);</span>
+<span class="p">});</span>
 </code></pre>
-
     <p><a name="4"></a></p>
 
 <h1>Custom Blocks</h1>
@@ -453,113 +411,99 @@ editor.mediator.on(&#39;block:create&#39;, function() {
 </ol>
 
 <h3>1. Create block</h3>
+<pre class="highlight javascript"><code><span class="c1">// Trigger BlockManager to create a block of the type and data required.</span>
+<span class="nx">mediator</span><span class="p">.</span><span class="nx">trigger</span><span class="p">(</span><span class="s1">'block:create'</span><span class="p">,</span> <span class="nx">block</span><span class="p">.</span><span class="nx">type</span><span class="p">,</span> <span class="nx">block</span><span class="p">.</span><span class="nx">data</span><span class="p">)</span>
 
-<pre><code class="js">// Trigger BlockManager to create a block of the type and data required.
-mediator.trigger(&#39;block:create&#39;, block.type, block.data)
+<span class="c1">// Create a new block</span>
+<span class="kd">var</span> <span class="nx">block</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Block</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
 
-// Create a new block
-var block = new Block(data);
+<span class="c1">// Render block</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
 
-// Render block
-block.render()
-
-// BlockManager.renderBlock then attaches the block to the dom and calls a final function
-block.onBlockRender() // Placeholder function. Could deal with focus.
+<span class="c1">// BlockManager.renderBlock then attaches the block to the dom and calls a final function</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">onBlockRender</span><span class="p">()</span> <span class="c1">// Placeholder function. Could deal with focus.</span>
 </code></pre>
-
 <h3>2. Render block</h3>
+<pre class="highlight javascript"><code><span class="c1">// Called when a block is first added to the dom or moved.</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
 
-<pre><code class="js">// Called when a block is first added to the dom or moved.
-block.render()
-
-block.beforeBlockRender() // Placeholder function
-block._initTextBlocks() // Initialise scribe text areas
-block.withMixin() // Load mixins for block
-block.checkAndLoadData() // 
-&gt; block.beforeLoadingData() // Set block as loading, loadData and then set block as ready
-&gt; &gt; block.loadData() // Each block should implement this to populate from data
-block.save() // store current block data to the block store.
-&gt; block.setData()
+<span class="nx">block</span><span class="p">.</span><span class="nx">beforeBlockRender</span><span class="p">()</span> <span class="c1">// Placeholder function</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">_initTextBlocks</span><span class="p">()</span> <span class="c1">// Initialise scribe text areas</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">withMixin</span><span class="p">()</span> <span class="c1">// Load mixins for block</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">checkAndLoadData</span><span class="p">()</span> <span class="c1">// </span>
+<span class="o">&gt;</span> <span class="nx">block</span><span class="p">.</span><span class="nx">beforeLoadingData</span><span class="p">()</span> <span class="c1">// Set block as loading, loadData and then set block as ready</span>
+<span class="o">&gt;</span> <span class="o">&gt;</span> <span class="nx">block</span><span class="p">.</span><span class="nx">loadData</span><span class="p">()</span> <span class="c1">// Each block should implement this to populate from data</span>
+<span class="nx">block</span><span class="p">.</span><span class="nx">save</span><span class="p">()</span> <span class="c1">// store current block data to the block store.</span>
+<span class="o">&gt;</span> <span class="nx">block</span><span class="p">.</span><span class="nx">setData</span><span class="p">()</span>
 </code></pre>
-
 <p>The methods associated with doing this are:</p>
 
 <p><strong><code>loadData</code></strong><br>
 Function is called with the JSON block data when updated and allows the block to rerender as required.</p>
-
-<pre><code class="js">loadData(data) {
-  this.el.querySelector(&#39;.js-cite&#39;).value = data.cite;
-}
+<pre class="highlight javascript"><code><span class="nx">loadData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'.js-cite'</span><span class="p">).</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">cite</span><span class="p">;</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><strong><code>setData</code></strong><br>
 Takes a JSON object and stores it against the block.</p>
-
-<pre><code class="js">setData(data)
+<pre class="highlight javascript"><code><span class="nx">setData</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
 </code></pre>
-
 <p><strong><code>getBlockData</code></strong><br>
 Get the current block data as a JSON object</p>
-
-<pre><code class="js">getBlockData() // returns {}
+<pre class="highlight javascript"><code><span class="nx">getBlockData</span><span class="p">()</span> <span class="c1">// returns {}</span>
 </code></pre>
-
 <p><strong><code>_serializeData</code></strong><br>
 Override the block data for storage and return a JSON object.</p>
-
-<pre><code class="js">_serializeData() {
-  return {
-    cite: this.el.querySelector(&#39;.js-cite&#39;)
-  };
-}
+<pre class="highlight javascript"><code><span class="nx">_serializeData</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">cite</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">el</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="s1">'.js-cite'</span><span class="p">)</span>
+  <span class="p">};</span>
+<span class="p">}</span>
 </code></pre>
-
 <p><a name="4-2"></a></p>
 
 <h2>Render Block UI</h2>
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Blocks</span><span class="p">.</span><span class="nx">ComplexType</span> <span class="o">=</span> <span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">Block</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+  <span class="na">type</span><span class="p">:</span> <span class="s2">"complex_type"</span><span class="p">,</span>
 
-<pre><code class="js">SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
-  type: &quot;complex_type&quot;,
+  <span class="c1">// Custom html that is shown when a block is being edited.</span>
 
-  // Custom html that is shown when a block is being edited.
-
-  editorHTML: `
+  <span class="na">editorHTML</span><span class="p">:</span> <span class="s2">`
     &lt;div&gt;
       // Add a scribe controlled text field
       // Note: Only possible to have 1 per block at present
-      &lt;div class=&quot;st-text-block&quot; contenteditable=&quot;true&quot;&gt;&lt;/div&gt;
+      &lt;div class="st-text-block" contenteditable="true"&gt;&lt;/div&gt;
 
       // Add a simple input field
-      &lt;input type=&quot;text&quot; name=&quot;inputtext1&quot; value=&quot;inputtext1&quot; /&gt;
+      &lt;input type="text" name="inputtext1" value="inputtext1" /&gt;
 
       // Add a simple text area
-      &lt;textarea name=&quot;textarea1&quot;&gt;textarea1&lt;/textarea&gt;
+      &lt;textarea name="textarea1"&gt;textarea1&lt;/textarea&gt;
 
       // Add a checkbox
-      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox1&quot; value=&quot;1&quot; checked=&quot;checked&quot; /&gt;
-      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox2&quot; value=&quot;2&quot; /&gt;
+      &lt;input type="checkbox" name="checkbox1" value="1" checked="checked" /&gt;
+      &lt;input type="checkbox" name="checkbox2" value="2" /&gt;
 
-      // Add a checkbox which toggles `on` &amp; `off` values
-      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox3&quot; value=&quot;3&quot; data-toggle=&quot;true&quot; /&gt;
-      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox4&quot; value=&quot;4&quot; checked=&quot;checked&quot; data-toggle=&quot;true&quot; /&gt;
+      // Add a checkbox which toggles `</span><span class="nx">on</span><span class="s2">` &amp; `</span><span class="nx">off</span><span class="s2">` values
+      &lt;input type="checkbox" name="checkbox3" value="3" data-toggle="true" /&gt;
+      &lt;input type="checkbox" name="checkbox4" value="4" checked="checked" data-toggle="true" /&gt;
 
-      // Add radio buttons. `name` will need to be defined per block
-      // `data-name` is used as an override for the data key to be saved
-      &lt;input type=&quot;radio&quot; name=&quot;block1-radio1&quot; value=&quot;radio11&quot; data-name=&quot;radio1&quot; /&gt;
-      &lt;input type=&quot;radio&quot; name=&quot;block1-radio1&quot; value=&quot;radio12&quot; data-name=&quot;radio1&quot; checked=&quot;checked&quot; /&gt;
-      &lt;input type=&quot;radio&quot; name=&quot;block1-radio2&quot; value=&quot;radio21&quot; data-name=&quot;radio2&quot; /&gt;
-      &lt;input type=&quot;radio&quot; name=&quot;block1-radio2&quot; value=&quot;radio22&quot; data-name=&quot;radio2&quot; /&gt;
+      // Add radio buttons. `</span><span class="nx">name</span><span class="s2">` will need to be defined per block
+      // `</span><span class="nx">data</span><span class="o">-</span><span class="nx">name</span><span class="s2">` is used as an override for the data key to be saved
+      &lt;input type="radio" name="block1-radio1" value="radio11" data-name="radio1" /&gt;
+      &lt;input type="radio" name="block1-radio1" value="radio12" data-name="radio1" checked="checked" /&gt;
+      &lt;input type="radio" name="block1-radio2" value="radio21" data-name="radio2" /&gt;
+      &lt;input type="radio" name="block1-radio2" value="radio22" data-name="radio2" /&gt;
 
       // Add select boxes
-      &lt;select name=&quot;select1&quot;&gt;
+      &lt;select name="select1"&gt;
         &lt;option&gt;select11&lt;/option&gt;
-        &lt;option selected=&quot;selected&quot;&gt;select12&lt;/option&gt;
+        &lt;option selected="selected"&gt;select12&lt;/option&gt;
       &lt;/select&gt;
     &lt;/div&gt;
-  `;
-});
+  `</span><span class="p">;</span>
+<span class="p">});</span>
 </code></pre>
-
 <p><a name="4-3"></a></p>
 
 <h2>Mixins</h2>
@@ -596,18 +540,16 @@ Provides support for the block to be handled as an inline text block. Currently 
 <p>There are two types of validations with Sir Trevor, required fields and custom validators. To add a field in your block as required, simply add the <code>st-required</code> class to it.</p>
 
 <p>If you want to create custom validators, just define the method on your block and add it to the <code>validations</code> array on the block. To trigger an error on the block, you add an error to the <code>errors</code> array using the <code>this.setError</code> method.</p>
+<pre class="highlight javascript"><code><span class="nx">validations</span><span class="p">:</span> <span class="p">[</span><span class="s1">'myCustomValidator'</span><span class="p">],</span>
 
-<pre><code class="js">validations: [&#39;myCustomValidator&#39;],
+<span class="nx">myCustomValidator</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">someField</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span><span class="s1">'.field'</span><span class="p">);</span>
 
-myCustomValidator: function() {
-  var someField = this.$(&#39;.field&#39;);
-
-  if (someField.value === &quot;BEER!&quot;) {
-    this.setError(someField, &quot;must not contain beer&quot;);
-  }
-}
+  <span class="k">if</span> <span class="p">(</span><span class="nx">someField</span><span class="p">.</span><span class="nx">value</span> <span class="o">===</span> <span class="s2">"BEER!"</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">setError</span><span class="p">(</span><span class="nx">someField</span><span class="p">,</span> <span class="s2">"must not contain beer"</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
-
   </section>
 </div>
 
