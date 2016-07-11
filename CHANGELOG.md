@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.x
+
+### 0.6.0
+
+* New interface
+
 ## 0.5.x
 
 ### 0.5.0

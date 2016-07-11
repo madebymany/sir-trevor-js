@@ -13,9 +13,13 @@ Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chr
 
 ### Quick start
 
+The recomended way to install Sir Trevor in your project is using npm. This will install all the files required in the `build` directory for the module.
+
 ```
 npm install sir-trevor
 ```
+
+Note: Sir Trevor is distributed combined with it's dependencies. If you wish to modify Sir Trevor you will want to clone the repository and use the [Compiling instructions](#compiling) below.
 
 HTML
 
@@ -120,10 +124,11 @@ matrix:
   - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.10'
   - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
 
-## Build docs
+## Building gh-pages docs
 
 ```
 cd website
+bower install
 bundle exec rake publish PROJECT_ROOT=./ ALLOW_DIRTY=true
 ```
 
