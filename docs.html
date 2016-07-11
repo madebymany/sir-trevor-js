@@ -103,7 +103,7 @@
 <pre><code class="js">{
   &quot;name&quot;: &quot;your-project&quot;,
   &quot;dependencies&quot;: {
-    &quot;sir-trevor-js&quot;: &quot;0.3.2&quot;
+    &quot;sir-trevor-js&quot;: &quot;0.6.0&quot;
   }
 }
 </code></pre>
@@ -118,7 +118,6 @@
 <p>Alternatively, grab the following files and include them in your project:</p>
 
 <ul>
-<li><a href="https://github.com/jashkenas/underscore/blob/master/underscore.js">Underscore.js</a></li>
 <li><a href="https://github.com/madebymany/eventable/blob/master/eventable.js">Eventable</a></li>
 <li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.js">Sir Trevor JS</a></li>
 </ul>
@@ -169,7 +168,8 @@
   &quot;data&quot;: [{
     &quot;type&quot;: &quot;text&quot;,
     &quot;data&quot;: {
-      &quot;text&quot;: &quot;&lt;p&gt;Hello, my name is &lt;b&gt;Sir Trevor&lt;/b&gt;&lt;/p&gt;&quot;
+      &quot;text&quot;: &quot;&lt;p&gt;Hello, my name is &lt;b&gt;Sir Trevor&lt;/b&gt;&lt;/p&gt;&quot;,
+      &quot;format&quot;: &quot;html&quot;
     }
   }]
 }
@@ -203,15 +203,19 @@
 });
 </code></pre>
 
+<p>If you are using Sir Trevor in IE or a browser that doesn&rsquo;t support svg fragments showing it could be because your browser doesn&rsquo;t include svg sprite support.</p>
+
+<pre><code class="html">&lt;script src=&quot;../node_modules/svg4everybody/dist/svg4everybody.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script&gt;svg4everybody();&lt;/script&gt;
+</code></pre>
+
 <h3>Customising icons</h3>
 
 <p>If you want to customise the icons, or add a custom block you&rsquo;ll want to generate a new icon file. Icons are generated using <a href="https://icomoon.io">Icomoon</a></p>
 
-<p>Source svgs are located here:<br /><br>
-https://github.com/madebymany/sir-trevor-js/tree/master/public/images/icons/src</p>
+<p><a href="https://github.com/madebymany/sir-trevor-js/tree/master/public/images/icons/src">Source svgs</a></p>
 
-<p>Icomoon project is located here:<br /><br>
-https://github.com/madebymany/sir-trevor-js/blob/master/public/images/icons/src/icomoon.json</p>
+<p><a href="https://github.com/madebymany/sir-trevor-js/blob/master/public/images/icons/src/icomoon.json">Icomoon project</a></p>
 
 <p>Once you&rsquo;ve made changes to the icomoon project you can generate the svg file. Extract the svg from the downloaded project and add to your project. You&rsquo;ll also need to set the location of <code>iconUrl</code> using the instructions above.</p>
 
