@@ -57,6 +57,8 @@ after_configuration do
   sprockets.append_path File.join "#{root}", @bower_config["directory"]
 end
 
+activate :rouge_syntax
+
 set :markdown_engine, :redcarpet
 set :markdown,
     :hard_wrap => true,
@@ -70,6 +72,7 @@ configure :build do
   activate :minify_javascript
   activate :asset_hash
   activate :relative_assets
+  activate :rouge_syntax
   
   # Or use a different image path
   # set :http_path, "/Content/images/"
