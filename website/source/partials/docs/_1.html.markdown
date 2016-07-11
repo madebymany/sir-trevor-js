@@ -14,7 +14,7 @@ The easier way to install Sir Trevor is with [Bower](https://github.com/bower/bo
 {
   "name": "your-project",
   "dependencies": {
-    "sir-trevor-js": "0.3.2"
+    "sir-trevor-js": "0.6.0"
   }
 }
 ```
@@ -29,7 +29,6 @@ npm install sir-trevor
 
 Alternatively, grab the following files and include them in your project:
 
-  * [Underscore.js](https://github.com/jashkenas/underscore/blob/master/underscore.js)
   * [Eventable](https://github.com/madebymany/eventable/blob/master/eventable.js)
   * [Sir Trevor JS](https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.js)
 
@@ -76,7 +75,8 @@ A typical piece of Sir Trevor JSON looks like this:
   "data": [{
     "type": "text",
     "data": {
-      "text": "<p>Hello, my name is <b>Sir Trevor</b></p>"
+      "text": "<p>Hello, my name is <b>Sir Trevor</b></p>",
+      "format": "html"
     }
   }]
 }
@@ -110,14 +110,19 @@ SirTrevor.setDefaults({
 });
 ```
 
+If you are using Sir Trevor in IE or a browser that doesn't support svg fragments showing it could be because your browser doesn't include svg sprite support.
+
+```html
+<script src="../node_modules/svg4everybody/dist/svg4everybody.js" type="text/javascript" charset="utf-8"></script>
+<script>svg4everybody();</script>
+```
+
 ### Customising icons
 
 If you want to customise the icons, or add a custom block you'll want to generate a new icon file. Icons are generated using [Icomoon](https://icomoon.io)
 
-Source svgs are located here:<br />
-https://github.com/madebymany/sir-trevor-js/tree/master/public/images/icons/src
+[Source svgs](https://github.com/madebymany/sir-trevor-js/tree/master/public/images/icons/src)
 
-Icomoon project is located here:<br />
-https://github.com/madebymany/sir-trevor-js/blob/master/public/images/icons/src/icomoon.json
+[Icomoon project](https://github.com/madebymany/sir-trevor-js/blob/master/public/images/icons/src/icomoon.json)
 
 Once you've made changes to the icomoon project you can generate the svg file. Extract the svg from the downloaded project and add to your project. You'll also need to set the location of `iconUrl` using the instructions above.
