@@ -153,6 +153,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
    //Generic _serializeData implementation to serialize the block into a plain object.
    //Can be overwritten, although hopefully this will cover most situations.
    //If you want to get the data of your block use block.getBlockData()
+
+   // jshint maxdepth:4
   _serializeData: function() {
     utils.log("toData for " + this.blockID);
 
@@ -171,10 +173,40 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       'select:not([class="st-paste-block"])',
       'button:not([class="st-paste-block"])'
     ].join(",");
+
     if (this.$(matcher).length > 0) {
       Array.prototype.forEach.call(this.$('input, textarea, select, button'), function(input) {
-        if (input.getAttribute('name')) {
-          data[input.getAttribute('name')] = input.value;
+
+        // Reference elements by their `name` attribute. For elements such as radio buttons 
+        // which require a unique reference per group of elements a `data-name` attribute can
+        // be used to provide the same `name` per block.
+
+        var name = input.getAttribute('data-name') || input.getAttribute('name');
+
+        if (name) {
+          if (input.getAttribute('type') === 'number') {
+            data[name] = parseInt(input.value);
+          }
+          else if (input.getAttribute('type') === 'checkbox') {
+            var value = "";
+            if (input.getAttribute('data-toggle')) {
+              value = "off";
+              if (input.checked === true) {
+                value = "on";
+              }
+            } else if (input.checked === true) {
+              value = input.value;
+            }
+            data[name] = value;
+          }
+          else if (input.getAttribute('type') === 'radio') {
+            if (input.checked === true) {
+              data[name] = input.value;
+            }
+          }
+          else {
+            data[name] = input.value;
+          }
         }
       });
     }
