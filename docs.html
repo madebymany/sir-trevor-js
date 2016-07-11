@@ -98,7 +98,18 @@
 
 <h2>Installation</h2>
 
-<p>The easier way to install Sir Trevor is with <a href="https://github.com/bower/bower">Bower</a>, the front-end package manager from Twitter. If you do use Bower, your <code>bower.json</code> file should look something like this:</p>
+<h3>npm</h3>
+
+<p><a href="https://github.com/npm/npm">npm</a> package</p>
+
+<pre><code>npm install --save sir-trevor
+</code></pre>
+
+<h3>Bower</h3>
+
+<p><a href="https://github.com/bower/bower">Bower</a> package.</p>
+
+<p>Your <code>bower.json</code> file should look something like this:</p>
 
 <pre><code class="js">{
   &quot;name&quot;: &quot;your-project&quot;,
@@ -110,15 +121,9 @@
 
 <p>Then run <code>bower install</code> on your project to install the necessary dependencies.</p>
 
-<p>We also provide an <a href="https://github.com/npm/npm">npm</a> package</p>
-
-<pre><code>npm install sir-trevor
-</code></pre>
-
 <p>Alternatively, grab the following files and include them in your project:</p>
 
 <ul>
-<li><a href="https://github.com/madebymany/eventable/blob/master/eventable.js">Eventable</a></li>
 <li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor.js">Sir Trevor JS</a></li>
 </ul>
 
@@ -131,7 +136,7 @@
 <p>And the icons file:</p>
 
 <ul>
-<li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor-icons.svg">Sir Trevor Icons</a> <a href="#1-5">Configure icon url</a></li>
+<li><a href="https://github.com/madebymany/sir-trevor-js/blob/dist/build/sir-trevor-icons.svg">Sir Trevor Icons</a></li>
 </ul>
 
 <p><a name="1-2"></a></p>
@@ -155,6 +160,8 @@
   });
 &lt;/script&gt;
 </code></pre>
+
+<p>You&rsquo;ll also need to <a href="#1-5">configure icon url</a></p>
 
 <p><a name="1-3"></a></p>
 
@@ -441,7 +448,7 @@ editor.mediator.on(&#39;block:create&#39;, function() {
 <li>Render block UI</li>
 <li>Edit some data</li>
 <li>Submit form</li>
-<li><a href="#4-3">Validate block with validations</a></li>
+<li><a href="#4-4">Validate block with validations</a></li>
 <li>Block data is serialized to the block store</li>
 </ol>
 
@@ -479,6 +486,52 @@ Override the block data for storage and return a JSON object.</p>
 
 <p><a name="4-2"></a></p>
 
+<h2>Render Block UI</h2>
+
+<pre><code class="js">SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
+  type: &quot;complex_type&quot;,
+
+  // Custom html that is shown when a block is being edited.
+
+  editorHTML: `
+    &lt;div&gt;
+      // Add a scribe controlled text field
+      // Note: Only possible to have 1 per block at present
+      &lt;div class=&quot;st-text-block&quot; contenteditable=&quot;true&quot;&gt;&lt;/div&gt;
+
+      // Add a simple input field
+      &lt;input type=&quot;text&quot; name=&quot;inputtext1&quot; value=&quot;inputtext1&quot; /&gt;
+
+      // Add a simple text area
+      &lt;textarea name=&quot;textarea1&quot;&gt;textarea1&lt;/textarea&gt;
+
+      // Add a checkbox
+      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox1&quot; value=&quot;1&quot; checked=&quot;checked&quot; /&gt;
+      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox2&quot; value=&quot;2&quot; /&gt;
+
+      // Add a checkbox which toggles `on` &amp; `off` values
+      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox3&quot; value=&quot;3&quot; data-toggle=&quot;true&quot; /&gt;
+      &lt;input type=&quot;checkbox&quot; name=&quot;checkbox4&quot; value=&quot;4&quot; checked=&quot;checked&quot; data-toggle=&quot;true&quot; /&gt;
+
+      // Add radio buttons. `name` will need to be defined per block
+      // `data-name` is used as an override for the data key to be saved
+      &lt;input type=&quot;radio&quot; name=&quot;block1-radio1&quot; value=&quot;radio11&quot; data-name=&quot;radio1&quot; /&gt;
+      &lt;input type=&quot;radio&quot; name=&quot;block1-radio1&quot; value=&quot;radio12&quot; data-name=&quot;radio1&quot; checked=&quot;checked&quot; /&gt;
+      &lt;input type=&quot;radio&quot; name=&quot;block1-radio2&quot; value=&quot;radio21&quot; data-name=&quot;radio2&quot; /&gt;
+      &lt;input type=&quot;radio&quot; name=&quot;block1-radio2&quot; value=&quot;radio22&quot; data-name=&quot;radio2&quot; /&gt;
+
+      // Add select boxes
+      &lt;select name=&quot;select1&quot;&gt;
+        &lt;option&gt;select11&lt;/option&gt;
+        &lt;option selected=&quot;selected&quot;&gt;select12&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+  `;
+});
+</code></pre>
+
+<p><a name="4-3"></a></p>
+
 <h2>Mixins</h2>
 
 <p>We&rsquo;ve abstracted all of the interface components for creating a Sir Trevor block. The following mixins are available to all blocks:</p>
@@ -506,7 +559,7 @@ Provides support for the block to be handled as an inline text block. Currently 
 
 <p>The <strong>droppable, uploadable and pastable</strong> components have the ability to override the default HTML that gets built as the UI. This can easily be done through the <code>upload_options.html</code>, <code>drop_options.html</code> or <code>paste_options.html</code> objects on the block. Each takes a string that is passed to an underscore <code>_.template</code> method.</p>
 
-<p><a name="4-3"></a></p>
+<p><a name="4-4"></a></p>
 
 <h2>Validations</h2>
 
