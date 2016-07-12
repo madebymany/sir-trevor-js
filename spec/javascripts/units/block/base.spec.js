@@ -1,5 +1,7 @@
 "use strict";
 
+require('../../../../locales/fr');
+
 describe("Block", function(){
 
   var element, editor, block, block_two, block_three;
@@ -42,6 +44,12 @@ describe("Block", function(){
 
   it("has a title", function(){
     expect(block.title()).toBe("Text");
+  });
+
+  it("correctly localizes a title", function(){
+    SirTrevor.config.language = 'fr';
+    expect(block.title()).toBe(SirTrevor.Locales.fr.blocks.text.title);
+    SirTrevor.config.language = 'en';
   });
 
   it("correctly titleizes underscored types", function(){
