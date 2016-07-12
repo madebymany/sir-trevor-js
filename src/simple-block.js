@@ -41,7 +41,8 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   },
 
   title: function() {
-    return utils.titleize(this.type.replace(/[\W_]/g, ' '));
+    return i18n.t(`blocks:${this.type}:title`) || 
+            utils.titleize(this.type.replace(/[\W_]/g, ' '));
   },
 
   blockCSSClass: function() {

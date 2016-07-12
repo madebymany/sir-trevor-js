@@ -7,7 +7,9 @@ SirTrevor.Locales.fr = {
     'close':            'fermer',
     'position':         'Position',
     'wait':             'Veuillez patienter...',
-    'link':             'Entrez un lien'
+    'link':             'Entrez un lien',
+    'yes':              'Oui',
+    'no':               'Non'
   },
   errors: {
     'title': "Vous avez l'erreur suivante :",
