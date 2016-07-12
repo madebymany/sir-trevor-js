@@ -15,11 +15,43 @@ A `SirTrevor.Block` essentially takes some data, provides an interface for that 
 Generally the flow for a block goes like this:
 
 1. Create block
-2. Render block UI
+2. Render block
 3. Edit some data
 4. Submit form
-5. [Validate block with validations](#4-3)
+5. [Validate block with validations](#4-4)
 6. Block data is serialized to the block store
+
+### 1. Create block
+
+```js
+// Trigger BlockManager to create a block of the type and data required.
+mediator.trigger('block:create', block.type, block.data)
+
+// Create a new block
+var block = new Block(data);
+
+// Render block
+block.render()
+
+// BlockManager.renderBlock then attaches the block to the dom and calls a final function
+block.onBlockRender() // Placeholder function. Could deal with focus.
+```
+
+### 2. Render block
+
+```js
+// Called when a block is first added to the dom or moved.
+block.render()
+
+block.beforeBlockRender() // Placeholder function
+block._initTextBlocks() // Initialise scribe text areas
+block.withMixin() // Load mixins for block
+block.checkAndLoadData() // 
+> block.beforeLoadingData() // Set block as loading, loadData and then set block as ready
+> > block.loadData() // Each block should implement this to populate from data
+block.save() // store current block data to the block store.
+> block.setData()
+```
 
 The methods associated with doing this are:
 
@@ -58,6 +90,52 @@ _serializeData() {
 ```
 
 <a name="4-2"></a>
+## Render Block UI
+
+```js
+SirTrevor.Blocks.ComplexType = SirTrevor.Block.extend({
+  type: "complex_type",
+
+  // Custom html that is shown when a block is being edited.
+
+  editorHTML: `
+    <div>
+      // Add a scribe controlled text field
+      // Note: Only possible to have 1 per block at present
+      <div class="st-text-block" contenteditable="true"></div>
+
+      // Add a simple input field
+      <input type="text" name="inputtext1" value="inputtext1" />
+
+      // Add a simple text area
+      <textarea name="textarea1">textarea1</textarea>
+
+      // Add a checkbox
+      <input type="checkbox" name="checkbox1" value="1" checked="checked" />
+      <input type="checkbox" name="checkbox2" value="2" />
+
+      // Add a checkbox which toggles `on` & `off` values
+      <input type="checkbox" name="checkbox3" value="3" data-toggle="true" />
+      <input type="checkbox" name="checkbox4" value="4" checked="checked" data-toggle="true" />
+
+      // Add radio buttons. `name` will need to be defined per block
+      // `data-name` is used as an override for the data key to be saved
+      <input type="radio" name="block1-radio1" value="radio11" data-name="radio1" />
+      <input type="radio" name="block1-radio1" value="radio12" data-name="radio1" checked="checked" />
+      <input type="radio" name="block1-radio2" value="radio21" data-name="radio2" />
+      <input type="radio" name="block1-radio2" value="radio22" data-name="radio2" />
+
+      // Add select boxes
+      <select name="select1">
+        <option>select11</option>
+        <option selected="selected">select12</option>
+      </select>
+    </div>
+  `;
+});
+```
+
+<a name="4-3"></a>
 ## Mixins
 
 We've abstracted all of the interface components for creating a Sir Trevor block. The following mixins are available to all blocks:
@@ -85,7 +163,7 @@ Provides support for the block to be handled as an inline text block. Currently 
 
 The **droppable, uploadable and pastable** components have the ability to override the default HTML that gets built as the UI. This can easily be done through the `upload_options.html`, `drop_options.html` or `paste_options.html` objects on the block. Each takes a string that is passed to an underscore `_.template` method.
 
-<a name="4-3"></a>
+<a name="4-4"></a>
 ## Validations
 
 There are two types of validations with Sir Trevor, required fields and custom validators. To add a field in your block as required, simply add the `st-required` class to it.

@@ -11,15 +11,44 @@ Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chr
 - [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
 - Migration docs [0.4-0.5](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md), [0.5-0.6](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.5-0.6.md)
 
-## Quick start
+### Quick start
 
-Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js/docs.html).
+The recomended way to install Sir Trevor in your project is using npm. This will install all the files required in the `build` directory for the module.
+
+```
+npm install sir-trevor
+```
+
+Note: Sir Trevor is distributed combined with it's dependencies. If you wish to modify Sir Trevor you will want to clone the repository and use the [Compiling instructions](#compiling) below.
+
+HTML
+
+```html
+<form>
+  <textarea class="js-st-instance"></textarea>
+</form>
+```
+
+Javascript
+
+```js
+import SirTrevor from 'sir-trevor';
+
+const editor = new SirTrevor.Editor({
+  el: document.querySelector('.js-st-instance'),
+  defaultType: 'Text',
+  iconUrl: 'build/sir-trevor-icons.svg'
+});
+```
+
+### Full docs
+
+[http://madebymany.github.io/sir-trevor-js/docs.html]
 
 ### Plain JS
 
 - [Download the latest release](https://github.com/madebymany/sir-trevor-js/zipball/master)
 - ...or clone the repo: `git clone git://github.com/madebymany/sir-trevor-js.git`
-- ...or install with [Bower](http://bower.io/) ``bower install sir-trevor-js``
 
 ### Implementations
 
@@ -48,13 +77,6 @@ Sir Trevor is only tested on the following modern browsers:
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
 
 Sir Trevor uses [The Guardian's scribe](https://github.com/guardian/scribe) for rich text editing. Double check their [browser support](https://github.com/guardian/scribe#browser-support) if your application relies on full RTE support.
-
-## Dependencies
-
-It's up to you:
-
-* Bring your own jQuery or Zepto (and have it put itself on `window.$`) and use `sir-trevor.js` / `sir-trevor.min.js`
-* Or if you're using Browserify yourself, `npm install sir-trevor` and `require('sir-trevor')` it as you would expect.
 
 ## Contributing
 
@@ -102,10 +124,11 @@ matrix:
   - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.10'
   - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
 
-## Build docs
+## Building gh-pages docs
 
 ```
 cd website
+bower install
 bundle exec rake publish PROJECT_ROOT=./ ALLOW_DIRTY=true
 ```
 

@@ -453,8 +453,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var toStr = Object.prototype.toString;
 	var slice = Array.prototype.slice;
 	var isArgs = __webpack_require__(20);
-	var hasDontEnumBug = !({ toString: null }).propertyIsEnumerable('toString');
-	var hasProtoEnumBug = function () {}.propertyIsEnumerable('prototype');
+	var isEnumerable = Object.prototype.propertyIsEnumerable;
+	var hasDontEnumBug = !isEnumerable.call({ toString: null }, 'toString');
+	var hasProtoEnumBug = isEnumerable.call(function () {}, 'prototype');
 	var dontEnums = [
 		'toString',
 		'toLocaleString',
@@ -468,12 +469,23 @@ return /******/ (function(modules) { // webpackBootstrap
 		var ctor = o.constructor;
 		return ctor && ctor.prototype === o;
 	};
-	var blacklistedKeys = {
+	var excludedKeys = {
 		$console: true,
+		$external: true,
 		$frame: true,
 		$frameElement: true,
 		$frames: true,
+		$innerHeight: true,
+		$innerWidth: true,
+		$outerHeight: true,
+		$outerWidth: true,
+		$pageXOffset: true,
+		$pageYOffset: true,
 		$parent: true,
+		$scrollLeft: true,
+		$scrollTop: true,
+		$scrollX: true,
+		$scrollY: true,
 		$self: true,
 		$webkitIndexedDB: true,
 		$webkitStorageInfo: true,
@@ -484,7 +496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		if (typeof window === 'undefined') { return false; }
 		for (var k in window) {
 			try {
-				if (!blacklistedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
+				if (!excludedKeys['$' + k] && has.call(window, k) && window[k] !== null && typeof window[k] === 'object') {
 					try {
 						equalsConstructorPrototype(window[k]);
 					} catch (e) {
@@ -18665,6 +18677,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  //Generic _serializeData implementation to serialize the block into a plain object.
 	  //Can be overwritten, although hopefully this will cover most situations.
 	  //If you want to get the data of your block use block.getBlockData()
+
+	  // jshint maxdepth:4
 	  _serializeData: function _serializeData() {
 	    utils.log("toData for " + this.blockID);
 
@@ -18678,10 +18692,37 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    // Add any inputs to the data attr
 	    var matcher = ['input:not([class="st-paste-block"])', 'textarea:not([class="st-paste-block"])', 'select:not([class="st-paste-block"])', 'button:not([class="st-paste-block"])'].join(",");
+
 	    if (this.$(matcher).length > 0) {
 	      Array.prototype.forEach.call(this.$('input, textarea, select, button'), function (input) {
-	        if (input.getAttribute('name')) {
-	          data[input.getAttribute('name')] = input.value;
+
+	        // Reference elements by their `name` attribute. For elements such as radio buttons
+	        // which require a unique reference per group of elements a `data-name` attribute can
+	        // be used to provide the same `name` per block.
+
+	        var name = input.getAttribute('data-name') || input.getAttribute('name');
+
+	        if (name) {
+	          if (input.getAttribute('type') === 'number') {
+	            data[name] = parseInt(input.value);
+	          } else if (input.getAttribute('type') === 'checkbox') {
+	            var value = "";
+	            if (input.getAttribute('data-toggle')) {
+	              value = "off";
+	              if (input.checked === true) {
+	                value = "on";
+	              }
+	            } else if (input.checked === true) {
+	              value = input.value;
+	            }
+	            data[name] = value;
+	          } else if (input.getAttribute('type') === 'radio') {
+	            if (input.checked === true) {
+	              data[name] = input.value;
+	            }
+	          } else {
+	            data[name] = input.value;
+	          }
 	        }
 	      });
 	    }
@@ -18999,7 +19040,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  title: function title() {
-	    return utils.titleize(this.type.replace(/[\W_]/g, ' '));
+	    return i18n.t('blocks:' + this.type + ':title') || utils.titleize(this.type.replace(/[\W_]/g, ' '));
 	  },
 
 	  blockCSSClass: function blockCSSClass() {
@@ -21031,22 +21072,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 
-	  validateAndSaveBlock: function validateAndSaveBlock(block, shouldValidate) {
-	    if (!config.skipValidation && shouldValidate && !block.valid()) {
-	      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
-	      utils.log("Block " + block.blockID + " failed validation");
-	      return;
-	    }
-
-	    if (block.type === 'text' && block.isEmpty()) {
-	      return;
-	    }
-
-	    var blockData = block.getData();
-	    utils.log("Adding data for block " + block.blockID + " to block store:", blockData);
-	    this.store.addData(blockData);
-	  },
-
 	  /*
 	   * Handle a form submission of this Editor instance.
 	   * Validate all of our blocks, and serialise all data onto the JSON objects
@@ -21070,6 +21095,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 
 	  /*
+	   * Call `validateAndSaveBlock` on each block found in the dom.
+	   */
+
+	  validateBlocks: function validateBlocks(shouldValidate) {
+	    var _this = this;
+
+	    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function (block, idx) {
+	      var _block = _this.blockManager.findBlockById(block.getAttribute('id'));
+	      if (!_.isUndefined(_block)) {
+	        _this.validateAndSaveBlock(_block, shouldValidate);
+	      }
+	    });
+	  },
+
+	  /*
+	   * If block should be validated and is not valid then register an error.
+	   * Empty text blocks should be ignored.
+	   * Save any other valid blocks to the editor data store.
+	   */
+
+	  validateAndSaveBlock: function validateAndSaveBlock(block, shouldValidate) {
+	    if (!config.skipValidation && shouldValidate && !block.valid()) {
+	      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+	      utils.log("Block " + block.blockID + " failed validation");
+	      return;
+	    }
+
+	    if (block.type === 'text' && block.isEmpty()) {
+	      return;
+	    }
+
+	    var blockData = block.getData();
+	    utils.log("Adding data for block " + block.blockID + " to block store:", blockData);
+	    this.store.addData(blockData);
+	  },
+
+	  /*
 	   * Disable back button so when a block loses focus the user
 	   * pressing backspace multiple times doesn't close the page.
 	   */
@@ -21082,16 +21144,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      e.preventDefault();
 	    }
-	  },
-
-	  validateBlocks: function validateBlocks(shouldValidate) {
-	    var self = this;
-	    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function (block, idx) {
-	      var _block = self.blockManager.findBlockById(block.getAttribute('id'));
-	      if (!_.isUndefined(_block)) {
-	        self.validateAndSaveBlock(_block, shouldValidate);
-	      }
-	    });
 	  },
 
 	  findBlockById: function findBlockById(block_id) {
@@ -21110,6 +21162,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    utils.log("This method has been moved to blockManager.getBlockPosition()");
 	    return this.blockManager.getBlockPosition(block);
 	  },
+
+	  /*
+	   * Set all dom elements required for the editor.
+	   */
 
 	  _ensureAndSetElements: function _ensureAndSetElements() {
 	    if (_.isUndefined(this.options.el)) {
