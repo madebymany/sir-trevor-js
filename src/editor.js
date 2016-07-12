@@ -224,23 +224,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
   },
 
-  validateAndSaveBlock: function(block, shouldValidate) {
-    if (!config.skipValidation && shouldValidate && !block.valid()) {
-      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
-      utils.log("Block " + block.blockID + " failed validation");
-      return;
-    }
-
-    if (block.type === 'text' && block.isEmpty()) {
-      return;
-    }
-
-    var blockData = block.getData();
-    utils.log("Adding data for block " + block.blockID + " to block store:",
-              blockData);
-    this.store.addData(blockData);
-  },
-
   /*
    * Handle a form submission of this Editor instance.
    * Validate all of our blocks, and serialise all data onto the JSON objects
@@ -264,6 +247,42 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   /*
+   * Call `validateAndSaveBlock` on each block found in the dom.
+   */
+
+  validateBlocks: function(shouldValidate) {
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), (block, idx) => {
+      var _block = this.blockManager.findBlockById(block.getAttribute('id'));
+      if (!_.isUndefined(_block)) {
+        this.validateAndSaveBlock(_block, shouldValidate);
+      }
+    });
+  },
+
+  /*
+   * If block should be validated and is not valid then register an error.
+   * Empty text blocks should be ignored.
+   * Save any other valid blocks to the editor data store.
+   */
+
+  validateAndSaveBlock: function(block, shouldValidate) {
+    if (!config.skipValidation && shouldValidate && !block.valid()) {
+      this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
+      utils.log("Block " + block.blockID + " failed validation");
+      return;
+    }
+
+    if (block.type === 'text' && block.isEmpty()) {
+      return;
+    }
+
+    var blockData = block.getData();
+    utils.log("Adding data for block " + block.blockID + " to block store:",
+              blockData);
+    this.store.addData(blockData);
+  },
+
+  /*
    * Disable back button so when a block loses focus the user
    * pressing backspace multiple times doesn't close the page.
    */
@@ -278,16 +297,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
       e.preventDefault();
     }
-  },
-
-  validateBlocks: function(shouldValidate) {
-    var self = this;
-    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(block, idx) {
-      var _block = self.blockManager.findBlockById(block.getAttribute('id'));
-      if (!_.isUndefined(_block)) {
-        self.validateAndSaveBlock(_block, shouldValidate);
-      }
-    });
   },
 
   findBlockById: function(block_id) {
@@ -306,6 +315,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     utils.log("This method has been moved to blockManager.getBlockPosition()");
     return this.blockManager.getBlockPosition(block);
   },
+
+  /*
+   * Set all dom elements required for the editor.
+   */
 
   _ensureAndSetElements: function() {
     if(_.isUndefined(this.options.el)) {

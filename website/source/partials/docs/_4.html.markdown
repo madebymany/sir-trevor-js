@@ -15,7 +15,7 @@ A `SirTrevor.Block` essentially takes some data, provides an interface for that 
 Generally the flow for a block goes like this:
 
 1. Create block
-2. Render block UI
+2. Render block
 3. Edit some data
 4. Submit form
 5. [Validate block with validations](#4-4)
