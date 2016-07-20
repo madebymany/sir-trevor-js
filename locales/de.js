@@ -7,7 +7,9 @@ SirTrevor.Locales.de = {
     'close':            'Schließen',
     'position':         'Position',
     'wait':             'Bitte warten...',
-    'link':             'Link eintragen'
+    'link':             'Link eintragen',
+    'yes':              'Ja ',
+    'no':               'Nein'
   },
   errors: {
     'title': "Die folgenden Fehler sind aufgetreten:",
