@@ -17,7 +17,7 @@ The recomended way to install Sir Trevor in your project is using npm. This will
 npm install sir-trevor
 ```
 
-Note: Sir Trevor is distributed combined with it's dependencies. If you wish to modify Sir Trevor you will want to clone the repository and use the [Compiling instructions](#compiling) below.
+Note: Sir Trevor is distributed combined with its dependencies. If you wish to modify Sir Trevor you will want to clone the repository and use the [Compiling instructions](#compiling) below.
 
 HTML
 
