@@ -170,6 +170,15 @@ ul.st-text-block {
   padding-left: 1em;
 }
 
+.st-list-block-list {
+  margin-left: 0;
+  @for $i from 1 through 8 {
+    &.tab#{$i} {
+      margin-left: #{$i * 2}em;
+    }
+  }
+}
+
 .st-list-block__editor {
   width: 100%;
   line-height: 1.8em;

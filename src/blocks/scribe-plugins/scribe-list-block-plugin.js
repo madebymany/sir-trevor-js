@@ -44,12 +44,20 @@ var ScribeListBlockPlugin = function(block) {
       } else if (ev.keyCode === 8 && currentPosition() === 0) {
         ev.preventDefault();
 
-        if (block.isLastListItem()) {
+        if (block.outdentListItem()) {
+        } else if (block.isLastListItem()) {
           block.mediator.trigger('block:remove', block.blockID);
         } else {
           content = scribe.getContent();
           block.removeCurrentListItem();
           block.appendToCurrentItem(content);
+        }
+      } else if (ev.keyCode === 9) { // tab pressed
+        ev.preventDefault();
+        if (!ev.shiftKey) {
+          block.indentListItem();
+        } else {
+          block.outdentListItem();
         }
       } else if (ev.keyCode === 46) {
         // TODO: Pressing del from end of list item

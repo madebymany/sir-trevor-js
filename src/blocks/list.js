@@ -22,7 +22,7 @@ module.exports = Block.extend({
   },
 
   editorHTML: '<ul class="st-list-block__list"></ul>',
-  listItemEditorHTML: '<li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li>',
+  listItemEditorHTML: '<ol class="st-list-block-list"><li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li><ol>',
 
   initialize: function() {
     this.editorIds = [];
@@ -52,11 +52,12 @@ module.exports = Block.extend({
 
     if (data.listItems.length) {
       data.listItems.forEach(function(li) {
-        block.addListItem(li.content);
+        block.addListItem(li.content, undefined, li.indent);
       });
     } else {
       block.addListItem();
     }
+    this.updateStartAttributes();
   },
 
   parseFromMarkdown: function(markdown) {
@@ -75,10 +76,14 @@ module.exports = Block.extend({
   _serializeData: function() {
     var data = {format: 'html', listItems: []};
 
-    this.editorIds.forEach(function(editorId) {
-      var listItem = {content: this.getTextEditor(editorId).scribe.getContent()};
+    this.editorIds.forEach( (editorId) => {
+      var editor = this.getTextEditor(editorId);
+      var listItem = {
+        content: editor.scribe.getContent(),
+        indent: editor.metadata.indent
+      };
       data.listItems.push(listItem);
-    }.bind(this));
+    });
 
     return data;
   },
@@ -88,13 +93,16 @@ module.exports = Block.extend({
     this.addListItem(content, this.getCurrentTextEditor());
   },
 
-  addListItem: function(content, after) {
+  addListItem: function(content, after, indent) {
     content = content || '';
     if (content.trim() === "<br>") { content = ''; }
 
     var editor = this.newTextEditor(this.listItemEditorHTML, content);
+    editor.metadata.indent = indent || 0;
 
     if (after && this.ul.lastchild !== after.node) {
+      editor.metadata.indent = after.metadata.indent;
+      console.log( editor.metadata.indent );
       var before = after.node.nextSibling;
       this.ul.insertBefore(editor.node, before);
 
@@ -106,6 +114,7 @@ module.exports = Block.extend({
     }
 
     !content && this.focusOn(editor); // jshint ignore:line
+    this.updateStartAttributes();
   },
 
   focusOnNeighbor: function(item) {
@@ -148,6 +157,7 @@ module.exports = Block.extend({
     this.editorIds.splice(idx, 1);
     this.ul.removeChild(item.node);
     this.removeTextEditor(item.id);
+    this.updateStartAttributes();
   },
 
   appendToCurrentItem: function(content) {
@@ -178,6 +188,52 @@ module.exports = Block.extend({
     } else {
       return null;
     }
+  },
+
+  indentListItem: function() {
+    var currentEditor = this.editors[this.getCurrentTextEditor().id];
+    if (currentEditor.metadata.indent === 8) {
+      return false;
+    }
+    currentEditor.metadata.indent += 1;
+    this.updateStartAttributes();
+  },
+
+  outdentListItem: function() {
+    var currentEditor = this.editors[this.getCurrentTextEditor().id];
+    if (currentEditor.metadata.indent === 0) {
+      return false;
+    }
+    currentEditor.metadata.indent -= 1;
+    this.updateStartAttributes();
+    return true;
+  },
+
+  updateStartAttributes: function() {
+    var startingIndexes = [1, 1, 1, 1, 1, 1, 1, 1];
+    var currentIndent = 0;
+    var started = false;
+    this.editorIds.forEach( (editorId) => {
+      var editor = this.getTextEditor(editorId);
+      if (started) {
+        if (currentIndent === editor.metadata.indent) {
+          startingIndexes[editor.metadata.indent] += 1;
+        } else if (editor.metadata.indent > currentIndent) {
+          startingIndexes[currentIndent] += 1;
+        }
+      }
+      editor.node.setAttribute('start', startingIndexes[editor.metadata.indent]);
+
+      var i = 0;
+      while (i <= 8) {
+        editor.node.classList.remove(`tab${i}`);
+        i++;
+      }
+      editor.node.classList.add(`tab${editor.metadata.indent}`);
+
+      currentIndent = editor.metadata.indent;
+      started = true;
+    });
   }
 
 });

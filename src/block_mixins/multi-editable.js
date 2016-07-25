@@ -42,7 +42,8 @@ module.exports = {
       node: isTextTemplate ? wrapper.removeChild(wrapper.firstChild) : editor,
       el: editor,
       scribe: scribe,
-      id: id
+      id: id,
+      metadata: {}
     };
 
     this.editors[id] = editorObject;
