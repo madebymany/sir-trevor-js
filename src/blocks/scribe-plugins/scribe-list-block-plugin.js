@@ -41,7 +41,7 @@ var ScribeListBlockPlugin = function(block) {
           block.addListItemAfterCurrent(content);
         }
 
-      } else if (ev.keyCode === 8 && currentPosition() === 0) {
+      } else if (ev.keyCode === 8 && currentPosition() === 0) { // backspace pressed
         ev.preventDefault();
 
         if (block.outdentListItem()) {

@@ -167,15 +167,22 @@ ul.st-text-block {
 .st-list-block__list {
   font-size: $text-block-font-size;
   margin: 0;
-  padding-left: 1em;
+  padding-left: 0;
 }
 
 .st-list-block-list {
   margin-left: 0;
-  @for $i from 1 through 8 {
+  padding-left: 1em;
+  @for $i from 1 through 7 {
     &.tab#{$i} {
-      margin-left: #{$i * 2}em;
+      margin-left: #{$i}em;
     }
+  }
+  &.tab1, &.tab4, &.tab7 {
+    list-style-type: lower-alpha;
+  }
+  &.tab2, &.tab5 {
+    list-style-type: lower-roman;
   }
 }
 

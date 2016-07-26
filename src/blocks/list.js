@@ -17,12 +17,23 @@ module.exports = Block.extend({
     }
   },
 
+  listType: "ordered",
+
   configureScribe: function(scribe) {
     scribe.use(new ScribeListBlockPlugin(this));
   },
 
-  editorHTML: '<ul class="st-list-block__list"></ul>',
-  listItemEditorHTML: '<ol class="st-list-block-list"><li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li><ol>',
+  editorHTML: '<div class="st-list-block__list"></div>',
+
+  listItemEditorHTML: function() {
+    var listTag = this.listType === "ordered" ? "ol" : "ul";
+
+    return `<${listTag} class="st-list-block-list">
+        <li class="st-list-block__item">
+          <div class="st-list-block__editor st-block__editor"></div>
+        </li>
+      </${listTag}>`;
+  },
 
   initialize: function() {
     this.editorIds = [];
@@ -36,26 +47,25 @@ module.exports = Block.extend({
   },
 
   onBlockRender: function() {
-    if (!this.ul) { this.setupListVariables(); }
+    if (!this.list) { this.setupListVariables(); }
     if (this.editorIds.length < 1) { this.addListItem(); }
   },
 
   setupListVariables: function() {
-    this.ul = this.inner.querySelector('ul');
+    this.list = this.inner.querySelector('.st-list-block__list');
   },
 
   loadData: function(data) {
-    var block = this;
     if (this.options.convertFromMarkdown && data.format !== "html") {
       data = this.parseFromMarkdown(data.text);
     }
 
     if (data.listItems.length) {
-      data.listItems.forEach(function(li) {
-        block.addListItem(li.content, undefined, li.indent);
+      data.listItems.forEach((li) => {
+        this.addListItem(li.content, undefined, li.indent);
       });
     } else {
-      block.addListItem();
+      this.addListItem();
     }
     this.updateStartAttributes();
   },
@@ -63,12 +73,12 @@ module.exports = Block.extend({
   parseFromMarkdown: function(markdown) {
     var listItems = markdown.replace(/^ - (.+)$/mg,"$1").split("\n");
     listItems = listItems.
-      filter(function(item) {
+      filter( (item) => {
         return item.length;
       }).
-      map(function(item) {
-        return {content: stToHTML(item, this.type)};
-      }.bind(this));
+      map( (item) => {
+        return { content: stToHTML(item, this.type) };
+      });
 
     return { listItems: listItems, format: 'html' };
   },
@@ -96,20 +106,20 @@ module.exports = Block.extend({
   addListItem: function(content, after, indent) {
     content = content || '';
     if (content.trim() === "<br>") { content = ''; }
-
-    var editor = this.newTextEditor(this.listItemEditorHTML, content);
+    var editor = this.newTextEditor(this.listItemEditorHTML(), content);
+    console.log(editor);
     editor.metadata.indent = indent || 0;
 
-    if (after && this.ul.lastchild !== after.node) {
+    if (after && this.list.lastchild !== after.node) {
       editor.metadata.indent = after.metadata.indent;
       console.log( editor.metadata.indent );
       var before = after.node.nextSibling;
-      this.ul.insertBefore(editor.node, before);
+      this.list.insertBefore(editor.node, before);
 
       var idx = this.editorIds.indexOf(after.id) + 1;
       this.editorIds.splice(idx, 0, editor.id);
     } else {
-      this.ul.appendChild(editor.node);
+      this.list.appendChild(editor.node);
       this.editorIds.push(editor.id);
     }
 
@@ -155,7 +165,7 @@ module.exports = Block.extend({
 
     this.focusOnNeighbor(item);
     this.editorIds.splice(idx, 1);
-    this.ul.removeChild(item.node);
+    this.list.removeChild(item.node);
     this.removeTextEditor(item.id);
     this.updateStartAttributes();
   },
@@ -192,7 +202,7 @@ module.exports = Block.extend({
 
   indentListItem: function() {
     var currentEditor = this.editors[this.getCurrentTextEditor().id];
-    if (currentEditor.metadata.indent === 8) {
+    if (currentEditor.metadata.indent === 7) {
       return false;
     }
     currentEditor.metadata.indent += 1;
@@ -224,8 +234,9 @@ module.exports = Block.extend({
       }
       editor.node.setAttribute('start', startingIndexes[editor.metadata.indent]);
 
+      // Reset tab classes for element.
       var i = 0;
-      while (i <= 8) {
+      while (i <= 7) {
         editor.node.classList.remove(`tab${i}`);
         i++;
       }
