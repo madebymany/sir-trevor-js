@@ -9,7 +9,7 @@ Sir Trevor uses [Scribe](https://github.com/guardian/scribe) for text editing. T
 <a name="5-2"></a>
 ## Text Formatting
 
-The main reason for using Scribe is to provide text formatting and make content editable cross browser compatible.
+The main reason for using Scribe is to provide text formatting and make ContentEditable cross browser compatible.
 
 Formatting has been enabled using various plugins that can be found here:
 https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js
@@ -17,14 +17,66 @@ https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js
 To add your own formatting you'll want to [install a plugin](https://github.com/guardian/scribe/wiki/Plugins) or create your own.
 
 <a name="5-3"></a>
+## Format Bar
+
+The format bar is used to apply scribe commands to the current text selection.
+
+The [default configuration](https://github.com/madebymany/sir-trevor-js/blob/master/src/config.js#L66-L112) gives basic text formatting and a link creation prompt.
+
+To customise the order / buttons available you can do the following:
+
+```js
+SirTrevor.setDefaults({
+  formatBar: {
+    commands: [
+      {
+        name: 'Bold', // button label
+        title: 'bold',
+        iconName: 'fmt-bold', // icon reference
+        cmd: 'bold', // scribe.commands.bold
+        keyCode: 66, // Ctrl/Cmd + keyCode
+        text: 'B' 
+      },
+      {
+        name: 'Italic',
+        title: 'italic',
+        iconName: 'fmt-italic',
+        cmd: 'italic',
+        keyCode: 73,
+        text: 'i'
+      },
+      {
+        name: 'Link',
+        title: 'link',
+        iconName: 'fmt-link',
+        cmd: 'linkPrompt',
+        text: 'link'
+      },
+      {
+        name: 'Unlink',
+        title: 'unlink',
+        iconName: 'fmt-unlink',
+        cmd: 'unlink',
+        text: 'link'
+      }
+    ]
+  }
+});
+
+```
+
+<a name="5-4"></a>
 ## Create a Scribe plugin
 
 If you want to create your own plugins then follow the steps below:
 
 **Step 1.**
 
-Define your toolbar commands
-https://github.com/madebymany/sir-trevor-js/blob/master/src/config.js#L66-L112
+Create your plugin.
+
+An example is: https://github.com/madebymany/sir-trevor-js/blob/master/src/blocks/scribe-plugins/scribe-heading-plugin.js
+
+This 
 
 **Step 2.**
 
