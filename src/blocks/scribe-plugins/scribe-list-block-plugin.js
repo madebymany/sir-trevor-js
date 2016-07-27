@@ -1,5 +1,11 @@
 "use strict";
 
+import {
+  rangeToHTML,
+  selectToEnd,
+  currentPosition
+} from '../../helpers/text-functions';
+
 var ScribeListBlockPlugin = function(block) {
   return function(scribe) {
     scribe.el.addEventListener('keydown', function(ev) {
@@ -7,26 +13,6 @@ var ScribeListBlockPlugin = function(block) {
       if (block.supressKeyListeners) {
         return;
       }
-
-      var rangeToHTML = function(range) {
-        var div = document.createElement('div');
-        div.appendChild(range.extractContents());
-
-        return div.innerHTML;
-      };
-
-      var selectToEnd = function() {
-        var selection = new scribe.api.Selection();
-        var range = selection.range.cloneRange();
-        range.setEndAfter(scribe.el.lastChild, 0);
-
-        return range;
-      };
-
-      var currentPosition = function() {
-        var selection = new scribe.api.Selection();
-        return selection.range.startOffset;
-      };
 
       var content;
 
@@ -37,11 +23,11 @@ var ScribeListBlockPlugin = function(block) {
           block.removeCurrentListItem();
           block.mediator.trigger("block:create", 'Text', null, block.el);
         } else {
-          content = rangeToHTML(selectToEnd());
+          content = rangeToHTML(selectToEnd(scribe), true);
           block.addListItemAfterCurrent(content);
         }
 
-      } else if (ev.keyCode === 8 && currentPosition() === 0) {
+      } else if (ev.keyCode === 8 && currentPosition(scribe) === 0) {
         ev.preventDefault();
 
         if (block.isLastListItem()) {
