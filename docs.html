@@ -80,12 +80,21 @@
             <li><a href="#4-3">Validations</a></li>
           </ul>
         </li>
+
+        <li>
+          <a href="#5">Text editing</a>
+
+          <ul>
+            <li><a href="#5-1">Scribe</a></li>
+            <li><a href="#5-2">Text Formatting</a></li>
+            <li><a href="#5-3">Creating a Scribe plugin</a></li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </aside>
 
   <section class="docs__content">
-
     <h1>What is Sir Trevor?</h1>
 
 <p>Sir Trevor provides a means to transform a text input into a rich content editor that&rsquo;s been re-imagined for the web. The content of the editor is stored as HTML inside a JSON object, with the structure and the contents of the post serialized inside of it.</p>
@@ -403,7 +412,7 @@ Called once a block has been rendered.</p>
 
 <ol>
 <li>Create block</li>
-<li>Render block UI</li>
+<li>Render block</li>
 <li>Edit some data</li>
 <li>Submit form</li>
 <li><a href="#4-4">Validate block with validations</a></li>
@@ -550,6 +559,59 @@ Provides support for the block to be handled as an inline text block. Currently 
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre>
+    <p><a name="5"></a></p>
+
+<h1>Text editing</h1>
+
+<p><a name="5-1"></a></p>
+
+<h2>Scribe</h2>
+
+<p>Sir Trevor uses <a href="https://github.com/guardian/scribe">Scribe</a> for text editing. The document that is available can be found here <a href="https://github.com/guardian/scribe/wiki">https://github.com/guardian/scribe/wiki</a>.</p>
+
+<p><a name="5-2"></a></p>
+
+<h2>Text Formatting</h2>
+
+<p>The main reason for using Scribe is to provide text formatting and make content editable cross browser compatible.</p>
+
+<p>Formatting has been enabled using various plugins that can be found here:<br>
+<a href="https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js">https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js</a></p>
+
+<p>To add your own formatting you&rsquo;ll want to <a href="https://github.com/guardian/scribe/wiki/Plugins">install a plugin</a> or create your own.</p>
+
+<p><a name="5-3"></a></p>
+
+<h2>Create a Scribe plugin</h2>
+
+<p>If you want to create your own plugins then follow the steps below:</p>
+
+<p><strong>Step 1.</strong></p>
+
+<p>Define your toolbar commands<br>
+<a href="https://github.com/madebymany/sir-trevor-js/blob/master/src/config.js#L66-L112">https://github.com/madebymany/sir-trevor-js/blob/master/src/config.js#L66-L112</a></p>
+
+<p><strong>Step 2.</strong></p>
+
+<p>Modify the linkPrompt plugin<br>
+<a href="https://github.com/guardian/scribe-plugin-link-prompt-command">https://github.com/guardian/scribe-plugin-link-prompt-command</a></p>
+
+<p>The main file is<br>
+<a href="https://github.com/guardian/scribe-plugin-link-prompt-command/blob/master/src/scribe-plugin-link-prompt-command.js">https://github.com/guardian/scribe-plugin-link-prompt-command/blob/master/src/scribe-plugin-link-prompt-command.js</a></p>
+
+<p>You&rsquo;ll find this assigns <code>scribe.commands.linkPrompt</code> which is the <code>cmd</code> set in the config.<br>
+So what you&rsquo;ll do is write your own plugin and then assign it to something like <code>scribe.commands.customLinkPrompt</code> then modify the <code>formatBar.commands</code> in your config override.</p>
+
+<p><strong>Step 3.</strong></p>
+
+<p>You&rsquo;ll need to find a way to call <code>scribe.use</code>for  the plugin.</p>
+
+<p>If it needs to be on all blocks then you&rsquo;ll need to patch something in:<br>
+<a href="https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js#L43">https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js#L43</a></p>
+
+<p>Per block you can define <code>configureScribe</code><br>
+<a href="https://github.com/madebymany/sir-trevor-js/blob/master/src/blocks/text.js#L26">https://github.com/madebymany/sir-trevor-js/blob/master/src/blocks/text.js#L26</a></p>
+
   </section>
 </div>
 
