@@ -170,19 +170,77 @@ ul.st-text-block {
   padding-left: 0;
 }
 
-.st-list-block-list {
+$ol-list: lower-alpha, 
+       lower-roman, 
+       decimal, 
+       lower-alpha, 
+       lower-roman, 
+       decimal, 
+       lower-alpha, 
+       lower-roman;
+
+$ul-list: circle,
+          square,
+          disc,
+          circle,
+          square,
+          disc,
+          circle,
+          square;
+
+
+$list-resets: list-1 list-2 list-3 list-4 list-5 list-6 list-7,
+              list-2 list-3 list-4 list-5 list-6 list-7,
+              list-3 list-4 list-5 list-6 list-7,
+              list-4 list-5 list-6 list-7,
+              list-5 list-6 list-7,
+              list-6 list-7,
+              list-7;
+
+.st-list-block__item {
+  counter-increment: list-num;
+  counter-reset: nth($list-resets, 1);
+  list-style: none;
   margin-left: 0;
   padding-left: 1em;
+
   @for $i from 1 through 7 {
     &.tab#{$i} {
       margin-left: #{$i}em;
+      counter-increment: list-#{$i};
+      counter-reset: nth($list-resets, $i);
     }
   }
-  &.tab1, &.tab4, &.tab7 {
-    list-style-type: lower-alpha;
+
+  &:before {
+    content: counter(list-num, disc);
+    position: absolute;
+    left: 0;
+    line-height: 1.8em;
   }
-  &.tab2, &.tab5 {
-    list-style-type: lower-roman;
+
+  @for $i from 1 through 7 {
+    &.tab#{$i} {
+      &:before {
+        content: counter(list-#{$i}, nth($ul-list, $i));
+        left: #{$i}em;
+      }
+    }
+  }
+}
+
+ol > .st-list-block__item {
+
+  &:before {
+    content: counter(list-num, decimal) '. ';
+  }
+
+  @for $i from 1 through 7 {
+    &.tab#{$i} {
+      &:before {
+        content: counter(list-#{$i}, nth($ol-list, $i)) '. ';
+      }
+    }
   }
 }
 

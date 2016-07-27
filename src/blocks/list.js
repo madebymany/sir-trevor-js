@@ -17,26 +17,30 @@ module.exports = Block.extend({
     }
   },
 
-  listType: "ordered",
-
   configureScribe: function(scribe) {
     scribe.use(new ScribeListBlockPlugin(this));
   },
 
-  editorHTML: '<div class="st-list-block__list"></div>',
-
-  listItemEditorHTML: function() {
-    var listTag = this.listType === "ordered" ? "ol" : "ul";
-
-    return `<${listTag} class="st-list-block-list">
-        <li class="st-list-block__item">
-          <div class="st-list-block__editor st-block__editor"></div>
-        </li>
-      </${listTag}>`;
+  editorHTML: function() {
+    return this.createRootNode().outerHTML;
   },
+
+  listItemEditorHTML: `<li class="st-list-block__item">
+    <div class="st-list-block__editor st-block__editor"></div>
+  </li>`,
 
   initialize: function() {
     this.editorIds = [];
+  },
+
+  listTagName: function() {
+    return (this.listType === 'ordered') ? 'ol' : 'ul';
+  },
+
+  createRootNode: function() {
+    var el = document.createElement(this.listTagName());
+    el.classList.add('st-list-block__list');
+    return el;
   },
 
   // Data functions (loading, converting, saving)
@@ -53,12 +57,27 @@ module.exports = Block.extend({
 
   setupListVariables: function() {
     this.list = this.inner.querySelector('.st-list-block__list');
+    this.listType = this.listType || 'unordered';
   },
 
   loadData: function(data) {
     if (this.options.convertFromMarkdown && data.format !== "html") {
       data = this.parseFromMarkdown(data.text);
     }
+
+    while(Object.keys(this.editors).length) {
+      var item = this.editors[Object.keys(this.editors)[0]];
+
+      this.editorIds.splice(0, 1);
+      this.list.removeChild(item.node);
+      this.removeTextEditor(item.id);
+    }
+
+    this.listType = data.listType || 'unordered';
+
+    this.list.parentNode.replaceChild(this.createRootNode(), this.list);
+    
+    this.setupListVariables();
 
     if (data.listItems.length) {
       data.listItems.forEach((li) => {
@@ -84,7 +103,11 @@ module.exports = Block.extend({
   },
 
   _serializeData: function() {
-    var data = {format: 'html', listItems: []};
+    var data = {
+      format: 'html', 
+      listItems: [],
+      listType: this.listType
+    };
 
     this.editorIds.forEach( (editorId) => {
       var editor = this.getTextEditor(editorId);
@@ -106,8 +129,7 @@ module.exports = Block.extend({
   addListItem: function(content, after, indent) {
     content = content || '';
     if (content.trim() === "<br>") { content = ''; }
-    var editor = this.newTextEditor(this.listItemEditorHTML(), content);
-    console.log(editor);
+    var editor = this.newTextEditor(this.listItemEditorHTML, content);
     editor.metadata.indent = indent || 0;
 
     if (after && this.list.lastchild !== after.node) {
@@ -220,20 +242,8 @@ module.exports = Block.extend({
   },
 
   updateStartAttributes: function() {
-    var startingIndexes = [1, 1, 1, 1, 1, 1, 1, 1];
-    var currentIndent = 0;
-    var started = false;
     this.editorIds.forEach( (editorId) => {
       var editor = this.getTextEditor(editorId);
-      if (started) {
-        if (currentIndent === editor.metadata.indent) {
-          startingIndexes[editor.metadata.indent] += 1;
-        } else if (editor.metadata.indent > currentIndent) {
-          startingIndexes[currentIndent] += 1;
-        }
-      }
-      editor.node.setAttribute('start', startingIndexes[editor.metadata.indent]);
-
       // Reset tab classes for element.
       var i = 0;
       while (i <= 7) {
@@ -241,9 +251,6 @@ module.exports = Block.extend({
         i++;
       }
       editor.node.classList.add(`tab${editor.metadata.indent}`);
-
-      currentIndent = editor.metadata.indent;
-      started = true;
     });
   }
 
