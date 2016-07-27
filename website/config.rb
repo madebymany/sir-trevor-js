@@ -64,7 +64,8 @@ set :markdown,
     :hard_wrap => true,
     :fenced_code_blocks => true,
     :smartypants => true,
-    :layout_engine => :erb
+    :layout_engine => :erb,
+    :autolink => true
 
 # Build-specific configuration
 configure :build do

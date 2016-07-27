@@ -1,0 +1,48 @@
+<a name="5"></a>
+# Text editing
+
+<a name="5-1"></a>
+## Scribe
+
+Sir Trevor uses [Scribe](https://github.com/guardian/scribe) for text editing. The document that is available can be found here https://github.com/guardian/scribe/wiki.
+
+<a name="5-2"></a>
+## Text Formatting
+
+The main reason for using Scribe is to provide text formatting and make content editable cross browser compatible.
+
+Formatting has been enabled using various plugins that can be found here:
+https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js
+
+To add your own formatting you'll want to [install a plugin](https://github.com/guardian/scribe/wiki/Plugins) or create your own.
+
+<a name="5-3"></a>
+## Create a Scribe plugin
+
+If you want to create your own plugins then follow the steps below:
+
+**Step 1.**
+
+Define your toolbar commands
+https://github.com/madebymany/sir-trevor-js/blob/master/src/config.js#L66-L112
+
+**Step 2.**
+
+Modify the linkPrompt plugin
+https://github.com/guardian/scribe-plugin-link-prompt-command
+
+The main file is
+https://github.com/guardian/scribe-plugin-link-prompt-command/blob/master/src/scribe-plugin-link-prompt-command.js
+
+You'll find this assigns `scribe.commands.linkPrompt` which is the `cmd` set in the config.
+So what you'll do is write your own plugin and then assign it to something like `scribe.commands.customLinkPrompt` then modify the `formatBar.commands` in your config override.
+
+**Step 3.**
+
+You'll need to find a way to call `scribe.use`for  the plugin.
+
+If it needs to be on all blocks then you'll need to patch something in:
+https://github.com/madebymany/sir-trevor-js/blob/master/src/scribe-interface.js#L43
+
+Per block you can define `configureScribe`
+https://github.com/madebymany/sir-trevor-js/blob/master/src/blocks/text.js#L26
