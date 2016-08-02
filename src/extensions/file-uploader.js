@@ -13,9 +13,6 @@ var Ajax = require('../packages/ajax');
 var EventBus = require('../event-bus');
 
 module.exports = function(block, file, success, error) {
-
-  EventBus.trigger('onUploadStart');
-
   var uid  = [block.blockID, (new Date()).getTime(), 'raw'].join('-');
   var data = new FormData();
   var attachmentName = block.attachmentName || config.defaults.attachmentName;
@@ -25,6 +22,8 @@ module.exports = function(block, file, success, error) {
   data.append(attachmentName, file.name);
   data.append(attachmentFile, file);
   data.append(attachmentUid, uid);
+
+  EventBus.trigger('onUploadStart', data);
 
   block.resetMessages();
 
