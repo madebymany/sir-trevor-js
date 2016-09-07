@@ -1,6 +1,7 @@
 "use strict";
 
 var utils = require('../utils');
+var EventBus = require('../event-bus');
 
 module.exports = {
 
@@ -34,6 +35,7 @@ module.exports = {
     this._queued.forEach(function(item){
       utils.log("Aborting queued request: " + item.name);
       item.deferred.cancel();
+      EventBus.trigger('onUploadStop', undefined);
     }, this);
   }
 
