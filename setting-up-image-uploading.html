@@ -1,0 +1,189 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+    <title>How to set up image uploading | Docs | Sir Trevor JS | Made by Many</title>
+    <link href="stylesheets/normalize-6197e73d.css" rel="stylesheet" /><link href="stylesheets/all-f9b2740c.css" rel="stylesheet" />
+  </head>
+  <body>
+
+    <header class="site-header dark-bg">
+  <div class="site-header__inner site-width">
+
+    <a class="site-logo" data-icon="add" href="./">Sir Trevor</a>
+
+    <nav class="site-nav">
+      <ul class="site-nav__items">
+        <li class="site-nav__item">
+          <a href="https://github.com/madebymany/sir-trevor-js">Github</a>
+        </li>
+        <li class="site-nav__item">
+          <a href="docs.html">Docs</a>
+        </li>
+        <li class="site-nav__item">
+          <a href="example.html">Example</a>
+        </li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<div class="site-width docs">
+  <aside class="docs__sidebar">
+  <nav class="docs__navigation">
+
+    <ul>
+      <li>
+        <a href="docs.html#1">Getting Started</a>
+
+        <ul>
+          <li><a href="docs.html#1-1">Installation</a></li>
+          <li><a href="docs.html#1-2">Initialising</a></li>
+          <li><a href="docs.html#1-3">The Output</a></li>
+          <li><a href="docs.html#1-4">Getting an instance</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="docs.html#2">Options</a>
+
+        <ul>
+          <li><a href="docs.html#2-1">Block options</a></li>
+          <li><a href="docs.html#2-2">Global options</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="docs.html#3">Blocks</a>
+
+        <ul>
+          <li><a href="docs.html#3-1">Tweet Block</a></li>
+          <li><a href="docs.html#3-2">Image Block</a></li>
+          <li><a href="docs.html#3-3">Hooks</a></li>
+          <li><a href="docs.html#3-4">Events</a></li>
+          <li><a href="setting-up-image-uploading.html">Uploaders</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="docs.html#4">Custom Blocks</a>
+
+        <ul>
+          <li><a href="docs.html#4-1">Concepts</a></li>
+          <li><a href="docs.html#4-2">Mixins</a></li>
+          <li><a href="docs.html#4-3">Validations</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="docs.html#5">Text editing</a>
+
+        <ul>
+          <li><a href="docs.html#5-1">Scribe</a></li>
+          <li><a href="docs.html#5-2">Text Formatting</a></li>
+          <li><a href="docs.html#5-3">Creating a Scribe plugin</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</aside>
+
+  <section class="docs__content">
+    <h1>Setting up image uploading</h1>
+
+    <p>Adding images to a document is basic functionality in Sir Trevor JS. Setting it up is fairly simple, but does require an understanding of the component parts.</p>
+
+    <p>Sir Trevor is not a CMS — it is a focused tool to create and edit structured content — and needs to be integrated into a system that handles all the other parts that are associated with a CMS (e.g. user authentication, CRUD actions to fetch and store the content, etc.). For this reason, the server-side handling of uploaded files needs to be set up separately.</p>
+
+    <p>Like most web forms, a Sir Trevor document is sent to the server when a user saves the document (i.e. submits the form). But when you add a new image block and choose the image file to be displayed, it is uploaded immediately (via an Ajax request).</p>
+
+    <p>The image file will be sent to a server-side file handler. Listed below, there are many backend implementations of Sir Trevor for various languages and frameworks that include this functionality.</p>
+
+    <p>The image block that gets saved with the rest of the Sir Trevor-generated structured content only contains an URL reference to the uploaded image (i.e. no actual image data).</p>
+
+    <h2>Flow of events</h2>
+
+    <ol>
+      <li>User adds a Sir Trevor image block and chooses an image file</li>
+      <li>The image file is immediately sent to the server end point</li>
+      <li>The end point returns a response that includes an URL reference to the image</li>
+    </ol>
+
+    <p>The end point of the file upload handler is defined in the config object used when <a href="docs.html#1-2">initialising Sir Trevor</a>.</p>
+
+    <pre><code>SirTrevor.setDefaults({
+      uploadUrl: &quot;/images&quot;
+    });
+    </code></pre>
+
+    <h2>Format of file upload request</h2>
+
+    <p>The image is sent to the file handler as an Ajax POST request. The request includes an <code>attachment</code> hash that has three properties:</p>
+
+    <ul>
+      <li><code>attachment[name]</code> – the files name</li>
+      <li><code>attachment[file]</code> – the file</li>
+      <li><code>attachment[uid]</code> – a unique identifier for this file</li>
+    </ul>
+
+    <h2>Format of response that Sir Trevor expects</h2>
+
+    <p>Sir Trevor expects a response back from the file handler as a JSON object:</p>
+
+    <pre><code>{
+      file: {
+        url: &#39;/xyz/abc.jpg&#39;
+      }
+    }
+    </code></pre>
+
+    <p>The JSON object can be more complex and include more information as well, but, by default, Sir Trevor’s image block only looks at the <code>response.file.url</code> value.</p>
+
+    <h2>Example file upload handlers</h2>
+
+    <ul>
+      <li><a href="https://gist.github.com/cjbell/7091537">Example using Rails + Carrierwave</a></li>
+      <li><a href="https://gist.github.com/pedroaxl/7302010">Pedroaxl’s rewrite (in Coffeescript) that supports uploading to S3 (Ruby)</a></li>
+      <li><a href="https://github.com/caouecs/Laravel-SirTrevorJS/blob/master/src/Caouecs/Sirtrevorjs/Controller/SirTrevorJsController.php">Upload handler in a Laravel controller (PHP)</a></li>
+      <li>For more examples, take a look at the <a href="https://github.com/madebymany/sir-trevor-js#implementations">various Sir Trevor implementations</a></li>
+    </ul>
+
+  </section>
+</div>
+
+<footer class="site-footer dark-bg">
+  <div class="site-footer__inner site-width">
+
+    <span class="footer_intro">Brought to you by:</span>
+
+    <ul class="footer__meta-items">
+      <li class="footer__meta-item"><a href="http://itv.com" class="logo logo--itv">ITV</a></li>
+      <li class="footer__meta-item"><a href="http://madebymany.com" class="logo logo--mxm">Made by Many</a></li>
+    </ul>
+
+    <span class="footer_license">Sir Trevor JS is released under the MIT license</span>
+  </div>
+</footer>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="javascripts/all-723d5b4a.js"></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-153994-44', 'madebymany.github.io');
+      ga('send', 'pageview');
+
+    </script>
+  </body>
+</html>
