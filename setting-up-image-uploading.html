@@ -96,64 +96,60 @@
 </aside>
 
   <section class="docs__content">
-    <h1>Setting up image uploading</h1>
+  <h1>Setting up image uploading</h1>
 
-    <p>Adding images to a document is basic functionality in Sir Trevor JS. Setting it up is fairly simple, but does require an understanding of the component parts.</p>
+<p>Adding images to a document is basic functionality in Sir Trevor JS. Setting it up is fairly simple, but does require an understanding of the component parts.</p>
 
-    <p>Sir Trevor is not a CMS — it is a focused tool to create and edit structured content — and needs to be integrated into a system that handles all the other parts that are associated with a CMS (e.g. user authentication, CRUD actions to fetch and store the content, etc.). For this reason, the server-side handling of uploaded files needs to be set up separately.</p>
+<p>Sir Trevor is not a CMS — it is a focused tool to create and edit structured content — and needs to be integrated into a system that handles all the other parts that are associated with a CMS (e.g. user authentication, CRUD actions to fetch and store the content, etc.). For this reason, the server-side handling of uploaded files needs to be set up separately.</p>
 
-    <p>Like most web forms, a Sir Trevor document is sent to the server when a user saves the document (i.e. submits the form). But when you add a new image block and choose the image file to be displayed, it is uploaded immediately (via an Ajax request).</p>
+<p>Like most web forms, a Sir Trevor document is sent to the server when a user saves the document (i.e. submits the form). But when you add a new image block and choose the image file to be displayed, it is uploaded immediately (via an Ajax request).</p>
 
-    <p>The image file will be sent to a server-side file handler. Listed below, there are many backend implementations of Sir Trevor for various languages and frameworks that include this functionality.</p>
+<p>The image file will be sent to a server-side file handler. Listed below, there are many backend implementations of Sir Trevor for various languages and frameworks that include this functionality.</p>
 
-    <p>The image block that gets saved with the rest of the Sir Trevor-generated structured content only contains an URL reference to the uploaded image (i.e. no actual image data).</p>
+<p>The image block that gets saved with the rest of the Sir Trevor-generated structured content only contains an URL reference to the uploaded image (i.e. no actual image data).</p>
 
-    <h2>Flow of events</h2>
+<h2>Flow of events</h2>
 
-    <ol>
-      <li>User adds a Sir Trevor image block and chooses an image file</li>
-      <li>The image file is immediately sent to the server end point</li>
-      <li>The end point returns a response that includes an URL reference to the image</li>
-    </ol>
+<ol>
+<li>User adds a Sir Trevor image block and chooses an image file</li>
+<li>The image file is immediately sent to the server end point</li>
+<li>The end point returns a response that includes an URL reference to the image</li>
+</ol>
 
-    <p>The end point of the file upload handler is defined in the config object used when <a href="docs.html#1-2">initialising Sir Trevor</a>.</p>
+<p>The end point of the file upload handler is defined in the config object used when <a href="docs.html#1-2">initialising Sir Trevor</a>.</p>
+<pre class="highlight javascript"><code><span class="nx">SirTrevor</span><span class="p">.</span><span class="nx">setDefaults</span><span class="p">({</span>
+  <span class="na">uploadUrl</span><span class="p">:</span> <span class="s1">'/images'</span>
+<span class="p">});</span>
+</code></pre>
+<h2>Format of file upload request</h2>
 
-    <pre><code>SirTrevor.setDefaults({
-      uploadUrl: &quot;/images&quot;
-    });
-    </code></pre>
+<p>The image is sent to the file handler as an Ajax POST request. The request includes an <code>attachment</code> hash that has three properties:</p>
 
-    <h2>Format of file upload request</h2>
+<ul>
+<li><code>attachment[name]</code> – the files name</li>
+<li><code>attachment[file]</code> – the file</li>
+<li><code>attachment[uid]</code> – a unique identifier for this file</li>
+</ul>
 
-    <p>The image is sent to the file handler as an Ajax POST request. The request includes an <code>attachment</code> hash that has three properties:</p>
+<h2>Format of response that Sir Trevor expects</h2>
 
-    <ul>
-      <li><code>attachment[name]</code> – the files name</li>
-      <li><code>attachment[file]</code> – the file</li>
-      <li><code>attachment[uid]</code> – a unique identifier for this file</li>
-    </ul>
+<p>Sir Trevor expects a response back from the file handler as a JSON object:</p>
+<pre class="highlight javascript"><code><span class="p">{</span>
+  <span class="nl">file</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">url</span><span class="p">:</span> <span class="s1">'/xyz/abc.jpg'</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
+<p>The JSON object can be more complex and include more information as well, but, by default, Sir Trevor’s image block only looks at the <code>response.file.url</code> value.</p>
 
-    <h2>Format of response that Sir Trevor expects</h2>
+<h2>Example file upload handlers</h2>
 
-    <p>Sir Trevor expects a response back from the file handler as a JSON object:</p>
-
-    <pre><code>{
-      file: {
-        url: &#39;/xyz/abc.jpg&#39;
-      }
-    }
-    </code></pre>
-
-    <p>The JSON object can be more complex and include more information as well, but, by default, Sir Trevor’s image block only looks at the <code>response.file.url</code> value.</p>
-
-    <h2>Example file upload handlers</h2>
-
-    <ul>
-      <li><a href="https://gist.github.com/cjbell/7091537">Example using Rails + Carrierwave</a></li>
-      <li><a href="https://gist.github.com/pedroaxl/7302010">Pedroaxl’s rewrite (in Coffeescript) that supports uploading to S3 (Ruby)</a></li>
-      <li><a href="https://github.com/caouecs/Laravel-SirTrevorJS/blob/master/src/Caouecs/Sirtrevorjs/Controller/SirTrevorJsController.php">Upload handler in a Laravel controller (PHP)</a></li>
-      <li>For more examples, take a look at the <a href="https://github.com/madebymany/sir-trevor-js#implementations">various Sir Trevor implementations</a></li>
-    </ul>
+<ul>
+<li><a href="https://gist.github.com/cjbell/7091537">Example using Rails + Carrierwave</a></li>
+<li><a href="https://gist.github.com/pedroaxl/7302010">Pedroaxl’s rewrite (in Coffeescript) that supports uploading to S3 (Ruby)</a></li>
+<li><a href="https://github.com/caouecs/Laravel-SirTrevorJS/blob/master/src/Caouecs/Sirtrevorjs/Controller/SirTrevorJsController.php">Upload handler in a Laravel controller (PHP)</a></li>
+<li>For more examples, take a look at the <a href="https://github.com/madebymany/sir-trevor-js#implementations">various Sir Trevor implementations</a></li>
+</ul>
 
   </section>
 </div>
@@ -171,6 +167,7 @@
     <span class="footer_license">Sir Trevor JS is released under the MIT license</span>
   </div>
 </footer>
+
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="javascripts/all-723d5b4a.js"></script>
