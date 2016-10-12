@@ -24,7 +24,7 @@ var ScribeTextBlockPlugin = function(block) {
       } else {
         div.appendChild(range.cloneContents());
       }
-      
+
       stripFirstEmptyElement(div);
 
       // Sometimes you'll get an empty tag at the start of the block.
@@ -50,6 +50,14 @@ var ScribeTextBlockPlugin = function(block) {
       var range = selection.range.cloneRange();
 
       range.setStartBefore(scribe.el.firstChild, 0);
+
+      var node = range.endContainer.nodeType === 3 ? range.endContainer.parentNode : range.endContainer;
+
+      // We make sure that the caret must be inside the first element to consider
+      // it at the beginning of the block
+      if (scribe.el.firstChild !== node) {
+        return false;
+      }
 
       return rangeToHTML(range, false) === '';
     };

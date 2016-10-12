@@ -32,7 +32,13 @@ module.exports = {
     if (this._scribe.getTextContent() !== '') {
       var fakeContent = document.createElement('div');
       fakeContent.innerHTML = this.getTextBlockHTML();
-      content = fakeContent.firstChild.innerHTML || fakeContent.innerHTML;
+
+      // We concatenate the content of each paragraph and take into account the new lines
+      content = fakeContent.children &&
+        Array.prototype.slice.call(fakeContent.children).reduce(function (res, child) {
+          return res + child.innerHTML;
+        }, '') || fakeContent.innerHTML;
+
       return content.replace(/^[\s\uFEFF\xA0]+|$/g, '');
     }
     return content;
@@ -64,7 +70,7 @@ module.exports = {
 
     if (options.keepCaretPosition && caretPosition.start !== 0 && caretPosition.end !== 0) {
       selectionRange(this._scribe.el, {
-        start: caretPosition.start, 
+        start: caretPosition.start,
         end: caretPosition.end
       });
     }
