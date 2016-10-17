@@ -7,7 +7,9 @@ SirTrevor.Locales.de = {
     'close':            'Schließen',
     'position':         'Position',
     'wait':             'Bitte warten...',
-    'link':             'Link eintragen'
+    'link':             'Link eintragen',
+    'yes':              'Ja ',
+    'no':               'Nein'
   },
   errors: {
     'title': "Die folgenden Fehler sind aufgetreten:",
@@ -30,7 +32,7 @@ SirTrevor.Locales.de = {
     },
     image: {
       'title': "Bild",
-      'upload_error': "There was a problem with your upload"
+      'upload_error': "Es wurde ein Problem beim Upload festgestellt"
     },
     video: {
       'title': "Video"
@@ -45,7 +47,7 @@ SirTrevor.Locales.de = {
       'key_missing': "An Embedly API key must be present"
     },
     heading: {
-      'title': 'Heading'
+      'title': 'Überschrift'
     }
   }
 };

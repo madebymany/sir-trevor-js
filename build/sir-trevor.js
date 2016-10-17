@@ -4596,9 +4596,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var EventBus = __webpack_require__(75);
 
 	module.exports = function (block, file, success, error) {
-
-	  EventBus.trigger('onUploadStart');
-
 	  var uid = [block.blockID, new Date().getTime(), 'raw'].join('-');
 	  var data = new FormData();
 	  var attachmentName = block.attachmentName || config.defaults.attachmentName;
@@ -4608,6 +4605,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  data.append(attachmentName, file.name);
 	  data.append(attachmentFile, file);
 	  data.append(attachmentUid, uid);
+
+	  EventBus.trigger('onUploadStart', data);
 
 	  block.resetMessages();
 
@@ -18791,7 +18790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _this3.deleteEl.classList.remove("active");
 	    };
 
-	    this.ui.insertAdjacentHTML("beforeend", DELETE_TEMPLATE);
+	    this.ui.insertAdjacentHTML("beforeend", DELETE_TEMPLATE());
 	    Events.delegate(this.el, ".js-st-block-confirm-delete", "click", this.onDeleteConfirm);
 	    Events.delegate(this.el, ".js-st-block-deny-delete", "click", onDeleteDeny);
 	  },
@@ -19626,9 +19625,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 252 */
 /***/ function(module, exports) {
 
-	'use strict';
+	"use strict";
 
-	module.exports = '\n  <div class="st-block__ui-delete-controls">\n    <label class="st-block__delete-label">\n      ' + i18n.t('general:delete') + '\n    </label>\n    <button class=\'st-block-ui__confirm js-st-block-confirm-delete\' type="button">\n      ' + i18n.t('general:yes') + '\n    </button>\n    <button class=\'st-block-ui__confirm js-st-block-deny-delete\' type="button">\n      ' + i18n.t('general:no') + '\n    </button>\n  </div>\n';
+	module.exports = function () {
+	  return '\n    <div class="st-block__ui-delete-controls">\n      <label class="st-block__delete-label">\n        ' + i18n.t('general:delete') + '\n      </label>\n      <button class=\'st-block-ui__confirm js-st-block-confirm-delete\' type="button">\n        ' + i18n.t('general:yes') + '\n      </button>\n      <button class=\'st-block-ui__confirm js-st-block-deny-delete\' type="button">\n        ' + i18n.t('general:no') + '\n      </button>\n    </div>\n  ';
+	};
 
 /***/ },
 /* 253 */
@@ -20500,8 +20501,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (_.isUndefined(data.status_url)) {
 	      data.status_url = '';
 	    }
-	    var iframe = this.inner.querySelector('iframe');
-	    Dom.remove(iframe);
+	    var twitterwidget = this.inner.querySelector('twitterwidget');
+	    Dom.remove(twitterwidget);
 
 	    this.inner.insertAdjacentHTML("afterbegin", tweet_template(data));
 

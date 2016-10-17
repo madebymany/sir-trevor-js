@@ -2,8 +2,6 @@
 
 [![Build Status](https://travis-ci.org/madebymany/sir-trevor-js.png?branch=master)](https://travis-ci.org/madebymany/sir-trevor-js/)
 
-![Sir Trevor in action](https://raw.github.com/madebymany/sir-trevor-js/master/examples/sir-trevor.gif)
-
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
 ## Upgrade guide from v0.5
@@ -19,7 +17,7 @@ The recomended way to install Sir Trevor in your project is using npm. This will
 npm install sir-trevor
 ```
 
-Note: Sir Trevor is distributed combined with it's dependencies. If you wish to modify Sir Trevor you will want to clone the repository and use the [Compiling instructions](#compiling) below.
+Note: Sir Trevor is distributed combined with its dependencies. If you wish to modify Sir Trevor you will want to clone the repository and use the [Compiling instructions](#compiling) below.
 
 HTML
 

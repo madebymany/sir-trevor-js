@@ -32,8 +32,8 @@ module.exports = Block.extend({
 
   loadData: function(data) {
     if (_.isUndefined(data.status_url)) { data.status_url = ''; }
-    var iframe = this.inner.querySelector('iframe');
-    Dom.remove(iframe);
+    var twitterwidget = this.inner.querySelector('twitterwidget');
+    Dom.remove(twitterwidget);
 
     this.inner.insertAdjacentHTML("afterbegin", tweet_template(data));
 
