@@ -2,6 +2,16 @@
 
 ## 0.6.x
 
+### 0.6.3
+
+* Fixed bug in multiline editing in Safari 10 (https://github.com/madebymany/sir-trevor-js/issues/519)
+
+### 0.6.2
+
+* Update Twitter block to latest syntax matching from `iframe` to `twitterwidget`
+
+### 0.6.1
+
 ### 0.6.0
 
 * New interface

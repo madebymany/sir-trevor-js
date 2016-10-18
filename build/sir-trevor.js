@@ -18887,19 +18887,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      var ctrlDown = false;
-
-	      Events.delegate(block.el, '.st-text-block', 'keyup', function (ev) {
-	        if (ev.which === 17 || ev.which === 224 || ev.which === 91) {
-	          ctrlDown = false;
-	        }
-	      });
 	      Events.delegate(block.el, '.st-text-block', 'keydown', function (ev) {
-	        if (ev.which === 17 || ev.which === 224 || ev.which === 91) {
-	          ctrlDown = true;
-	        }
-
-	        if (ev.which === cmd.keyCode && ctrlDown) {
+	        if ((ev.metaKey || ev.ctrlKey) && ev.keyCode === cmd.keyCode) {
 	          ev.preventDefault();
 	          block.execTextBlockCommand(cmd.cmd);
 	        }
