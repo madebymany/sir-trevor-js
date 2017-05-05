@@ -15,7 +15,7 @@ module.exports.create = function(SirTrevor) {
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:create", 'Text', null, this.parentNode.parentNode.previousSibling
+      "block:create", 'Text', null, this.parentNode.parentNode.previousSibling, { autoFocus: true }
     );
   }
 

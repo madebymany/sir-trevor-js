@@ -21,14 +21,14 @@ module.exports = Block.extend({
     scribe.use(new ScribeTextBlockPlugin(this));
     scribe.use(new ScribeHeadingPlugin(this));
     scribe.use(new ScribeQuotePlugin(this));
-    
+
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
 
   textable: true,
   toolbarEnabled: false,
 
-  scribeOptions: { 
+  scribeOptions: {
     allowBlockElements: false,
     tags: {
       p: false
@@ -46,7 +46,6 @@ module.exports = Block.extend({
   },
 
   onBlockRender: function() {
-    this.focus();
     this.toggleEmptyClass();
   },
 

@@ -35,7 +35,7 @@ var ScribeListBlockPlugin = function(block) {
 
         if (scribe.getTextContent().length === 0) {
           block.removeCurrentListItem();
-          block.mediator.trigger("block:create", 'Text', null, block.el);
+          block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
         } else {
           content = rangeToHTML(selectToEnd());
           block.addListItemAfterCurrent(content);

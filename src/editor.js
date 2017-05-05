@@ -117,6 +117,15 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       }, this);
     } else if (this.options.defaultType !== false) {
       this.mediator.trigger('block:create', this.options.defaultType, {});
+
+      if (this.options.focusOnInit) {
+        var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
+
+        if (blockElement) {
+          var block = this.blockManager.findBlockById(blockElement.getAttribute('id'));
+          block.focus();
+        }
+      }
     }
   },
 
@@ -169,7 +178,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       );
       hideTopControls = block && block.textable;
     }
-    
+
     this._toggleHideTopControls(hideTopControls);
   },
 
@@ -330,8 +339,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.form = Dom.getClosest(this.el, 'form');
 
     var outer = Dom.createElement("div", {
-                  'id': this.ID, 
-                  'class': 'st-outer notranslate', 
+                  'id': this.ID,
+                  'class': 'st-outer notranslate',
                   'dropzone': 'copy link move'});
 
     var wrapper = Dom.createElement("div", {'class': 'st-blocks'});
@@ -349,5 +358,3 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 });
 
 module.exports = Editor;
-
-

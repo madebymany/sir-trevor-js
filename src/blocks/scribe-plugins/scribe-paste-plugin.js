@@ -8,7 +8,7 @@ paragraph that has been added.
 var scribePastePlugin = function(block) {
   return function(scribe) {
     var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
-    
+
     insertHTMLCommandPatch.execute = function (value) {
       scribe.transactionManager.run(() => {
         scribe.api.CommandPatch.prototype.execute.call(this, value);
@@ -25,7 +25,7 @@ var scribePastePlugin = function(block) {
               format: 'html',
               text: node.innerHTML
             };
-            block.mediator.trigger("block:create", 'Text', data, block.el);
+            block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
           });
           scribe.el.focus();
         }
