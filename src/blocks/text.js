@@ -32,7 +32,7 @@ module.exports = Block.extend({
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
 
-  scribeOptions: { 
+  scribeOptions: {
     allowBlockElements: true,
     tags: {
       p: true
@@ -48,7 +48,6 @@ module.exports = Block.extend({
   },
 
   onBlockRender: function() {
-    this.focus();
     this.toggleEmptyClass();
   },
 

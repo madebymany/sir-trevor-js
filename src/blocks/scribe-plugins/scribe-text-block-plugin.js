@@ -98,7 +98,7 @@ var ScribeTextBlockPlugin = function(block) {
               format: 'html',
               text: node.innerHTML.trim()
             };
-            block.mediator.trigger("block:create", 'Text', data, block.el);
+            block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
           }
         });
       }
@@ -119,7 +119,7 @@ var ScribeTextBlockPlugin = function(block) {
 
           // Remove any bad characters after current selection.
           selectToEnd().extractContents();
-          block.mediator.trigger("block:create", 'Text', null, block.el);
+          block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
         } else {
           createBlocksFromParagraphs();
         }

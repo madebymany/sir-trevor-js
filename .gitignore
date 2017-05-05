@@ -5,6 +5,7 @@ _SpecRunner.html
 bower_components/
 components/
 .grunt
+npm-debug.log
 website/.bundle/
 website/bower_components/
 website/build/

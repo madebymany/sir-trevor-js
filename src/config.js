@@ -44,7 +44,7 @@ module.exports = {
       trail: 57,
       shadow: false,
       left: '50%',
-      top: '50%'
+      top: '50%',
     },
     Block: {
       drop_options: drop_options,
@@ -112,6 +112,7 @@ module.exports = {
     },
     ajaxOptions: {
       headers: {}
-    }
+    },
+    focusOnInit: true,
   }
 };
