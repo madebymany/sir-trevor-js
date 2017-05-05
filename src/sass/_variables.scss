@@ -1,21 +1,20 @@
-$text-block-font-size: 1.275em;
+$text-block-font-size: 1.275em !default;
 
-$text-block-font-color: #282D31;
-$accent-color: #17BB75;
-$base-ui-color: #42474B;
-$light-ui-color: #CCCCCC;
-$blocks-control-bg-color: #F7F7F7;
-$blocks-control-border-color: #ddd;
-$error-color: #d70014;
-$selection-color: #B1F2D6;
+$text-block-font-color: #282d31 !default;
+$accent-color: #17bb75 !default;
+$base-ui-color: #42474b !default;
+$light-ui-color: #ccc !default;
+$blocks-control-bg-color: #f7f7f7 !default;
+$blocks-control-border-color: #ddd !default;
+$error-color: #d70014 !default;
+$selection-color: #b1f2d6 !default;
 
-$inner-block-padding: 30px 30px 48px 30px;
+$inner-block-padding: 30px 30px 48px !default;
 
-$block-controls-height: 164px;
-$block-add-height: 40px;
-$block-controls-color:#9B9B9B;
+$block-controls-height: 164px !default;
+$block-add-height: 40px !default;
+$block-controls-color: #9b9b9b !default;
 
-$border-size: 2px;
-$border-style: solid;
-$default-border: $border-size $border-style $accent-color;
-
+$border-size: 2px !default;
+$border-style: solid !default;
+$default-border: $border-size $border-style $accent-color !default;

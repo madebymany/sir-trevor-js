@@ -77,7 +77,7 @@ module.exports = {
 
       switch(e.keyCode) {
         case 13:
-          this.mediator.trigger("block:create", 'Text', null, this.el);
+          this.mediator.trigger("block:create", 'Text', null, this.el, { autoFocus: true });
           break;
         case 8:
           this.onDeleteClick.call(this, new CustomEvent('click'));

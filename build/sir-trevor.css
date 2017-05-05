@@ -26,11 +26,11 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   fill: currentColor; }
 
 .st-block__inner ::-moz-selection {
-  background: #B1F2D6;
+  background: #b1f2d6;
   text-shadow: none; }
 
 .st-block__inner ::selection {
-  background: #B1F2D6;
+  background: #b1f2d6;
   text-shadow: none; }
 
 .st-spinner {
@@ -116,8 +116,7 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   display: none; }
 
 .st-block-addition__button {
-  -webkit-transition: all 0.2s 0.3s ease-in-out;
-          transition: all 0.2s 0.3s ease-in-out;
+  transition: all 0.2s 0.3s ease-in-out;
   border: 1px solid transparent;
   color: #444444;
   position: relative;
@@ -137,12 +136,11 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
     color: inherit; }
   .st-block-addition:hover .st-block-addition__button,
   .st-block--active .st-block-addition__button {
-    color: #17BB75;
+    color: #17bb75;
     opacity: 1; }
 
 .st-block-addition-top {
-  -webkit-transition: all 0.2s 0.2s ease-in-out;
-          transition: all 0.2s 0.2s ease-in-out;
+  transition: all 0.2s 0.2s ease-in-out;
   text-align: left;
   outline: none;
   border: none;
@@ -163,9 +161,8 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
     margin: 0;
     margin-left: -1px; }
   .st-block-addition-top:before {
-    -webkit-transition: all 0.2s 0.1s ease-in-out;
-            transition: all 0.2s 0.1s ease-in-out;
-    background: #17BB75;
+    transition: all 0.2s 0.1s ease-in-out;
+    background: #17bb75;
     position: absolute;
     height: 2px;
     top: 50%;
@@ -188,8 +185,7 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
     display: none; }
 
 .st-block-addition-top__icon {
-  -webkit-transition: all 0.2s 0.1s ease-in-out;
-          transition: all 0.2s 0.1s ease-in-out;
+  transition: all 0.2s 0.1s ease-in-out;
   border: 1px solid transparent;
   color: #444444;
   position: absolute;
@@ -208,7 +204,7 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
     color: inherit; }
   .st-block-addition-top:hover .st-block-addition-top__icon,
   .st-block--active .st-block-addition-top__icon {
-    color: #17BB75;
+    color: #17bb75;
     opacity: 1; }
 
 .st-block-addition-top__button {
@@ -250,7 +246,7 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   height: 42px; }
 
 .st-block-controls__button:hover {
-  color: #17BB75; }
+  color: #17bb75; }
 
 .st-block-replacer {
   position: absolute;
@@ -274,9 +270,8 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
     display: block; }
 
 .st-block-replacer__button {
-  -webkit-transition: all 0.2s ease-in-out;
-          transition: all 0.2s ease-in-out;
-  color: #17BB75;
+  transition: all 0.2s ease-in-out;
+  color: #17bb75;
   position: relative;
   box-sizing: border-box;
   display: inline-block;
@@ -308,12 +303,12 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
 
 .st-block__inner--droppable {
   border: 1px solid #ddd;
-  background: #F7F7F7;
+  background: #f7f7f7;
   cursor: pointer;
   margin-top: 2em;
   margin-bottom: 2em; }
   .st-block__inner--droppable:focus {
-    border-color: #17BB75;
+    border-color: #17bb75;
     outline: none; }
 
 .st-block[data-type="quote"] .st-block__inner {
@@ -324,8 +319,7 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
 
 .st-block__inner--controllable {
   padding-bottom: 3em;
-  -webkit-transition: all 0.2s;
-          transition: all 0.2s; }
+  transition: all 0.2s; }
 
 .st-block--with-errors .st-block__inner,
 .st-block--delete-active .st-block__inner {
@@ -349,8 +343,8 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   border-radius: 0.2em; }
 
 .st-block--with-plus:after {
-  background: #F7F7F7;
-  color: #17BB75;
+  background: #f7f7f7;
+  color: #17bb75;
   cursor: pointer; }
 
 .with-st-controls:after,
@@ -368,11 +362,11 @@ sir-trevor-icons.svg.st-icon, .st-block-ui-btn__reorder, .st-block-ui-btn__delet
   position: absolute;
   bottom: 0;
   left: 0;
-  background: #17BB75; }
+  background: #17bb75; }
 
 .st-drag-element {
   background: #fff;
-  box-shadow: 3px 3px #17BB75 inset, -3px -3px #17BB75 inset;
+  box-shadow: 3px 3px #17bb75 inset, -3px -3px #17bb75 inset;
   position: absolute;
   width: 100%;
   z-index: -1; }
@@ -439,14 +433,14 @@ ul.st-text-block {
 
 .st-block__dropzone .st-icon, .st-block__dropzone .st-block-ui-btn__reorder, .st-block__dropzone .st-block-ui-btn__delete, .st-block__dropzone .st-block-control-ui-btn {
   font-size: 4em;
-  color: #42474B;
+  color: #42474b;
   display: block;
   text-align: center;
   margin: 0 auto 0.2em; }
 
 .st-block__dropzone p {
   text-align: center;
-  color: #42474B;
+  color: #42474b;
   font-size: 1.2em;
   margin: 0; }
 
@@ -464,7 +458,7 @@ ul.st-text-block {
 
 .st-upload-btn {
   border: 0;
-  background: #42474B;
+  background: #42474b;
   border-radius: 0.2em;
   padding: 0.35em 1em;
   font-size: 1.125em;
@@ -474,7 +468,7 @@ ul.st-text-block {
   z-index: 10; }
 
 .st-block__upload-container:hover .st-upload-btn {
-  background: #17BB75;
+  background: #17bb75;
   color: #fff; }
 
 .st-block__editor--with-square-media {
@@ -523,7 +517,7 @@ ul.st-text-block {
   display: none;
   position: relative;
   padding: .3em .5em;
-  border: 2px solid #17BB75;
+  border: 2px solid #17bb75;
   border-left: none;
   border-top: none;
   max-width: 80%; }
@@ -541,7 +535,7 @@ ul.st-text-block {
   color: #d70014; }
 
 .st-block-positioner {
-  border: 2px solid #17BB75;
+  border: 2px solid #17bb75;
   position: absolute;
   z-index: 2;
   background: #fff;
@@ -569,7 +563,7 @@ ul.st-text-block {
     left: -0.3em;
     top: 50%;
     z-index: -1;
-    border: 2px solid #17BB75;
+    border: 2px solid #17bb75;
     background: #fff;
     -webkit-transform: translateY(-50%) rotate(45deg);
             transform: translateY(-50%) rotate(45deg); }
@@ -615,7 +609,7 @@ ul.st-text-block {
   cursor: pointer;
   width: 1em;
   height: 1em;
-  color: #9B9B9B; }
+  color: #9b9b9b; }
 
 .st-block-ui-btn__reorder {
   position: absolute;
@@ -624,10 +618,9 @@ ul.st-text-block {
           transform: scaleX(-1);
   top: 0.5em;
   opacity: 0.2;
-  -webkit-transition: opacity 0.3s ease-in-out;
-          transition: opacity 0.3s ease-in-out; }
+  transition: opacity 0.3s ease-in-out; }
   .st-block-ui-btn__reorder:hover, .st-block-ui-btn__reorder:focus {
-    color: #17BB75;
+    color: #17bb75;
     opacity: 1; }
 
 .st-block-ui-btn__delete {
@@ -653,13 +646,12 @@ ul.st-text-block {
   font-size: 1em;
   display: inline-block;
   padding: 3px;
-  -webkit-transition: color .1s;
-          transition: color .1s; }
+  transition: color .1s; }
   .st-block-control-ui-btn:hover, .st-block-control-ui-btn:focus {
-    color: #17BB75; }
+    color: #17bb75; }
 
 .st-block-control-ui-btn--selected {
-  color: #17BB75; }
+  color: #17bb75; }
 
 .st-block--with-errors .st-block-control-ui-btn,
 .st-block--delete-active .st-block-control-ui-btn {
@@ -672,7 +664,7 @@ ul.st-text-block {
     background-color: #d70014; }
 
 .st-block__ui-delete-controls {
-  border: 2px solid #17BB75;
+  border: 2px solid #17bb75;
   position: absolute;
   z-index: 2;
   background: #fff;
@@ -702,7 +694,7 @@ ul.st-text-block {
     left: -0.3em;
     top: 50%;
     z-index: -1;
-    border: 2px solid #17BB75;
+    border: 2px solid #17bb75;
     background: #fff;
     -webkit-transform: translateY(-50%) rotate(45deg);
             transform: translateY(-50%) rotate(45deg); }
@@ -728,8 +720,7 @@ ul.st-text-block {
   z-index: 10;
   border-radius: 0.4em;
   padding: 0;
-  -webkit-transition: opacity 0.2s ease-in-out;
-          transition: opacity 0.2s ease-in-out; }
+  transition: opacity 0.2s ease-in-out; }
 
 .st-format-bar:before {
   content: '';
@@ -770,7 +761,7 @@ ul.st-text-block {
 
 .st-format-btn:hover,
 .st-format-btn--is-active {
-  color: #17BB75; }
+  color: #17bb75; }
 
 .st-format-btn--Unlink {
   text-decoration: line-through; }
