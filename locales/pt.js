@@ -1,52 +1,52 @@
 SirTrevor.Locales.pt = {
-  general: {
-    'delete':           'Elimina?',
-    'drop':             'Arrastar __block__ aqui',
-    'paste':            'Ou cola o URL aquí',
-    'upload':           '...ou selecionar um fichero',
-    'close':            'Fechar',
-    'position':         'Posicionar',
-    'wait':             'Por favor, espere...',
-    'link':             'Introduz um link'
-  },
-  errors: {
-    'title': "Sugerio os seguientes erros :",
-    'validation_fail': "Bloque __type__ inválido",
-    'block_empty': "__name__ no debe estar vacío",
-    'type_missing': "Necessitas um bloque de __type__",
-    'required_type_empty': "Um bloque obligatorio de tipo __type__ está vazio",
-    'load_fail': "Sugerio um problema a cargar os dados do documento"
-  },
-  blocks: {
-    text: {
-      'title': "Texto"
-    },
-    list: {
-      'title': "Lista"
-    },
-    quote: {
-      'title': "Cita",
-      'credit_field': "Autor"
-    },
-    image: {
-      'title': "Imagem",
-      'upload_error': "Sugerio um problema com o upload da imagem"
-    },
-    video: {
-      'title': "Vídeo"
-    },
-    tweet: {
-      'title': "Tweet",
-      'fetch_error': "Sugerio um problema na busca da sua tweet"
-    },
-    embedly: {
-      'title': "Embebido",
-      'fetch_error': "Sugerio um problema na busca do video",
-      'key_missing': "Necessitamos a chave do API Embedly"
-    },
-    heading: {
-      'title': 'Título'
+      general: {
+        'delete':           'Deletar?',
+        'drop':             'Arraste __block__ aqui',
+        'paste':            'Ou cole o link aqui',
+        'upload':           '...ou escolha um arquivo',
+        'close':            'fechar',
+        'position':         'Posição',
+        'wait':             'Aguarde...',
+        'link':             'Insira o link'
+      },
+      errors: {
+        'title': "Você tem os seguintes erros:",
+        'validation_fail': "o bloco __type__ é inválido",
+        'block_empty': "__name__ não pode ser vazio",
+        'type_missing': "Você deve ter um bloco do tipo __type__",
+        'required_type_empty': "Um bloco obrigatório do tipo __type__ está vazio",
+        'load_fail': "Houve um problema ao carregar o conteúdo do documento"
+      },
+      blocks: {
+        text: {
+          'title': "Texto"
+        },
+        list: {
+          'title': "Lista"
+        },
+        quote: {
+          'title': "Citação",
+          'credit_field': "Crédito"
+        },
+        image: {
+          'title': "Imagem",
+          'upload_error': "Houve um problema com o seu upload"
+        },
+        video: {
+          'title': "Video"
+        },
+        tweet: {
+          'title': "Tweet",
+          'fetch_error': "Houve um problema ao carregar seu tweet"
+        },
+        embedly: {
+          'title': "Embedly",
+          'fetch_error': "Houve um problema ao carregar seu embed",
+          'key_missing': "Uma API key da Embedly precisa estar presente"
+        },
+        heading: {
+          'title': "Título"
+        }
+      }
     }
-  }
-};
 
