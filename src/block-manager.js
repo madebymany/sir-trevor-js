@@ -55,7 +55,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     type = utils.classify(type);
 
     // Run validations
-    if (!this.canCreateBlock(type)) { return; }
+    if (!this.canCreateBlock(type)) {
+      type = utils.classify(this.blockTypes[0]);
+      this.wrapper.classList.add("st-replacer-enable");
+    }
 
     var block = new Blocks[type](data, this.instance_scope, this.mediator,
                                  this.blockOptions);
@@ -120,8 +123,6 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       return (item.blockID !== block.blockID);
     });
 
-    block.remove();
-
     if (options.focusOnPrevious && previousBlock) {
       previousBlock.focusAtEnd();
     }
@@ -135,8 +136,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   replaceBlock: function(blockNode, type, data) {
     var block = this.findBlockById(blockNode.id);
-    this.createBlock(type, data || null, blockNode);
     this.removeBlock(blockNode.id);
+    this.createBlock(type, data || null, blockNode);
     block.remove();
   },
 
