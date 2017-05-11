@@ -44,6 +44,12 @@ describe("toHTML", function(){
     expect(html).not.toMatch(/<i>/);
   });
 
+  it("doesn't mess up on links with ) in", function(){
+    var md = "[link](http://link.com/with_(parenthesis))",
+        html = SirTrevor.toHTML(md, "Text");
+    expect(html).toBe("<p><a href='http://link.com/with_(parenthesis)'>link</a></p>");
+  });
+
   it("converts a bold in the middle of a word", function(){
     var md = "Da**id backfire**",
         html = SirTrevor.toHTML(md, "Text");
