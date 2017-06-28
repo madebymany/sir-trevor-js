@@ -376,7 +376,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   _initTextBlocks: function() {
     Array.prototype.forEach.call(this.getTextBlock(), (el) => {
       el.addEventListener('keyup', this.getSelectionForFormatter);
-      el.addEventListener('mouseup', this.getSelectionForFormatter);
+      el.addEventListener('mousedown', this.addMouseupListener.bind(this));
       el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
     });
 
@@ -389,6 +389,14 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
         textBlock, this.scribeOptions, configureScribe
       );
     }
+  },
+
+  addMouseupListener: function addMouseupListener() {
+    var listener = () => {
+      this.getSelectionForFormatter();
+      window.removeEventListener('mouseup', listener);
+    };
+    window.addEventListener('mouseup', listener);
   },
 
   getSelectionForFormatter: function() {
