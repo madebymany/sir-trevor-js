@@ -11,8 +11,9 @@
     "BrowserRunner.html"
   ],
   "main": [
-    "sir-trevor.js",
-    "sir-trevor.css"
+    "build/sir-trevor.js",
+    "build/sir-trevor.css",
+    "build/sir-trevor-icons.svg"
   ],
   "dependencies": {
     "es5-shim": "~v4.0.3",
