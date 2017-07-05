@@ -5,6 +5,32 @@ When content is pasted into a block take the sanitized html and create a block f
 paragraph that has been added.
 */
 
+function isMsWordListParagraph(node) {
+  var matchingClassnames = node.className.split(" ").filter(function(className) {
+    return className.startsWith("MsoListParagraph");
+  });
+  return matchingClassnames.length > 0;
+}
+
+function createListBlock(block, listItems) {
+  var listItemContent = listItems.map(function(listItemNode) {
+    var content = listItemNode.innerHTML.substr(2);
+    return {content: content};
+  });
+  var listData = {
+    format: 'html',
+    listItems: listItemContent.reverse()
+  };
+  block.mediator.trigger("block:create", 'List', listData, block.el, { autoFocus: true });
+}
+
+function handleListItems(block, listItemsToCreate) {
+  if (listItemsToCreate.length > 0) {
+    createListBlock(block, listItemsToCreate);
+  }
+  return [];
+}
+
 var scribePastePlugin = function(block) {
   return function(scribe) {
     var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
@@ -19,15 +45,51 @@ var scribePastePlugin = function(block) {
         if (fakeContent.childNodes.length > 1) {
 
           var nodes = Array.from(fakeContent.childNodes);
-          scribe.setContent( nodes.shift().innerHTML );
+          var listItemsToCreate = [];
+          var listIsFirstItem = false;
+
+          var firstNode = nodes[0];
+          if (isMsWordListParagraph(firstNode)) {
+            listIsFirstItem = true;
+            scribe.setContent("");
+          } else {
+            scribe.setContent( nodes.shift().innerHTML );
+          }
+
           nodes.reverse().forEach(function(node) {
-            var data = {
-              format: 'html',
-              text: node.innerHTML
-            };
-            block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
+            if (isMsWordListParagraph(node)) {
+              // Start building list
+              listItemsToCreate.push(node);
+            } else {
+              // Previous blocks were list items, so create the list block first
+              listItemsToCreate = handleListItems(block, listItemsToCreate);
+
+              // Now create the text block
+              var data = {
+                format: 'html',
+                text: node.innerHTML
+              };
+              block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
+            }
           });
+
+          // If the last element was a list item, the list won't have been
+          // created yet, so create it now
+          listItemsToCreate = handleListItems(block, listItemsToCreate);
+
+          if (listIsFirstItem) {
+            block.mediator.trigger("block:remove", block.blockID);
+          }
+
           scribe.el.focus();
+        } else {
+          var node = fakeContent.firstChild;
+
+          if (isMsWordListParagraph(node)) {
+            scribe.setContent("");
+            createListBlock(block, [node]);
+            block.mediator.trigger("block:remove", block.blockID);
+          }
         }
       });
     };
