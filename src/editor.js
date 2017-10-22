@@ -168,6 +168,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.initialize(options || this.options);
   },
 
+  restore: function(data) {
+    this.el.value = data;
+    this.reinitialize();
+  },
+
   blockLimitReached: function(toggle) {
     this.wrapper.classList.toggle('st--block-limit-reached', toggle);
   },
