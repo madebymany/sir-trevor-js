@@ -66,7 +66,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
     EventBus.trigger("block:reorder:dropped", item_id);
   },
 
-  onDragStart: function onDragStart(ev) {
+  onDragStart: function(ev) {
     var block = this.block;
 
     // Without this blocks are not commited to their new position
