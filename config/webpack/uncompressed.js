@@ -3,6 +3,10 @@ var webpackConfigMerger = require("webpack-config-merger");
 var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 var config = webpackConfigMerger(require("./config"), {
+  mode: "production",
+  optimization: {
+    minimize: false
+  },
   output: {
     filename: "sir-trevor.js"
   },
