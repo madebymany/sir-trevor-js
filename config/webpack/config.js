@@ -1,15 +1,14 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var webpack = require("webpack");
 
 module.exports = {
   entry: "./index.js",
   output: {
     library: "SirTrevor",
     libraryTarget: "umd",
-    path: './build'
+    path: "./build"
   },
   externals: {
-    "jquery": {
+    jquery: {
       root: "jQuery",
       commonjs: "jquery",
       commonjs2: "jquery",
@@ -17,17 +16,13 @@ module.exports = {
     }
   },
   module: {
-    loaders: [{
-      test: /\.js?$/,
-      exclude: /(node_modules|bower_components)/,
-      loader: 'babel?optional[]=runtime'
-    }],
-    preLoaders: [{
-      test: /\.scss$/,
-      loader: ExtractTextPlugin.extract('css!autoprefixer!sass?outputStyle=compressed')
-    }]
+    rules: [
+      {
+        test: /\.js?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: "babel-loader"
+      }
+    ]
   },
-  plugins: [
-    new webpack.optimize.DedupePlugin()
-  ]
+  plugins: []
 };

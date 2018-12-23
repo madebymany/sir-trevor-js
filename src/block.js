@@ -16,7 +16,7 @@ var BlockDeletion = require('./block-deletion');
 var BlockPositioner = require('./block-positioner');
 var EventBus = require('./event-bus');
 
-var Spinner = require('spin.js');
+var { Spinner } = require('spin.js');
 
 const DELETE_TEMPLATE = require("./templates/delete");
 
@@ -92,7 +92,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this._setBlockInner();
 
     this.editor = this.inner.children[0];
-    
+
     this.mixinsRequireInputs = false;
     this.availableMixins.forEach(function(mixin) {
       if (this[mixin]) {
@@ -177,7 +177,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     if (this.$(matcher).length > 0) {
       Array.prototype.forEach.call(this.$('input, textarea, select, button'), function(input) {
 
-        // Reference elements by their `name` attribute. For elements such as radio buttons 
+        // Reference elements by their `name` attribute. For elements such as radio buttons
         // which require a unique reference per group of elements a `data-name` attribute can
         // be used to provide the same `name` per block.
 
@@ -261,7 +261,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.mediator.trigger('block:remove', this.blockID, {focusOnPrevious: true});
   },
 
-  // REFACTOR: have one set of delete controls that moves around like the 
+  // REFACTOR: have one set of delete controls that moves around like the
   // block controls?
   addDeleteControls: function(){
 
@@ -290,7 +290,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   onPositionerClick: function(e) {
     e.preventDefault();
-    
+
     this.positioner.toggle();
   },
 
