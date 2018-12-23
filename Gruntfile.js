@@ -29,7 +29,9 @@ module.exports = function(grunt) {
         hot: true,
         contentBase: "./",
         inline: true,
-        host: "127.0.0.1"
+        host: "localhost",
+        port: 8080,
+        disableHostCheck: true
       }
     },
 
@@ -45,7 +47,7 @@ module.exports = function(grunt) {
       server: {
         options: {
           port: 8000,
-          hostname: "127.0.0.1"
+          hostname: "localhost"
         }
       }
     },
