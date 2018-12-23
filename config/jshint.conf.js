@@ -18,7 +18,7 @@ var jsHintDefaultOptions = {
   maxdepth: 3,
   maxcomplexity: 10,
   undef: true,
-  unused: 'vars',
+  unused: "vars",
 
   // Relax
   eqnull: true,
@@ -28,23 +28,23 @@ var jsHintDefaultOptions = {
   jquery: true,
   node: true,
 
-  esnext: true,
-}
+  esnext: true
+};
 
 module.exports = {
   lib: {
-    src: ['index.js', 'src/**/*.js'],
+    src: ["index.js", "src/**/*.js"],
     options: Object.assign({}, jsHintDefaultOptions, {
       jquery: false,
       globals: {
         i18n: true,
-        webkitURL: true,
-      },
-    }),
+        webkitURL: true
+      }
+    })
   },
 
   tests: {
-    src: ['spec/**/*.js'],
+    src: ["spec/**/*.js"],
     options: Object.assign({}, jsHintDefaultOptions, {
       globals: {
         _: true,
@@ -61,7 +61,7 @@ module.exports = {
         beforeAll: true,
         afterAll: true,
         xit: true
-      },
-    }),
-  },
-}
+      }
+    })
+  }
+};

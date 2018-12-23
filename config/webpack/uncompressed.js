@@ -1,26 +1,39 @@
-var webpack = require('webpack');
-var webpackConfigMerger = require('webpack-config-merger');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var webpack = require("webpack");
+var webpackConfigMerger = require("webpack-config-merger");
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-var config = webpackConfigMerger(require('./config'), {
+var config = webpackConfigMerger(require("./config"), {
   output: {
-    filename: 'sir-trevor.js'
+    filename: "sir-trevor.js"
   },
-  plugins: [
-    // Include so we can share config, but disable
-    new ExtractTextPlugin("sir-trevor.css"),
-  ],
+  plugins: [new MiniCssExtractPlugin("sir-trevor.css")],
   module: {
-    loaders: [{
-      test: /\.svg$/,
-      loader: ExtractTextPlugin.extract("file?name=[name].[ext]")
-    }]
+    rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {}
+          },
+          {
+            loader: "sass-loader",
+            options: { outputStyle: "uncompressed" }
+          }
+        ]
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: {}
+          }
+        ]
+      }
+    ]
   }
 });
-
-config.module.preLoaders = [{
-  test: /\.scss$/,
-  loader: ExtractTextPlugin.extract('css!autoprefixer!sass?outputStyle=uncompressed')
-}];
 
 module.exports = config;
