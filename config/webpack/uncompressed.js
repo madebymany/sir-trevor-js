@@ -10,7 +10,7 @@ var config = webpackConfigMerger(require("./config"), {
   output: {
     filename: "sir-trevor.js"
   },
-  plugins: [new MiniCssExtractPlugin("sir-trevor.css")],
+  plugins: [new MiniCssExtractPlugin({ filename: "sir-trevor.css" })],
   module: {
     rules: [
       {
