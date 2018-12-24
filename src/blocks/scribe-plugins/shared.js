@@ -1,3 +1,4 @@
+"use strict";
 
 var selectionRange = require('selection-range');
 
