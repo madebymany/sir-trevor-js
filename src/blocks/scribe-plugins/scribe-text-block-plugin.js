@@ -17,24 +17,6 @@ var ScribeTextBlockPlugin = function(block) {
       }
     };
 
-    var rangeToHTML = function(range, extract) {
-      var div = document.createElement('div');
-      if (extract) {
-        div.appendChild(range.extractContents());
-      } else {
-        div.appendChild(range.cloneContents());
-      }
-
-      stripFirstEmptyElement(div);
-
-      // Sometimes you'll get an empty tag at the start of the block.
-      if (div.firstChild && div.firstChild.nodeName !== '#text') {
-        div = div.lastChild;
-      }
-
-      return div.innerHTML.trim();
-    };
-
     var selectToEnd = function() {
       var selection = new scribe.api.Selection();
       var range = selection.range.cloneRange();

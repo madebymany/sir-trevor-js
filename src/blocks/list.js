@@ -10,7 +10,7 @@ module.exports = Block.extend({
   icon_name: 'list',
   multi_editable: true,
 
-  scribeOptions: { 
+  scribeOptions: {
     allowBlockElements: false,
     tags: {
       p: false
@@ -105,7 +105,7 @@ module.exports = Block.extend({
       this.editorIds.push(editor.id);
     }
 
-    !content && this.focusOn(editor); // jshint ignore:line
+    this.focusOn(editor);
   },
 
   focusOnNeighbor: function(item) {
