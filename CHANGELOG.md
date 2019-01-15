@@ -2,7 +2,7 @@
 
 ## 0.7.x
 
-### 0.7.0
+### 0.7.0 UNRELEASED
 
 * Upgrade to latest babel / webpack.
 * Improve navigation within list blocks.
