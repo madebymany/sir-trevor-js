@@ -4,12 +4,12 @@ source 'http://rubygems.org'
 
 gem "middleman", "~>4.3.0"
 gem 'middleman-gh-pages'
-gem 'middleman-rouge'
 
 # Live-reloading plugin
 gem "middleman-livereload"
 
 gem "redcarpet"
+gem "middleman-sprockets", "~>4.1.1"
 
 # For faster file watcher updates:
 # gem "wdm", "~> 0.1.0") # Windows

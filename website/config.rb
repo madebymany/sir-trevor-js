@@ -46,18 +46,16 @@
 # end
 
 set :css_dir, 'stylesheets'
-
 set :js_dir, 'javascripts'
-
 set :images_dir, 'images'
 set :relative_links, true
+
+activate :sprockets
 
 after_configuration do
   @bower_config = JSON.parse(IO.read("#{root}/.bowerrc"))
   sprockets.append_path File.join "#{root}", @bower_config["directory"]
 end
-
-activate :rouge_syntax
 
 set :markdown_engine, :redcarpet
 set :markdown,
@@ -73,7 +71,6 @@ configure :build do
   activate :minify_javascript
   activate :asset_hash
   activate :relative_assets
-  activate :rouge_syntax
   
   # Or use a different image path
   # set :http_path, "/Content/images/"
