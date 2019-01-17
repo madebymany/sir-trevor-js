@@ -1,14 +1,5 @@
 "use strict";
 
-var selectionRange = require('selection-range');
-
-var {
-  getTotalLength,
-  isAtStart,
-  isAtEnd,
-  selectToEnd
-} = require('./shared.js');
-
 var ScribeListBlockPlugin = function(block) {
   return function(scribe) {
     scribe.el.addEventListener('keydown', function(ev) {
@@ -24,6 +15,19 @@ var ScribeListBlockPlugin = function(block) {
         return div.innerHTML;
       };
 
+      var selectToEnd = function() {
+        var selection = new scribe.api.Selection();
+        var range = selection.range.cloneRange();
+        range.setEndAfter(scribe.el.lastChild, 0);
+
+        return range;
+      };
+
+      var currentPosition = function() {
+        var selection = new scribe.api.Selection();
+        return selection.range.startOffset;
+      };
+
       var content;
 
       if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
@@ -33,26 +37,11 @@ var ScribeListBlockPlugin = function(block) {
           block.removeCurrentListItem();
           block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
         } else {
-          content = rangeToHTML(selectToEnd(scribe));
+          content = rangeToHTML(selectToEnd());
           block.addListItemAfterCurrent(content);
         }
-      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
-        ev.preventDefault();
 
-        var previousEditor = block.previousListItem();
-        if (previousEditor) {
-          block.focusOn(previousEditor);
-          selectionRange(
-            previousEditor.scribe.el,
-            {start: getTotalLength(previousEditor.scribe)}
-          );
-        }
-
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
-        ev.preventDefault();
-
-        block.focusOn(block.nextListItem());
-      } else if (ev.keyCode === 8 && isAtStart(scribe)) {
+      } else if (ev.keyCode === 8 && currentPosition() === 0) {
         ev.preventDefault();
 
         if (block.isLastListItem()) {
