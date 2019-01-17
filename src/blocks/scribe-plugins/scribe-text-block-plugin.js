@@ -1,6 +1,7 @@
 "use strict";
 
 var {
+  getTotalLength,
   isAtStart,
   isAtEnd,
   selectToEnd
@@ -73,6 +74,7 @@ var ScribeTextBlockPlugin = function(block) {
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
+
       } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
         ev.preventDefault();
 
