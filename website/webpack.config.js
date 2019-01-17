@@ -1,17 +1,11 @@
-var webpack = require('webpack');
+var webpack = require("webpack");
 
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
-
   entry: {
-    all: './source/javascripts/all.js',
-    example: './source/javascripts/example.js',
-  },
-
-  // We were seeing a strange Webpack compile error and this gets around it
-  node: {
-    setImmediate: false
+    all: "./source/javascripts/all.js",
+    example: "./source/javascripts/example.js"
   },
 
   module: {
@@ -30,7 +24,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              publicPath: '../'
+              publicPath: "../"
             }
           },
           "css-loader",
@@ -41,23 +35,23 @@ module.exports = {
         test: /\.(jpe?g|png|gif|mp3)$/i,
         use: [
           {
-            loader: 'file-loader',
+            loader: "file-loader",
             options: {
-              name: 'images/[name].[ext]'
+              name: "images/[name].[ext]"
             }
           }
         ]
-      },
-    ],
+      }
+    ]
   },
 
   resolve: {
-    modules: [__dirname + '/source/javascripts'],
+    modules: [__dirname + "/source/javascripts"]
   },
 
   output: {
-    path: __dirname + '/.tmp/dist',
-    filename: 'javascripts/[name].js',
+    path: __dirname + "/.tmp/dist",
+    filename: "javascripts/[name].js"
   },
 
   plugins: [
@@ -67,5 +61,5 @@ module.exports = {
       filename: "stylesheets/[name].css",
       chunkFilename: "[id].css"
     })
-  ],
+  ]
 };
