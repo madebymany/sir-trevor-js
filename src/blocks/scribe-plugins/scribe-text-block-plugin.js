@@ -1,6 +1,10 @@
 "use strict";
 
-var selectionRange = require('selection-range');
+var {
+  isAtStart,
+  isAtEnd,
+  selectToEnd
+} = require('./shared.js');
 
 var ScribeTextBlockPlugin = function(block) {
   return function(scribe) {
@@ -17,68 +21,9 @@ var ScribeTextBlockPlugin = function(block) {
       }
     };
 
-    var rangeToHTML = function(range, extract) {
-      var div = document.createElement('div');
-      if (extract) {
-        div.appendChild(range.extractContents());
-      } else {
-        div.appendChild(range.cloneContents());
-      }
-
-      stripFirstEmptyElement(div);
-
-      // Sometimes you'll get an empty tag at the start of the block.
-      if (div.firstChild && div.firstChild.nodeName !== '#text') {
-        div = div.lastChild;
-      }
-
-      return div.innerHTML.trim();
-    };
-
-    var selectToEnd = function() {
-      var selection = new scribe.api.Selection();
-      var range = selection.range.cloneRange();
-      range.setEndAfter(scribe.el.lastChild, 0);
-
-      return range;
-    };
-
-    var isAtStartOfBlock = function() {
-      if (scribe.getTextContent() === '') { return true; }
-
-      var selection = new scribe.api.Selection();
-      var range = selection.range.cloneRange();
-
-      range.setStartBefore(scribe.el.firstChild, 0);
-
-      var node = range.endContainer.nodeType === 3 ? range.endContainer.parentNode : range.endContainer;
-
-      // We make sure that the caret must be inside the first element to consider
-      // it at the beginning of the block
-      if (scribe.el.firstChild !== node) {
-        return false;
-      }
-
-      return rangeToHTML(range, false) === '';
-    };
-
-    var getTotalLength = function() {
-      var selection = new scribe.api.Selection();
-      var range = selection.range.cloneRange();
-      range.selectNodeContents(scribe.el);
-
-      return range.toString().length;
-    };
-
-    var isAtEndOfBlock = function() {
-      var currentRange = selectionRange(scribe.el);
-
-      return (getTotalLength() === currentRange.end) && (currentRange.start === currentRange.end);
-    };
-
     var createBlocksFromParagraphs = function() {
       var fakeContent = document.createElement('div');
-      fakeContent.appendChild(selectToEnd().extractContents());
+      fakeContent.appendChild(selectToEnd(scribe).extractContents());
 
       stripFirstEmptyElement(fakeContent);
 
@@ -104,7 +49,7 @@ var ScribeTextBlockPlugin = function(block) {
       }
     };
 
-    var isAtStart = false;
+    var isAtStartBoolean = false;
 
     scribe.el.addEventListener('keydown', function(ev) {
 
@@ -115,10 +60,10 @@ var ScribeTextBlockPlugin = function(block) {
       if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
         ev.preventDefault();
 
-        if (isAtEndOfBlock()) {
+        if (isAtEnd(scribe)) {
 
           // Remove any bad characters after current selection.
-          selectToEnd().extractContents();
+          selectToEnd(scribe).extractContents();
           block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
         } else {
           createBlocksFromParagraphs();
@@ -128,16 +73,15 @@ var ScribeTextBlockPlugin = function(block) {
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
-
-      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStartOfBlock()) {
+      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
         ev.preventDefault();
 
         block.mediator.trigger("block:focusPrevious", block.blockID);
-      } else if (ev.keyCode === 8 && isAtStartOfBlock()) {
+      } else if (ev.keyCode === 8 && isAtStart(scribe)) {
         ev.preventDefault();
 
-        isAtStart = true;
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEndOfBlock()) {
+        isAtStartBoolean = true;
+      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
         ev.preventDefault();
 
         block.mediator.trigger("block:focusNext", block.blockID);
@@ -150,14 +94,14 @@ var ScribeTextBlockPlugin = function(block) {
         return;
       }
 
-      if (ev.keyCode === 8 && isAtStart) {
+      if (ev.keyCode === 8 && isAtStartBoolean) {
         ev.preventDefault();
 
         block.mediator.trigger('block:remove', block.blockID, {
           transposeContent: true
         });
 
-        isAtStart = false;
+        isAtStartBoolean = false;
       }
     });
   };
