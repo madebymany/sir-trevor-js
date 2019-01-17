@@ -14,7 +14,7 @@
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
-    "sir-trevor": "^0.6.6",
+    "sir-trevor": "^0.7.0",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
   }
