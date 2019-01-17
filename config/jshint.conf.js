@@ -16,7 +16,7 @@ var jsHintDefaultOptions = {
   strict: true,
   maxparams: 5,
   maxdepth: 3,
-  maxcomplexity: 12,
+  maxcomplexity: 10,
   undef: true,
   unused: "vars",
 
