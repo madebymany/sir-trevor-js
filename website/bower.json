@@ -1,6 +1,0 @@
-{
-  "name": "sir-trevor-website",
-  "dependencies": {
-    "sir-trevor-js": "https://github.com/madebymany/sir-trevor-js.git#dist"
-  }
-}

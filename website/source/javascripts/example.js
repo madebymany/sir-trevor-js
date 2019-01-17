@@ -1,4 +1,5 @@
-//= require sir-trevor-js/build/sir-trevor
+var SirTrevor = require('../../node_modules/sir-trevor');
+require('../stylesheets/example.scss');
 
 (function() {
 
