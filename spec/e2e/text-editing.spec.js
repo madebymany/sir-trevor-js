@@ -159,10 +159,6 @@ describe('Text block', function() {
               .then(pressLeft)
               .then(pressLeft)
               .then(pressBackSpace)
-              .then(getTextBeforeCaret)
-              .then(function(text) {
-                return expect(text).toBe("One");
-              })
               .then(function() {
                 return getTextFromBlock([0]);
               }).then(function(htmlArr) {
