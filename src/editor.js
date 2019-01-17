@@ -158,9 +158,19 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     Dom.replaceWith(this.outer, this.el);
   },
 
+  getData: function() {
+    this.onFormSubmit();
+    return this.store.retrieve();
+  },
+
   reinitialize: function(options) {
     this.destroy();
     this.initialize(options || this.options);
+  },
+
+  restore: function(data) {
+    this.el.value = data;
+    this.reinitialize();
   },
 
   blockLimitReached: function(toggle) {

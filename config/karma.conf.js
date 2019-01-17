@@ -5,22 +5,27 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = function(config) {
   config.set({
-
     // base path, that will be used to resolve files and exclude
-    basePath: '../spec/',
+    basePath: "../spec/",
 
     // frameworks to use
-    frameworks: ['jasmine'],
+    frameworks: ["jasmine"],
 
     // list of files / patterns to load in the browser
     files: [
-      'javascripts/**/*.js',
-      { pattern: 'src/sir-trevor-icons.svg', included: false, served: true, watched: false, nocache: true }
+      "javascripts/**/*.js",
+      {
+        pattern: "src/sir-trevor-icons.svg",
+        included: false,
+        served: true,
+        watched: false,
+        nocache: true
+      }
     ],
 
     // test results reporter to use
     // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
-    reporters: ['progress'],
+    reporters: ["progress"],
 
     // web server port
     port: 9876,
@@ -48,7 +53,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: [process.env.TRAVIS ? 'Firefox' : 'Chrome'],
+    browsers: [process.env.TRAVIS ? "Firefox" : "Chrome"],
 
     // If browser does not capture in given timeout [ms], kill it
     captureTimeout: 60000,
@@ -61,29 +66,38 @@ module.exports = function(config) {
 
     preprocessors: {
       // add webpack as preprocessor
-      "javascripts/**/*.js": ['webpack'],
+      "javascripts/**/*.js": ["webpack"]
     },
 
     webpack: {
+      mode: "development",
       module: {
-        loaders: [{
-          test: /\.js?$/,
-          exclude: /(node_modules|bower_components)/,
-          loader: 'babel?optional[]=runtime'
-        }],
-        preLoaders: [{
-          test: /\.scss$/,
-          loader: 'css!autoprefixer!sass?outputStyle=compressed'
-        }],
-        loaders: [
-          { test: /\.jsx?$/, exclude: /node_modules/, loader: 'babel?stage=0&optional=runtime' },
-          { test: /\.svg$/, loader: 'file' }
+        rules: [
+          {
+            test: /\.js?$/,
+            exclude: /(node_modules|bower_components)/,
+            loader: "babel-loader"
+          },
+          {
+            test: /\.scss$/,
+            use: [
+              {
+                loader: "css-loader",
+                options: {}
+              },
+              {
+                loader: "sass-loader",
+                options: { outputStyle: "compressed" }
+              }
+            ]
+          },
+          { test: /\.svg$/, loader: "file-loader" }
         ]
       }
     },
 
     webpackMiddleware: {
       noInfo: true
-    },
+    }
   });
-}
+};

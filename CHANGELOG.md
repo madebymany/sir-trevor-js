@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.x
+
+### 0.7.0 UNRELEASED
+
+* Upgrade to latest babel / webpack.
+* Improve navigation within list blocks.
+* Improve caret positioning on text blocks on removal.
+
 ## 0.6.x
 
 ### 0.6.4

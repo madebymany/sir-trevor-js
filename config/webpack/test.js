@@ -1,19 +1,38 @@
-var webpack = require('webpack');
-var webpackConfigMerger = require('webpack-config-merger');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var webpack = require("webpack");
+var webpackConfigMerger = require("webpack-config-merger");
+var MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = webpackConfigMerger(require('./config'), {
-  debug: true,
+module.exports = webpackConfigMerger(require("./config"), {
   output: {
-    filename: 'sir-trevor.test.js'
+    filename: "sir-trevor.test.js"
   },
-  plugins: [
-    new ExtractTextPlugin("sir-trevor.test.css")
-  ],
+  plugins: [new MiniCssExtractPlugin({ filename: "sir-trevor.test.css" })],
   module: {
-    loaders: [{
-      test: /\.svg$/,
-      loader: ExtractTextPlugin.extract("file?name=[name].test.[ext]")
-    }]
+    rules: [
+      {
+        test: /\.scss$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {}
+          },
+          {
+            loader: "sass-loader",
+            options: { outputStyle: "compressed" }
+          }
+        ]
+      },
+      {
+        test: /\.svg$/,
+        use: [
+          {
+            loader: "file-loader",
+            options: { name: "[path][name].test.[ext]" }
+          }
+        ]
+      }
+      //loader: ExtractTextPlugin.extract("file?name=[name].debug.[ext]")
+    ]
   }
 });
