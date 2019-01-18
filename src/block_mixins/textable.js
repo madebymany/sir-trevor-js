@@ -53,9 +53,15 @@ module.exports = {
   appendContent: function(content, options) {
     options = options || {};
 
+    this.focusAtEnd();
+
     var caretPosition = this.getCaretPositionAtEnd();
 
+    // Strip extra spaces on the end of content.
     var currentContent = this.getScribeInnerContent();
+    this.setTextBlockHTML(currentContent);
+    currentContent = this.getScribeInnerContent();
+
     if (currentContent !== '') {
       content = currentContent + content;
     }
