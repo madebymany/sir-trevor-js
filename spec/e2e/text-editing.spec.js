@@ -79,7 +79,7 @@ describe('Text block', function() {
         {
           "type": "text",
           "data": {
-            "text": "One"
+            "text": "O<b>n</b>e"
           }
         }
       ]
@@ -104,7 +104,7 @@ describe('Text block', function() {
           return getTextFromBlock([0, 1]);
         }).then(function(htmlArr) {
             expect(htmlArr[0]).toBe("<p>O</p>");
-            expect(htmlArr[1]).toBe("<p>ne</p>");
+            expect(htmlArr[1]).toBe("<p><b>n</b>e</p>");
             done();
         });
     });
@@ -114,7 +114,7 @@ describe('Text block', function() {
         .then(function() {
           return getTextFromBlock([0]);
         }).then(function(htmlArr) {
-          expect(htmlArr[0]).toBe("<p><br>One</p>");
+          expect(htmlArr[0]).toBe("<p><br>O<b>n</b>e</p>");
           done();
         });
     });
@@ -128,7 +128,7 @@ describe('Text block', function() {
         .then(function() {
           return getTextFromBlock([0]);
         }).then(function(htmlArr) {
-          expect(htmlArr[0]).toBe("<p>ne</p>");
+          expect(htmlArr[0]).toBe("<p><b>n</b>e</p>");
           done();
         });
     });
@@ -166,7 +166,7 @@ describe('Text block', function() {
               .then(function() {
                 return getTextFromBlock([0]);
               }).then(function(htmlArr) {
-                expect(htmlArr[0]).toBe("<p>OneTwo</p>");
+                expect(htmlArr[0]).toBe("<p>O<b>n</b>eTwo</p>");
                 done();
               });
           });
