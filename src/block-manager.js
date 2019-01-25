@@ -42,6 +42,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   mediatedEvents: {
     'create': 'createBlock',
+    'createBefore': 'createBlockBefore',
     'remove': 'removeBlock',
     'rerender': 'rerenderBlock',
     'replace': 'replaceBlock',
@@ -63,6 +64,31 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     this._incrementBlockTypeCount(type);
     this.renderBlock(block, previousSibling);
+
+    if (options && options.autoFocus) {
+      block.focus();
+    }
+
+    this.triggerBlockCountUpdate();
+    this.mediator.trigger('block:limitReached', this.blockLimitReached());
+
+    EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
+    utils.log("Block created of type " + type);
+  },
+
+  createBlockBefore: function(type, data, nextBlock, options) {
+    type = utils.classify(type);
+
+    // Run validations
+    if (!this.canCreateBlock(type)) { return; }
+
+    var block = new Blocks[type](data, this.instance_scope, this.mediator,
+                                 this.blockOptions);
+    this.blocks.push(block);
+
+    this._incrementBlockTypeCount(type);
+
+    this.renderBlock(block, this.getPreviousBlock(nextBlock).el);
 
     if (options && options.autoFocus) {
       block.focus();
