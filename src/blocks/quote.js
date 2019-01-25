@@ -24,6 +24,7 @@ module.exports = Block.extend({
 
   icon_name: 'quote',
 
+  mergeable: true,
   textable: true,
   toolbarEnabled: false,
 
