@@ -30,8 +30,23 @@ var ScribeListBlockPlugin = function(block) {
         ev.preventDefault();
 
         if (scribe.getTextContent().length === 0) {
-          block.removeCurrentListItem();
-          block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
+          let nextListItem = block.nextListItem();
+          if (nextListItem) {
+            const data = {format: 'html', listItems: []};
+            block.removeCurrentListItem();
+            block.focusOn(nextListItem);
+            while (!!nextListItem) {
+              data.listItems.push({content: nextListItem.scribe.getContent()});
+              block.focusOn(nextListItem);
+              block.removeCurrentListItem();
+              nextListItem = block.nextListItem();
+            }
+            block.mediator.trigger("block:create", 'List', data, block.el, { autoFocus: true });
+            block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
+          } else {
+            block.removeCurrentListItem();
+            block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
+          }
         } else {
           content = rangeToHTML(selectToEnd(scribe));
           block.addListItemAfterCurrent(content);
@@ -58,9 +73,18 @@ var ScribeListBlockPlugin = function(block) {
         if (block.isLastListItem()) {
           block.mediator.trigger('block:remove', block.blockID);
         } else {
-          content = scribe.getContent();
-          block.removeCurrentListItem();
-          block.appendToCurrentItem(content);
+          if (block.previousListItem()) {
+            content = scribe.getContent();
+            block.removeCurrentListItem();
+            block.appendToCurrentItem(content);
+          } else {
+            var data = {
+              format: 'html',
+              text: scribe.getContent()
+            };
+            block.removeCurrentListItem();
+            block.mediator.trigger("block:createBefore", 'Text', data, block, { autoFocus: true });
+          }
         }
       } else if (ev.keyCode === 46) {
         // TODO: Pressing del from end of list item
