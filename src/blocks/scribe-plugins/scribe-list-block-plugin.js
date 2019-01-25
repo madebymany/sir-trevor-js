@@ -54,32 +54,39 @@ var ScribeListBlockPlugin = function(block) {
       } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
         ev.preventDefault();
 
-        var previousEditor = block.previousListItem();
-        if (previousEditor) {
-          block.focusOn(previousEditor, { focusAtEnd: true });
+        var previousListItem = block.previousListItem();
+        if (previousListItem) {
+          block.focusOn(previousListItem, { focusAtEnd: true });
+        } else {
+          block.mediator.trigger("block:focusPrevious", block.blockID);
         }
 
       } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
         ev.preventDefault();
 
-        block.focusOn(block.nextListItem());
+        var nextListItem = block.nextListItem();
+        if (nextListItem) {
+          block.focusOn(nextListItem);
+        } else {
+          block.mediator.trigger("block:focusNext", block.blockID);
+        }
+
       } else if (ev.keyCode === 8 && isAtStart(scribe)) {
         ev.preventDefault();
 
-        if (block.isLastListItem()) {
-          block.mediator.trigger('block:remove', block.blockID);
+        if (block.previousListItem()) {
+          content = scribe.getContent();
+          block.removeCurrentListItem();
+          block.appendToCurrentItem(content);
         } else {
-          if (block.previousListItem()) {
-            content = scribe.getContent();
-            block.removeCurrentListItem();
-            block.appendToCurrentItem(content);
-          } else {
-            var data = {
-              format: 'html',
-              text: scribe.getContent()
-            };
-            block.removeCurrentListItem();
-            block.mediator.trigger("block:createBefore", 'Text', data, block, { autoFocus: true });
+          var data = {
+            format: 'html',
+            text: scribe.getContent()
+          };
+          block.removeCurrentListItem();
+          block.mediator.trigger("block:createBefore", 'Text', data, block, { autoFocus: true });
+          if (block.isLastListItem()) {
+            block.mediator.trigger('block:remove', block.blockID);
           }
         }
       } else if (ev.keyCode === 46) {

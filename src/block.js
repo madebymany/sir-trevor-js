@@ -59,6 +59,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   uploadable: false,
   fetchable: false,
   ajaxable: false,
+  mergeable: false,
   multi_editable: false,
   textable: false,
 

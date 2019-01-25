@@ -20,6 +20,7 @@ module.exports = Block.extend({
 
   icon_name: 'text',
 
+  mergeable: true,
   textable: true,
   toolbarEnabled: false,
 

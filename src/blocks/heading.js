@@ -25,6 +25,7 @@ module.exports = Block.extend({
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
 
+  mergeable: true,
   textable: true,
   toolbarEnabled: false,
 
