@@ -56,11 +56,7 @@ var ScribeListBlockPlugin = function(block) {
 
         var previousEditor = block.previousListItem();
         if (previousEditor) {
-          block.focusOn(previousEditor);
-          selectionRange(
-            previousEditor.scribe.el,
-            {start: getTotalLength(previousEditor.scribe)}
-          );
+          block.focusOn(previousEditor, { focusAtEnd: true });
         }
 
       } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {

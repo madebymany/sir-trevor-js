@@ -1,9 +1,12 @@
 "use strict";
 
+var selectionRange = require('selection-range');
+
 var Block = require('../block');
 var stToHTML = require('../to-html');
 
 var ScribeListBlockPlugin = require('./scribe-plugins/scribe-list-block-plugin');
+var { getTotalLength } = require('./scribe-plugins/shared');
 
 module.exports = Block.extend({
   type: 'list',
@@ -116,7 +119,7 @@ module.exports = Block.extend({
     }
   },
 
-  focusOn: function(editor) {
+  focusOn: function(editor, options = {}) {
     var scribe = editor.scribe;
     var selection = new scribe.api.Selection();
     var lastChild = scribe.el.lastChild;
@@ -130,6 +133,13 @@ module.exports = Block.extend({
     if (range) {
       range.setStartAfter(lastChild, 1);
       range.collapse(false);
+    }
+
+    if (options && options.focusAtEnd) {
+      const start = getTotalLength(scribe);
+      if (start > 0) {
+        selectionRange(scribe.el, { start });
+      }
     }
   },
 
