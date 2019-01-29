@@ -61,7 +61,7 @@ describe('Empty data', function() {
                     .then(helpers.pressBackSpace)
                     .then(helpers.findBlocks)
                     .then(function(blocks) {
-                      if (blocks.length === 0) {
+                      if (blocks.length === 1) {
                         deleteBlock(currentBlock + 1);
                       }
                     });
@@ -171,7 +171,7 @@ describe('Existing data', function() {
           });
       });
     }, 20000);
-      
+
   });
 
 });

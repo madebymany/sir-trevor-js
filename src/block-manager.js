@@ -90,7 +90,12 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     this._incrementBlockTypeCount(type);
 
-    this.renderBlock(block, this.getPreviousBlock(nextBlock).el);
+    const previousBlock = this.getPreviousBlock(nextBlock);
+    if (previousBlock) {
+      this.renderBlock(block, previousBlock.el);
+    } else {
+      this.renderBlock(block, this.wrapper.querySelector(".st-top-controls"));
+    }
 
     if (options && options.autoFocus) {
       block.focus();

@@ -71,7 +71,7 @@ var ScribeListBlockPlugin = function(block) {
           block.mediator.trigger("block:focusNext", block.blockID);
         }
 
-      } else if (ev.keyCode === 8 && isAtStart(scribe)) {
+      } else if (ev.keyCode === 8 && isAtStart(scribe)) { // Backspace pressed
         ev.preventDefault();
 
         if (block.previousListItem()) {
