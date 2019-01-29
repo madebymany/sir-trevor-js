@@ -71,6 +71,11 @@ var textblockHasFocus = function(textBlock) {
   return helpers.browser.executeScript(str, textBlock);
 };
 
+var getBlockData = function(index) {
+  var str = 'return window.editor.blockManager.blocks[' + index + '].getData()';
+  return helpers.browser.executeScript(str);
+}
+
 describe('Text block', function() {
 
   beforeEach( function() {
@@ -172,7 +177,6 @@ describe('Text block', function() {
           });
         });
     });
-
   });
 
   describe('Pressing Left', function() {
@@ -216,7 +220,7 @@ describe('Text block', function() {
 
   });
 
-    describe('Pressing Right', function() {
+  describe('Pressing Right', function() {
 
     it('should move right 1 character', function(done) {
       helpers.focusOnTextBlock()
@@ -268,4 +272,134 @@ describe('Text block', function() {
 
   });
 
+});
+
+describe('Text block', function() {
+
+  beforeEach( function() {
+    var data = {
+      "data": [
+        {
+          "type": "text",
+          "data": {
+            "text": "O<b>n</b>e"
+          }
+        },
+        {
+          "type": "list",
+          "data": {
+            "listItems": [
+              {"content": "T<b>w</b>o"},
+              {"content": "T<b>hre</b>e"}
+            ],
+            "format":"html",
+          }
+        },
+        {
+          "type": "text",
+          "data": {
+            "text": "F<b>ou</b>r"
+          }
+        }
+      ]
+    };
+
+    helpers.initSirTrevor(data);
+  });
+
+  describe('Pressing Enter', function() {
+    it('should create a new list element at the start', function(done) {
+      helpers.focusOnListBlock()
+        .then(pressEnter)
+        .then(function() {
+          return helpers.findElementsByCss('.st-list-block__item')
+        })
+        .then(function(fields) {
+          return expect(fields.length).toBe(3);
+        })
+        .then(function() { return getBlockData(1); })
+        .then(function(data) {
+          expect(data.data.listItems[0].content).toBe("");
+          expect(data.data.listItems[1].content).toBe("T<b>w</b>o");
+          expect(data.data.listItems[2].content).toBe("T<b>hre</b>e");
+          done();
+        });
+    });
+    it('should create a new list element in the middle', function(done) {
+      helpers.focusOnListBlock()
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressEnter)
+        .then(function() {
+          return helpers.findElementsByCss('.st-list-block__item')
+        })
+        .then(function(fields) {
+          return expect(fields.length).toBe(3);
+        })
+        .then(function() { return getBlockData(1); })
+        .then(function(data) {
+          expect(data.data.listItems[0].content).toBe("T<b>w</b>o");
+          expect(data.data.listItems[1].content).toBe("");
+          expect(data.data.listItems[2].content).toBe("T<b>hre</b>e");
+          done();
+        });
+    });
+    it('should split a list element', function(done) {
+      helpers.focusOnListBlock()
+        .then(pressRight)
+        .then(pressEnter)
+        .then(function() {
+          return helpers.findElementsByCss('.st-list-block__item')
+        })
+        .then(function(fields) {
+          return expect(fields.length).toBe(3);
+        })
+        .then(function() { return getBlockData(1); })
+        .then(function(data) {
+          expect(data.data.listItems[0].content).toBe("T");
+          expect(data.data.listItems[1].content).toBe("<b>w</b>o");
+          expect(data.data.listItems[2].content).toBe("T<b>hre</b>e");
+          done();
+        });
+    });
+    it('should create a new block at the end', function(done) {
+      helpers.focusOnListBlock()
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressRight)
+        .then(pressEnter)
+        .then(function() {
+          return helpers.findElementsByCss('.st-list-block__item')
+        })
+        .then(function(fields) {
+          return expect(fields.length).toBe(3);
+        })
+        .then(function() { return getBlockData(1); })
+        .then(function(data) {
+          expect(data.data.listItems[0].content).toBe("T<b>w</b>o");
+          expect(data.data.listItems[1].content).toBe("T<b>hre</b>e");
+          return expect(data.data.listItems[2].content).toBe("");
+        })
+        .then(pressEnter)
+        .then(function() {
+          return helpers.findElementsByCss('.st-list-block__item')
+        })
+        .then(function(fields) {
+          return expect(fields.length).toBe(2);
+        })
+        .then(function() { return getBlockData(1); })
+        .then(function(data) {
+          expect(data.data.listItems[0].content).toBe("T<b>w</b>o");
+          expect(data.data.listItems[1].content).toBe("T<b>hre</b>e");
+          done();
+        });
+    });
+  });
 });
