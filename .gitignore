@@ -10,6 +10,6 @@ website/.bundle/
 website/bower_components/
 website/build/
 website/vendor/
-build/*.test.*
-build/*.debug.*
+build/**/*.debug.*
+build/**/*.test.*
 .vscode

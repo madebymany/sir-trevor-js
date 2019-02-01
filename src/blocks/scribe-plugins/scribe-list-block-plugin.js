@@ -26,7 +26,7 @@ var ScribeListBlockPlugin = function(block) {
 
       var content;
 
-      if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
+      if (ev.key === "Enter" && !ev.shiftKey) {
         ev.preventDefault();
 
         if (scribe.getTextContent().length === 0) {
@@ -51,7 +51,7 @@ var ScribeListBlockPlugin = function(block) {
           content = rangeToHTML(selectToEnd(scribe));
           block.addListItemAfterCurrent(content);
         }
-      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
+      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1  && isAtStart(scribe)) {
         ev.preventDefault();
 
         var previousListItem = block.previousListItem();
@@ -61,7 +61,7 @@ var ScribeListBlockPlugin = function(block) {
           block.mediator.trigger("block:focusPrevious", block.blockID);
         }
 
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
+      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1 && isAtEnd(scribe)) {
         ev.preventDefault();
 
         var nextListItem = block.nextListItem();
@@ -71,7 +71,7 @@ var ScribeListBlockPlugin = function(block) {
           block.mediator.trigger("block:focusNext", block.blockID);
         }
 
-      } else if (ev.keyCode === 8 && isAtStart(scribe)) { // Backspace pressed
+      } else if (ev.key === "Backspace" && isAtStart(scribe)) {
         ev.preventDefault();
 
         if (block.previousListItem()) {
@@ -89,8 +89,6 @@ var ScribeListBlockPlugin = function(block) {
             block.mediator.trigger('block:remove', block.blockID);
           }
         }
-      } else if (ev.keyCode === 46) {
-        // TODO: Pressing del from end of list item
       }
     });
   };
