@@ -397,7 +397,15 @@ describe('Text block', function() {
         .then(function() { return getBlockData(1); })
         .then(function(data) {
           expect(data.data.listItems[0].content).toBe("T<b>w</b>o");
-          expect(data.data.listItems[1].content).toBe("T<b>hre</b>e");
+          return expect(data.data.listItems[1].content).toBe("T<b>hre</b>e");
+        })
+        .then(function() { return getBlockData(3); })
+        .then(function(data) {
+          return expect(data.data.text).toBe("<p><br></p>");
+        })
+        .then(function() { return getBlockData(2); })
+        .then(function(data) {
+          expect(data.data.text).toBe("<p>F<b>ou</b>r</p>");
           done();
         });
     });
