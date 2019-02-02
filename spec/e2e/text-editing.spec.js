@@ -274,7 +274,7 @@ describe('Text block', function() {
 
 });
 
-describe('Text block', function() {
+describe('List block', function() {
 
   beforeEach( function() {
     var data = {
