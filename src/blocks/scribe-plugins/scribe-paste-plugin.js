@@ -17,19 +17,29 @@ var scribePastePlugin = function(block) {
         fakeContent.innerHTML = scribe.getContent();
 
         if (fakeContent.childNodes.length > 1) {
-          scribe.setContent( nodes.shift().innerHTML );
           var nodes = Array.from(fakeContent.childNodes);
-          nodes.forEach(function(node) {
+          const firstNode = nodes.shift();
+          scribe.setContent( firstNode.innerHTML );
+
+          let blockToFocus;
+
+          function assignBlockToFocus(focusBlock) {
+            blockToFocus = focusBlock;
+            block.mediator.off("block:created", assignBlockToFocus);
+          }
+
+          block.mediator.on("block:created", assignBlockToFocus);
+
+          nodes.reverse().forEach(function(node) {
             var data = {
               format: 'html',
               text: node.innerHTML
             };
-            block.mediator.trigger("block:createBefore", 'Text', data, block, { autoFocus: true });
+            block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
+
           });
 
-          block.mediator.trigger('block:remove', block.blockID, {
-            transposeContent: true
-          });
+          blockToFocus.focusAtEnd();
         }
       });
     };
