@@ -5,13 +5,6 @@ When content is pasted into a block take the sanitized html and create a block f
 paragraph that has been added.
 */
 
-function isMsWordListParagraph(node) {
-  var matchingClassnames = node.className.split(" ").filter(function(className) {
-    return className.startsWith("MsoListParagraph");
-  });
-  return matchingClassnames.length > 0;
-}
-
 function createListBlock(block, listItems) {
   var listItemContent = listItems.map(function(listItemNode) {
     var content = listItemNode.innerHTML.substr(2);
@@ -32,6 +25,15 @@ function handleListItems(block, listItemsToCreate) {
 }
 
 var scribePastePlugin = function(block) {
+
+  function isMsWordListParagraph(node) {
+    if (block.editorOptions.blockTypes.indexOf("List") === -1) return false;
+    var matchingClassnames = node.className.split(" ").filter(function(className) {
+      return className.startsWith("MsoListParagraph");
+    });
+    return matchingClassnames.length > 0;
+  }
+
   return function(scribe) {
     var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
 

@@ -20,7 +20,7 @@ var { Spinner } = require('spin.js');
 
 const DELETE_TEMPLATE = require("./templates/delete");
 
-var Block = function(data, instance_id, mediator, options) {
+var Block = function(data, instance_id, mediator, options, editorOptions) {
   SimpleBlock.apply(this, arguments);
 };
 
