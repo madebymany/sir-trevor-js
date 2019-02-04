@@ -18,8 +18,7 @@ var scribePastePlugin = function(block) {
 
         if (fakeContent.childNodes.length > 1) {
           var nodes = Array.from(fakeContent.childNodes);
-          const firstNode = nodes.shift();
-          scribe.setContent( firstNode.innerHTML );
+          scribe.setContent( nodes.shift().innerHTML );
 
           let blockToFocus;
 
