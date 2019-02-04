@@ -4,7 +4,7 @@
 
 ### 0.7.3
 
-* Improve firefox pasting.
+* Improve Firefox content pasting.
 
 ### 0.7.2
 
