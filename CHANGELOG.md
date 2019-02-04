@@ -2,9 +2,13 @@
 
 ## 0.7.x
 
-### 0.7.3
+### 0.7.4
 
 * Improve Firefox content pasting.
+
+### 0.7.3
+
+* Preserve word list items when pasting.
 
 ### 0.7.2
 
