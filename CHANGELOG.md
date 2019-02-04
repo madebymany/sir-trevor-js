@@ -2,11 +2,22 @@
 
 ## 0.7.x
 
-### 0.7.0 UNRELEASED
+### 0.7.3
 
-* Upgrade to latest babel / webpack.
+* Improve firefox pasting.
+
+### 0.7.2
+
 * Improve navigation within list blocks.
 * Improve caret positioning on text blocks on removal.
+
+### 0.7.1
+
+* Reverted
+
+### 0.7.0
+
+* Upgrade to latest babel / webpack.
 
 ## 0.6.x
 
