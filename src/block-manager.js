@@ -162,9 +162,9 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     block.remove();
 
-    // Join blocks if they span the removed block
     if (previousBlock && nextBlock) {
-      if (previousBlock.type === "list" && nextBlock.type === "list") {
+      // Join blocks if they span the removed block
+      if (this.options.joinListBlocksOnBlockRemove && previousBlock.type === "list" && nextBlock.type === "list") {
         const listItems = nextBlock._serializeData().listItems;
         nextBlock.remove();
         const currentListItem = previousBlock.getCurrentTextEditor();
