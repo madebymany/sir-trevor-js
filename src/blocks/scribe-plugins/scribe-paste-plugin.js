@@ -60,8 +60,9 @@ var scribePastePlugin = function(block) {
             scribe.setContent("");
           } else {
             scribe.setContent( nodes.shift().innerHTML );
-            block.mediator.on("block:created", assignBlockToFocus);
           }
+
+          block.mediator.on("block:created", assignBlockToFocus);
 
           nodes.reverse().forEach(function(node) {
             if (isMsWordListParagraph(node)) {
@@ -88,11 +89,8 @@ var scribePastePlugin = function(block) {
             block.mediator.trigger("block:remove", block.blockID);
           }
 
-          if (isMsWordListParagraph(firstNode)) {
-            scribe.el.focus();
-          } else {
-            blockToFocus.focusAtEnd();
-          }
+          blockToFocus.focusAtEnd();
+
         } else {
           var node = fakeContent.firstChild;
 
