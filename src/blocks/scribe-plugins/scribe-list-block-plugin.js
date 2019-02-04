@@ -26,44 +26,69 @@ var ScribeListBlockPlugin = function(block) {
 
       var content;
 
-      if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
+      if (ev.key === "Enter" && !ev.shiftKey) {
         ev.preventDefault();
 
         if (scribe.getTextContent().length === 0) {
-          block.removeCurrentListItem();
-          block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
+          let nextListItem = block.nextListItem();
+          if (nextListItem) {
+            const data = {format: 'html', listItems: []};
+            block.removeCurrentListItem();
+            block.focusOn(nextListItem);
+            while (!!nextListItem) {
+              data.listItems.push({content: nextListItem.scribe.getContent()});
+              block.focusOn(nextListItem);
+              block.removeCurrentListItem();
+              nextListItem = block.nextListItem();
+            }
+            block.mediator.trigger("block:create", 'List', data, block.el, { autoFocus: true });
+            block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
+          } else {
+            block.removeCurrentListItem();
+            block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
+          }
         } else {
           content = rangeToHTML(selectToEnd(scribe));
           block.addListItemAfterCurrent(content);
         }
-      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
+      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1  && isAtStart(scribe)) {
         ev.preventDefault();
 
-        var previousEditor = block.previousListItem();
-        if (previousEditor) {
-          block.focusOn(previousEditor);
-          selectionRange(
-            previousEditor.scribe.el,
-            {start: getTotalLength(previousEditor.scribe)}
-          );
+        var previousListItem = block.previousListItem();
+        if (previousListItem) {
+          block.focusOn(previousListItem, { focusAtEnd: true });
+        } else {
+          block.mediator.trigger("block:focusPrevious", block.blockID);
         }
 
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
+      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1 && isAtEnd(scribe)) {
         ev.preventDefault();
 
-        block.focusOn(block.nextListItem());
-      } else if (ev.keyCode === 8 && isAtStart(scribe)) {
-        ev.preventDefault();
-
-        if (block.isLastListItem()) {
-          block.mediator.trigger('block:remove', block.blockID);
+        var nextListItem = block.nextListItem();
+        if (nextListItem) {
+          block.focusOn(nextListItem);
         } else {
+          block.mediator.trigger("block:focusNext", block.blockID);
+        }
+
+      } else if (ev.key === "Backspace" && isAtStart(scribe)) {
+        ev.preventDefault();
+
+        if (block.previousListItem()) {
           content = scribe.getContent();
           block.removeCurrentListItem();
           block.appendToCurrentItem(content);
+        } else {
+          var data = {
+            format: 'html',
+            text: scribe.getContent()
+          };
+          block.removeCurrentListItem();
+          block.mediator.trigger("block:createBefore", 'Text', data, block, { autoFocus: true });
+          if (block.isLastListItem()) {
+            block.mediator.trigger('block:remove', block.blockID);
+          }
         }
-      } else if (ev.keyCode === 46) {
-        // TODO: Pressing del from end of list item
       }
     });
   };

@@ -1,5 +1,7 @@
 "use strict";
 
+var selectionRange = require('selection-range');
+
 var _ = require('./lodash');
 var utils = require('./utils');
 var config = require('./config');
@@ -42,6 +44,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   mediatedEvents: {
     'create': 'createBlock',
+    'createBefore': 'createBlockBefore',
     'remove': 'removeBlock',
     'rerender': 'rerenderBlock',
     'replace': 'replaceBlock',
@@ -70,6 +73,38 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
+    this.mediator.trigger('block:created', block);
+
+    EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
+    utils.log("Block created of type " + type);
+  },
+
+  createBlockBefore: function(type, data, nextBlock, options) {
+    type = utils.classify(type);
+
+    // Run validations
+    if (!this.canCreateBlock(type)) { return; }
+
+    var block = new Blocks[type](data, this.instance_scope, this.mediator,
+                                 this.blockOptions);
+    this.blocks.push(block);
+
+    this._incrementBlockTypeCount(type);
+
+    const previousBlock = this.getPreviousBlock(nextBlock);
+    if (previousBlock) {
+      this.renderBlock(block, previousBlock.el);
+    } else {
+      this.renderBlock(block, this.wrapper.querySelector(".st-top-controls"));
+    }
+
+    if (options && options.autoFocus) {
+      block.focus();
+    }
+
+    this.triggerBlockCountUpdate();
+    this.mediator.trigger('block:limitReached', this.blockLimitReached());
+    this.mediator.trigger('block:created', block);
 
     EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
     utils.log("Block created of type " + type);
@@ -86,25 +121,30 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     var previousBlock = this.getPreviousBlock(block);
     var nextBlock = this.getNextBlock(block);
 
-    if (options.transposeContent && block.textable) {
+    if (options.transposeContent && block.mergeable) {
 
       // Don't allow removal of first block if it's the only block.
       if (!previousBlock && this.blocks.length === 1) { return; }
 
       // If previous block can transpose content then append content.
-      if (previousBlock && previousBlock.textable) {
+      if (previousBlock && previousBlock.type === "list") {
+        previousBlock.focusAtEnd();
+        previousBlock.appendToCurrentItem(
+          block.getScribeInnerContent()
+        );
+      } else if (previousBlock && previousBlock.mergeable) {
         previousBlock.appendContent(
           block.getScribeInnerContent(), {
           keepCaretPosition: true
         });
       } else {
-        // If there's content and the block above isn't textable then
+        // If there's content and the block above isn't mergeable then
         // cancel remove.
         if (block.getScribeInnerContent() !== '') {
           return;
         }
 
-        // If block before isn't textable then we want to still focus.
+        // If block before isn't mergeable then we want to still focus.
         if (previousBlock) {
           previousBlock.focusAtEnd();
         } else if (nextBlock) {
@@ -121,6 +161,22 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     });
 
     block.remove();
+
+    if (previousBlock && nextBlock) {
+      // Join blocks if they span the removed block
+      if (this.options.joinListBlocksOnBlockRemove && previousBlock.type === "list" && nextBlock.type === "list") {
+        const listItems = nextBlock._serializeData().listItems;
+        nextBlock.remove();
+        const currentListItem = previousBlock.getCurrentTextEditor();
+        const currentSelection = selectionRange(currentListItem.scribe.el);
+
+        listItems.forEach(item => {
+          previousBlock.addListItem(item.content)
+        });
+
+        previousBlock.focusOn(currentListItem, { caretPosition: currentSelection.start });
+      }
+    }
 
     if (options.focusOnPrevious && previousBlock) {
       previousBlock.focusAtEnd();
@@ -183,10 +239,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   focusPreviousBlock: function(blockID) {
     var block = this.findBlockById(blockID);
 
-    if (block.textable) {
+    if (block.mergeable) {
       var previousBlock = this.getPreviousBlock(block);
 
-      if (previousBlock && previousBlock.textable) {
+      if (previousBlock && previousBlock.mergeable) {
         previousBlock.focusAtEnd();
       }
     }
@@ -195,10 +251,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   focusNextBlock: function(blockID) {
     var block = this.findBlockById(blockID);
 
-    if (block && block.textable) {
+    if (block && block.mergeable) {
       var nextBlock = this.getNextBlock(block);
 
-      if (nextBlock && nextBlock.textable) {
+      if (nextBlock && nextBlock.mergeable) {
         nextBlock.focus();
       }
     }

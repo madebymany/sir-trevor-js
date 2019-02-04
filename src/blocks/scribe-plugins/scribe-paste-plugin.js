@@ -17,17 +17,28 @@ var scribePastePlugin = function(block) {
         fakeContent.innerHTML = scribe.getContent();
 
         if (fakeContent.childNodes.length > 1) {
-
           var nodes = Array.from(fakeContent.childNodes);
           scribe.setContent( nodes.shift().innerHTML );
+
+          let blockToFocus;
+
+          function assignBlockToFocus(focusBlock) {
+            blockToFocus = focusBlock;
+            block.mediator.off("block:created", assignBlockToFocus);
+          }
+
+          block.mediator.on("block:created", assignBlockToFocus);
+
           nodes.reverse().forEach(function(node) {
             var data = {
               format: 'html',
               text: node.innerHTML
             };
             block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
+
           });
-          scribe.el.focus();
+
+          blockToFocus.focusAtEnd();
         }
       });
     };
