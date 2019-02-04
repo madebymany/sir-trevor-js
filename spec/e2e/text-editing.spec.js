@@ -5,8 +5,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 var helpers = require('./helpers');
 var driver = require('selenium-webdriver');
 
-var blockTypes = ["text"]; // jshint ignore:line
-
 var pressShift = function() {
   return helpers.browser.actions()
     .sendKeys(driver.Key.SHIFT)
@@ -36,6 +34,11 @@ var pressRight = function() {
 var pressBackSpace = function() {
   return helpers.browser.actions()
     .sendKeys(driver.Key.BACK_SPACE)
+    .perform();
+};
+var pressDown = function() {
+  return helpers.browser.actions()
+    .sendKeys(driver.Key.ARROW_DOWN)
     .perform();
 };
 
@@ -406,6 +409,78 @@ describe('List block', function() {
         .then(function() { return getBlockData(2); })
         .then(function(data) {
           expect(data.data.text).toBe("<p>F<b>ou</b>r</p>");
+          done();
+        });
+    });
+  });
+
+  describe('Pressing Backspace', function() {
+
+    it('should delete a character', function(done) {
+      helpers.focusOnListBlock().then(pressRight).then(pressBackSpace)
+        .then(function() {
+          return getBlockData(1);
+        }).then(function(data) {
+          expect(data.data.listItems[0].content).toBe("<b>w</b>o");
+          done();
+        });
+    });
+
+    it('should delete the block when caret is at the start of the block and there is a block above', function(done) {
+      helpers.focusOnTextBlock(1)
+        .then(pressRight).then(pressRight).then(pressRight).then(pressRight)
+        .then(pressEnter)
+        .then(function() {
+          helpers.createBlock('list', function() {
+            helpers.hasBlockCount(4)
+              .then(pressBackSpace)
+              .then(function() {
+                return helpers.hasBlockCount(4);
+              })
+              .then(pressBackSpace)
+              .then(function() {
+                return helpers.hasBlockCount(3);
+              }).then(done);
+          });
+        });
+    });
+
+    it('should transpose the block content when caret is at the start of the block and there is a block above', function(done) {
+      helpers.focusOnTextBlock(1)
+        .then(pressRight).then(pressRight).then(pressRight).then(pressRight)
+        .then(pressEnter)
+        .then( function() {
+          helpers.createBlock('list', function() {
+            helpers.hasBlockCount(4)
+              .then( function() {
+                return enterText("Five");
+              })
+              .then(pressLeft)
+              .then(pressLeft)
+              .then(pressLeft)
+              .then(pressLeft)
+              .then(pressBackSpace)
+              .then(pressBackSpace)
+              .then(function() {
+                return getBlockData(2);
+              })
+              .then(function(data) {
+                expect(data.data.text).toBe("<p>F<b>ou</b>rFive</p>");
+                done();
+              });
+          });
+        });
+    });
+
+    it('should transpose the list content from the deleted list item', function(done) {
+      helpers.focusOnListBlock()
+        .then(pressRight).then(pressRight).then(pressRight).then(pressRight)
+        .then(pressBackSpace)
+        .then(function() {
+          return getBlockData(1);
+        })
+        .then(function(data) {
+          expect(data.data.listItems[0].content).toBe("T<b>w</b>oT<b>hre</b>e");
           done();
         });
     });
