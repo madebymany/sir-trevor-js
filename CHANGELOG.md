@@ -7,13 +7,10 @@
 * Improve Firefox content pasting.
 * Improve edge content pasting.
 
-### 0.7.4
-
-* Add basic support for IE11 / Edge
-
 ### 0.7.3
 
 * Preserve word list items when pasting.
+* Add basic support for IE11 / Edge.
 
 ### 0.7.2
 
