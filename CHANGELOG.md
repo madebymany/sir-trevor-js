@@ -2,9 +2,14 @@
 
 ## 0.7.x
 
-### 0.7.4
+### Future releases
 
 * Improve Firefox content pasting.
+* Improve edge content pasting.
+
+### 0.7.4
+
+* Add basic support for IE11 / Edge
 
 ### 0.7.3
 
