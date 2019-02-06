@@ -46,18 +46,17 @@
 # end
 
 set :css_dir, 'stylesheets'
-
 set :js_dir, 'javascripts'
-
 set :images_dir, 'images'
 set :relative_links, true
 
-after_configuration do
-  @bower_config = JSON.parse(IO.read("#{root}/.bowerrc"))
-  sprockets.append_path File.join "#{root}", @bower_config["directory"]
-end
-
-activate :rouge_syntax
+activate :external_pipeline,
+         name: :webpack,
+         command: build? ?
+         "./node_modules/webpack/bin/webpack.js --bail -p" :
+         "./node_modules/webpack/bin/webpack.js --watch -d --progress --color",
+         source: ".tmp/dist",
+         latency: 1
 
 set :markdown_engine, :redcarpet
 set :markdown,
@@ -71,9 +70,8 @@ set :markdown,
 configure :build do
   activate :minify_css
   activate :minify_javascript
-  activate :asset_hash
+  #activate :asset_hash
   activate :relative_assets
-  activate :rouge_syntax
   
   # Or use a different image path
   # set :http_path, "/Content/images/"

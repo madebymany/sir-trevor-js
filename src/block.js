@@ -20,7 +20,7 @@ var { Spinner } = require('spin.js');
 
 const DELETE_TEMPLATE = require("./templates/delete");
 
-var Block = function(data, instance_id, mediator, options) {
+var Block = function(data, instance_id, mediator, options, editorOptions) {
   SimpleBlock.apply(this, arguments);
 };
 
@@ -445,7 +445,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }
 
     // Remove all empty nodes at the front to get blocks working.
-    while(this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '') {
+    // Don't remove nodes that can't contain text content (e.g. <input>)
+    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '' && document.createElement(this._scribe.el.firstChild.tagName).outerHTML.indexOf("/") != -1) {
       this._scribe.el.removeChild(this._scribe.el.firstChild);
     }
 

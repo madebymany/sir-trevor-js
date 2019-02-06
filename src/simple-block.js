@@ -9,12 +9,13 @@ var BlockReorder = require('./block-reorder');
 
 const BLOCK_TEMPLATE = require('./templates/block');
 
-var SimpleBlock = function(data, instance_id, mediator, options) {
+var SimpleBlock = function(data, instance_id, mediator, options, editorOptions) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
   this.mediator = mediator;
   this.options = options || {};
+  this.editorOptions = editorOptions || {};
 
   this._ensureElement();
   this._bindFunctions();
@@ -41,7 +42,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
   },
 
   title: function() {
-    return i18n.t(`blocks:${this.type}:title`) || 
+    return i18n.t(`blocks:${this.type}:title`) ||
             utils.titleize(this.type.replace(/[\W_]/g, ' '));
   },
 

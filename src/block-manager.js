@@ -61,7 +61,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (!this.canCreateBlock(type)) { return; }
 
     var block = new Blocks[type](data, this.instance_scope, this.mediator,
-                                 this.blockOptions);
+                                 this.blockOptions, this.options);
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);
@@ -86,7 +86,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     if (!this.canCreateBlock(type)) { return; }
 
     var block = new Blocks[type](data, this.instance_scope, this.mediator,
-                                 this.blockOptions);
+                                 this.blockOptions, this.options);
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);

@@ -101,14 +101,14 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-exports.isEmpty = __webpack_require__(115);
+exports.isEmpty = __webpack_require__(118);
 exports.isFunction = __webpack_require__(27);
 exports.isObject = __webpack_require__(17);
-exports.isString = __webpack_require__(125);
-exports.isUndefined = __webpack_require__(126);
-exports.result = __webpack_require__(127);
-exports.template = __webpack_require__(128);
-exports.uniqueId = __webpack_require__(135);
+exports.isString = __webpack_require__(128);
+exports.isUndefined = __webpack_require__(129);
+exports.result = __webpack_require__(130);
+exports.template = __webpack_require__(131);
+exports.uniqueId = __webpack_require__(138);
 
 /***/ }),
 /* 1 */
@@ -5480,12 +5480,12 @@ var BlockPositioner = __webpack_require__(81);
 
 var EventBus = __webpack_require__(4);
 
-var _require = __webpack_require__(222),
+var _require = __webpack_require__(225),
     Spinner = _require.Spinner;
 
-var DELETE_TEMPLATE = __webpack_require__(223);
+var DELETE_TEMPLATE = __webpack_require__(226);
 
-var Block = function Block(data, instance_id, mediator, options) {
+var Block = function Block(data, instance_id, mediator, options, editorOptions) {
   SimpleBlock.apply(this, arguments);
 };
 
@@ -5868,9 +5868,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, __webpack_require__(83), {
     if (firstNode.nodeName === '#text') {
       firstNode.textContent = utils.leftTrim(firstNode.textContent);
     } // Remove all empty nodes at the front to get blocks working.
+    // Don't remove nodes that can't contain text content (e.g. <input>)
 
 
-    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '') {
+    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '' && document.createElement(this._scribe.el.firstChild.tagName).outerHTML.indexOf("/") != -1) {
       this._scribe.el.removeChild(this._scribe.el.firstChild);
     } // Firefox adds empty br tags at the end of content.
 
@@ -5896,7 +5897,7 @@ module.exports = Block;
 "use strict";
 
 
-module.exports = __webpack_require__(137);
+module.exports = __webpack_require__(140);
 
 /***/ }),
 /* 10 */
@@ -5975,7 +5976,7 @@ module.exports.delegate = function delegate(el, selector, event, fn) {
  */
 var isNative = __webpack_require__(24),
     isObject = __webpack_require__(17),
-    shimKeys = __webpack_require__(124);
+    shimKeys = __webpack_require__(127);
 
 /* Native method shortcuts for methods with the same name as other `lodash` methods */
 var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
@@ -6011,7 +6012,7 @@ module.exports = keys;
  * Module Dependencies
  */
 
-var iterator = __webpack_require__(147);
+var iterator = __webpack_require__(150);
 var selection = window.getSelection();
 
 /**
@@ -6292,7 +6293,7 @@ module.exports = isObject;
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(198), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(escapeRegExp, isObjectLike) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(201), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(escapeRegExp, isObjectLike) {
 
   /** `Object#toString` result references. */
   var funcTag = '[object Function]';
@@ -6405,13 +6406,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 module.exports = {
-  Text: __webpack_require__(218),
-  Quote: __webpack_require__(225),
-  Image: __webpack_require__(226),
-  Heading: __webpack_require__(227),
-  List: __webpack_require__(228),
-  Tweet: __webpack_require__(230),
-  Video: __webpack_require__(231)
+  Text: __webpack_require__(221),
+  Quote: __webpack_require__(228),
+  Image: __webpack_require__(229),
+  Heading: __webpack_require__(230),
+  List: __webpack_require__(231),
+  Tweet: __webpack_require__(233),
+  Video: __webpack_require__(234)
 };
 
 /***/ }),
@@ -6707,8 +6708,8 @@ module.exports = isFunction;
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(153),
-  __webpack_require__(154),
+  __webpack_require__(156),
+  __webpack_require__(157),
   __webpack_require__(5)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (inlineElementNames, blockElementNames, Immutable) {
 
@@ -6747,7 +6748,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
   }
 
   function isEmptyTextNode(node) {
-    return isText(node) && node.data === '';
+    var isEmpty = false;
+    try {
+      isEmpty = isText(node) && node.data === '';
+    }
+    catch(err) {
+      isEmpty = true;
+    }
+    return isEmpty;
   }
 
   function isFragment(node) {
@@ -8339,9 +8347,9 @@ module.exports = noop;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var escapeHtmlChar = __webpack_require__(130),
+var escapeHtmlChar = __webpack_require__(133),
     keys = __webpack_require__(11),
-    reUnescapedHtml = __webpack_require__(131);
+    reUnescapedHtml = __webpack_require__(134);
 
 /**
  * Converts the characters `&`, `<`, `>`, `"`, and `'` in `string` to their
@@ -8658,11 +8666,11 @@ module.exports = function (block, file, success, error) {
 "use strict";
 
 
-__webpack_require__(138);
+__webpack_require__(141);
 
-var fetchJsonP = __webpack_require__(139);
+var fetchJsonP = __webpack_require__(142);
 
-var cancellablePromise = __webpack_require__(140);
+var cancellablePromise = __webpack_require__(143);
 
 var config = __webpack_require__(1);
 
@@ -8699,13 +8707,13 @@ module.exports = Ajax;
 
 module.exports = {
   Ajaxable: __webpack_require__(32),
-  Controllable: __webpack_require__(141),
-  Droppable: __webpack_require__(142),
-  Fetchable: __webpack_require__(143),
-  Pastable: __webpack_require__(144),
-  Uploadable: __webpack_require__(145),
-  MultiEditable: __webpack_require__(146),
-  Textable: __webpack_require__(217)
+  Controllable: __webpack_require__(144),
+  Droppable: __webpack_require__(145),
+  Fetchable: __webpack_require__(146),
+  Pastable: __webpack_require__(147),
+  Uploadable: __webpack_require__(148),
+  MultiEditable: __webpack_require__(149),
+  Textable: __webpack_require__(220)
 };
 
 /***/ }),
@@ -8836,15 +8844,15 @@ function prefixed(str) {
 
 var _ = __webpack_require__(0);
 
-var Scribe = __webpack_require__(148);
+var Scribe = __webpack_require__(151);
 
 var config = __webpack_require__(1);
 
-var scribePluginFormatterPlainTextConvertNewLinesToHTML = __webpack_require__(187);
+var scribePluginFormatterPlainTextConvertNewLinesToHTML = __webpack_require__(190);
 
-var scribePluginLinkPromptCommand = __webpack_require__(188);
+var scribePluginLinkPromptCommand = __webpack_require__(191);
 
-var scribePluginSanitizer = __webpack_require__(193);
+var scribePluginSanitizer = __webpack_require__(196);
 
 var sanitizeDefaults = {
   p: true,
@@ -9008,7 +9016,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(197)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(toObject) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(200)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(toObject) {
 
   /**
    * The base implementation of `baseForIn` and `baseForOwn` which iterates
@@ -9046,7 +9054,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6), __webpack_require__(18), __webpack_require__(13), __webpack_require__(200)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isLength, isNative, isObject, shimKeys) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(6), __webpack_require__(18), __webpack_require__(13), __webpack_require__(203)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isLength, isNative, isObject, shimKeys) {
 
   /* Native method references for those with the same name as other `lodash` methods. */
   var nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
@@ -9214,7 +9222,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(201)(module), __webpack_require__(16)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(204)(module), __webpack_require__(16)))
 
 /***/ }),
 /* 77 */
@@ -9367,7 +9375,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(208)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(identity) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(211)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(identity) {
 
   /**
    * A specialized version of `baseCallback` which only supports `this` binding
@@ -9723,7 +9731,7 @@ Object.assign(BlockManager.prototype, __webpack_require__(7), __webpack_require_
       return;
     }
 
-    var block = new Blocks[type](data, this.instance_scope, this.mediator, this.blockOptions);
+    var block = new Blocks[type](data, this.instance_scope, this.mediator, this.blockOptions, this.options);
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);
@@ -9747,7 +9755,7 @@ Object.assign(BlockManager.prototype, __webpack_require__(7), __webpack_require_
       return;
     }
 
-    var block = new Blocks[type](data, this.instance_scope, this.mediator, this.blockOptions);
+    var block = new Blocks[type](data, this.instance_scope, this.mediator, this.blockOptions, this.options);
     this.blocks.push(block);
 
     this._incrementBlockTypeCount(type);
@@ -10045,14 +10053,15 @@ var Events = __webpack_require__(10);
 
 var BlockReorder = __webpack_require__(37);
 
-var BLOCK_TEMPLATE = __webpack_require__(219);
+var BLOCK_TEMPLATE = __webpack_require__(222);
 
-var SimpleBlock = function SimpleBlock(data, instance_id, mediator, options) {
+var SimpleBlock = function SimpleBlock(data, instance_id, mediator, options, editorOptions) {
   this.createStore(data);
   this.blockID = _.uniqueId('st-block-');
   this.instanceID = instance_id;
   this.mediator = mediator;
   this.options = options || {};
+  this.editorOptions = editorOptions || {};
 
   this._ensureElement();
 
@@ -10266,7 +10275,7 @@ var ScribeTextBlockPlugin = function ScribeTextBlockPlugin(block) {
 
       if (fakeContent.childNodes.length >= 1) {
         var data;
-        var nodes = Array.from(fakeContent.childNodes);
+        var nodes = [].slice.call(fakeContent.childNodes);
         nodes.reverse().forEach(function (node) {
           if (node.innerText !== '') {
             data = {
@@ -10355,7 +10364,7 @@ var Dom = __webpack_require__(3);
 
 var Events = __webpack_require__(10);
 
-var FORMAT_BUTTON_TEMPLATE = __webpack_require__(232);
+var FORMAT_BUTTON_TEMPLATE = __webpack_require__(235);
 
 var FormatBar = function FormatBar(options, mediator, editor) {
   this.editor = editor;
@@ -10515,7 +10524,7 @@ module.exports = FormEvents;
 
 module.exports = __webpack_require__(93);
 
-__webpack_require__(241);
+__webpack_require__(244);
 
 /***/ }),
 /* 93 */
@@ -10529,19 +10538,26 @@ __webpack_require__(94); // ES6 shims
 
 __webpack_require__(95).shim();
 
-__webpack_require__(100);
+__webpack_require__(100).shim();
 
 __webpack_require__(113); // shims ES7 Array.prototype.includes
 
 
-__webpack_require__(114).polyfill();
+__webpack_require__(114).polyfill(); // Old IE support
+
+
+__webpack_require__(115);
+
+__webpack_require__(116);
+
+__webpack_require__(117);
 
 var utils = __webpack_require__(2);
 
 var SirTrevor = {
   config: __webpack_require__(1),
   log: utils.log,
-  Locales: __webpack_require__(136),
+  Locales: __webpack_require__(139),
   Events: __webpack_require__(9),
   EventBus: __webpack_require__(4),
   EditorStore: __webpack_require__(61),
@@ -10558,8 +10574,8 @@ var SirTrevor = {
   Block: __webpack_require__(8),
   Blocks: __webpack_require__(20),
   FormatBar: __webpack_require__(90),
-  Editor: __webpack_require__(233),
-  toMarkdown: __webpack_require__(240),
+  Editor: __webpack_require__(236),
+  toMarkdown: __webpack_require__(243),
   toHTML: __webpack_require__(21),
   setDefaults: function setDefaults(options) {
     Object.assign(SirTrevor.config.defaults, options || {});
@@ -13305,6 +13321,133 @@ return Promise$1;
 
 /***/ }),
 /* 115 */
+/***/ (function(module, exports) {
+
+(function () {
+  'use strict';
+
+  if (typeof window.CustomEvent === "function") return false;
+
+  function CustomEvent(event, params) {
+    params = params || {
+      bubbles: false,
+      cancelable: false,
+      detail: undefined
+    };
+    var evt = document.createEvent('CustomEvent');
+    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+    return evt;
+  }
+
+  CustomEvent.prototype = window.Event.prototype;
+  window.CustomEvent = CustomEvent;
+})();
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports) {
+
+(function () {
+  "use strict";
+
+  var testElement = document.createElement("_");
+  testElement.classList.add("c1", "c2"); // Polyfill for IE 10/11 and Firefox <26, where classList.add and
+  // classList.remove exist but support only one argument at a time.
+
+  if (!testElement.classList.contains("c2")) {
+    var createMethod = function createMethod(method) {
+      var original = DOMTokenList.prototype[method];
+
+      DOMTokenList.prototype[method] = function (token) {
+        var i,
+            len = arguments.length;
+
+        for (i = 0; i < len; i++) {
+          token = arguments[i];
+          original.call(this, token);
+        }
+      };
+    };
+
+    createMethod('add');
+    createMethod('remove');
+  }
+
+  testElement.classList.toggle("c3", false); // Polyfill for IE 10 and Firefox <24, where classList.toggle does not
+  // support the second argument.
+
+  if (testElement.classList.contains("c3")) {
+    var _toggle = DOMTokenList.prototype.toggle;
+
+    DOMTokenList.prototype.toggle = function (token, force) {
+      if (1 in arguments && !this.contains(token) === !force) {
+        return force;
+      } else {
+        return _toggle.call(this, token);
+      }
+    };
+  }
+
+  testElement = null;
+})();
+
+/***/ }),
+/* 117 */
+/***/ (function(module, exports) {
+
+(function () {
+  'use strict'; // The IE's "contains" method does not work when a text node is passed as argument.
+
+  if (/Trident/.test(navigator.userAgent)) {
+    Object.defineProperty(HTMLElement.prototype, 'contains', {
+      writable: true,
+      enumerable: false,
+      configurable: true,
+      value: function value(node) {
+        if (!node) return false;
+        return this === node || !!(this.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_CONTAINED_BY);
+      }
+    });
+  } // IE does not implement `Document.prototype.contains`
+
+
+  if (typeof Document.prototype.contains !== 'function') {
+    Object.defineProperty(Document.prototype, 'contains', {
+      writable: true,
+      enumerable: false,
+      configurable: true,
+      value: function value(el) {
+        if (!el) return false;
+        return this.documentElement.contains(el);
+      }
+    });
+  } // IE does not implement `Range.prototype.intersectsNode`
+
+
+  if (typeof Range.prototype.intersectsNode !== 'function') {
+    Object.defineProperty(Range.prototype, 'intersectsNode', {
+      writable: true,
+      enumerable: false,
+      configurable: true,
+      value: function value(node) {
+        if (!node) {
+          throw new TypeError("Failed to execute 'intersectsNode' on 'Range': 1 argument required, but only 0 present.");
+        }
+
+        if (this.startContainer.ownerDocument !== node.ownerDocument) return false;
+        if (!node.parentNode) return true;
+        var targetRange = document.createRange();
+        targetRange.selectNode(node);
+        var startEnd = this.compareBoundaryPoints(Range.START_TO_END, targetRange);
+        var endStart = this.compareBoundaryPoints(Range.END_TO_START, targetRange);
+        return startEnd === 1 && endStart === -1;
+      }
+    });
+  }
+})();
+
+/***/ }),
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13315,7 +13458,7 @@ return Promise$1;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var forOwn = __webpack_require__(116),
+var forOwn = __webpack_require__(119),
     isFunction = __webpack_require__(27);
 
 /** `Object#toString` result shortcuts */
@@ -13373,7 +13516,7 @@ module.exports = isEmpty;
 
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13384,7 +13527,7 @@ module.exports = isEmpty;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var baseCreateCallback = __webpack_require__(117),
+var baseCreateCallback = __webpack_require__(120),
     keys = __webpack_require__(11),
     objectTypes = __webpack_require__(25);
 
@@ -13429,7 +13572,7 @@ module.exports = forOwn;
 
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13440,10 +13583,10 @@ module.exports = forOwn;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var bind = __webpack_require__(118),
-    identity = __webpack_require__(122),
+var bind = __webpack_require__(121),
+    identity = __webpack_require__(125),
     setBindData = __webpack_require__(31),
-    support = __webpack_require__(123);
+    support = __webpack_require__(126);
 
 /** Used to detected named functions */
 var reFuncName = /^\s*function[ \n\r\t]+\w/;
@@ -13515,7 +13658,7 @@ module.exports = baseCreateCallback;
 
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13526,7 +13669,7 @@ module.exports = baseCreateCallback;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var createWrapper = __webpack_require__(119),
+var createWrapper = __webpack_require__(122),
     slice = __webpack_require__(26);
 
 /**
@@ -13561,7 +13704,7 @@ module.exports = bind;
 
 
 /***/ }),
-/* 119 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13572,8 +13715,8 @@ module.exports = bind;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var baseBind = __webpack_require__(120),
-    baseCreateWrapper = __webpack_require__(121),
+var baseBind = __webpack_require__(123),
+    baseCreateWrapper = __webpack_require__(124),
     isFunction = __webpack_require__(27),
     slice = __webpack_require__(26);
 
@@ -13673,7 +13816,7 @@ module.exports = createWrapper;
 
 
 /***/ }),
-/* 120 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13741,7 +13884,7 @@ module.exports = baseBind;
 
 
 /***/ }),
-/* 121 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13825,7 +13968,7 @@ module.exports = baseCreateWrapper;
 
 
 /***/ }),
-/* 122 */
+/* 125 */
 /***/ (function(module, exports) {
 
 /**
@@ -13859,7 +14002,7 @@ module.exports = identity;
 
 
 /***/ }),
-/* 123 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -13906,7 +14049,7 @@ module.exports = support;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(16)))
 
 /***/ }),
-/* 124 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13950,7 +14093,7 @@ module.exports = shimKeys;
 
 
 /***/ }),
-/* 125 */
+/* 128 */
 /***/ (function(module, exports) {
 
 /**
@@ -13993,7 +14136,7 @@ module.exports = isString;
 
 
 /***/ }),
-/* 126 */
+/* 129 */
 /***/ (function(module, exports) {
 
 /**
@@ -14026,7 +14169,7 @@ module.exports = isUndefined;
 
 
 /***/ }),
-/* 127 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14077,7 +14220,7 @@ module.exports = result;
 
 
 /***/ }),
-/* 128 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14088,13 +14231,13 @@ module.exports = result;
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var defaults = __webpack_require__(129),
+var defaults = __webpack_require__(132),
     escape = __webpack_require__(58),
-    escapeStringChar = __webpack_require__(132),
+    escapeStringChar = __webpack_require__(135),
     keys = __webpack_require__(11),
     reInterpolate = __webpack_require__(60),
-    templateSettings = __webpack_require__(133),
-    values = __webpack_require__(134);
+    templateSettings = __webpack_require__(136),
+    values = __webpack_require__(137);
 
 /** Used to match empty string literals in compiled template source */
 var reEmptyStringLeading = /\b__p \+= '';/g,
@@ -14299,7 +14442,7 @@ module.exports = template;
 
 
 /***/ }),
-/* 129 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14359,7 +14502,7 @@ module.exports = defaults;
 
 
 /***/ }),
-/* 130 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14387,7 +14530,7 @@ module.exports = escapeHtmlChar;
 
 
 /***/ }),
-/* 131 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14408,7 +14551,7 @@ module.exports = reUnescapedHtml;
 
 
 /***/ }),
-/* 132 */
+/* 135 */
 /***/ (function(module, exports) {
 
 /**
@@ -14447,7 +14590,7 @@ module.exports = escapeStringChar;
 
 
 /***/ }),
-/* 133 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14526,7 +14669,7 @@ module.exports = templateSettings;
 
 
 /***/ }),
-/* 134 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -14568,7 +14711,7 @@ module.exports = values;
 
 
 /***/ }),
-/* 135 */
+/* 138 */
 /***/ (function(module, exports) {
 
 /**
@@ -14608,7 +14751,7 @@ module.exports = uniqueId;
 
 
 /***/ }),
-/* 136 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14728,7 +14871,7 @@ if (window.i18n === undefined) {
 module.exports = Locales;
 
 /***/ }),
-/* 137 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -14935,7 +15078,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
 
 
 /***/ }),
-/* 138 */
+/* 141 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15464,7 +15607,7 @@ if (!self.fetch) {
 
 
 /***/ }),
-/* 139 */
+/* 142 */
 /***/ (function(module, exports) {
 
 /**
@@ -15559,7 +15702,7 @@ module.exports = jsonp;
 
 
 /***/ }),
-/* 140 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15591,7 +15734,7 @@ var cancellablePromise = function cancellablePromise(promise) {
 module.exports = cancellablePromise;
 
 /***/ }),
-/* 141 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15651,7 +15794,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 142 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15743,7 +15886,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 143 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15784,7 +15927,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 144 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15818,7 +15961,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 145 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15858,7 +16001,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 146 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15953,7 +16096,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 147 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -16277,22 +16420,22 @@ Iterator.prototype.use = function(fn) {
 
 
 /***/ }),
-/* 148 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(149),
-  __webpack_require__(156),
-  __webpack_require__(164),
+  __webpack_require__(152),
+  __webpack_require__(159),
   __webpack_require__(167),
   __webpack_require__(170),
-  __webpack_require__(178),
-  __webpack_require__(183),
-  __webpack_require__(184),
-  __webpack_require__(185),
+  __webpack_require__(173),
+  __webpack_require__(181),
+  __webpack_require__(186),
+  __webpack_require__(187),
+  __webpack_require__(188),
   __webpack_require__(28),
   __webpack_require__(5),
-  __webpack_require__(186),
+  __webpack_require__(189),
   __webpack_require__(70)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   plugins,
@@ -16311,6 +16454,39 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 ) {
 
   'use strict';
+
+  function listenForUserInput() {
+    /**
+     * This section replaces a simple observation of the input event.
+     * With Edge, Chrome, FF, this event triggers when either the user types
+     * something.
+     * With IE, the input event does not trigger on contenteditable element
+     * that is why we have to simulate it.
+     */
+
+    var isComposing = false;
+    var self = this;
+
+    var handler = {
+      handleEvent: function(e) {
+        if (isComposing) return;
+
+        if (e.type === 'compositionstart') {
+           isComposing = true;
+           return;
+        } else if (e.type === 'compositionend') {
+           isComposing = false;
+           self.transactionManager.run();
+        } else {
+           self.transactionManager.run();
+        }
+      }
+    };
+
+    ['compositionstart', 'compositionend', 'keydown', 'cut', 'paste'].forEach(function(e) {
+      this.el.addEventListener(e, handler, false);
+    }.bind(this));
+  }
 
   function Scribe(el, options) {
     EventEmitter.call(this);
@@ -16350,15 +16526,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
     this.el.setAttribute('contenteditable', true);
 
-    this.el.addEventListener('input', function () {
-      /**
-       * This event triggers when either the user types something or a native
-       * command is executed which causes the content to change (i.e.
-       * `document.execCommand('bold')`). We can't wrap a transaction around
-       * these actions, so instead we run the transaction in this event.
-       */
-      this.transactionManager.run();
-    }.bind(this), false);
+    listenForUserInput.call(this);
 
     /**
      * Core Plugins
@@ -16553,9 +16721,39 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
      * See http://jsbin.com/cayosada/3/edit for more
      **/
 
-    // TODO: error if the selection is not within the Scribe instance? Or
-    // focus the Scribe instance if it is not already focused?
-    this.getCommand('insertHTML').execute(this._htmlFormatterFactory.format(html));
+    html = this._htmlFormatterFactory.format(html);
+
+    // is IE11
+    if(Object.hasOwnProperty.call(window, "ActiveXObject") && !window.ActiveXObject) {
+
+      var htmlContent = document.createElement("span");
+      htmlContent.innerHTML = html;
+      if (htmlContent.children.length === 1 && htmlContent.children[0].tagName === 'P') {
+        html = htmlContent.children[0].innerHTML;
+      }
+
+      if (this.getTextContent().trim() === '') {
+
+        this.setContent(html);
+
+      } else {
+
+        var r = document.getSelection().getRangeAt(0);
+        var n = document.createElement("span");
+        
+        r.surroundContents(n);
+        n.innerHTML = html;
+        r.collapse(false);
+
+        nodeHelpers.removeChromeArtifacts(this.el);
+      }
+
+    } else {
+
+      // TODO: error if the selection is not within the Scribe instance? Or
+      // focus the Scribe instance if it is not already focused?
+      this.getCommand('insertHTML').execute(html);
+    }
   };
 
   Scribe.prototype.isDebugModeEnabled = function () {
@@ -16634,14 +16832,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 149 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(150),
-  __webpack_require__(151),
-  __webpack_require__(152),
-  __webpack_require__(155)
+  __webpack_require__(153),
+  __webpack_require__(154),
+  __webpack_require__(155),
+  __webpack_require__(158)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   setRootPElement,
   enforcePElements,
@@ -16661,7 +16859,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 150 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -16683,7 +16881,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
          * browsers(?) will position the caret outside of the P when the scribe is
          * focused.
          */
-        scribe.setContent('<p><br></p>');
+
+        // Force IE10 to not include br otherwise a linebreak is always included
+        // in the textarea.
+        if(window.navigator.userAgent.match(/MSIE 10/)) {
+          scribe.setContent('<p></p>');
+        } else {
+          scribe.setContent('<p><br></p>');
+        }
       }
     };
   };
@@ -16693,7 +16898,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 151 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -16782,7 +16987,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 152 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -16871,7 +17076,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 153 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -16889,7 +17094,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 154 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -16907,7 +17112,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 155 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(28)], __WEBPACK_AMD_DEFINE_RESULT__ = (function (nodeHelpers) {
@@ -17045,17 +17250,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 156 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(157),
-  __webpack_require__(158),
-  __webpack_require__(159),
   __webpack_require__(160),
   __webpack_require__(161),
   __webpack_require__(162),
-  __webpack_require__(163)
+  __webpack_require__(163),
+  __webpack_require__(164),
+  __webpack_require__(165),
+  __webpack_require__(166)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   indent,
   insertList,
@@ -17083,7 +17288,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 157 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -17118,7 +17323,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 158 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -17258,7 +17463,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 159 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -17294,7 +17499,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 160 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -17334,7 +17539,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 161 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -17354,7 +17559,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 162 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -17374,7 +17579,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 163 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -17413,12 +17618,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 164 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(165),
-  __webpack_require__(166)
+  __webpack_require__(168),
+  __webpack_require__(169)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   replaceNbspCharsFormatter,
   escapeHtmlCharactersFormatter
@@ -17434,7 +17639,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 165 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -17461,7 +17666,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 166 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_LOCAL_MODULE_0__;var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_LOCAL_MODULE_1__;var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_LOCAL_MODULE_2__;var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_LOCAL_MODULE_0__ = ((function() {
@@ -17579,11 +17784,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_LOCAL_MODULE_0__;var __WEBPACK_AMD_D
 
 
 /***/ }),
-/* 167 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(168),
+  __webpack_require__(171),
   __webpack_require__(5)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   observeDomChanges,
@@ -17804,6 +18009,9 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
           selection.placeMarkers();
 
           var bin = document.createElement('div');
+          bin.style.height = 0;
+          bin.style.opacity = 0;
+          bin.style.overflow = 'hidden';
           document.body.appendChild(bin);
           bin.setAttribute('contenteditable', true);
           bin.focus();
@@ -17833,12 +18041,12 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 168 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
   __webpack_require__(28),
-  __webpack_require__(169)
+  __webpack_require__(172)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (nodeHelpers, mutations) {
 
   var maybeWindow = typeof window === 'object' ? window : undefined;
@@ -17894,7 +18102,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 169 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -17923,17 +18131,17 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 170 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(171),
-  __webpack_require__(172),
-  __webpack_require__(173),
   __webpack_require__(174),
   __webpack_require__(175),
   __webpack_require__(176),
-  __webpack_require__(177)
+  __webpack_require__(177),
+  __webpack_require__(178),
+  __webpack_require__(179),
+  __webpack_require__(180)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   boldCommand,
   indentCommand,
@@ -17969,7 +18177,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 171 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18005,7 +18213,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 172 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18078,7 +18286,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 173 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18104,7 +18312,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 174 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18203,7 +18411,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 175 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18303,7 +18511,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 176 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18317,6 +18525,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
       createLinkCommand.execute = function (value) {
         var selection = new scribe.api.Selection();
+
+        /**
+         * make sure we're not touching any none Scribe elements
+         * in the page
+         */
+        if (!selection.isInScribe()) {
+          return;
+        }
 
         /**
          * Firefox does not create a link when selection is collapsed
@@ -18349,7 +18565,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 177 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18407,14 +18623,14 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 178 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(179),
-  __webpack_require__(180),
-  __webpack_require__(181),
-  __webpack_require__(182)
+  __webpack_require__(182),
+  __webpack_require__(183),
+  __webpack_require__(184),
+  __webpack_require__(185)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   buildCommandPatch,
   buildCommand,
@@ -18435,7 +18651,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 179 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18469,7 +18685,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 180 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18516,7 +18732,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 181 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18573,6 +18789,36 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
       }
     }
 
+    // With MS Edge, ranges that will be converted to selection require
+    // to start or end on a text node otherwise when normalizing the text nodes
+    // in the selection it won't be correct.
+
+    function setRangeStart(range, marker) {
+      var prevSibling = marker.previousSibling;
+      var nextSibling = marker.nextSibling;
+
+      if (prevSibling && prevSibling.nodeType === Node.TEXT_NODE) {
+        range.setStart(prevSibling, prevSibling.data.length);
+      } else if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
+        range.setStart(nextSibling, 0);
+      } else {
+        range.setStartBefore(marker);
+      }
+    }
+
+    function setRangeEnd(range, marker) {
+      var prevSibling = marker.previousSibling;
+      var nextSibling = marker.nextSibling;
+
+      if (prevSibling && prevSibling.nodeType === Node.TEXT_NODE) {
+        range.setEnd(prevSibling, prevSibling.data.length);
+      } else if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
+        range.setEnd(nextSibling, 0);
+      } else {
+        range.setEndAfter(marker);
+      }
+    }
+
     /**
      * Wrapper for object holding currently selected text.
      */
@@ -18622,35 +18868,38 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
         nodeHelpers.getAncestor(node, scribe.el, nodeFilter);
     };
 
+    Selection.prototype.isInScribe = function () {
+      var range = this.range;
+      return range
+        //we need to ensure that the scribe's element lives within the current document to avoid errors with the range comparison (see below)
+        //one way to do this is to check if it's visible (is this the best way?).
+        && document.contains(scribe.el)
+        //we want to ensure that the current selection is within the current scribe node
+        //if this isn't true scribe will place markers within the selections parent
+        //we want to ensure that scribe ONLY places markers within it's own element
+        && scribe.el.contains(range.startContainer)
+        && scribe.el.contains(range.endContainer);
+    }
+
     Selection.prototype.placeMarkers = function () {
       var range = this.range;
-      if (!range) {
+
+      if (!this.isInScribe()) {
         return;
       }
 
-      //we need to ensure that the scribe's element lives within the current document to avoid errors with the range comparison (see below)
-      //one way to do this is to check if it's visible (is this the best way?).
-      if (!document.contains(scribe.el)) {
-        return;
+      // insert start marker
+      insertMarker(range.cloneRange(), createMarker());
+
+      if (! range.collapsed ) {
+        // End marker
+        var rangeEnd = range.cloneRange();
+        rangeEnd.collapse(false);
+        insertMarker(rangeEnd, createMarker());
       }
 
-      //we want to ensure that the current selection is within the current scribe node
-      //if this isn't true scribe will place markers within the selections parent
-      //we want to ensure that scribe ONLY places markers within it's own element
-      if (scribe.el.contains(range.startContainer) && scribe.el.contains(range.endContainer)) {
-        // insert start marker
-        insertMarker(range.cloneRange(), createMarker());
-
-        if (! range.collapsed ) {
-          // End marker
-          var rangeEnd = range.cloneRange();
-          rangeEnd.collapse(false);
-          insertMarker(rangeEnd, createMarker());
-        }
-
-        this.selection.removeAllRanges();
-        this.selection.addRange(range);
-      }
+      this.selection.removeAllRanges();
+      this.selection.addRange(range);
     };
 
     Selection.prototype.getMarkers = function () {
@@ -18661,10 +18910,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
       Array.prototype.forEach.call(this.getMarkers(), function (marker) {
         var markerParent = marker.parentNode;
         nodeHelpers.removeNode(marker);
-        // Placing the markers may have split a text node. Sew it up, otherwise
-        // if the user presses space between the nodes the browser will insert
-        // an `&nbsp;` and that will cause word wrapping issues.
-        markerParent.normalize();
+
+        // MSIE doesn't like normalize
+        if (!window.navigator.userAgent.indexOf("MSIE ")) {
+          // Placing the markers may have split a text node. Sew it up, otherwise
+          // if the user presses space between the nodes the browser will insert
+          // an `&nbsp;` and that will cause word wrapping issues.
+          markerParent.normalize();
+        }
       });
     };
 
@@ -18679,10 +18932,10 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
       var newRange = document.createRange();
 
-      newRange.setStartBefore(markers[0]);
+      setRangeStart(newRange, markers[0]);
       // We always reset the end marker because otherwise it will just
       // use the current range’s end marker.
-      newRange.setEndAfter(markers.length >= 2 ? markers[1] : markers[0]);
+      setRangeEnd(newRange, markers.length >= 2 ? markers[1] : markers[0]);
 
       if (! keepMarkers) {
         this.removeMarkers();
@@ -18707,7 +18960,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 182 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -18739,7 +18992,7 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 183 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -18790,7 +19043,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 184 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
@@ -18801,7 +19054,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
   function UndoManager(limit, undoScopeHost) {
     this._stack = Immutable.List();
     this._limit = limit;
-    this._fireEvent = typeof CustomEvent != 'undefined' && undoScopeHost && undoScopeHost.dispatchEvent;
+    this._fireEvent = undoScopeHost && undoScopeHost.dispatchEvent;
     this._ush = undoScopeHost;
 
     this.position = 0;
@@ -18887,7 +19140,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         cancelable: false
       }));
     }
-  }
+  };
 
   return UndoManager;
 }).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
@@ -18895,7 +19148,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 185 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = (function (Immutable) {
@@ -18946,7 +19199,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 186 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(5)], __WEBPACK_AMD_DEFINE_RESULT__ = (function (immutable) {
@@ -19071,7 +19324,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 187 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -19091,14 +19344,14 @@ var __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_RESULT__ = (function ()
 
 
 /***/ }),
-/* 188 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(189),
-  __webpack_require__(190),
-  __webpack_require__(191),
-  __webpack_require__(192)], __WEBPACK_AMD_DEFINE_RESULT__ = (function (checks, init, prompts, transforms) {
+!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(192),
+  __webpack_require__(193),
+  __webpack_require__(194),
+  __webpack_require__(195)], __WEBPACK_AMD_DEFINE_RESULT__ = (function (checks, init, prompts, transforms) {
 
 
   /**
@@ -19186,7 +19439,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
 
 
 /***/ }),
-/* 189 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -19217,7 +19470,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 190 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -19246,7 +19499,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 191 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -19308,7 +19561,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(55)))
 
 /***/ }),
-/* 192 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
@@ -19328,13 +19581,13 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 193 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [
-  __webpack_require__(194),
-  __webpack_require__(195),
-  __webpack_require__(210)
+  __webpack_require__(197),
+  __webpack_require__(198),
+  __webpack_require__(213)
 ], __WEBPACK_AMD_DEFINE_RESULT__ = (function (
   HTMLJanitor,
   merge,
@@ -19372,7 +19625,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 194 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
@@ -19558,10 +19811,10 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (roo
 
 
 /***/ }),
-/* 195 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(196), __webpack_require__(207)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseMerge, createAssigner) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(199), __webpack_require__(210)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseMerge, createAssigner) {
 
   /**
    * Recursively merges own enumerable properties of the source object(s), that
@@ -19619,10 +19872,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 196 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(71), __webpack_require__(72), __webpack_require__(202), __webpack_require__(19), __webpack_require__(6), __webpack_require__(13), __webpack_require__(14), __webpack_require__(78)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(arrayEach, baseForOwn, baseMergeDeep, isArray, isLength, isObject, isObjectLike, isTypedArray) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(71), __webpack_require__(72), __webpack_require__(205), __webpack_require__(19), __webpack_require__(6), __webpack_require__(13), __webpack_require__(14), __webpack_require__(78)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(arrayEach, baseForOwn, baseMergeDeep, isArray, isLength, isObject, isObjectLike, isTypedArray) {
 
   /** Used as a safe reference for `undefined` in pre-ES5 environments. */
   var undefined;
@@ -19671,7 +19924,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 197 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(13)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isObject) {
@@ -19693,10 +19946,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 198 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(199)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseToString) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(202)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseToString) {
 
   /**
    * Used to match `RegExp` special characters.
@@ -19733,7 +19986,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 199 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -19759,7 +20012,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 200 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34), __webpack_require__(19), __webpack_require__(35), __webpack_require__(6), __webpack_require__(36), __webpack_require__(75)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isArguments, isArray, isIndex, isLength, keysIn, support) {
@@ -19804,7 +20057,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 201 */
+/* 204 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -19832,10 +20085,10 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 202 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(77), __webpack_require__(34), __webpack_require__(19), __webpack_require__(6), __webpack_require__(203), __webpack_require__(78), __webpack_require__(206)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(arrayCopy, isArguments, isArray, isLength, isPlainObject, isTypedArray, toPlainObject) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(77), __webpack_require__(34), __webpack_require__(19), __webpack_require__(6), __webpack_require__(206), __webpack_require__(78), __webpack_require__(209)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(arrayCopy, isArguments, isArray, isLength, isPlainObject, isTypedArray, toPlainObject) {
 
   /** Used as a safe reference for `undefined` in pre-ES5 environments. */
   var undefined;
@@ -19904,10 +20157,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 203 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18), __webpack_require__(204)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isNative, shimIsPlainObject) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(18), __webpack_require__(207)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isNative, shimIsPlainObject) {
 
   /** `Object#toString` result references. */
   var objectTag = '[object Object]';
@@ -19973,10 +20226,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 204 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(205), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseForIn, isObjectLike) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(208), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseForIn, isObjectLike) {
 
   /** `Object#toString` result references. */
   var objectTag = '[object Object]';
@@ -20031,7 +20284,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 205 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(73), __webpack_require__(36)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseFor, keysIn) {
@@ -20055,7 +20308,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 206 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(79), __webpack_require__(36)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseCopy, keysIn) {
@@ -20093,10 +20346,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 207 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(80), __webpack_require__(209)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(bindCallback, isIterateeCall) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(80), __webpack_require__(212)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(bindCallback, isIterateeCall) {
 
   /**
    * Creates a function that assigns properties of source object(s) to a given
@@ -20147,7 +20400,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 208 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -20177,7 +20430,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 209 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(35), __webpack_require__(6), __webpack_require__(13)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(isIndex, isLength, isObject) {
@@ -20215,10 +20468,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 210 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(211), __webpack_require__(80)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseClone, bindCallback) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(214), __webpack_require__(80)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(baseClone, bindCallback) {
 
   /**
    * Creates a deep clone of `value`. If `customizer` is provided it is invoked
@@ -20276,10 +20529,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 211 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(77), __webpack_require__(71), __webpack_require__(79), __webpack_require__(72), __webpack_require__(212), __webpack_require__(213), __webpack_require__(216), __webpack_require__(19), __webpack_require__(13), __webpack_require__(74)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(arrayCopy, arrayEach, baseCopy, baseForOwn, initCloneArray, initCloneByTag, initCloneObject, isArray, isObject, keys) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(77), __webpack_require__(71), __webpack_require__(79), __webpack_require__(72), __webpack_require__(215), __webpack_require__(216), __webpack_require__(219), __webpack_require__(19), __webpack_require__(13), __webpack_require__(74)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(arrayCopy, arrayEach, baseCopy, baseForOwn, initCloneArray, initCloneByTag, initCloneObject, isArray, isObject, keys) {
 
   /** `Object#toString` result references. */
   var argsTag = '[object Arguments]',
@@ -20405,7 +20658,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 212 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -20441,10 +20694,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 213 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(214)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(bufferClone) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(217)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(bufferClone) {
 
   /** `Object#toString` result references. */
   var boolTag = '[object Boolean]',
@@ -20513,10 +20766,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 214 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(215), __webpack_require__(18), __webpack_require__(76)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(constant, isNative, root) {
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(218), __webpack_require__(18), __webpack_require__(76)], __WEBPACK_AMD_DEFINE_RESULT__ = (function(constant, isNative, root) {
 
   /** Native method references. */
   var ArrayBuffer = isNative(ArrayBuffer = root.ArrayBuffer) && ArrayBuffer,
@@ -20575,7 +20828,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 215 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -20608,7 +20861,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 216 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function() {
@@ -20634,7 +20887,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 
 /***/ }),
-/* 217 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20695,7 +20948,9 @@ module.exports = {
     }
 
     if (content === '') {
-      content = '<br>';
+      if (!window.navigator.userAgent.match(/MSIE 10/)) {
+        content = '<br>';
+      }
     }
 
     this.setTextBlockHTML(content);
@@ -20711,7 +20966,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 218 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20726,7 +20981,7 @@ var stToHTML = __webpack_require__(21);
 
 var ScribeTextBlockPlugin = __webpack_require__(89);
 
-var ScribePastePlugin = __webpack_require__(224);
+var ScribePastePlugin = __webpack_require__(227);
 
 var ScribeHeadingPlugin = __webpack_require__(39);
 
@@ -20771,24 +21026,24 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 219 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var BLOCK_ADDITION_TOP_TEMPLATE = __webpack_require__(220);
+var BLOCK_ADDITION_TOP_TEMPLATE = __webpack_require__(223);
 
 var BLOCK_ADDITION_TEMPLATE = __webpack_require__(87);
 
-var BLOCK_REPLACER_TEMPLATE = __webpack_require__(221);
+var BLOCK_REPLACER_TEMPLATE = __webpack_require__(224);
 
 module.exports = function (editor_html) {
   return "\n    <div class='st-block__inner'>\n      ".concat(editor_html, "\n    </div>\n    ").concat(BLOCK_REPLACER_TEMPLATE(), "\n    ").concat(BLOCK_ADDITION_TOP_TEMPLATE(), "\n    ").concat(BLOCK_ADDITION_TEMPLATE(), "\n  ");
 };
 
 /***/ }),
-/* 220 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20801,7 +21056,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 221 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20814,7 +21069,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 222 */
+/* 225 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -21010,7 +21265,7 @@ function convertOffset(x, y, degrees) {
 
 
 /***/ }),
-/* 223 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21021,7 +21276,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 224 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21031,7 +21286,39 @@ When content is pasted into a block take the sanitized html and create a block f
 paragraph that has been added.
 */
 
+function createListBlock(block, listItems) {
+  var listItemContent = listItems.map(function (listItemNode) {
+    var content = listItemNode.innerHTML.substr(2);
+    return {
+      content: content
+    };
+  });
+  var listData = {
+    format: 'html',
+    listItems: listItemContent.reverse()
+  };
+  block.mediator.trigger("block:create", 'List', listData, block.el, {
+    autoFocus: true
+  });
+}
+
+function handleListItems(block, listItemsToCreate) {
+  if (listItemsToCreate.length > 0) {
+    createListBlock(block, listItemsToCreate);
+  }
+
+  return [];
+}
+
 var scribePastePlugin = function scribePastePlugin(block) {
+  function isMsWordListParagraph(node) {
+    if (block.editorOptions.blockTypes.indexOf("List") === -1) return false;
+    var matchingClassnames = node.className.split(" ").filter(function (className) {
+      return className.startsWith("MsoListParagraph");
+    });
+    return matchingClassnames.length > 0;
+  }
+
   return function (scribe) {
     var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
 
@@ -21049,20 +21336,54 @@ var scribePastePlugin = function scribePastePlugin(block) {
             block.mediator.off("block:created", assignBlockToFocus);
           };
 
-          var nodes = Array.from(fakeContent.childNodes);
-          scribe.setContent(nodes.shift().innerHTML);
+          var nodes = [].slice.call(fakeContent.childNodes);
+          var listItemsToCreate = [];
+          var listIsFirstItem = false;
           var blockToFocus;
+          var firstNode = nodes[0];
+
+          if (isMsWordListParagraph(firstNode)) {
+            listIsFirstItem = true;
+            scribe.setContent("");
+          } else {
+            scribe.setContent(nodes.shift().innerHTML);
+          }
+
           block.mediator.on("block:created", assignBlockToFocus);
           nodes.reverse().forEach(function (node) {
-            var data = {
-              format: 'html',
-              text: node.innerHTML
-            };
-            block.mediator.trigger("block:create", 'Text', data, block.el, {
-              autoFocus: true
-            });
-          });
+            if (isMsWordListParagraph(node)) {
+              // Start building list
+              listItemsToCreate.push(node);
+            } else {
+              // Previous blocks were list items, so create the list block first
+              listItemsToCreate = handleListItems(block, listItemsToCreate); // Now create the text block
+
+              var data = {
+                format: 'html',
+                text: node.innerHTML
+              };
+              block.mediator.trigger("block:create", 'Text', data, block.el, {
+                autoFocus: true
+              });
+            }
+          }); // If the last element was a list item, the list won't have been
+          // created yet, so create it now
+
+          listItemsToCreate = handleListItems(block, listItemsToCreate);
+
+          if (listIsFirstItem) {
+            block.mediator.trigger("block:remove", block.blockID);
+          }
+
           blockToFocus.focusAtEnd();
+        } else {
+          var node = fakeContent.firstChild;
+
+          if (isMsWordListParagraph(node)) {
+            scribe.setContent("");
+            createListBlock(block, [node]);
+            block.mediator.trigger("block:remove", block.blockID);
+          }
         }
       });
     };
@@ -21074,7 +21395,7 @@ var scribePastePlugin = function scribePastePlugin(block) {
 module.exports = scribePastePlugin;
 
 /***/ }),
-/* 225 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21122,7 +21443,7 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 226 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21169,7 +21490,7 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 227 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21223,7 +21544,7 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 228 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21235,7 +21556,7 @@ var Block = __webpack_require__(8);
 
 var stToHTML = __webpack_require__(21);
 
-var ScribeListBlockPlugin = __webpack_require__(229);
+var ScribeListBlockPlugin = __webpack_require__(232);
 
 var _require = __webpack_require__(38),
     getTotalLength = _require.getTotalLength;
@@ -21434,7 +21755,7 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 229 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21552,7 +21873,7 @@ var ScribeListBlockPlugin = function ScribeListBlockPlugin(block) {
 module.exports = ScribeListBlockPlugin;
 
 /***/ }),
-/* 230 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21649,7 +21970,7 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 231 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21728,7 +22049,7 @@ module.exports = Block.extend({
 });
 
 /***/ }),
-/* 232 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21745,7 +22066,7 @@ module.exports = function (_ref) {
 };
 
 /***/ }),
-/* 233 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21772,11 +22093,11 @@ var EventBus = __webpack_require__(4);
 
 var FormEvents = __webpack_require__(91);
 
-var BlockControls = __webpack_require__(234);
+var BlockControls = __webpack_require__(237);
 
-var BlockAddition = __webpack_require__(236);
+var BlockAddition = __webpack_require__(239);
 
-var BlockAdditionTop = __webpack_require__(238);
+var BlockAdditionTop = __webpack_require__(241);
 
 var BlockManager = __webpack_require__(85);
 
@@ -21784,7 +22105,7 @@ var FormatBar = __webpack_require__(90);
 
 var EditorStore = __webpack_require__(61);
 
-var ErrorHandler = __webpack_require__(239);
+var ErrorHandler = __webpack_require__(242);
 
 var Editor = function Editor(options) {
   this.initialize(options);
@@ -22089,7 +22410,7 @@ Object.assign(Editor.prototype, __webpack_require__(7), __webpack_require__(9), 
 module.exports = Editor;
 
 /***/ }),
-/* 234 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22104,7 +22425,7 @@ var Blocks = __webpack_require__(20);
 
 var Events = __webpack_require__(10);
 
-var BLOCK_REPLACER_CONTROL_TEMPLATE = __webpack_require__(235);
+var BLOCK_REPLACER_CONTROL_TEMPLATE = __webpack_require__(238);
 
 function generateBlocksHTML(Blocks, availableTypes) {
   return availableTypes.reduce(function (memo, type) {
@@ -22182,7 +22503,7 @@ module.exports.create = function (SirTrevor) {
 };
 
 /***/ }),
-/* 235 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22195,7 +22516,7 @@ module.exports = function (block) {
 };
 
 /***/ }),
-/* 236 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22214,7 +22535,7 @@ var Dom = __webpack_require__(3);
 
 var Events = __webpack_require__(10);
 
-var TOP_CONTROLS_TEMPLATE = __webpack_require__(237);
+var TOP_CONTROLS_TEMPLATE = __webpack_require__(240);
 
 module.exports.create = function (SirTrevor) {
   function createBlock(e) {
@@ -22259,7 +22580,7 @@ module.exports.create = function (SirTrevor) {
 };
 
 /***/ }),
-/* 237 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22272,7 +22593,7 @@ module.exports = function () {
 };
 
 /***/ }),
-/* 238 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22312,7 +22633,7 @@ module.exports.create = function (SirTrevor) {
 };
 
 /***/ }),
-/* 239 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22388,7 +22709,7 @@ Object.assign(ErrorHandler.prototype, __webpack_require__(7), __webpack_require_
 module.exports = ErrorHandler;
 
 /***/ }),
-/* 240 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22476,7 +22797,7 @@ module.exports = function (content, type) {
 };
 
 /***/ }),
-/* 241 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin

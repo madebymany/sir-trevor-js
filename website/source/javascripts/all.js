@@ -1,4 +1,5 @@
-//= require jquery.typer
+require('../stylesheets/all.scss');
+require('jquery.typer');
 
 $(function(){
   var $typer = $('.typer-target');

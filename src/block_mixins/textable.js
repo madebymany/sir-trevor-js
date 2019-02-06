@@ -63,7 +63,9 @@ module.exports = {
     }
 
     if (content === '') {
-      content = '<br>';
+      if (!window.navigator.userAgent.match(/MSIE 10/)) {
+        content = '<br>';
+      }
     }
 
     this.setTextBlockHTML(content);
