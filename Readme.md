@@ -22,20 +22,18 @@ Note: Sir Trevor is distributed combined with its dependencies. If you wish to m
 HTML
 
 ```html
-<form>
-  <textarea class="js-st-instance"></textarea>
-</form>
+<form><textarea class="js-st-instance"></textarea></form>
 ```
 
 Javascript
 
 ```js
-import SirTrevor from 'sir-trevor';
+import SirTrevor from "sir-trevor";
 
 const editor = new SirTrevor.Editor({
-  el: document.querySelector('.js-st-instance'),
-  defaultType: 'Text',
-  iconUrl: 'build/sir-trevor-icons.svg'
+  el: document.querySelector(".js-st-instance"),
+  defaultType: "Text",
+  iconUrl: "build/sir-trevor-icons.svg"
 });
 ```
 
@@ -86,7 +84,7 @@ We use [Sass](http://sass-lang.com/) for our styles, if you'd like to change the
 
 ### Customising blocks
 
-Block Types can also easily be added to the ``SirTrevor.Blocks`` object. You can also override the default block types (Text, Image, Tweet, Video, Quote, Heading & List) at any time. See the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
+Block Types can also easily be added to the `SirTrevor.Blocks` object. You can also override the default block types (Text, Image, Tweet, Video, Quote, Heading & List) at any time. See the documentation to find out more about [adding your own block types](http://madebymany.github.io/sir-trevor-js/docs.html#4).
 
 ### Compiling
 
@@ -96,19 +94,19 @@ be installed via `brew install chromedriver`.
 
 Before getting started please be sure to install the necessary dependencies via npm:
 
-``$ npm install``
+`$ npm install`
 
 When completed, we have a couple of preset scripts:
 
-``$ npm run dev``
+`$ npm run dev`
 
 This compiles for development, and watches source files to recompile when you change something.
 
-``$ npm test``
+`$ npm test`
 
 Runs the linter and test suite, just like the CI server does.
 
-``$ npm run dist``
+`$ npm run dist`
 
 Concatenates scripts, compiles the Sass, runs the Jasmine tests and minifies the project.
 
@@ -117,16 +115,17 @@ Please ensure any pull requests have relevant Jasmine tests (where applicable).
 ## Current browser support tests
 
 matrix:
-  - BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='OSX 10.10'
-  - BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='Windows 7'
-  - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.10'
-  - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
+
+- BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='OSX 10.10'
+- BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='Windows 7'
+- BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.10'
+- BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
 
 ## Building gh-pages docs
 
 ```
 cd website
-bower install
+npm install
 bundle exec rake publish PROJECT_ROOT=./ ALLOW_DIRTY=true
 ```
 
