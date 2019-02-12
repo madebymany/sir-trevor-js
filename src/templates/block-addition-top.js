@@ -3,6 +3,10 @@
 var config = require('../config');
 
 module.exports = () => {
+  if (!config.defaults.modifyBlocks) {
+    return '';
+  }
+
   return `
     <div class="st-block-addition-top">
       <div class="st-block-addition-top__button" type="button"></div>
