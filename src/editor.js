@@ -24,6 +24,7 @@ var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
 var ErrorHandler = require('./error-handler');
 var BlockPositionerSelect = require('./block-positioner-select');
+var SelectionHandler = require('./selection-handler');
 
 var Editor = function(options) {
   this.initialize(options);
@@ -84,7 +85,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.BlockAdditionTop = BlockAdditionTop.create(this);
     this.blockControls = BlockControls.create(this);
     this.blockPositionerSelect = new BlockPositionerSelect(this.mediator);
-
+    this.selectionHandler = new SelectionHandler(this.outer, this.mediator, this);
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
@@ -105,6 +106,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     // External event listeners
     window.addEventListener('click', this.hideAllTheThings);
     document.body.addEventListener('keydown', this.disableBackButton);
+
+    window.addEventListener('mouseup', () => {
+      window.mouseDown = false;
+      this.mediator.trigger("selection:complete");
+    });
 
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
@@ -378,7 +384,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     return true;
   }
-
 });
 
 module.exports = Editor;

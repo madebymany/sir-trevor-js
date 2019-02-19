@@ -100,5 +100,13 @@ module.exports = Block.extend({
   onDrop: function(transferData){
     var url = transferData.getData('text/plain');
     this.handleTwitterDropPaste(url);
+  },
+
+  asClipboardHTML: function() {
+    return `
+      <p>
+        Tweet URL
+      </p>
+    `;
   }
 });

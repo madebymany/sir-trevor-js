@@ -47,5 +47,14 @@ module.exports = Block.extend({
     if (data.cite) {
       this.$('.js-cite-input')[0].value = data.cite;
     }
+  },
+
+  asClipboardHTML: function() {
+    return `
+      <blockquote>
+        ${this._scribe.getTextContent()}
+        <cite>${this.$('.js-cite-input')[0].value}</cite>
+      </blockquote>
+    `;
   }
 });

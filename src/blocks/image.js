@@ -6,7 +6,7 @@ var Block = require('../block');
 module.exports = Block.extend({
 
   type: "image",
-  
+
   droppable: true,
   uploadable: true,
 
@@ -43,5 +43,11 @@ module.exports = Block.extend({
         }
       );
     }
+  },
+
+  asClipboardHTML: function() {
+    return `
+      <img src="${this._getData().file.url}" />
+    `;
   }
 });
