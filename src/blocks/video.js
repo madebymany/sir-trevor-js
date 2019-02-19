@@ -19,7 +19,7 @@ module.exports = Block.extend({
   },
 
   type: 'video',
-  
+
   droppable: true,
   pastable: true,
 
@@ -30,7 +30,7 @@ module.exports = Block.extend({
 
     var source = this.providers[data.source];
 
-    var protocol = window.location.protocol === "file:" ? 
+    var protocol = window.location.protocol === "file:" ?
       "http:" : window.location.protocol;
 
     var aspectRatioClass = source.square ?
@@ -61,7 +61,7 @@ module.exports = Block.extend({
   handleDropPaste: function(url){
     if (!utils.isURI(url)) { return; }
 
-    for(var key in this.providers) { 
+    for(var key in this.providers) {
       if (!this.providers.hasOwnProperty(key)) { continue; }
       this.setAndLoadData(
         this.matchVideoProvider(this.providers[key], key, url)
@@ -72,6 +72,12 @@ module.exports = Block.extend({
   onDrop: function(transferData){
     var url = transferData.getData('text/plain');
     this.handleDropPaste(url);
+  },
+
+  asClipboardHTML: function() {
+    return `
+      <div class="st-copy-video" data-source="${this._getData().source}" data-remote-id="${this._getData().remote_id}"></div>
+    `;
   }
 });
 

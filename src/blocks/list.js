@@ -205,5 +205,14 @@ module.exports = Block.extend({
     } else {
       return null;
     }
+  },
+
+  asClipboardHTML: function() {
+    var listItems = this.editorIds.map(editorId => {
+      return `<li>${this.getTextEditor(editorId).scribe.getContent()}</li>`;
+    }).join("\n");
+    return `
+      <ul>${listItems}</ul>
+    `;
   }
 });

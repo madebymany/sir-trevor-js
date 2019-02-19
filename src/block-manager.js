@@ -199,12 +199,27 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   renderBlock: function(block, previousSibling) {
     // REFACTOR: this will have to do until we're able to address
     // the block manager
+
+    var blockElement = block.render().el;
+
     if (previousSibling) {
-      Dom.insertAfter(block.render().el, previousSibling);
+      Dom.insertAfter(blockElement, previousSibling);
     } else {
-      this.wrapper.appendChild(block.render().el);
+      this.wrapper.appendChild(blockElement);
     }
     block.trigger("onRender");
+
+    blockElement.addEventListener("mouseenter", () => {
+      if (!window.mouseDown) return;
+
+      var blockPosition = this.getBlockPosition(block.el);
+      this.mediator.trigger("selection:update", blockPosition);
+    });
+
+    blockElement.addEventListener("mousedown", () => {
+      var blockPosition = this.getBlockPosition(block.el);
+      this.mediator.trigger("selection:start", blockPosition);
+    });
   },
 
   rerenderBlock: function(blockID) {
