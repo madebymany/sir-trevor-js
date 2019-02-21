@@ -28,7 +28,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     'complete': 'complete',
     'all': 'all',
     'copy': 'copy',
-    'update': 'update'
+    'update': 'update',
+    'delete': 'delete'
   },
 
   initialize: function() {
@@ -41,6 +42,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
         console.log("Ctrl + V Pressed !");
       } else if ( e.key == "c" && ctrl ) {
         this.mediator.trigger("selection:copy");
+      } else if ( e.key == "x" && ctrl ) {
+        this.mediator.trigger("selection:delete");
       }
     }, false);
   },
@@ -57,7 +60,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   update: function(index) {
     this.endIndex = index;
     this.selecting = this.startIndex !== this.endIndex;
-
     this.mediator.trigger("selection:render");
   },
 
@@ -72,7 +74,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     this.startIndex = 0;
     this.endIndex = blocks.length;
 
-    this.render();
+    this.mediator.trigger("selection:render");
   },
 
   render: function() {
@@ -125,6 +127,18 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       }
     }, 0);
   },
+
+  delete: function() {
+    [].forEach.call(this.wrapper.querySelectorAll('.st-block'), (block, idx) => {
+      var _selected = idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex);
+      if (!_selected) return;
+
+      var _block = this.editor.findBlockById(block.getAttribute('id'));
+      if (_block) {
+        this.mediator.trigger("block:remove", _block.blockID, { focusOnNext: true });
+      }
+    });
+  }
 
 });
 

@@ -113,7 +113,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   removeBlock: function(blockID, options) {
     options = Object.assign({
       transposeContent: false,
-      focusOnPrevious: false
+      focusOnPrevious: false,
+      focusOnNext: false
     }, options);
 
     var block = this.findBlockById(blockID);
@@ -180,6 +181,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     if (options.focusOnPrevious && previousBlock) {
       previousBlock.focusAtEnd();
+    }
+
+    if (options.focusOnNext && nextBlock) {
+      nextBlock.focus();
     }
 
     this._decrementBlockTypeCount(type);
