@@ -116,7 +116,7 @@ module.exports = {
     },
     focusOnInit: true,
     selectionMouse: false,
-    selectionCopy: false,
+    selectionCopy: true,
     selectionDelete: false
   }
 };

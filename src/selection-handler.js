@@ -37,9 +37,9 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     window.addEventListener('keydown', (e) => {
       e = e || window.event;
       var ctrl = e.ctrlKey || e.metaKey;
-      if (e.key == "a" && ctrl) {
+      if (config.selectionCopy && e.key == "a" && ctrl) {
         this.mediator.trigger("selection:all");
-      } else if (e.key == "c" && ctrl) {
+      } else if (config.selectionCopy && e.key == "c" && ctrl) {
         this.mediator.trigger("selection:copy");
       } else if (config.selectionDelete && e.key == "x" && ctrl) {
         this.mediator.trigger("selection:delete");
