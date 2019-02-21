@@ -107,10 +107,12 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     window.addEventListener('click', this.hideAllTheThings);
     document.body.addEventListener('keydown', this.disableBackButton);
 
-    window.addEventListener('mouseup', () => {
-      window.mouseDown = false;
-      this.mediator.trigger("selection:complete");
-    });
+    if (config.selectionMouse) {
+      window.addEventListener('mouseup', () => {
+        window.mouseDown = false;
+        this.mediator.trigger("selection:complete");
+      });
+    }
 
     this.createBlocks();
     this.wrapper.classList.add('st-ready');

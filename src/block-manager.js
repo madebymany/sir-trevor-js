@@ -214,17 +214,19 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     }
     block.trigger("onRender");
 
-    blockElement.addEventListener("mouseenter", () => {
-      if (!window.mouseDown) return;
+    if (config.selectionMouse) {
+      blockElement.addEventListener("mouseenter", () => {
+        if (!window.mouseDown) return;
 
-      var blockPosition = this.getBlockPosition(block.el);
-      this.mediator.trigger("selection:update", blockPosition);
-    });
+        var blockPosition = this.getBlockPosition(block.el);
+        this.mediator.trigger("selection:update", blockPosition);
+      });
 
-    blockElement.addEventListener("mousedown", () => {
-      var blockPosition = this.getBlockPosition(block.el);
-      this.mediator.trigger("selection:start", blockPosition);
-    });
+      blockElement.addEventListener("mousedown", () => {
+        var blockPosition = this.getBlockPosition(block.el);
+        this.mediator.trigger("selection:start", blockPosition);
+      });
+    }
   },
 
   rerenderBlock: function(blockID) {
