@@ -60,6 +60,27 @@ exports.pressDown = function() {
     .sendKeys(driver.Key.ARROW_DOWN)
     .perform();
 };
+exports.pressCtrlA = function() {
+  return exports.browser.actions()
+    .keyDown(driver.Key.CONTROL)
+    .sendKeys("a")
+    .keyUp(driver.Key.CONTROL)
+    .perform();
+};
+exports.pressCtrlC = function() {
+  return exports.browser.actions()
+    .keyDown(driver.Key.CONTROL)
+    .sendKeys("c")
+    .keyUp(driver.Key.CONTROL)
+    .perform();
+};
+exports.pressCtrlV = function() {
+  return exports.browser.actions()
+    .keyDown(driver.Key.CONTROL)
+    .sendKeys("v")
+    .keyUp(driver.Key.CONTROL)
+    .perform();
+};
 
 exports.createBlock = function(blockType, cb) {
 
