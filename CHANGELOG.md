@@ -1,11 +1,39 @@
 # Changelog
 
-## 0.7.x
+**Current version: 0.7.3**
 
-### Future releases
+## 0.8.x
 
+### 0.8.5 - Undo?
 * Improve Firefox content pasting.
 * Improve edge content pasting.
+
+### 0.8.4 - Can delete content in selection.**
+- [ ] Cross browser fixes / testing.
+
+## 0.8.3 - Can select block inner elements
+- [ ] Allow selection of individual list items.
+- [ ] Cross browser fixes / testing.
+
+### 0.8.2 - Can paste cotent
+- [ ] Enable paste of non-text content.
+- [ ] Cross browser fixes / testing.
+
+### 0.8.1 - Can selectively copy content
+- [ ] Keyboard behaviour.
+- [ ] Mouse behaviour.
+- [ ] Native browser behaviour.
+- [ ] Cross browser fixes / testing.
+
+### 0.8.0 - Can CTRL+A to Copy all content
+- [x] Implement Selection Handler.
+- [x] Block level selection.
+- [x] Feature flag additional functionality.
+- [ ] Cross browser fixes / testing.
+
+----
+
+## 0.7.x
 
 ### 0.7.3
 
