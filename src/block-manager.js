@@ -214,7 +214,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     }
     block.trigger("onRender");
 
-    if (config.selectionMouse) {
+    if (this.options.selectionMouse) {
       blockElement.addEventListener("mouseenter", () => {
         if (!window.mouseDown) return;
 

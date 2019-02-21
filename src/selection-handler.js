@@ -2,7 +2,6 @@
 
 var _ = require('./lodash');
 var Dom = require('./packages/dom');
-var config = require('./config');
 
 var SelectionHandler = function(wrapper, mediator, editor) {
   this.wrapper = wrapper;
@@ -37,11 +36,11 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     window.addEventListener('keydown', (e) => {
       e = e || window.event;
       var ctrl = e.ctrlKey || e.metaKey;
-      if (config.selectionCopy && e.key == "a" && ctrl) {
+      if (this.editor.options.selectionCopy && e.key == "a" && ctrl) {
         this.mediator.trigger("selection:all");
-      } else if (config.selectionCopy && e.key == "c" && ctrl) {
+      } else if (this.editor.options.selectionCopy && e.key == "c" && ctrl) {
         this.mediator.trigger("selection:copy");
-      } else if (config.selectionDelete && e.key == "x" && ctrl) {
+      } else if (this.editor.options.selectionDelete && e.key == "x" && ctrl) {
         this.mediator.trigger("selection:delete");
       }
     }, false);
