@@ -105,7 +105,7 @@ module.exports = Block.extend({
   asClipboardHTML: function() {
     return `
       <p>
-        Tweet URL
+        ${this._getData().status_url || ""}
       </p>
     `;
   }

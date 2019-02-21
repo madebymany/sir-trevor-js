@@ -357,6 +357,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     return this.blockManager.getBlockPosition(block);
   },
 
+  getBlocks: function() {
+    return [].slice.call(this.wrapper.querySelectorAll('.st-block'));
+  },
+
   /*
    * Set all dom elements required for the editor.
    */

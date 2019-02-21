@@ -52,8 +52,8 @@ module.exports = Block.extend({
   asClipboardHTML: function() {
     return `
       <blockquote>
-        ${this._scribe.getTextContent()}
-        <cite>${this.$('.js-cite-input')[0].value}</cite>
+        ${this._getData().text}<br />
+        <cite>${this._getData().cite}</cite>
       </blockquote>
     `;
   }
