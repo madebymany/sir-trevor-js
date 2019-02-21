@@ -34,12 +34,12 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   initialize: function() {
-    document.body.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', (e) => {
       e = e || window.event;
       var ctrl = e.ctrlKey || e.metaKey;
       if (e.key == "a" && ctrl) {
         this.mediator.trigger("selection:all");
-      } else if (config.selectionCopy && e.key == "c" && ctrl) {
+      } else if (e.key == "c" && ctrl) {
         this.mediator.trigger("selection:copy");
       } else if (config.selectionDelete && e.key == "x" && ctrl) {
         this.mediator.trigger("selection:delete");
@@ -68,7 +68,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   all: function() {
-    var blocks = [].slice.call(this.wrapper.querySelectorAll('.st-block'));
+    var blocks = this.editor.getBlocks();
     this.selecting = true;
     this.startIndex = 0;
     this.endIndex = blocks.length;
@@ -77,7 +77,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   render: function() {
-    [].forEach.call(this.wrapper.querySelectorAll('.st-block'), (blockEl, idx) => {
+    this.editor.getBlocks().forEach((blockEl, idx) => {
       var block = this.editor.findBlockById(blockEl.getAttribute('id'));
       block.select(this.selecting && idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex));
     });
@@ -97,11 +97,11 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
     var output = [];
 
-    [].forEach.call(this.wrapper.querySelectorAll('.st-block'), (block, idx) => {
+    this.editor.getBlocks().forEach((blockEl, idx) => {
       var _selected = idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex);
       if (!_selected) return;
 
-      var _block = this.editor.findBlockById(block.getAttribute('id'));
+      var _block = this.editor.findBlockById(blockEl.getAttribute('id'));
       if (_block) {
         output.push( _block.asClipboardHTML() );
       }
@@ -128,11 +128,11 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   delete: function() {
-    [].forEach.call(this.wrapper.querySelectorAll('.st-block'), (block, idx) => {
+    this.editor.getBlocks().forEach((blockEl, idx) => {
       var _selected = idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex);
       if (!_selected) return;
 
-      var _block = this.editor.findBlockById(block.getAttribute('id'));
+      var _block = this.editor.findBlockById(blockEl.getAttribute('id'));
       if (_block) {
         this.mediator.trigger("block:remove", _block.blockID, { focusOnNext: true });
       }
