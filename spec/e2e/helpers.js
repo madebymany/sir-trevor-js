@@ -23,14 +23,41 @@ exports.hasClassName = function(element, className) {
   });
 };
 
-var pressEnter = function() {
+exports.pressBackSpace = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.BACK_SPACE)
+    .perform();
+};
+
+exports.pressShift = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.SHIFT)
+    .perform();
+};
+exports.pressEnter = function() {
   return exports.browser.actions()
     .sendKeys(driver.Key.ENTER)
     .perform();
 };
-exports.pressBackSpace = function() {
+exports.pressShiftEnter = function() {
   return exports.browser.actions()
-    .sendKeys(driver.Key.BACK_SPACE)
+    .sendKeys(driver.Key.SHIFT)
+    .sendKeys(driver.Key.ENTER)
+    .perform();
+};
+exports.pressLeft = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.ARROW_LEFT)
+    .perform();
+};
+exports.pressRight = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.ARROW_RIGHT)
+    .perform();
+};
+exports.pressDown = function() {
+  return exports.browser.actions()
+    .sendKeys(driver.Key.ARROW_DOWN)
     .perform();
 };
 
@@ -55,19 +82,19 @@ exports.createBlock = function(blockType, cb) {
         type = res;
         if (classes.indexOf('st-block--textable') > -1) {
           if (blockType === 'text') {
-            return pressEnter().then(cb);
+            return exports.pressEnter().then(cb);
           } else {
             return createBlock(element);
           }
         } else if (type === 'list') {
-          return pressEnter()
+          return exports.pressEnter()
             .then(exports.findBlocks)
             .then( function(blocks2) {
               return createBlock(blocks2[blocks2.length-1]);
             });
         } else if (classes.indexOf('st-block--droppable') > -1) {
           return exports.findElementByCss('.st-block__inner--droppable', element).click()
-            .then(pressEnter)
+            .then(exports.pressEnter)
             .then(exports.findBlocks)
             .then(function(blocks2) {
               return createBlock(blocks2[blocks2.length-1]);
