@@ -82,6 +82,12 @@ exports.pressCtrlV = function() {
     .perform();
 };
 
+exports.enterText = function(text) {
+  return exports.browser.actions()
+                .sendKeys(text)
+                .perform();
+};
+
 exports.createBlock = function(blockType, cb) {
 
   function createBlock(parent) {

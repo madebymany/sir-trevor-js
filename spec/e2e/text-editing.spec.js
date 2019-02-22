@@ -5,12 +5,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 var helpers = require('./helpers');
 var driver = require('selenium-webdriver');
 
-var enterText = function(text) {
-  return helpers.browser.actions()
-                .sendKeys(text)
-                .perform();
-};
-
 var getTextFromBlock = function(blocks) {
   var str = 'return [';
   str += blocks.map( function(index) {
@@ -125,7 +119,7 @@ describe('Text block', function() {
             helpers.hasBlockCount(2).then( function() {
               return helpers.focusOnTextBlock(1);
             }).then( function() {
-              return enterText("Two");
+              return helpers.enterText("Two");
             }).then(helpers.pressLeft)
               .then(helpers.pressLeft)
               .then(helpers.pressLeft)
@@ -151,7 +145,7 @@ describe('Text block', function() {
 
     it('should move 1 character to the left', function(done) {
       helpers.focusOnTextBlock().then( function() {
-        return enterText("T");
+        return helpers.enterText("T");
       })
       .then(function() {
         return getTextBeforeCaret(0);
@@ -428,7 +422,7 @@ describe('List block', function() {
           helpers.createBlock('list', function() {
             helpers.hasBlockCount(4)
               .then( function() {
-                return enterText("Five");
+                return helpers.enterText("Five");
               })
               .then(helpers.pressLeft)
               .then(helpers.pressLeft)

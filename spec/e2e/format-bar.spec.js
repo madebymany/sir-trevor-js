@@ -3,8 +3,6 @@
 var helpers = require('./helpers');
 var driver = require('selenium-webdriver');
 
-var blockTypes = ["text"]; // jshint ignore:line
-
 describe('Format Bar', function() {
 
   beforeEach( function() {

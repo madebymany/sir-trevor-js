@@ -75,9 +75,7 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    return `
-      <div class="st-copy-video" data-source="${this._getData().source}" data-remote-id="${this._getData().remote_id}"></div>
-    `;
+    return `<div class="st-copy-video" data-source="${this._getData().source}" data-remote-id="${this._getData().remote_id}"></div>`;
   }
 });
 

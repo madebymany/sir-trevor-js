@@ -211,8 +211,6 @@ module.exports = Block.extend({
     var listItems = this.editorIds.map(editorId => {
       return `<li>${this.getTextEditor(editorId).scribe.getContent()}</li>`;
     }).join("\n");
-    return `
-      <ul>${listItems}</ul>
-    `;
+    return `<ul>${listItems}</ul>`;
   }
 });
