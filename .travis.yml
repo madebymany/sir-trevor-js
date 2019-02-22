@@ -1,7 +1,7 @@
 language: node_js
 sudo: false
 node_js:
-- 4.1.2
+- 10.15.1
 branches:
   only:
   - master
