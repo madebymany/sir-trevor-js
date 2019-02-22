@@ -103,7 +103,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   render: function() {
-    console.log(this.selecting);
     this.editor.getBlocks().forEach((blockEl, idx) => {
       var block = this.editor.findBlockById(blockEl.getAttribute('id'));
       block.select(this.selecting && idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex));
