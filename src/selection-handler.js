@@ -7,6 +7,7 @@ var SelectionHandler = function(wrapper, mediator, editor) {
   this.wrapper = wrapper;
   this.mediator = mediator;
   this.editor = editor;
+  this.options = editor.options;
 
   this.startIndex = undefined;
   this.endIndex = undefined;
@@ -29,21 +30,27 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     'all': 'all',
     'copy': 'copy',
     'update': 'update',
-    'delete': 'delete'
+    'delete': 'delete',
+    'cancel': 'cancel'
   },
 
   initialize: function() {
-    window.addEventListener('keydown', (e) => {
+    window.addEventListener("keydown", (e) => {
       e = e || window.event;
       var ctrl = e.ctrlKey || e.metaKey;
-      if (this.editor.options.selectionCopy && e.key == "a" && ctrl) {
+      if (this.options.selectionCopy && e.key == "a" && ctrl) {
         this.mediator.trigger("selection:all");
-      } else if (this.editor.options.selectionCopy && e.key == "c" && ctrl) {
+      } else if (this.options.selectionCopy && e.key == "c" && ctrl) {
         this.mediator.trigger("selection:copy");
-      } else if (this.editor.options.selectionDelete && e.key == "x" && ctrl) {
+      } else if (this.options.selectionDelete && e.key == "x" && ctrl) {
         this.mediator.trigger("selection:delete");
       }
     }, false);
+
+    window.addEventListener("click", () => {
+      this.mediator.trigger("selection:complete");
+      this.mediator.trigger("selection:cancel");
+    });
   },
 
   start: function(index) {
@@ -67,15 +74,36 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   all: function() {
+    if (this.options.selectionLimitToEditor) {
+      var editorEl = Dom.getClosest(document.activeElement, '.st-outer');
+      if (editorEl === document.body) return;
+    }
+
     var blocks = this.editor.getBlocks();
     this.selecting = true;
     this.startIndex = 0;
     this.endIndex = blocks.length;
-
     this.mediator.trigger("selection:render");
   },
 
+  cancel: function() {
+    this.mouseDown = false;
+    this.render();
+  },
+
+  removeNativeSelection: function() {
+    var sel = window.getSelection ? window.getSelection() : document.selection;
+    if (sel) {
+      if (sel.removeAllRanges) {
+        sel.removeAllRanges();
+      } else if (sel.empty) {
+        sel.empty();
+      }
+    }
+  },
+
   render: function() {
+    console.log(this.selecting);
     this.editor.getBlocks().forEach((blockEl, idx) => {
       var block = this.editor.findBlockById(blockEl.getAttribute('id'));
       block.select(this.selecting && idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex));
