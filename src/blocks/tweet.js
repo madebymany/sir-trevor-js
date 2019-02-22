@@ -103,10 +103,6 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    return `
-      <p>
-        ${this._getData().status_url || ""}
-      </p>
-    `;
+    return `<p>${this._getData().status_url || ""}</p>`;
   }
 });
