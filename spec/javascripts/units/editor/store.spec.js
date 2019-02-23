@@ -5,7 +5,7 @@ describe("EditorStore", function(){
   var mediator, store;
 
   beforeEach(function(){
-    mediator = _.extend({}, SirTrevor.Events);
+    mediator = Object.assign({}, SirTrevor.Events);
   });
 
   describe("creating the store", function(){

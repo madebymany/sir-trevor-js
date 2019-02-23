@@ -42,7 +42,7 @@ describe("BlockManager::Validations", function(){
 
   function createBlock(data) {
     manager.createBlock('Text', data || {});
-    return _.last(manager.blocks);
+    return manager.blocks[manager.blocks.length - 1];
   }
 
 });
