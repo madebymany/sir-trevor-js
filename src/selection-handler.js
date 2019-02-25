@@ -34,15 +34,30 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     'cancel': 'cancel'
   },
 
+  cancelSelectAll: function() {
+    // Don't select if within an input field
+    var editorEl = Dom.getClosest(document.activeElement, 'input');
+    if (editorEl !== document.body) return true;
+    // Don't select all if focused on element outside of the editor.
+    if (this.options.selectionLimitToEditor) {
+      var editorEl = Dom.getClosest(document.activeElement, '.st-outer');
+      if (editorEl === document.body) return true;
+    }
+  },
+
   initialize: function() {
     window.addEventListener("keydown", (e) => {
       e = e || window.event;
       var ctrl = e.ctrlKey || e.metaKey;
-      if (this.options.selectionCopy && e.key == "a" && ctrl) {
+      if (!ctrl) return;
+
+      if (this.options.selectionCopy && e.key === "a") {
+        if (this.cancelSelectAll()) return;
+        e.preventDefault();
         this.mediator.trigger("selection:all");
-      } else if (this.options.selectionCopy && e.key == "c" && ctrl) {
+      } else if (this.options.selectionCopy && e.key === "c") {
         this.mediator.trigger("selection:copy");
-      } else if (this.options.selectionDelete && e.key == "x" && ctrl) {
+      } else if (this.options.selectionDelete && e.key === "x") {
         this.mediator.trigger("selection:delete");
       }
     }, false);
@@ -74,10 +89,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   all: function() {
-    if (this.options.selectionLimitToEditor) {
-      var editorEl = Dom.getClosest(document.activeElement, '.st-outer');
-      if (editorEl === document.body) return;
-    }
+    this.removeNativeSelection();
 
     var blocks = this.editor.getBlocks();
     this.selecting = true;
@@ -100,6 +112,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
         sel.empty();
       }
     }
+    document.activeElement && document.activeElement.blur();
   },
 
   render: function() {
