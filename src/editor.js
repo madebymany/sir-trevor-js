@@ -117,14 +117,14 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
       }, this);
     } else if (this.options.defaultType !== false) {
       this.mediator.trigger('block:create', this.options.defaultType, {});
+    }
 
-      if (this.options.focusOnInit) {
-        var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
+    if (this.options.focusOnInit) {
+      var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
 
-        if (blockElement) {
-          var block = this.blockManager.findBlockById(blockElement.getAttribute('id'));
-          block.focus();
-        }
+      if (blockElement) {
+        var block = this.blockManager.findBlockById(blockElement.getAttribute('id'));
+        block.focus();
       }
     }
   },
