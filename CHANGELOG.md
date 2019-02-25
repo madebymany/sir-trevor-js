@@ -1,6 +1,6 @@
 # Changelog
 
-**Current version: 0.7.3**
+**Current version: 0.7.4**
 
 ## 0.8.x
 
@@ -34,6 +34,10 @@
 ----
 
 ## 0.7.x
+
+### 0.7.4
+
+* Fix `config.focusOnInit` to work with non text blocks by removing default `onBlockRender` that is no longer needed.
 
 ### 0.7.3
 
