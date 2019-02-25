@@ -114,7 +114,7 @@ exports.focusOnListBlock = function(index) {
 
 exports.initSirTrevor = function(data) {
   var javascriptString = [];
-  
+
   if (data) {
     data = JSON.stringify(data).replace("'", "\\'");
 
@@ -152,7 +152,7 @@ exports.completeAlertPopup = function(text) {
 beforeAll(function() {
 
   var serverUrl = null;
-  
+
   var capabilities = {
     browserName: 'chrome'
   };
@@ -175,7 +175,7 @@ beforeAll(function() {
         build: process.env.TRAVIS_BUILD_NUMBER,
         tags: [process.env.TRAVIS_NODE_VERSION, 'CI'],
       });
-    
+
       Object.assign(capabilities, {
         username: process.env.SAUCE_USERNAME,
         accessKey: process.env.SAUCE_ACCESS_KEY,
