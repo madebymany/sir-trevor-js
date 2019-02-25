@@ -10,11 +10,13 @@ module.exports = Block.extend({
   providers: {
     vimeo: {
       regex: /(?:http[s]?:\/\/)?(?:www.)?vimeo\.co(?:.+(?:\/)([^\/].*)+$)/,
-      html: "<iframe src=\"<%= protocol %>//player.vimeo.com/video/<%= remote_id %>?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>"
+      html: "<iframe src=\"<%= protocol %>//player.vimeo.com/video/<%= remote_id %>?title=0&byline=0\" width=\"580\" height=\"320\" frameborder=\"0\"></iframe>",
+      url: (remote_id) => `https://player.vimeo.com/video/${remote_id}`
     },
     youtube: {
       regex: /^.*(?:(?:youtu\.be\/)|(?:youtube\.com)\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*)/,
-      html: "<iframe src=\"<%= protocol %>//www.youtube.com/embed/<%= remote_id %>\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>"
+      html: "<iframe src=\"<%= protocol %>//www.youtube.com/embed/<%= remote_id %>\" width=\"580\" height=\"320\" frameborder=\"0\" allowfullscreen></iframe>",
+      url: (remote_id) => `https://www.youtube.com/embed/${remote_id}`
     }
   },
 
@@ -75,7 +77,10 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    return `<div class="st-copy-video" data-source="${this._getData().source}" data-remote-id="${this._getData().remote_id}"></div>`;
+    var data = this._getData();
+    var source = this.providers[data.source];
+    var src = source.url(data.remote_id);
+    return `<p>${src}</p>`;
   }
 });
 

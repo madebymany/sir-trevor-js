@@ -46,6 +46,9 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    return `<img src="${this._getData().file.url}" />`;
+    var data = this._getData();
+    var url = data.file && data.file.url;
+    if (!url) return;
+    return `<img src="${url}" alt="${url}" />`;
   }
 });
