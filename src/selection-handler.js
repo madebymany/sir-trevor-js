@@ -116,9 +116,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   render: function() {
-    this.editor.getBlocks().forEach((blockEl, idx) => {
-      var block = this.editor.findBlockById(blockEl.getAttribute('id'));
-      block.select(this.selecting && idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex));
+    this.editor.getBlocks().forEach((block, idx) => {
+      block.select(this.selecting && this.indexSelected(idx));
     });
   },
 
@@ -136,14 +135,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
     var output = [];
 
-    this.editor.getBlocks().forEach((blockEl, idx) => {
-      var _selected = idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex);
-      if (!_selected) return;
-
-      var _block = this.editor.findBlockById(blockEl.getAttribute('id'));
-      if (_block) {
-        output.push( _block.asClipboardHTML() );
-      }
+    this.editor.getBlocks().forEach((block, idx) => {
+      if (this.indexSelected(idx)) output.push(block.asClipboardHTML());
     });
 
     copyArea.innerHTML = output.join("\n");
@@ -168,14 +161,12 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   delete: function() {
     this.editor.getBlocks().forEach((blockEl, idx) => {
-      var _selected = idx >= Math.min(this.startIndex, this.endIndex) && idx <= Math.max(this.startIndex, this.endIndex);
-      if (!_selected) return;
-
-      var _block = this.editor.findBlockById(blockEl.getAttribute('id'));
-      if (_block) {
-        this.mediator.trigger("block:remove", _block.blockID, { focusOnNext: true });
-      }
+      if (this.indexSelected(idx)) this.mediator.trigger("block:remove", block.blockID, { focusOnNext: true });
     });
+  },
+
+  indexSelected: function(index) {
+    return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
   }
 
 });
