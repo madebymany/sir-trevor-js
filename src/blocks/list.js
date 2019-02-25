@@ -208,8 +208,9 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    var listItems = this.editorIds.map(editorId => {
-      return `<li>${this.getTextEditor(editorId).scribe.getContent()}</li>`;
+    var data = this.getBlockData();
+    var listItems = data.listItems.map(item => {
+      return `<li>${item.content}</li>`;
     }).join("\n");
     return `<ul>${listItems}</ul>`;
   }
