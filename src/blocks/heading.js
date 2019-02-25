@@ -55,6 +55,7 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    return `<h2>${this._getData().text}</h2>`;
+    var data = this.getBlockData();
+    return `<h2>${data.text}</h2>`;
   }
 });

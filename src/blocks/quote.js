@@ -50,6 +50,8 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    return `<blockquote>${this._getData().text}<cite>- ${this._getData().cite}</cite></blockquote>`;
+    var data = this.getBlockData();
+
+    return `<blockquote>${data.text}<cite>- ${data.cite}</cite></blockquote>`;
   }
 });

@@ -77,7 +77,7 @@ module.exports = Block.extend({
   },
 
   asClipboardHTML: function() {
-    var data = this._getData();
+    var data = this.getBlockData();
     var source = this.providers[data.source];
     var src = source.url(data.remote_id);
     return `<p>${src}</p>`;
