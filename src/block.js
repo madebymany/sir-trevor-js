@@ -218,6 +218,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   //[> Generic implementation to tell us when the block is active <]
   focus: function() {
     Array.prototype.forEach.call(this.getTextBlock(), function(el) {
+      console.log("fcc");
       el.focus();
     });
   },
@@ -250,10 +251,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _onBlur: function() {},
-
-  onBlockRender: function() {
-    this.focus();
-  },
 
   onDrop: function(dataTransferObj) {},
 
