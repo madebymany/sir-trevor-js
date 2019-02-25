@@ -602,6 +602,14 @@ ul.st-text-block {
   width: 1em;
   height: 1em;
   color: #9b9b9b; }
+  .st-block-ui-btn__reorder:before, .st-block-ui-btn__delete:before, .st-block-control-ui-btn:before {
+    position: absolute;
+    display: block;
+    content: "";
+    top: -10px;
+    right: -10px;
+    bottom: -10px;
+    left: -10px; }
 
 .st-block-ui-btn__reorder {
   position: absolute;

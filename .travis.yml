@@ -1,7 +1,7 @@
 language: node_js
 sudo: false
 node_js:
-- 4.1.2
+- 10.15.1
 branches:
   only:
   - master
@@ -16,10 +16,10 @@ env:
     - secure: WewULMIX4C7/27Xflf4/LxfN7VQJt3wOHtGoRVKBK5tfMZtaWXM0ub1hb/exGx+rTSC8TddbfD6v4nXJJKV7Y2+03NCAj8fxrUmlo3SP+XnJSmc16SH+JW4WXb6M+8ZBnlnA4HPEtWNT7yLx/fBAhGSB/arBqBNG4he/gFzz2c0=
     - secure: MsR/jN4Ij621RWEN4OwY1p+KWlE1uMapPHgqyrfFCwZ5WF7C40ZvlxphiU26owkgQoUsvRefshY6RXqAy1iGQvg4new5tWKzyXgR0itkzLKexdBIS314uFpwrzAn3RBdLRaMG+SeBcCsFcniWAl28YUwbKcoOGBpa9DNp4a8wb8=
   matrix:
-    - BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='OSX 10.11'
-    - BROWSER_NAME='chrome' BROWSER_VERSION='51' PLATFORM='Windows 7'
-    - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='OSX 10.11'
-    - BROWSER_NAME='firefox' BROWSER_VERSION='46' PLATFORM='Windows 7'
+    - BROWSER_NAME='chrome' BROWSER_VERSION='70' PLATFORM='OSX 10.14'
+    - BROWSER_NAME='chrome' BROWSER_VERSION='70' PLATFORM='Windows 7'
+    - BROWSER_NAME='firefox' BROWSER_VERSION='63' PLATFORM='OSX 10.14'
+    - BROWSER_NAME='firefox' BROWSER_VERSION='63' PLATFORM='Windows 7'
 addons:
   sauce_connect: true
-  
+

@@ -251,10 +251,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   _onBlur: function() {},
 
-  onBlockRender: function() {
-    this.focus();
-  },
-
   onDrop: function(dataTransferObj) {},
 
   onDeleteConfirm: function(e) {

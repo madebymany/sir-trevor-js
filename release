@@ -41,7 +41,7 @@ function echoinfo() {
 
 if [[ $action = "push" ]]; then
     git push --tags $ORIGIN_REMOTE $FROM_BRANCH $TO_BRANCH
-    echoinfo "Remember to publish to npm:\n\n$0 publish"
+    echoinfo "Remember to publish to npm:\n\n$0 publish $given_version"
     exit
 fi
 

@@ -5,7 +5,7 @@ describe("BlockManager::Options", function(){
   var manager, mediator;
 
   beforeEach(function(){
-    mediator = _.extend({}, SirTrevor.Events);
+    mediator = Object.assign({}, SirTrevor.Events);
   });
 
   describe("setting required blocks", function(){

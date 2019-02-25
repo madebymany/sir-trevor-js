@@ -5691,9 +5691,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, __webpack_require__(83), {
     this.trigger('blockFocus', this.el);
   },
   _onBlur: function _onBlur() {},
-  onBlockRender: function onBlockRender() {
-    this.focus();
-  },
   onDrop: function onDrop(dataTransferObj) {},
   onDeleteConfirm: function onDeleteConfirm(e) {
     e.preventDefault();
@@ -22186,14 +22183,14 @@ Object.assign(Editor.prototype, __webpack_require__(7), __webpack_require__(9), 
       }, this);
     } else if (this.options.defaultType !== false) {
       this.mediator.trigger('block:create', this.options.defaultType, {});
+    }
 
-      if (this.options.focusOnInit) {
-        var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
+    if (this.options.focusOnInit) {
+      var blockElement = this.wrapper.querySelectorAll('.st-block')[0];
 
-        if (blockElement) {
-          var block = this.blockManager.findBlockById(blockElement.getAttribute('id'));
-          block.focus();
-        }
+      if (blockElement) {
+        var block = this.blockManager.findBlockById(blockElement.getAttribute('id'));
+        block.focus();
       }
     }
   },
