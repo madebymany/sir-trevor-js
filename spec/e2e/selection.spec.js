@@ -29,9 +29,32 @@ describe('Selection', function() {
         }
       },
       {
-        "type": "text",
+        "type": "quote",
         "data": {
-          "text": "F<b>ou</b>r"
+          "text": "F<b>ou</b>r",
+          "cite": "Author"
+        }
+      },
+      {
+        "type": "video",
+        "data": {
+          "remote_id": "ID",
+          "source": "youtube"
+        }
+      },
+      {
+        "type": "tweet",
+        "data": {
+          "user": {
+            "profile_image_url": "profile_image_url",
+            "profile_image_url_https": "profile_image_url_https",
+            "screen_name": "user.screen_name",
+            "name": "name"
+          },
+          "id": "id_str",
+          "text": "text",
+          "created_at": "created_at",
+          "status_url": "https://twitter.com/username/status/id"
         }
       }
     ]
@@ -64,7 +87,9 @@ describe('Selection', function() {
             '<p>O<b>n</b>e</p>',
             '<ul><li>T<b>w</b>o</li>',
             '<li>T<b>hre</b>e</li></ul>',
-            '<p>F<b>ou</b>r</p>'
+            '<blockquote><p>F<b>ou</b>r</p><cite>- Author</cite></blockquote>',
+            '<p>https://www.youtube.com/embed/ID</p>',
+            '<p>https://twitter.com/username/status/id</p>'
           ].join("\n")
         );
         done();
