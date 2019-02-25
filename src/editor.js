@@ -358,7 +358,9 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   getBlocks: function() {
-    return [].slice.call(this.wrapper.querySelectorAll('.st-block'));
+    return [].map.call(this.wrapper.querySelectorAll('.st-block'), (blockEl) => {
+      return this.findBlockById(blockEl.getAttribute('id'));
+    });
   },
 
   /*
