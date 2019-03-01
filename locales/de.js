@@ -26,6 +26,9 @@ SirTrevor.Locales.de = {
     list: {
       'title': "Liste (unsortiert)"
     },
+    ordered_list: {
+      'title': "Liste (sortiert)"
+    },
     quote: {
       'title': "Zitat",
       'credit_field': "Quelle"

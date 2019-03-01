@@ -33,6 +33,9 @@ var Locales = {
       list: {
         'title': "List"
       },
+      ordered_list: {
+        'title': "Ordered list"
+      },
       quote: {
         'title': "Quote",
         'credit_field': "Credit"
