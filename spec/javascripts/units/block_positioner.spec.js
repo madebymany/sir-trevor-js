@@ -9,7 +9,7 @@ describe("BlockPositioner", function(){
     mediator = Object.assign({}, SirTrevor.Events);
     positioner = new SirTrevor.BlockPositioner(el, mediator);
     positionerSelect = new SirTrevor.BlockPositionerSelect(mediator);
-    positionerSelect.$positioner = positioner;
+    positionerSelect.positioner = positioner;
   });
 
   describe("onSelectChange", function() {
