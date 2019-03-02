@@ -50,26 +50,45 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   initialize: function() {
     window.addEventListener("keydown", (e) => {
       e = e || window.event;
-      var ctrl = e.ctrlKey || e.metaKey;
-      if (!ctrl) return;
+      var ctrlKey = e.ctrlKey || e.metaKey;
+      var shiftKey = e.shiftKey;
+      var key = e.key;
 
-      if (this.options.selectionCopy && e.key === "a") {
-        if (this.cancelSelectAll()) return;
-        e.preventDefault();
-        this.mediator.trigger("selection:all");
-      } else if (this.options.selectionCopy && e.key === "c") {
-        if (!this.selecting) return;
-        e.preventDefault();
-        this.mediator.trigger("selection:copy");
-      } else if (this.options.selectionDelete && e.key === "x") {
-        this.mediator.trigger("selection:delete");
+      if (ctrlKey) {
+        if (this.options.selectionCopy && key === "a") {
+          if (this.cancelSelectAll()) return;
+          e.preventDefault();
+          this.mediator.trigger("selection:all");
+        } else if (this.options.selectionCopy && key === "c") {
+          if (!this.selecting) return;
+          e.preventDefault();
+          this.mediator.trigger("selection:copy");
+        } else if (this.options.selectionDelete && key === "x") {
+          this.mediator.trigger("selection:delete");
+        }
+      } else if (shiftKey && this.selected()) {
+        if (key === "ArrowDown") {
+          e.preventDefault();
+          this.update(this.endIndex + 1, { focus: true });
+        } else if (key === "ArrowUp") {
+          e.preventDefault();
+          this.update(this.endIndex - 1, { focus: true });
+        }
       }
     }, false);
 
-    window.addEventListener("click", () => {
-      this.mediator.trigger("selection:complete");
-      this.mediator.trigger("selection:cancel");
-    });
+    if (this.options.selectionMouse) {
+      window.addEventListener('mouseup', () => {
+        if (!window.mouseDown) {
+          this.mediator.trigger("selection:complete");
+          this.mediator.trigger("selection:cancel");
+          return;
+        }
+
+        window.mouseDown = false;
+        this.mediator.trigger("selection:complete");
+      });
+    }
   },
 
   start: function(index) {
@@ -81,10 +100,16 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   onMouseMove: function() {},
 
-  update: function(index) {
+  update: function(index, options = {}) {
+    options = Object.assign({ focus: false }, options);
     this.endIndex = index;
     this.selecting = this.startIndex !== this.endIndex;
     this.mediator.trigger("selection:render");
+    if (options.focus) {
+      const block = this.editor.getBlocks()[this.endIndex];
+      // block.focus();
+      block.el.scrollIntoView({ behavior: "smooth" });
+    }
   },
 
   complete: function() {
@@ -103,7 +128,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   cancel: function() {
-    this.mouseDown = false;
+    window.mouseDown = false;
     this.selecting = false;
     this.render();
   },
@@ -172,6 +197,10 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   indexSelected: function(index) {
     return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
+  },
+
+  selected: function() {
+    return this.startIndex !== 0 || this.endIndex !== 0;
   }
 
 });
