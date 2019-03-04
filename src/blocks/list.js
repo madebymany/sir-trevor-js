@@ -205,5 +205,13 @@ module.exports = Block.extend({
     } else {
       return null;
     }
+  },
+
+  asClipboardHTML: function() {
+    var data = this.getBlockData();
+    var listItems = data.listItems.map(item => {
+      return `<li>${item.content}</li>`;
+    }).join("\n");
+    return `<ul>${listItems}</ul>`;
   }
 });

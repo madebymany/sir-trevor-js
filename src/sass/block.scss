@@ -10,8 +10,8 @@
 .st-block__inner {
   position: relative;
   margin: 0 110px;
-  margin-top: 1em;
-  margin-bottom: 1em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 
   .st-block--textable & {
     margin-top: 0;
@@ -138,6 +138,7 @@
 .st-text-block p {
   // display: inline;
   // margin: 0;
+  margin: 1rem 0;
   vertical-align: 14%;
 }
 
@@ -146,7 +147,7 @@
   font-size: 1.5em;
   min-height: 1em;
   font-weight: 700;
-  margin: 0.58em 0;
+  margin: 1rem 0;
   overflow: visible;
 }
 
@@ -156,7 +157,7 @@
 
 .st-text-block--quote {
   font-size: 1.875em;
-  line-height: 1.3;
+  line-height: 1.45;
   margin-bottom: 1.8em;
 }
 
@@ -297,4 +298,17 @@ ul.st-text-block {
 
 .st-msg--error {
   color: $error-color;
+}
+
+.st-block--is-selected {
+  &:before {
+    display: block;
+    content: "";
+    background: #ccffcc;
+    position: absolute;
+    top: -6px;
+    left: 100px;
+    right: 20px;
+    bottom: -6px;
+  }
 }

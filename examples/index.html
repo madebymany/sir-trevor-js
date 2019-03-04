@@ -43,6 +43,11 @@
       .st-block__inner {
         margin: 0 2.5rem 0 1rem;
       }
+      .st-block[data-type="quote"] .st-block__inner {
+        border-left: 4px solid grey !important;
+        margin: 0 2.5rem 0 1rem;
+        padding-left: 1rem;
+      }
 
       .st-block-controls {
         padding: 0 2.5rem 0 1rem;
@@ -67,7 +72,8 @@
       }
 
       .st-text-block,
-      .st-list-block__list {
+      .st-list-block__list,
+      .st-text-block--quote {
         font-size: 1rem;
       }
 

@@ -5,49 +5,6 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 50000;
 var helpers = require('./helpers');
 var driver = require('selenium-webdriver');
 
-var pressShift = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.SHIFT)
-    .perform();
-};
-var pressEnter = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.ENTER)
-    .perform();
-};
-var pressShiftEnter = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.SHIFT)
-    .sendKeys(driver.Key.ENTER)
-    .perform();
-};
-var pressLeft = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.ARROW_LEFT)
-    .perform();
-};
-var pressRight = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.ARROW_RIGHT)
-    .perform();
-};
-var pressBackSpace = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.BACK_SPACE)
-    .perform();
-};
-var pressDown = function() {
-  return helpers.browser.actions()
-    .sendKeys(driver.Key.ARROW_DOWN)
-    .perform();
-};
-
-var enterText = function(text) {
-  return helpers.browser.actions()
-                .sendKeys(text)
-                .perform();
-};
-
 var getTextFromBlock = function(blocks) {
   var str = 'return [';
   str += blocks.map( function(index) {
@@ -99,15 +56,15 @@ describe('Text block', function() {
   describe('Pressing Enter', function() {
 
     it('should create a new block', function(done) {
-      helpers.focusOnTextBlock().then(pressEnter)
+      helpers.focusOnTextBlock().then(helpers.pressEnter)
         .then(function() {
           return helpers.hasBlockCount(2);
         }).then(done);
     });
 
     it('should copy the text after the caret to a new block', function(done) {
-      helpers.focusOnTextBlock().then(pressRight)
-        .then(pressEnter)
+      helpers.focusOnTextBlock().then(helpers.pressRight)
+        .then(helpers.pressEnter)
         .then(function() {
           return getTextFromBlock([0, 1]);
         }).then(function(htmlArr) {
@@ -118,7 +75,7 @@ describe('Text block', function() {
     });
 
     it('should add a breakline when combined with shift', function(done) {
-      helpers.focusOnTextBlock().then(pressShiftEnter).then(pressShift)
+      helpers.focusOnTextBlock().then(helpers.pressShiftEnter).then(helpers.pressShift)
         .then(function() {
           return getTextFromBlock([0]);
         }).then(function(htmlArr) {
@@ -132,7 +89,7 @@ describe('Text block', function() {
   describe('Pressing Backspace', function() {
 
     it('should delete a character', function(done) {
-      helpers.focusOnTextBlock().then(pressRight).then(pressBackSpace)
+      helpers.focusOnTextBlock().then(helpers.pressRight).then(helpers.pressBackSpace)
         .then(function() {
           return getTextFromBlock([0]);
         }).then(function(htmlArr) {
@@ -142,12 +99,12 @@ describe('Text block', function() {
     });
 
     it('should delete the block when caret is at the start of the block and there is a block above', function(done) {
-      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
             helpers.hasBlockCount(2).then( function() {
               return helpers.focusOnTextBlock(1);
-            }).then(pressBackSpace)
+            }).then(helpers.pressBackSpace)
               .then(function() {
                 return helpers.hasBlockCount(1);
               }).then(done);
@@ -156,17 +113,17 @@ describe('Text block', function() {
     });
 
     it('should transpose the block content when caret is at the start of the block and there is a block above', function(done) {
-      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
             helpers.hasBlockCount(2).then( function() {
               return helpers.focusOnTextBlock(1);
             }).then( function() {
-              return enterText("Two");
-            }).then(pressLeft)
-              .then(pressLeft)
-              .then(pressLeft)
-              .then(pressBackSpace)
+              return helpers.enterText("Two");
+            }).then(helpers.pressLeft)
+              .then(helpers.pressLeft)
+              .then(helpers.pressLeft)
+              .then(helpers.pressBackSpace)
               .then(function() {
                 return getTextBeforeCaret(0);
               })
@@ -188,7 +145,7 @@ describe('Text block', function() {
 
     it('should move 1 character to the left', function(done) {
       helpers.focusOnTextBlock().then( function() {
-        return enterText("T");
+        return helpers.enterText("T");
       })
       .then(function() {
         return getTextBeforeCaret(0);
@@ -196,7 +153,7 @@ describe('Text block', function() {
       .then(function(text) {
         expect(text).toBe("T");
       })
-      .then(pressLeft)
+      .then(helpers.pressLeft)
       .then(function() {
         return getTextBeforeCaret(0);
       })
@@ -207,7 +164,7 @@ describe('Text block', function() {
     });
 
     it('should at the start of the block move to the previous block', function(done) {
-      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
           helpers.focusOnTextBlock(1)
@@ -217,7 +174,7 @@ describe('Text block', function() {
             .then(function(text) {
               expect(text).toBe("");
             })
-            .then(pressLeft)
+            .then(helpers.pressLeft)
             .then(function() {
               return getTextBeforeCaret(0);
             })
@@ -241,8 +198,8 @@ describe('Text block', function() {
         .then(function(text) {
           expect(text).toBe("");
         })
-        .then(pressRight)
-        .then(pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
         .then(function() {
           return getTextBeforeCaret(0);
         })
@@ -254,7 +211,7 @@ describe('Text block', function() {
 
     it('should at the end of the block move to the next block', function(done) {
       var textfield;
-      helpers.focusOnTextBlock().then(pressRight).then(pressRight).then(pressRight)
+      helpers.focusOnTextBlock().then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
         .then( function() {
           helpers.createBlock('text', function() {
             helpers.findElementsByCss('.st-text-block')
@@ -270,10 +227,10 @@ describe('Text block', function() {
               .then(function(text) {
                 expect(text).toBe("");
               })
-              .then(pressRight)
-              .then(pressRight)
-              .then(pressRight)
-              .then(pressRight)
+              .then(helpers.pressRight)
+              .then(helpers.pressRight)
+              .then(helpers.pressRight)
+              .then(helpers.pressRight)
               .then(function() {
                 return textblockHasFocus(textfield);
               })
@@ -325,7 +282,7 @@ describe('List block', function() {
   describe('Pressing Enter', function() {
     it('should create a new list element at the start', function(done) {
       helpers.focusOnListBlock()
-        .then(pressEnter)
+        .then(helpers.pressEnter)
         .then(function() {
           return helpers.findElementsByCss('.st-list-block__item')
         })
@@ -342,10 +299,10 @@ describe('List block', function() {
     });
     it('should create a new list element in the middle', function(done) {
       helpers.focusOnListBlock()
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressEnter)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressEnter)
         .then(function() {
           return helpers.findElementsByCss('.st-list-block__item')
         })
@@ -362,8 +319,8 @@ describe('List block', function() {
     });
     it('should split a list element', function(done) {
       helpers.focusOnListBlock()
-        .then(pressRight)
-        .then(pressEnter)
+        .then(helpers.pressRight)
+        .then(helpers.pressEnter)
         .then(function() {
           return helpers.findElementsByCss('.st-list-block__item')
         })
@@ -380,16 +337,16 @@ describe('List block', function() {
     });
     it('should create a new block at the end', function(done) {
       helpers.focusOnListBlock()
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressRight)
-        .then(pressEnter)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressRight)
+        .then(helpers.pressEnter)
         .then(function() {
           return helpers.findElementsByCss('.st-list-block__item')
         })
@@ -402,7 +359,7 @@ describe('List block', function() {
           expect(data.data.listItems[1].content).toBe("T<b>hre</b>e");
           return expect(data.data.listItems[2].content).toBe("");
         })
-        .then(pressEnter)
+        .then(helpers.pressEnter)
         .then(function() {
           return helpers.findElementsByCss('.st-list-block__item')
         })
@@ -429,7 +386,7 @@ describe('List block', function() {
   describe('Pressing Backspace', function() {
 
     it('should delete a character', function(done) {
-      helpers.focusOnListBlock().then(pressRight).then(pressBackSpace)
+      helpers.focusOnListBlock().then(helpers.pressRight).then(helpers.pressBackSpace)
         .then(function() {
           return getBlockData(1);
         }).then(function(data) {
@@ -440,16 +397,16 @@ describe('List block', function() {
 
     it('should delete the block when caret is at the start of the block and there is a block above', function(done) {
       helpers.focusOnTextBlock(1)
-        .then(pressRight).then(pressRight).then(pressRight).then(pressRight)
-        .then(pressEnter)
+        .then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
+        .then(helpers.pressEnter)
         .then(function() {
           helpers.createBlock('list', function() {
             helpers.hasBlockCount(4)
-              .then(pressBackSpace)
+              .then(helpers.pressBackSpace)
               .then(function() {
                 return helpers.hasBlockCount(4);
               })
-              .then(pressBackSpace)
+              .then(helpers.pressBackSpace)
               .then(function() {
                 return helpers.hasBlockCount(3);
               }).then(done);
@@ -459,20 +416,20 @@ describe('List block', function() {
 
     it('should transpose the block content when caret is at the start of the block and there is a block above', function(done) {
       helpers.focusOnTextBlock(1)
-        .then(pressRight).then(pressRight).then(pressRight).then(pressRight)
-        .then(pressEnter)
+        .then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
+        .then(helpers.pressEnter)
         .then( function() {
           helpers.createBlock('list', function() {
             helpers.hasBlockCount(4)
               .then( function() {
-                return enterText("Five");
+                return helpers.enterText("Five");
               })
-              .then(pressLeft)
-              .then(pressLeft)
-              .then(pressLeft)
-              .then(pressLeft)
-              .then(pressBackSpace)
-              .then(pressBackSpace)
+              .then(helpers.pressLeft)
+              .then(helpers.pressLeft)
+              .then(helpers.pressLeft)
+              .then(helpers.pressLeft)
+              .then(helpers.pressBackSpace)
+              .then(helpers.pressBackSpace)
               .then(function() {
                 return getBlockData(2);
               })
@@ -486,8 +443,8 @@ describe('List block', function() {
 
     it('should transpose the list content from the deleted list item', function(done) {
       helpers.focusOnListBlock()
-        .then(pressRight).then(pressRight).then(pressRight).then(pressRight)
-        .then(pressBackSpace)
+        .then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight).then(helpers.pressRight)
+        .then(helpers.pressBackSpace)
         .then(function() {
           return getBlockData(1);
         })

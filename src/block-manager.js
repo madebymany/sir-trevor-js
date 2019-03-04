@@ -113,7 +113,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   removeBlock: function(blockID, options) {
     options = Object.assign({
       transposeContent: false,
-      focusOnPrevious: false
+      focusOnPrevious: false,
+      focusOnNext: false
     }, options);
 
     var block = this.findBlockById(blockID);
@@ -182,6 +183,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       previousBlock.focusAtEnd();
     }
 
+    if (options.focusOnNext && nextBlock) {
+      nextBlock.focus();
+    }
+
     this._decrementBlockTypeCount(type);
     this.triggerBlockCountUpdate();
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
@@ -199,12 +204,29 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   renderBlock: function(block, previousSibling) {
     // REFACTOR: this will have to do until we're able to address
     // the block manager
+
+    var blockElement = block.render().el;
+
     if (previousSibling) {
-      Dom.insertAfter(block.render().el, previousSibling);
+      Dom.insertAfter(blockElement, previousSibling);
     } else {
-      this.wrapper.appendChild(block.render().el);
+      this.wrapper.appendChild(blockElement);
     }
     block.trigger("onRender");
+
+    if (this.options.selectionMouse) {
+      blockElement.addEventListener("mouseenter", () => {
+        if (!window.mouseDown) return;
+
+        var blockPosition = this.getBlockPosition(block.el);
+        this.mediator.trigger("selection:update", blockPosition);
+      });
+
+      blockElement.addEventListener("mousedown", () => {
+        var blockPosition = this.getBlockPosition(block.el);
+        this.mediator.trigger("selection:start", blockPosition);
+      });
+    }
   },
 
   rerenderBlock: function(blockID) {

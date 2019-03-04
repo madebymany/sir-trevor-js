@@ -52,5 +52,10 @@ module.exports = Block.extend({
 
   toggleEmptyClass: function() {
     this.el.classList.toggle('st-block--empty', this._scribe.getTextContent().length === 0);
+  },
+
+  asClipboardHTML: function() {
+    var data = this.getBlockData();
+    return `<h2>${data.text}</h2>`;
   }
 });
