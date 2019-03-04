@@ -3,6 +3,7 @@
 var {
   isAtStart,
   isAtEnd,
+  isSelectedToEnd,
   selectToEnd
 } = require('./shared.js');
 
@@ -81,10 +82,20 @@ var ScribeTextBlockPlugin = function(block) {
         ev.preventDefault();
 
         isAtStartBoolean = true;
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
-        ev.preventDefault();
+      } else if ((ev.keyCode === 39 || ev.keyCode === 40)) {
+        if (isAtEnd(scribe)) {
+          ev.preventDefault();
 
-        block.mediator.trigger("block:focusNext", block.blockID);
+          block.mediator.trigger("block:focusNext", block.blockID);
+        } else if (isSelectedToEnd(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:start", 0);
+          block.mediator.trigger("selection:update", 1, { focus: true });
+          block.mediator.trigger("selection:complete");
+        }
       }
     });
 

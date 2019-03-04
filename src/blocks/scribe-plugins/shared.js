@@ -34,9 +34,16 @@ var isAtEnd = function(scribe) {
   return (getTotalLength(scribe) === currentRange.end) && (currentRange.start === currentRange.end);
 };
 
+var isSelectedToEnd = function(scribe) {
+  var currentRange = selectionRange(scribe.el);
+
+  return (getTotalLength(scribe) === currentRange.end);
+}
+
 export {
   getTotalLength,
   isAtStart,
   isAtEnd,
-  selectToEnd
+  selectToEnd,
+  isSelectedToEnd
 };

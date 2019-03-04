@@ -224,7 +224,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       blockElement.addEventListener("mousedown", () => {
         var blockPosition = this.getBlockPosition(block.el);
-        this.mediator.trigger("selection:start", blockPosition);
+        this.mediator.trigger("selection:start", blockPosition, { mouseEnabled: true });
       });
     }
   },

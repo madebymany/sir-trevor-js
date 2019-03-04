@@ -9,8 +9,7 @@ var SelectionHandler = function(wrapper, mediator, editor) {
   this.editor = editor;
   this.options = editor.options;
 
-  this.startIndex = undefined;
-  this.endIndex = undefined;
+  this.startIndex = this.endIndex = 0;
   this.selecting = false;
 
   this._bindFunctions();
@@ -66,11 +65,12 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
         } else if (this.options.selectionDelete && key === "x") {
           this.mediator.trigger("selection:delete");
         }
-      } else if (shiftKey && this.selected()) {
-        if (key === "ArrowDown") {
+      } else if (shiftKey && this.selecting) {
+
+        if (["Down", "ArrowDown"].indexOf(key) > -1) {
           e.preventDefault();
           this.update(this.endIndex + 1, { focus: true });
-        } else if (key === "ArrowUp") {
+        } else if (["Up", "ArrowUp"].indexOf(key) > -1) {
           e.preventDefault();
           this.update(this.endIndex - 1, { focus: true });
         }
@@ -91,29 +91,33 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     }
   },
 
-  start: function(index) {
+  start: function(index, options = {}) {
+    options = Object.assign({ mouseEnabled: false }, options);
+
     this.startIndex = this.endIndex = index;
-    window.mouseDown = true;
     this.mediator.trigger("selection:render");
-    window.addEventListener("mousemove", this.onMouseMove);
+
+    if (options.mouseEnabled) {
+      window.mouseDown = true;
+      window.addEventListener("mousemove", this.onMouseMove);
+    }
   },
 
   onMouseMove: function() {},
 
   update: function(index, options = {}) {
     options = Object.assign({ focus: false }, options);
+
     this.endIndex = index;
     this.selecting = this.startIndex !== this.endIndex;
     this.mediator.trigger("selection:render");
     if (options.focus) {
       const block = this.editor.getBlocks()[this.endIndex];
-      // block.focus();
       block.el.scrollIntoView({ behavior: "smooth" });
     }
   },
 
   complete: function() {
-    this.selecting = false;
     window.removeEventListener("mousemove", this.onMouseMove);
   },
 
@@ -123,7 +127,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     var blocks = this.editor.getBlocks();
     this.selecting = true;
     this.startIndex = 0;
-    this.endIndex = blocks.length;
+    this.endIndex = blocks.length - 1;
     this.mediator.trigger("selection:render");
   },
 
@@ -197,12 +201,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   indexSelected: function(index) {
     return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
-  },
-
-  selected: function() {
-    return this.startIndex !== 0 || this.endIndex !== 0;
   }
-
 });
 
 module.exports = SelectionHandler;
