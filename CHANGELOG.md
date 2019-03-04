@@ -1,6 +1,6 @@
 # Changelog
 
-**Current version: 0.7.4**
+**Current version: 0.7.5**
 
 ## 0.8.x
 
@@ -8,7 +8,7 @@
 * Improve Firefox content pasting.
 * Improve edge content pasting.
 
-### 0.8.4 - Can delete content in selection.**
+### 0.8.4 - Can delete content in selection
 - [ ] Cross browser fixes / testing.
 
 ## 0.8.3 - Can select block inner elements
@@ -25,13 +25,11 @@
 - [ ] Native browser behaviour.
 - [ ] Cross browser fixes / testing.
 
-### 0.8.0 - Can CTRL+A to Copy all content
-- [x] Implement Selection Handler.
-- [x] Block level selection.
-- [x] Feature flag additional functionality.
-- [ ] Cross browser fixes / testing.
-
-----
+### 0.8.0
+* Add Copy all to the editor
+* Implement Selection Handler
+* Block level selection.
+* Hide new functionality behing feature flags.
 
 ## 0.7.x
 
