@@ -36,12 +36,14 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   cancelSelectAll: function() {
     // Don't select if within an input field
-    var editorEl = Dom.getClosest(document.activeElement, 'input');
-    if (editorEl !== document.body) return true;
+    var editorEl1 = Dom.getClosest(document.activeElement, 'input');
+    if (editorEl1 !== document.body) return true;
+
+    var editorEl2 = Dom.getClosest(document.activeElement, '.st-outer');
+
     // Don't select all if focused on element outside of the editor.
     if (this.options.selectionLimitToEditor) {
-      var editorEl = Dom.getClosest(document.activeElement, '.st-outer');
-      if (editorEl === document.body) return true;
+      if (editorEl2 !== this.wrapper) return true;
     }
   },
 
