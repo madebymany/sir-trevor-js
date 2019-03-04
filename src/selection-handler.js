@@ -56,6 +56,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
         e.preventDefault();
         this.mediator.trigger("selection:all");
       } else if (this.options.selectionCopy && e.key === "c") {
+        if (!this.selecting) return;
+        e.preventDefault();
         this.mediator.trigger("selection:copy");
       } else if (this.options.selectionDelete && e.key === "x") {
         this.mediator.trigger("selection:delete");
@@ -100,6 +102,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   cancel: function() {
     this.mouseDown = false;
+    this.selecting = false;
     this.render();
   },
 
@@ -121,17 +124,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     });
   },
 
-  copy: function() {
+  getClipboardData: function() {
     this.editor.getData();
-
-    var copyArea = document.body.querySelector(".st-copy-area");
-    if (!copyArea) {
-      copyArea = Dom.createElement("div", {
-        contenteditable: true,
-        class: 'st-copy-area',
-      });
-      document.body.appendChild(copyArea);
-    }
 
     var output = [];
 
@@ -139,24 +133,33 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       if (this.indexSelected(idx)) output.push(block.asClipboardHTML());
     });
 
-    copyArea.innerHTML = output.join("\n");
+    return output.join("\n");
+  },
 
-    setTimeout(() => {
-      var selection = window.getSelection();
-      var range = document.createRange();
-      range.selectNodeContents(copyArea);
-      selection.removeAllRanges();
-      selection.addRange(range);
+  copy: function() {
+    var copyArea = document.body.querySelector(".st-copy-area");
+    if (!copyArea) {
+      copyArea = Dom.createElement("div", {
+        contenteditable: true,
+        class: 'st-copy-area st-utils__hidden',
+      });
+      document.body.appendChild(copyArea);
+    }
+    copyArea.innerHTML = this.getClipboardData();
 
-      try {
-        // copy text
-        document.execCommand('copy');
-        copyArea.blur();
-      }
-      catch (err) {
-        alert('please press Ctrl/Cmd+C to copy');
-      }
-    }, 0);
+    var selection = window.getSelection();
+    var range = document.createRange();
+    range.selectNodeContents(copyArea);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    try {
+      document.execCommand('copy');
+      copyArea.blur();
+    }
+    catch (err) {
+      console.log("Copy could not be performed");
+    }
   },
 
   delete: function() {
