@@ -35,6 +35,10 @@
 
 ## 0.7.x
 
+### 0.7.5
+
+* Separate block positioner select data to improve performance. https://github.com/madebymany/sir-trevor-js/pull/408
+
 ### 0.7.4
 
 * Fix `config.focusOnInit` to work with non text blocks by removing default `onBlockRender` that is no longer needed.

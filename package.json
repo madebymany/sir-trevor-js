@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "main": "build/sir-trevor.js",
   "repository": {
     "type": "git",
@@ -73,7 +73,7 @@
     "scribe-plugin-link-prompt-command": "^1.0.0",
     "scribe-plugin-sanitizer": "^0.1.11",
     "selection-range": "^1.1.0",
-    "selenium-webdriver": "2.52.0",
+    "selenium-webdriver": "3.6.0",
     "spin.js": "^4.0.0",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",

@@ -32,6 +32,7 @@ var SirTrevor = {
 
   BlockMixins: require('./block_mixins'),
   BlockPositioner: require('./block-positioner'),
+  BlockPositionerSelect: require('./block-positioner-select'),
   BlockReorder: require('./block-reorder'),
   BlockDeletion: require('./block-deletion'),
   BlockValidations: require('./block-validations'),
