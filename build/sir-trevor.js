@@ -22890,12 +22890,12 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
   },
   cancelSelectAll: function cancelSelectAll() {
     // Don't select if within an input field
-    var editorEl = Dom.getClosest(document.activeElement, 'input');
-    if (editorEl !== document.body) return true; // Don't select all if focused on element outside of the editor.
+    var editorEl1 = Dom.getClosest(document.activeElement, 'input');
+    if (editorEl1 !== document.body) return true;
+    var editorEl2 = Dom.getClosest(document.activeElement, '.st-outer'); // Don't select all if focused on element outside of the editor.
 
     if (this.options.selectionLimitToEditor) {
-      var editorEl = Dom.getClosest(document.activeElement, '.st-outer');
-      if (editorEl === document.body) return true;
+      if (editorEl2 !== this.wrapper) return true;
     }
   },
   initialize: function initialize() {
