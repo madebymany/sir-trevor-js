@@ -37,7 +37,7 @@
 
 ### 0.7.5
 
-* Separate block positioner select data and make it a property of editor instead of block.
+* Separate block positioner select data to improve performance. https://github.com/madebymany/sir-trevor-js/pull/408
 
 ### 0.7.4
 
