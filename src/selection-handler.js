@@ -50,7 +50,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     window.addEventListener("keydown", (e) => {
       e = e || window.event;
       var ctrlKey = e.ctrlKey || e.metaKey;
-      var shiftKey = e.shiftKey;
       var key = e.key;
 
       if (ctrlKey) {
@@ -65,15 +64,20 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
         } else if (this.options.selectionDelete && key === "x") {
           this.mediator.trigger("selection:delete");
         }
-      } else if (shiftKey && this.selecting) {
-
-        if (["Down", "ArrowDown"].indexOf(key) > -1) {
-          e.preventDefault();
-          this.update(this.endIndex + 1, { focus: true });
-        } else if (["Up", "ArrowUp"].indexOf(key) > -1) {
-          e.preventDefault();
-          this.update(this.endIndex - 1, { focus: true });
-        }
+      } else if (this.selecting && ["Down", "ArrowDown"].indexOf(key) > -1) {
+        e.preventDefault();
+        if (e.shiftKey && e.altKey) this.expandToEnd();
+        else if (e.shiftKey) this.expand(1);
+        else if (e.altKey) this.startAtEnd();
+        else this.move(1);
+        this.focusAtEnd();
+      } else if (this.selecting && ["Up", "ArrowUp"].indexOf(key) > -1) {
+        e.preventDefault();
+        if (e.shiftKey && e.altKey) this.expandToStart();
+        else if (e.shiftKey) this.expand(-1);
+        else if (e.altKey) this.start(0);
+        else this.move(-1);
+        this.focusAtEnd();
       }
     }, false);
 
@@ -103,18 +107,37 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     }
   },
 
+  startAtEnd: function() {
+    this.start(this.editor.getBlocks().length - 1);
+  },
+
+  move: function(index) {
+    this.start(this.endIndex + index);
+  },
+
   onMouseMove: function() {},
 
-  update: function(index, options = {}) {
-    options = Object.assign({ focus: false }, options);
-
+  update: function(index) {
     this.endIndex = index;
     this.selecting = this.startIndex !== this.endIndex;
     this.mediator.trigger("selection:render");
-    if (options.focus) {
-      const block = this.editor.getBlocks()[this.endIndex];
-      block.el.scrollIntoView({ behavior: "smooth" });
-    }
+  },
+
+  expand(index) {
+    this.update(this.endIndex + index);
+  },
+
+  expandToStart() {
+    this.update(0);
+  },
+
+  expandToEnd() {
+    this.update(this.editor.getBlocks().length - 1);
+  },
+
+  focusAtEnd() {
+    const block = this.editor.getBlocks()[this.endIndex];
+    block.el.scrollIntoView({ behavior: "smooth" });
   },
 
   complete: function() {
