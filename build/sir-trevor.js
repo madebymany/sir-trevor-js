@@ -214,7 +214,7 @@ module.exports = {
     selectionMouse: false,
     selectionCopy: true,
     selectionDelete: false,
-    selectionLimitToEditor: false
+    selectionLimitToEditor: true
   }
 };
 
