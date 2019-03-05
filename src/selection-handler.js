@@ -111,8 +111,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     this.start(this.editor.getBlocks().length - 1);
   },
 
-  move: function(index) {
-    this.start(this.endIndex + index);
+  move: function(offset) {
+    this.start(this.endIndex + offset);
   },
 
   onMouseMove: function() {},
@@ -123,8 +123,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     this.mediator.trigger("selection:render");
   },
 
-  expand(index) {
-    this.update(this.endIndex + index);
+  expand(offset) {
+    this.update(this.endIndex + offset);
   },
 
   expandToStart() {
