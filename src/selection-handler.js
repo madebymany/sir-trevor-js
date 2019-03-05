@@ -22,6 +22,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   eventNamespace: 'selection',
 
+  bound: ['onKeyDown', 'onMouseUp'],
+
   mediatedEvents: {
     'start': 'start',
     'render': 'render',
@@ -47,58 +49,15 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   initialize: function() {
-    window.addEventListener("keydown", (e) => {
-      e = e || window.event;
-      var ctrlKey = e.ctrlKey || e.metaKey;
-      var key = e.key;
-
-      if (ctrlKey) {
-        if (this.options.selectionCopy && key === "a") {
-          if (this.cancelSelectAll()) return;
-          e.preventDefault();
-          this.mediator.trigger("selection:all");
-        } else if (this.options.selectionCopy && key === "c") {
-          if (!this.selecting) return;
-          e.preventDefault();
-          this.mediator.trigger("selection:copy");
-        } else if (this.options.selectionDelete && key === "x") {
-          this.mediator.trigger("selection:delete");
-        }
-      } else if (this.selecting && ["Down", "ArrowDown"].indexOf(key) > -1) {
-        e.preventDefault();
-        if (e.shiftKey && e.altKey) this.expandToEnd();
-        else if (e.shiftKey) this.expand(1);
-        else if (e.altKey) this.startAtEnd();
-        else this.move(1);
-        this.focusAtEnd();
-      } else if (this.selecting && ["Up", "ArrowUp"].indexOf(key) > -1) {
-        e.preventDefault();
-        if (e.shiftKey && e.altKey) this.expandToStart();
-        else if (e.shiftKey) this.expand(-1);
-        else if (e.altKey) this.start(0);
-        else this.move(-1);
-        this.focusAtEnd();
-      }
-    }, false);
-
-    if (this.options.selectionMouse) {
-      window.addEventListener('mouseup', () => {
-        if (!window.mouseDown) {
-          this.mediator.trigger("selection:complete");
-          this.mediator.trigger("selection:cancel");
-          return;
-        }
-
-        window.mouseDown = false;
-        this.mediator.trigger("selection:complete");
-      });
-    }
+    window.addEventListener("keydown", this.onKeyDown, false);
+    window.addEventListener('mouseup', this.onMouseUp, false);
   },
 
   start: function(index, options = {}) {
     options = Object.assign({ mouseEnabled: false }, options);
 
     this.startIndex = this.endIndex = index;
+    this.selecting = true;
     this.mediator.trigger("selection:render");
 
     if (options.mouseEnabled) {
@@ -118,8 +77,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   onMouseMove: function() {},
 
   update: function(index) {
+    if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
-    this.selecting = this.startIndex !== this.endIndex;
     this.mediator.trigger("selection:render");
   },
 
@@ -224,6 +183,51 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   indexSelected: function(index) {
     return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
+  },
+
+  onKeyDown: function(e) {
+    e = e || window.event;
+    var ctrlKey = e.ctrlKey || e.metaKey;
+    var key = e.key;
+
+    if (ctrlKey) {
+      if (this.options.selectionCopy && key === "a") {
+        if (this.cancelSelectAll()) return;
+        e.preventDefault();
+        this.mediator.trigger("selection:all");
+      } else if (this.options.selectionCopy && key === "c") {
+        if (!this.selecting) return;
+        e.preventDefault();
+        this.mediator.trigger("selection:copy");
+      } else if (this.options.selectionDelete && key === "x") {
+        this.mediator.trigger("selection:delete");
+      }
+    } else if (this.selecting && ["Down", "ArrowDown"].indexOf(key) > -1) {
+      e.preventDefault();
+      if (e.shiftKey && e.altKey) this.expandToEnd();
+      else if (e.shiftKey) this.expand(1);
+      else if (e.altKey) this.startAtEnd();
+      else this.move(1);
+      this.focusAtEnd();
+    } else if (this.selecting && ["Up", "ArrowUp"].indexOf(key) > -1) {
+      e.preventDefault();
+      if (e.shiftKey && e.altKey) this.expandToStart();
+      else if (e.shiftKey) this.expand(-1);
+      else if (e.altKey) this.start(0);
+      else this.move(-1);
+      this.focusAtEnd();
+    }
+  },
+
+  onMouseUp: function() {
+    if (!window.mouseDown) {
+      this.mediator.trigger("selection:complete");
+      this.mediator.trigger("selection:cancel");
+      return;
+    }
+
+    window.mouseDown = false;
+    this.mediator.trigger("selection:complete");
   }
 });
 
