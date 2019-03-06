@@ -3,6 +3,7 @@
 var {
   isAtStart,
   isAtEnd,
+  isSelectedFromStart,
   isSelectedToEnd,
   selectToEnd
 } = require('./shared.js');
@@ -74,27 +75,33 @@ var ScribeTextBlockPlugin = function(block) {
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
-      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
-        ev.preventDefault();
-
-        block.mediator.trigger("block:focusPrevious", block.blockID);
-      } else if (ev.keyCode === 8 && isAtStart(scribe)) {
-        ev.preventDefault();
-
-        isAtStartBoolean = true;
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40)) {
-        if (isAtEnd(scribe)) {
-          ev.preventDefault();
-
-          block.mediator.trigger("block:focusNext", block.blockID);
-        } else if (isSelectedToEnd(scribe)) {
+      } else if (ev.keyCode === 37 || ev.keyCode === 38) {
+        if (ev.shiftKey && isSelectedFromStart(scribe)) {
           ev.preventDefault();
           ev.stopPropagation();
 
           document.activeElement && document.activeElement.blur();
-          block.mediator.trigger("selection:start", 0);
-          block.mediator.trigger("selection:update", 1, { focus: true });
-          block.mediator.trigger("selection:complete");
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtStart(scribe)) {
+          ev.preventDefault();
+
+          block.mediator.trigger("block:focusPrevious", block.blockID);
+        }
+      } else if (ev.keyCode === 8 && isAtStart(scribe)) {
+        ev.preventDefault();
+
+        isAtStartBoolean = true;
+      } else if (ev.keyCode === 39 || ev.keyCode === 40) {
+        if (ev.shiftKey && isSelectedToEnd(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtEnd(scribe)) {
+          ev.preventDefault();
+
+          block.mediator.trigger("block:focusNext", block.blockID);
         }
       }
     });

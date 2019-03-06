@@ -32,7 +32,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     'copy': 'copy',
     'update': 'update',
     'delete': 'delete',
-    'cancel': 'cancel'
+    'cancel': 'cancel',
+    'block': 'block'
   },
 
   cancelSelectAll: function() {
@@ -183,6 +184,12 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   indexSelected: function(index) {
     return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
+  },
+
+  block: function(block) {
+    var blockPosition = this.editor.getBlockPosition(block.el);
+
+    this.start(blockPosition);
   },
 
   onKeyDown: function(e) {
