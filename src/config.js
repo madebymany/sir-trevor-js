@@ -115,7 +115,7 @@ module.exports = {
       headers: {}
     },
     focusOnInit: true,
-    selectionMouse: false,
+    selectionMouse: true,
     selectionCopy: true,
     selectionCut: false,
     selectionPaste: false,
