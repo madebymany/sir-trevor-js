@@ -24,7 +24,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   eventNamespace: 'selection',
 
-  bound: ['onCopy', 'onKeyDown', 'onMouseUp'],
+  bound: ['onCopy', 'onCut', 'onKeyDown', 'onMouseUp', 'onPaste'],
 
   mediatedEvents: {
     'start': 'start',
@@ -57,6 +57,14 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     window.addEventListener("keydown", this.onKeyDown, false);
     window.addEventListener('mouseup', this.onMouseUp, false);
     document.addEventListener('copy', this.onCopy, false);
+
+    if (this.options.selectionCut) {
+      document.addEventListener('cut', this.onCut, false);
+    }
+
+    if (this.options.selectionPaste) {
+      document.addEventListener('paste', this.onPaste, false);
+    }
   },
 
   enabled: function() {
@@ -246,14 +254,10 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     var ctrlKey = ev.ctrlKey || ev.metaKey;
     var key = ev.key;
 
-    if (ctrlKey) {
-      if (key === "a") {
-        if (this.cancelSelectAll()) return;
-        ev.preventDefault();
-        this.mediator.trigger("selection:all");
-      } else if (this.options.selectionDelete && key === "x") {
-        this.mediator.trigger("selection:delete");
-      }
+    if (ctrlKey && key === "a") {
+      if (!this.selecting && this.cancelSelectAll()) return;
+      ev.preventDefault();
+      this.mediator.trigger("selection:all");
     } else if (this.selecting && ["Down", "ArrowDown"].indexOf(key) > -1) {
       ev.preventDefault();
       if (ev.shiftKey && ev.altKey) this.expandToEnd();
@@ -299,6 +303,14 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     ev.clipboardData.setData('text/html', content.html);
     ev.clipboardData.setData('text/plain', content.text);
     ev.preventDefault();
+  },
+
+  onCut: function(ev) {
+    this.delete();
+  },
+
+  onPaste: function(ev) {
+    // TODO
   }
 });
 
