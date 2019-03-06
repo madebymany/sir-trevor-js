@@ -19,8 +19,9 @@
 - [ ] Enable paste of non-text content.
 - [ ] Cross browser fixes / testing.
 
-### 0.8.2 - Can use mouse to select content
-- [ ] Add mouse behaviour.
+### 0.8.2 - Can delete content in selection
+- [ ] Enable cut of blocks.
+- [ ] Cross browser fixes / testing.
 
 ### 0.8.1 - Can selectively copy content
 - [ ] Keyboard behaviour.
