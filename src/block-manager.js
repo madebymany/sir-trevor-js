@@ -49,12 +49,14 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     'rerender': 'rerenderBlock',
     'replace': 'replaceBlock',
     'focusPrevious': 'focusPreviousBlock',
-    'focusNext': 'focusNextBlock'
+    'focusNext': 'focusNextBlock',
+    'paste': 'paste'
   },
 
   initialize: function() {},
 
-  createBlock: function(type, data, previousSibling, options) {
+  createBlock: function(type, data, previousSibling, options = {}) {
+    options = Object.assign({ autoFocus: false, focusAtEnd: false }, options);
     type = utils.classify(type);
 
     // Run validations
@@ -67,8 +69,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this._incrementBlockTypeCount(type);
     this.renderBlock(block, previousSibling);
 
-    if (options && options.autoFocus) {
+    if (options.autoFocus) {
       block.focus();
+    } else if (options.focusAtEnd) {
+      block.focusAtEnd();
     }
 
     this.triggerBlockCountUpdate();
@@ -79,7 +83,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     utils.log("Block created of type " + type);
   },
 
-  createBlockBefore: function(type, data, nextBlock, options) {
+  createBlockBefore: function(type, data, nextBlock, options = {}) {
+    options = Object.assign({ autoFocus: false, focusAtEnd: false }, options);
     type = utils.classify(type);
 
     // Run validations
@@ -98,8 +103,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       this.renderBlock(block, this.wrapper.querySelector(".st-top-controls"));
     }
 
-    if (options && options.autoFocus) {
+    if (options.autoFocus) {
       block.focus();
+    } else if (options.focusAtEnd) {
+      block.focusAtEnd();
     }
 
     this.triggerBlockCountUpdate();
@@ -288,6 +295,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
         block.focusAtEnd();
       }
     }
+  },
+
+  paste: function(blocks) {
+
   },
 
   triggerBlockCountUpdate: function() {
