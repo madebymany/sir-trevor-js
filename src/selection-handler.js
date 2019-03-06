@@ -78,12 +78,14 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
     this.startIndex = this.endIndex = index;
     this.selecting = true;
-    this.mediator.trigger("selection:render");
 
     if (options.mouseEnabled) {
       window.mouseDown = true;
+      this.selecting = false;
       window.addEventListener("mousemove", this.onMouseMove);
     }
+
+    this.mediator.trigger("selection:render");
   },
 
   startAtEnd: function() {
@@ -99,6 +101,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   update: function(index) {
     if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
+    if (index !== this.startIndex) this.selecting = true;
+    this.removeNativeSelection();
     this.mediator.trigger("selection:render");
   },
 
@@ -154,8 +158,10 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   render: function() {
+    var visible = this.selecting;
+
     this.editor.getBlocks().forEach((block, idx) => {
-      block.select(this.selecting && this.indexSelected(idx));
+      block.select(visible && this.indexSelected(idx));
     });
   },
 
@@ -292,6 +298,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
     window.mouseDown = false;
     this.mediator.trigger("selection:complete");
+    this.mediator.trigger("selection:render");
   },
 
   onCopy: function(ev) {
