@@ -187,8 +187,10 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   block: function(block) {
-    var blockPosition = this.editor.getBlockPosition(block.el);
+    var blockPosition = this.editor.blockManager.getBlockPosition(block.el);
 
+    this.mediator.trigger("formatter:hide");
+    this.removeNativeSelection();
     this.start(blockPosition);
   },
 
