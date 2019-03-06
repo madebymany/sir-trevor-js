@@ -76,7 +76,7 @@ describe('Selection', function() {
       });
   });
 
-  it('should copy the content of all the blocks', function(done) {
+  xit('should copy the content of all the blocks', function(done) {
     helpers.focusOnTextBlock()
       .then(helpers.pressCtrlA)
       .then(helpers.pressCtrlC)
