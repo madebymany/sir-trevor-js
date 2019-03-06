@@ -3,6 +3,8 @@
 var _ = require('./lodash');
 var Dom = require('./packages/dom');
 
+var TYPE = 'application/vnd.sirtrevor+json'
+
 var SelectionHandler = function(wrapper, mediator, editor) {
   this.wrapper = wrapper;
   this.mediator = mediator;
@@ -22,7 +24,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   eventNamespace: 'selection',
 
-  bound: ['onKeyDown', 'onMouseUp'],
+  bound: ['onCopy', 'onKeyDown', 'onMouseUp'],
 
   mediatedEvents: {
     'start': 'start',
@@ -50,11 +52,20 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   initialize: function() {
+    if (!this.enabled()) return false;
+
     window.addEventListener("keydown", this.onKeyDown, false);
     window.addEventListener('mouseup', this.onMouseUp, false);
+    document.addEventListener('copy', this.onCopy, false);
+  },
+
+  enabled: function() {
+    return !!this.options.selectionCopy;
   },
 
   start: function(index, options = {}) {
+    if (!this.enabled()) return false;
+
     options = Object.assign({ mouseEnabled: false }, options);
 
     this.startIndex = this.endIndex = index;
@@ -105,6 +116,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   all: function() {
+    if (!this.enabled()) return false;
+
     this.removeNativeSelection();
 
     var blocks = this.editor.getBlocks();
@@ -141,25 +154,30 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   getClipboardData: function() {
     this.editor.getData();
 
-    var output = [];
+    var htmlOutput = [];
+    var textOutput = [];
+    var dataOutput =  [];
 
     this.editor.getBlocks().forEach((block, idx) => {
-      if (this.indexSelected(idx)) output.push(block.asClipboardHTML());
+      if (this.indexSelected(idx)) {
+        var html = block.asClipboardHTML();
+        var text = html;
+        htmlOutput.push(html);
+        textOutput.push(text);
+        dataOutput.push(block.getData());
+      }
     });
 
-    return output.join("\n");
+    return {
+      html: htmlOutput.join(""),
+      text: textOutput.join("\n\n"),
+      data: dataOutput
+    };
   },
 
   copy: function() {
-    var copyArea = document.body.querySelector(".st-copy-area");
-    if (!copyArea) {
-      copyArea = Dom.createElement("div", {
-        contenteditable: true,
-        class: 'st-copy-area st-utils__hidden',
-      });
-      document.body.appendChild(copyArea);
-    }
-    copyArea.innerHTML = this.getClipboardData();
+    var copyArea = this.createFakeCopyArea();
+    copyArea.innerHTML = this.getClipboardData().html;
 
     var selection = window.getSelection();
     var range = document.createRange();
@@ -174,6 +192,18 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     catch (err) {
       console.log("Copy could not be performed");
     }
+  },
+
+  createFakeCopyArea: function() {
+    var copyArea = document.body.querySelector(".st-copy-area");
+    if (!copyArea) {
+      copyArea = Dom.createElement("div", {
+        contenteditable: true,
+        class: 'st-copy-area st-utils__hidden',
+      });
+      document.body.appendChild(copyArea);
+    }
+    return copyArea;
   },
 
   delete: function() {
@@ -211,28 +241,24 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     return this.editor.getBlocks()[this.getEndIndex()];
   },
 
-  onKeyDown: function(e) {
-    e = e || window.event;
-    var ctrlKey = e.ctrlKey || e.metaKey;
-    var key = e.key;
+  onKeyDown: function(ev) {
+    ev = ev || window.event;
+    var ctrlKey = ev.ctrlKey || ev.metaKey;
+    var key = ev.key;
 
     if (ctrlKey) {
-      if (this.options.selectionCopy && key === "a") {
+      if (key === "a") {
         if (this.cancelSelectAll()) return;
-        e.preventDefault();
+        ev.preventDefault();
         this.mediator.trigger("selection:all");
-      } else if (this.options.selectionCopy && key === "c") {
-        if (!this.selecting) return;
-        e.preventDefault();
-        this.mediator.trigger("selection:copy");
       } else if (this.options.selectionDelete && key === "x") {
         this.mediator.trigger("selection:delete");
       }
     } else if (this.selecting && ["Down", "ArrowDown"].indexOf(key) > -1) {
-      e.preventDefault();
-      if (e.shiftKey && e.altKey) this.expandToEnd();
-      else if (e.shiftKey) this.expand(1);
-      else if (e.altKey) this.startAtEnd();
+      ev.preventDefault();
+      if (ev.shiftKey && ev.altKey) this.expandToEnd();
+      else if (ev.shiftKey) this.expand(1);
+      else if (ev.altKey) this.startAtEnd();
       else {
         this.cancel();
         this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, { force: true });
@@ -240,10 +266,10 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       }
       this.focusAtEnd();
     } else if (this.selecting && ["Up", "ArrowUp"].indexOf(key) > -1) {
-      e.preventDefault();
-      if (e.shiftKey && e.altKey) this.expandToStart();
-      else if (e.shiftKey) this.expand(-1);
-      else if (e.altKey) this.start(0);
+      ev.preventDefault();
+      if (ev.shiftKey && ev.altKey) this.expandToStart();
+      else if (ev.shiftKey) this.expand(-1);
+      else if (ev.altKey) this.start(0);
       else {
         this.cancel();
         this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, { force: true });
@@ -262,6 +288,17 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
     window.mouseDown = false;
     this.mediator.trigger("selection:complete");
+  },
+
+  onCopy: function(ev) {
+    if (!this.selecting) return;
+
+    var content = this.getClipboardData();
+
+    ev.clipboardData.setData(TYPE, JSON.stringify(content.data));
+    ev.clipboardData.setData('text/html', content.html);
+    ev.clipboardData.setData('text/plain', content.text);
+    ev.preventDefault();
   }
 });
 
