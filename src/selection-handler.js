@@ -221,9 +221,11 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   delete: function() {
-    this.editor.getBlocks().forEach((blockEl, idx) => {
-      if (this.indexSelected(idx)) this.mediator.trigger("block:remove", block.blockID, { focusOnNext: true });
+    this.editor.getBlocks().forEach((block, idx) => {
+      if (!this.indexSelected(idx)) return;
+      this.mediator.trigger("block:remove", block.blockID, { focusOnNext: true });
     });
+    this.cancel();
   },
 
   indexSelected: function(index) {
@@ -260,7 +262,10 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     var ctrlKey = ev.ctrlKey || ev.metaKey;
     var key = ev.key;
 
-    if (ctrlKey && key === "a") {
+    if (this.selecting && key === "Backspace") {
+      ev.preventDefault();
+      this.delete();
+    } else if (ctrlKey && key === "a") {
       if (!this.selecting && this.cancelSelectAll()) return;
       ev.preventDefault();
       this.mediator.trigger("selection:all");
@@ -301,9 +306,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     this.mediator.trigger("selection:render");
   },
 
-  onCopy: function(ev) {
-    if (!this.selecting) return;
-
+  copySelection: function(ev) {
     var content = this.getClipboardData();
 
     ev.clipboardData.setData(TYPE, JSON.stringify(content.data));
@@ -312,7 +315,16 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     ev.preventDefault();
   },
 
+  onCopy: function(ev) {
+    if (!this.selecting) return;
+
+    this.copySelection(ev);
+  },
+
   onCut: function(ev) {
+    if (!this.selecting) return;
+
+    this.copySelection(ev);
     this.delete();
   },
 

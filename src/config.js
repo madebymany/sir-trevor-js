@@ -117,7 +117,7 @@ module.exports = {
     focusOnInit: true,
     selectionMouse: true,
     selectionCopy: true,
-    selectionCut: true,
+    selectionCut: false,
     selectionPaste: false,
     selectionLimitToEditor: true
   }
