@@ -6,6 +6,8 @@ var {
   getTotalLength,
   isAtStart,
   isAtEnd,
+  isSelectedFromStart,
+  isSelectedToEnd,
   selectToEnd
 } = require('./shared.js');
 
@@ -51,26 +53,40 @@ var ScribeListBlockPlugin = function(block) {
           content = rangeToHTML(selectToEnd(scribe));
           block.addListItemAfterCurrent(content);
         }
-      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1  && isAtStart(scribe)) {
-        ev.preventDefault();
+      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1) {
+        if (ev.shiftKey && isSelectedFromStart(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
 
-        var previousListItem = block.previousListItem();
-        if (previousListItem) {
-          block.focusOn(previousListItem, { focusAtEnd: true });
-        } else {
-          block.mediator.trigger("block:focusPrevious", block.blockID);
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtStart(scribe)) {
+          ev.preventDefault();
+
+          var previousListItem = block.previousListItem();
+          if (previousListItem) {
+            block.focusOn(previousListItem, { focusAtEnd: true });
+          } else {
+            block.mediator.trigger("block:focusPrevious", block.blockID);
+          }
         }
+      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1) {
+        if (ev.shiftKey && isSelectedToEnd(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
 
-      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1 && isAtEnd(scribe)) {
-        ev.preventDefault();
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtEnd(scribe)) {
+          ev.preventDefault();
 
-        var nextListItem = block.nextListItem();
-        if (nextListItem) {
-          block.focusOn(nextListItem);
-        } else {
-          block.mediator.trigger("block:focusNext", block.blockID);
+          var nextListItem = block.nextListItem();
+          if (nextListItem) {
+            block.focusOn(nextListItem);
+          } else {
+            block.mediator.trigger("block:focusNext", block.blockID);
+          }
         }
-
       } else if (ev.key === "Backspace" && isAtStart(scribe)) {
         ev.preventDefault();
 

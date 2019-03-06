@@ -222,6 +222,10 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     });
   },
 
+  focusAtStart: function() {
+    this.focus();
+  },
+
   focusAtEnd: function() {
     this.focus();
   },

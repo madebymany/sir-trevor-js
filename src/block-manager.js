@@ -283,7 +283,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       var nextBlock = this.getNextBlock(block);
 
       if (nextBlock && nextBlock.mergeable) {
-        nextBlock.focus();
+        nextBlock.focusAtStart();
       } else if (options.force) {
         block.focusAtEnd();
       }
