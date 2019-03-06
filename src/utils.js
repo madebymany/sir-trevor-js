@@ -29,7 +29,10 @@ var utils = {
   },
 
   getBlockBySelection: function() {
-    return utils.getInstanceBySelection().findBlockById(
+    var instance = utils.getInstanceBySelection();
+    if (!instance) return;
+
+    return instance.findBlockById(
       Dom.getClosest(window.getSelection().anchorNode.parentNode, '.st-block').id
     );
   },

@@ -298,7 +298,20 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   paste: function(blocks) {
+    var currentBlock = utils.getBlockBySelection();
+    if (currentBlock) {
+      currentBlock.split();
+      var nextBlock = this.getNextBlock(currentBlock);
 
+      blocks.forEach((block) => {
+        this.mediator.trigger("block:createBefore", block.type, block.data, nextBlock, { focusAtEnd: true });
+      });
+      return;
+    }
+
+    blocks.forEach((block) => {
+      this.mediator.trigger("block:create", block.type, block.data, undefined, { focusAtEnd: true });
+    });
   },
 
   triggerBlockCountUpdate: function() {
