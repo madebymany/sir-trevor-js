@@ -4,20 +4,23 @@
 
 ## 0.8.x
 
-### 0.8.5 - Undo?
+### 0.8.6 - Undo?
 * Improve Firefox content pasting.
 * Improve edge content pasting.
 
-### 0.8.4 - Can delete content in selection
+### 0.8.5 - Can delete content in selection
 - [ ] Cross browser fixes / testing.
 
-## 0.8.3 - Can select block inner elements
+## 0.8.4 - Can select block inner elements
 - [ ] Allow selection of individual list items.
 - [ ] Cross browser fixes / testing.
 
-### 0.8.2 - Can paste cotent
+### 0.8.3 - Can paste cotent
 - [ ] Enable paste of non-text content.
 - [ ] Cross browser fixes / testing.
+
+### 0.8.2 - Can use mouse to select content
+- [ ] Add mouse behaviour.
 
 ### 0.8.1 - Can selectively copy content
 - [ ] Keyboard behaviour.
