@@ -183,7 +183,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   indexSelected: function(index) {
-    return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
+    return index >= this.getStartIndex() && index <= this.getEndIndex();
   },
 
   block: function(block) {
@@ -192,6 +192,23 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     this.mediator.trigger("formatter:hide");
     this.removeNativeSelection();
     this.start(blockPosition);
+  },
+
+  getStartIndex: function() {
+    return Math.min(this.startIndex, this.endIndex);
+  },
+
+
+  getEndIndex: function() {
+    return Math.max(this.startIndex, this.endIndex);
+  },
+
+  getStartBlock: function() {
+    return this.editor.getBlocks()[this.getStartIndex()];
+  },
+
+  getEndBlock: function() {
+    return this.editor.getBlocks()[this.getEndIndex()];
   },
 
   onKeyDown: function(e) {
@@ -216,14 +233,22 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       if (e.shiftKey && e.altKey) this.expandToEnd();
       else if (e.shiftKey) this.expand(1);
       else if (e.altKey) this.startAtEnd();
-      else this.move(1);
+      else {
+        this.cancel();
+        this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, { force: true });
+        return;
+      }
       this.focusAtEnd();
     } else if (this.selecting && ["Up", "ArrowUp"].indexOf(key) > -1) {
       e.preventDefault();
       if (e.shiftKey && e.altKey) this.expandToStart();
       else if (e.shiftKey) this.expand(-1);
       else if (e.altKey) this.start(0);
-      else this.move(-1);
+      else {
+        this.cancel();
+        this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, { force: true });
+        return;
+      }
       this.focusAtEnd();
     }
   },
