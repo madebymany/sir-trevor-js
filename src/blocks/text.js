@@ -7,6 +7,10 @@
 var Block = require('../block');
 var stToHTML = require('../to-html');
 
+var {
+  createBlocksFromParagraphs
+} = require('./scribe-plugins/shared');
+
 var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
 var ScribePastePlugin = require('./scribe-plugins/scribe-paste-plugin');
 var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
@@ -63,5 +67,10 @@ module.exports = Block.extend({
   asClipboardHTML: function() {
     var data = this.getBlockData();
     return `${data.text}`;
+  },
+
+  split: function() {
+    console.log(this);
+    createBlocksFromParagraphs(this, this._scribe);
   }
 });

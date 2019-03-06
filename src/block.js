@@ -464,7 +464,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   select: function(selected) {
     this.el.classList.toggle("st-block--is-selected", selected);
-  }
+  },
+
+  split: function() {}
 
 });
 
