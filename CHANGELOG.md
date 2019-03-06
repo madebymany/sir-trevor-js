@@ -19,7 +19,7 @@
 - [ ] Enable paste of non-text content.
 - [ ] Cross browser fixes / testing.
 
-### 0.8.2 - Can delete content in selection
+### 0.8.2 - Can cut content in selection
 - [ ] Enable cut of blocks.
 - [ ] Cross browser fixes / testing.
 
