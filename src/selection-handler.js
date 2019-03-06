@@ -63,7 +63,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     }
 
     if (this.options.selectionPaste) {
-      document.addEventListener('paste', this.onPaste, false);
+      document.addEventListener('paste', this.onPaste, true);
     }
   },
 
@@ -339,7 +339,34 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   onPaste: function(ev) {
-    // TODO
+    if (ev.clipboardData.types.includes(TYPE)) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      let data = JSON.parse(ev.clipboardData.getData(TYPE));
+      var nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
+      if (this.selecting) this.delete();
+      if (this.selecting && nextBlock) {
+        data.reverse().forEach((block) => {
+          this.mediator.trigger("block:createBefore", block.type, block.data, nextBlock, { focusAtEnd: true });
+        });
+      } else {
+        data.forEach((block) => {
+          this.mediator.trigger("block:create", block.type, block.data, undefined, { focusAtEnd: true });
+        });
+      }
+    } else if (ev.clipboardData.types.includes('text/html')) {
+      if (!this.selecting) return;
+
+      let html = ev.clipboardData.getData('text/html');
+      // this.delete();
+      // console.log(html);
+    } else if (ev.clipboardData.types.includes('text/plain')) {
+      if (!this.selecting) return;
+
+      let text = ev.clipboardData.getData('text/plain');
+      // this.delete();
+      // console.log(html);
+    }
   }
 });
 
