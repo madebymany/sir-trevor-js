@@ -24,6 +24,21 @@ function handleListItems(block, listItemsToCreate) {
   return [];
 }
 
+// In firefox when you paste any text is wraps in a paragraph block which we don't want.
+function removeWrappingParagraphForFirefox(value) {
+  var fakeContent = document.createElement('div');
+  fakeContent.innerHTML = value;
+
+  if (fakeContent.childNodes.length === 1) {
+    var node = [].slice.call(fakeContent.childNodes)[0];
+    if (node && node.nodeName === "P") {
+      value = node.innerHTML;
+    }
+  }
+
+  return value;
+}
+
 var scribePastePlugin = function(block) {
 
   function isMsWordListParagraph(node) {
@@ -39,6 +54,9 @@ var scribePastePlugin = function(block) {
 
     insertHTMLCommandPatch.execute = function (value) {
       scribe.transactionManager.run(() => {
+
+        value = removeWrappingParagraphForFirefox(value);
+
         scribe.api.CommandPatch.prototype.execute.call(this, value);
 
         var fakeContent = document.createElement('div');
