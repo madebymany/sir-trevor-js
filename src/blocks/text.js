@@ -70,7 +70,6 @@ module.exports = Block.extend({
   },
 
   split: function() {
-    console.log(this);
     createBlocksFromParagraphs(this, this._scribe);
   }
 });
