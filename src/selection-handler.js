@@ -345,18 +345,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       let data = JSON.parse(ev.clipboardData.getData(TYPE));
       if (this.selecting) this.delete();
       this.mediator.trigger("block:paste", data);
-    } else if (ev.clipboardData.types.includes('text/html')) {
-      if (!this.selecting) return;
-
-      let html = ev.clipboardData.getData('text/html');
-      // this.delete();
-      // console.log(html);
-    } else if (ev.clipboardData.types.includes('text/plain')) {
-      if (!this.selecting) return;
-
-      let text = ev.clipboardData.getData('text/plain');
-      // this.delete();
-      // console.log(html);
     }
   }
 });
