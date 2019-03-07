@@ -86,6 +86,13 @@ var createBlocksFromParagraphs = function(block, scribe) {
   }
 };
 
+var rangeToHTML = function(range) {
+  var div = document.createElement('div');
+  div.appendChild(range.extractContents());
+
+  return div.innerHTML;
+};
+
 export {
   createBlocksFromParagraphs,
   getTotalLength,
@@ -93,5 +100,6 @@ export {
   isAtEnd,
   selectToEnd,
   isSelectedFromStart,
-  isSelectedToEnd
+  isSelectedToEnd,
+  rangeToHTML
 };

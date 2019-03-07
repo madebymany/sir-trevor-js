@@ -8,6 +8,7 @@ var {
   isAtEnd,
   isSelectedFromStart,
   isSelectedToEnd,
+  rangeToHTML,
   selectToEnd
 } = require('./shared.js');
 
@@ -19,40 +20,12 @@ var ScribeListBlockPlugin = function(block) {
         return;
       }
 
-      var rangeToHTML = function(range) {
-        var div = document.createElement('div');
-        div.appendChild(range.extractContents());
-
-        return div.innerHTML;
-      };
-
       var content;
 
       if (ev.key === "Enter" && !ev.shiftKey) {
         ev.preventDefault();
 
-        if (scribe.getTextContent().length === 0) {
-          let nextListItem = block.nextListItem();
-          if (nextListItem) {
-            const data = {format: 'html', listItems: []};
-            block.removeCurrentListItem();
-            block.focusOn(nextListItem);
-            while (!!nextListItem) {
-              data.listItems.push({content: nextListItem.scribe.getContent()});
-              block.focusOn(nextListItem);
-              block.removeCurrentListItem();
-              nextListItem = block.nextListItem();
-            }
-            block.mediator.trigger("block:create", 'List', data, block.el, { autoFocus: true });
-            block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
-          } else {
-            block.removeCurrentListItem();
-            block.mediator.trigger("block:create", 'Text', null, block.el, { autoFocus: true });
-          }
-        } else {
-          content = rangeToHTML(selectToEnd(scribe));
-          block.addListItemAfterCurrent(content);
-        }
+        block.splitListItem(scribe, { createTextBlock: true });
       } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1) {
         if (ev.shiftKey && isSelectedFromStart(scribe)) {
           ev.preventDefault();
