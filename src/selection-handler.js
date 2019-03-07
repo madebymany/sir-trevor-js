@@ -292,7 +292,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
           return;
         }
         this.focusAtEnd();
-      } else if (["Shift", "Control", "Meta", "Alt"].indexOf(key) === -1) {
+      } else if (this.options.selectionCut && !ev.metaKey && ["Shift", "Control", "Meta", "Alt"].indexOf(key) === -1) {
         const nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
         this.delete();
         if (nextBlock) {
