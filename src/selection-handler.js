@@ -269,28 +269,38 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       if (!this.selecting && this.cancelSelectAll()) return;
       ev.preventDefault();
       this.mediator.trigger("selection:all");
-    } else if (this.selecting && ["Down", "ArrowDown"].indexOf(key) > -1) {
-      ev.preventDefault();
-      if (ev.shiftKey && ev.altKey) this.expandToEnd();
-      else if (ev.shiftKey) this.expand(1);
-      else if (ev.altKey) this.startAtEnd();
-      else {
-        this.cancel();
-        this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, { force: true });
-        return;
+    } else if (this.selecting) {
+      if (["Down", "ArrowDown"].indexOf(key) > -1) {
+        ev.preventDefault();
+        if (ev.shiftKey && ev.altKey) this.expandToEnd();
+        else if (ev.shiftKey) this.expand(1);
+        else if (ev.altKey) this.startAtEnd();
+        else {
+          this.cancel();
+          this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, { force: true });
+          return;
+        }
+        this.focusAtEnd();
+      } else if (["Up", "ArrowUp"].indexOf(key) > -1) {
+        ev.preventDefault();
+        if (ev.shiftKey && ev.altKey) this.expandToStart();
+        else if (ev.shiftKey) this.expand(-1);
+        else if (ev.altKey) this.start(0);
+        else {
+          this.cancel();
+          this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, { force: true });
+          return;
+        }
+        this.focusAtEnd();
+      } else if (["Shift", "Control", "Meta", "Alt"].indexOf(key) === -1) {
+        const nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
+        this.delete();
+        if (nextBlock) {
+          this.mediator.trigger("block:createBefore", "text", "", nextBlock, { autoFocus: true });
+        } else {
+          this.mediator.trigger("block:create", "text", "", { autoFocus: true });
+        }
       }
-      this.focusAtEnd();
-    } else if (this.selecting && ["Up", "ArrowUp"].indexOf(key) > -1) {
-      ev.preventDefault();
-      if (ev.shiftKey && ev.altKey) this.expandToStart();
-      else if (ev.shiftKey) this.expand(-1);
-      else if (ev.altKey) this.start(0);
-      else {
-        this.cancel();
-        this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, { force: true });
-        return;
-      }
-      this.focusAtEnd();
     }
   },
 
