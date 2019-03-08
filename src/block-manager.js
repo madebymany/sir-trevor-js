@@ -306,19 +306,19 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       var nextBlock = this.getNextBlock(currentBlock);
 
       if (currentBlock.isEmpty()) {
-        this.mediator.trigger("block:remove", currentBlock.blockID);
+        this.removeBlock(currentBlock.blockID);
       }
 
       if (nextBlock) {
         blocks.forEach((block) => {
-          this.mediator.trigger("block:createBefore", block.type, block.data, nextBlock, { focusAtEnd: true });
+          this.createBlockBefore(block.type, block.data, nextBlock, { focusAtEnd: true });
         });
         return;
       }
     }
 
     blocks.forEach((block) => {
-      this.mediator.trigger("block:create", block.type, block.data, undefined, { focusAtEnd: true });
+      this.createBlock(block.type, block.data, undefined, { focusAtEnd: true });
     });
   },
 
