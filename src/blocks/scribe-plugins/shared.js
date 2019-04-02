@@ -80,7 +80,7 @@ var createBlocksFromParagraphs = function(block, scribe) {
           format: 'html',
           text: node.innerHTML.trim()
         };
-        block.mediator.trigger("block:create", 'Text', data, block.el, { autoFocus: true });
+        block.mediator.trigger("block:create", block.type, data, block.el, { autoFocus: true });
       }
     });
   }
