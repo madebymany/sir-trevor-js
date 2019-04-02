@@ -223,14 +223,16 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     return copyArea;
   },
 
-  delete: function() {
+  delete: function(options = {}) {
+    options = Object.assign({ createNextBlock: true }, options);
+
     this.editor.getBlocks().forEach((block, idx) => {
       if (!this.indexSelected(idx)) return;
       this.mediator.trigger(
         "block:remove",
         block.blockID, {
           focusOnNext: true,
-          createNextBlock: true
+          createNextBlock: options.createNextBlock
         }
       );
     });
@@ -343,12 +345,18 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     if (ev.clipboardData.types.includes(TYPE)) {
       if (!this.selecting && !this.canSelect()) return;
 
-      console.log("can");
-
       ev.preventDefault();
       ev.stopPropagation();
       let data = JSON.parse(ev.clipboardData.getData(TYPE));
-      if (this.selecting) this.delete();
+      if (this.selecting) {
+        const nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
+        this.delete({ createNextBlock: false });
+        if (nextBlock && !nextBlock.isEmpty()) {
+          this.mediator.trigger("block:createBefore", "text", "", nextBlock, { autoFocus: true });
+        } else {
+          this.mediator.trigger("block:create", "text", "", null, { autoFocus: true });
+        }
+      }
       this.mediator.trigger("block:paste", data);
     }
   }
