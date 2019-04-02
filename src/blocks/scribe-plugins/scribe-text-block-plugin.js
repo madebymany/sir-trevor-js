@@ -19,7 +19,7 @@ var ScribeTextBlockPlugin = function(block) {
         return;
       }
 
-      if (ev.keyCode === 13 && !ev.shiftKey) { // enter pressed
+      if (ev.key === "Enter" && !ev.shiftKey) { // enter pressed
         ev.preventDefault();
 
         if (isAtEnd(scribe)) {
@@ -35,7 +35,7 @@ var ScribeTextBlockPlugin = function(block) {
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
-      } else if (ev.keyCode === 37 || ev.keyCode === 38) {
+      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1) {
         if (ev.shiftKey && isSelectedFromStart(scribe)) {
           ev.preventDefault();
           ev.stopPropagation();
@@ -44,6 +44,7 @@ var ScribeTextBlockPlugin = function(block) {
           block.mediator.trigger("selection:block", block);
         } else if (isAtStart(scribe)) {
           ev.preventDefault();
+          ev.stopPropagation();
 
           block.mediator.trigger("block:focusPrevious", block.blockID);
         }
@@ -51,7 +52,7 @@ var ScribeTextBlockPlugin = function(block) {
         ev.preventDefault();
 
         isAtStartBoolean = true;
-      } else if (ev.keyCode === 39 || ev.keyCode === 40) {
+      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1) {
         if (ev.shiftKey && isSelectedToEnd(scribe)) {
           ev.preventDefault();
           ev.stopPropagation();
@@ -72,7 +73,7 @@ var ScribeTextBlockPlugin = function(block) {
         return;
       }
 
-      if (ev.keyCode === 8 && isAtStartBoolean) {
+      if (ev.key === "Backspace" && isAtStartBoolean) {
         ev.preventDefault();
 
         block.mediator.trigger('block:remove', block.blockID, {
