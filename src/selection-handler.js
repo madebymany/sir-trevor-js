@@ -342,7 +342,9 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   onPaste: function(ev) {
-    if (ev.clipboardData.types.includes(TYPE)) {
+    // Fix Edge types DomStringList.
+    var types = [].slice.call(ev.clipboardData.types);
+    if (types.includes(TYPE)) {
       if (!this.selecting && !this.canSelect()) return;
 
       ev.preventDefault();
