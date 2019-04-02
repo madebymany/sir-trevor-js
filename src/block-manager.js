@@ -121,7 +121,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     options = Object.assign({
       transposeContent: false,
       focusOnPrevious: false,
-      focusOnNext: false
+      focusOnNext: false,
+      createNextBlock: false
     }, options);
 
     var block = this.findBlockById(blockID);
@@ -190,8 +191,12 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       previousBlock.focusAtEnd();
     }
 
-    if (options.focusOnNext && nextBlock) {
-      nextBlock.focus();
+    if (options.focusOnNext) {
+      if (nextBlock) {
+        nextBlock.focus();
+      } else if (options.createNextBlock) {
+        this.createBlock("text", null, null, { autoFocus: true });
+      }
     }
 
     this._decrementBlockTypeCount(type);
