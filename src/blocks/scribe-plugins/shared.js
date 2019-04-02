@@ -2,6 +2,8 @@
 
 var selectionRange = require('selection-range');
 
+var utils = require('../../utils');
+
 var selectToEnd = function(scribe) {
   var selection = new scribe.api.Selection();
   var range = selection.range.cloneRange();
@@ -93,6 +95,31 @@ var rangeToHTML = function(range) {
   return div.innerHTML;
 };
 
+var trimScribeContent = function(scribe) {
+  // Remove any whitespace in the first node, otherwise selections won't work.
+  var firstNode = scribe.node.firstDeepestChild(scribe.el);
+  if (firstNode.nodeName === '#text') {
+    firstNode.textContent = utils.leftTrim(firstNode.textContent);
+  }
+
+  // Remove all empty nodes at the front to get blocks working.
+  // Don't remove nodes that can't contain text content (e.g. <input>)
+  while (scribe.el.firstChild && scribe.el.firstChild.textContent === '' && document.createElement(scribe.el.firstChild.tagName).outerHTML.indexOf("/") != -1) {
+    scribe.el.removeChild(scribe.el.firstChild);
+  }
+
+  // Remove all empty nodes at the end to get blocks working.
+  // Don't remove nodes that can't contain text content (e.g. <input>)
+  while (scribe.el.lastChild && scribe.el.lastChild.textContent === '' && document.createElement(scribe.el.lastChild.tagName).outerHTML.indexOf("/") != -1) {
+    scribe.el.removeChild(scribe.el.lastChild);
+  }
+
+  // Firefox adds empty br tags at the end of content.
+  while(scribe.el.lastChild && scribe.el.lastChild.nodeName === 'BR') {
+    scribe.el.removeChild(scribe.el.lastChild);
+  }
+}
+
 export {
   createBlocksFromParagraphs,
   getTotalLength,
@@ -101,5 +128,6 @@ export {
   selectToEnd,
   isSelectedFromStart,
   isSelectedToEnd,
-  rangeToHTML
+  rangeToHTML,
+  trimScribeContent
 };

@@ -18,6 +18,8 @@ var EventBus = require('./event-bus');
 
 var { Spinner } = require('spin.js');
 
+var { trimScribeContent } = require('./blocks/scribe-plugins/shared');;
+
 const DELETE_TEMPLATE = require("./templates/delete");
 
 var Block = function(data, instance_id, mediator, options, editorOptions) {
@@ -438,22 +440,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   setTextBlockHTML: function(html) {
     var returnVal = this._scribe.setContent(html);
 
-    // Remove any whitespace in the first node, otherwise selections won't work.
-    var firstNode = this._scribe.node.firstDeepestChild(this._scribe.el);
-    if (firstNode.nodeName === '#text') {
-      firstNode.textContent = utils.leftTrim(firstNode.textContent);
-    }
-
-    // Remove all empty nodes at the front to get blocks working.
-    // Don't remove nodes that can't contain text content (e.g. <input>)
-    while (this._scribe.el.firstChild && this._scribe.el.firstChild.textContent === '' && document.createElement(this._scribe.el.firstChild.tagName).outerHTML.indexOf("/") != -1) {
-      this._scribe.el.removeChild(this._scribe.el.firstChild);
-    }
-
-    // Firefox adds empty br tags at the end of content.
-    while(this._scribe.el.lastChild && this._scribe.el.lastChild.nodeName === 'BR') {
-      this._scribe.el.removeChild(this._scribe.el.lastChild);
-    }
+    trimScribeContent(this._scribe);
 
     return returnVal;
   },
