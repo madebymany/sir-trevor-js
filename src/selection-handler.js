@@ -41,6 +41,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   canSelect: function() {
     // Don't select if within an input field
     var editorEl1 = Dom.getClosest(document.activeElement, 'input');
+
     if (editorEl1 !== document.body) return false;
 
     var editorEl2 = Dom.getClosest(document.activeElement, '.st-outer');
@@ -340,7 +341,9 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   onPaste: function(ev) {
     if (ev.clipboardData.types.includes(TYPE)) {
-      if (!this.canSelect()) return;
+      if (!this.selecting && !this.canSelect()) return;
+
+      console.log("can");
 
       ev.preventDefault();
       ev.stopPropagation();
