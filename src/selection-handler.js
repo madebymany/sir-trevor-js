@@ -300,14 +300,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
           return;
         }
         this.focusAtEnd();
-      } else if (this.options.selectionCut && !ev.metaKey && ["Shift", "Control", "Meta", "Alt"].indexOf(key) === -1) {
-        const nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
-        this.delete();
-        if (nextBlock) {
-          this.mediator.trigger("block:createBefore", "text", "", nextBlock, { autoFocus: true });
-        } else {
-          this.mediator.trigger("block:create", "text", "", { autoFocus: true });
-        }
       }
     }
   },
