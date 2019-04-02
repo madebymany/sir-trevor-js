@@ -16,9 +16,11 @@ module.exports = {
 
   focusAtEnd: function() {
     this.focus();
-    var length = getTotalLength(this._scribe);
 
-    selectionRange(this._scribe.el, { start: length });
+    var length = getTotalLength(this._scribe);
+    if (length > 0) {
+      selectionRange(this._scribe.el, { start: length });
+    }
   },
 
   selectText: function() {
