@@ -38,17 +38,19 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     'block': 'block'
   },
 
-  cancelSelectAll: function() {
+  canSelect: function() {
     // Don't select if within an input field
     var editorEl1 = Dom.getClosest(document.activeElement, 'input');
-    if (editorEl1 !== document.body) return true;
+    if (editorEl1 !== document.body) return false;
 
     var editorEl2 = Dom.getClosest(document.activeElement, '.st-outer');
 
     // Don't select all if focused on element outside of the editor.
     if (this.options.selectionLimitToEditor) {
-      if (editorEl2 !== this.wrapper) return true;
+      if (editorEl2 !== this.wrapper) return false;
     }
+
+    return true;
   },
 
   initialize: function() {
@@ -223,7 +225,13 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   delete: function() {
     this.editor.getBlocks().forEach((block, idx) => {
       if (!this.indexSelected(idx)) return;
-      this.mediator.trigger("block:remove", block.blockID, { focusOnNext: true });
+      this.mediator.trigger(
+        "block:remove",
+        block.blockID, {
+          focusOnNext: true,
+          createNextBlock: true
+        }
+      );
     });
     this.cancel();
   },
@@ -266,7 +274,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       ev.preventDefault();
       this.delete();
     } else if (ctrlKey && key === "a") {
-      if (!this.selecting && this.cancelSelectAll()) return;
+      if (!this.selecting && !this.canSelect()) return;
       ev.preventDefault();
       this.mediator.trigger("selection:all");
     } else if (this.selecting) {
@@ -340,6 +348,8 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   onPaste: function(ev) {
     if (ev.clipboardData.types.includes(TYPE)) {
+      if (!this.canSelect()) return;
+
       ev.preventDefault();
       ev.stopPropagation();
       let data = JSON.parse(ev.clipboardData.getData(TYPE));
