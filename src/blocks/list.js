@@ -95,7 +95,8 @@ module.exports = Block.extend({
 
   addListItem: function(content, after) {
     content = content || '';
-    if (content.trim() === "<br>") { content = ''; }
+    content = content.trim();
+    if (content === "<br>") { content = ''; }
 
     var editor = this.newTextEditor(this.listItemEditorHTML, content);
 
