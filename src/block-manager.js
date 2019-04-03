@@ -224,7 +224,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       blockElement.addEventListener("mousedown", () => {
         var blockPosition = this.getBlockPosition(block.el);
-        this.mediator.trigger("selection:start", blockPosition);
+        this.mediator.trigger("selection:start", blockPosition, { mouseEnabled: true });
       });
     }
   },
@@ -258,26 +258,34 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     return Array.prototype.indexOf.call(this.wrapper.querySelectorAll('.st-block'), block);
   },
 
-  focusPreviousBlock: function(blockID) {
+  focusPreviousBlock: function(blockID, options = {}) {
+    options = Object.assign({ force: false }, options);
+
     var block = this.findBlockById(blockID);
 
-    if (block.mergeable) {
+    if (block && (block.mergeable || options.force)) {
       var previousBlock = this.getPreviousBlock(block);
 
       if (previousBlock && previousBlock.mergeable) {
         previousBlock.focusAtEnd();
+      } else if (options.force) {
+        block.focus();
       }
     }
   },
 
-  focusNextBlock: function(blockID) {
+  focusNextBlock: function(blockID, options = {}) {
+    options = Object.assign({ force: false }, options);
+
     var block = this.findBlockById(blockID);
 
-    if (block && block.mergeable) {
+    if (block && (block.mergeable || options.force)) {
       var nextBlock = this.getNextBlock(block);
 
       if (nextBlock && nextBlock.mergeable) {
-        nextBlock.focus();
+        nextBlock.focusAtStart();
+      } else if (options.force) {
+        block.focusAtEnd();
       }
     }
   },

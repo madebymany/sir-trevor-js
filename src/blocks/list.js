@@ -160,6 +160,11 @@ module.exports = Block.extend({
     }
   },
 
+  focusAtStart: function() {
+    var editor = this.getTextEditor(this.editorIds[0]);
+    this.focusOn(editor);
+  },
+
   focusAtEnd: function() {
     var lastEditorId = this.editorIds[this.editorIds.length - 1];
     this.appendToTextEditor(lastEditorId);

@@ -115,9 +115,10 @@ module.exports = {
       headers: {}
     },
     focusOnInit: true,
-    selectionMouse: false,
+    selectionMouse: true,
     selectionCopy: true,
-    selectionDelete: false,
+    selectionCut: false,
+    selectionPaste: false,
     selectionLimitToEditor: true
   }
 };

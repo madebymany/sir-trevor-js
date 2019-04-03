@@ -211,9 +211,10 @@ module.exports = {
       headers: {}
     },
     focusOnInit: true,
-    selectionMouse: false,
+    selectionMouse: true,
     selectionCopy: true,
-    selectionDelete: false,
+    selectionCut: false,
+    selectionPaste: false,
     selectionLimitToEditor: true
   }
 };
@@ -5668,6 +5669,9 @@ Object.assign(Block.prototype, SimpleBlock.fn, __webpack_require__(84), {
       el.focus();
     });
   },
+  focusAtStart: function focusAtStart() {
+    this.focus();
+  },
   focusAtEnd: function focusAtEnd() {
     this.focus();
   },
@@ -7372,6 +7376,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAtStart", function() { return isAtStart; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isAtEnd", function() { return isAtEnd; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "selectToEnd", function() { return selectToEnd; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSelectedFromStart", function() { return isSelectedFromStart; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSelectedToEnd", function() { return isSelectedToEnd; });
 
 
 var selectionRange = __webpack_require__(13);
@@ -7398,6 +7404,16 @@ var getTotalLength = function getTotalLength(scribe) {
 var isAtEnd = function isAtEnd(scribe) {
   var currentRange = selectionRange(scribe.el);
   return getTotalLength(scribe) === currentRange.end && currentRange.start === currentRange.end;
+};
+
+var isSelectedToEnd = function isSelectedToEnd(scribe) {
+  var currentRange = selectionRange(scribe.el);
+  return getTotalLength(scribe) === currentRange.end;
+};
+
+var isSelectedFromStart = function isSelectedFromStart(scribe) {
+  var currentRange = selectionRange(scribe.el);
+  return currentRange.atStart && currentRange.start === 0;
 };
 
 
@@ -9932,7 +9948,9 @@ Object.assign(BlockManager.prototype, __webpack_require__(6), __webpack_require_
       blockElement.addEventListener("mousedown", function () {
         var blockPosition = _this.getBlockPosition(block.el);
 
-        _this.mediator.trigger("selection:start", blockPosition);
+        _this.mediator.trigger("selection:start", blockPosition, {
+          mouseEnabled: true
+        });
       });
     }
   },
@@ -9966,24 +9984,36 @@ Object.assign(BlockManager.prototype, __webpack_require__(6), __webpack_require_
     return Array.prototype.indexOf.call(this.wrapper.querySelectorAll('.st-block'), block);
   },
   focusPreviousBlock: function focusPreviousBlock(blockID) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options = Object.assign({
+      force: false
+    }, options);
     var block = this.findBlockById(blockID);
 
-    if (block.mergeable) {
+    if (block && (block.mergeable || options.force)) {
       var previousBlock = this.getPreviousBlock(block);
 
       if (previousBlock && previousBlock.mergeable) {
         previousBlock.focusAtEnd();
+      } else if (options.force) {
+        block.focus();
       }
     }
   },
   focusNextBlock: function focusNextBlock(blockID) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options = Object.assign({
+      force: false
+    }, options);
     var block = this.findBlockById(blockID);
 
-    if (block && block.mergeable) {
+    if (block && (block.mergeable || options.force)) {
       var nextBlock = this.getNextBlock(block);
 
       if (nextBlock && nextBlock.mergeable) {
-        nextBlock.focus();
+        nextBlock.focusAtStart();
+      } else if (options.force) {
+        block.focusAtEnd();
       }
     }
   },
@@ -10309,6 +10339,8 @@ module.exports = function (protoProps, staticProps) {
 var _require = __webpack_require__(39),
     isAtStart = _require.isAtStart,
     isAtEnd = _require.isAtEnd,
+    isSelectedFromStart = _require.isSelectedFromStart,
+    isSelectedToEnd = _require.isSelectedToEnd,
     selectToEnd = _require.selectToEnd;
 
 var ScribeTextBlockPlugin = function ScribeTextBlockPlugin(block) {
@@ -10380,15 +10412,29 @@ var ScribeTextBlockPlugin = function ScribeTextBlockPlugin(block) {
         if (scribe.allowsBlockElements() && scribe.getTextContent() === '') {
           scribe.setContent('<p><br></p>');
         }
-      } else if ((ev.keyCode === 37 || ev.keyCode === 38) && isAtStart(scribe)) {
-        ev.preventDefault();
-        block.mediator.trigger("block:focusPrevious", block.blockID);
+      } else if (ev.keyCode === 37 || ev.keyCode === 38) {
+        if (ev.shiftKey && isSelectedFromStart(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtStart(scribe)) {
+          ev.preventDefault();
+          block.mediator.trigger("block:focusPrevious", block.blockID);
+        }
       } else if (ev.keyCode === 8 && isAtStart(scribe)) {
         ev.preventDefault();
         isAtStartBoolean = true;
-      } else if ((ev.keyCode === 39 || ev.keyCode === 40) && isAtEnd(scribe)) {
-        ev.preventDefault();
-        block.mediator.trigger("block:focusNext", block.blockID);
+      } else if (ev.keyCode === 39 || ev.keyCode === 40) {
+        if (ev.shiftKey && isSelectedToEnd(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtEnd(scribe)) {
+          ev.preventDefault();
+          block.mediator.trigger("block:focusNext", block.blockID);
+        }
       }
     });
     scribe.el.addEventListener('keyup', function (ev) {
@@ -10675,7 +10721,7 @@ module.exports = SirTrevor;
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "2fb4dafac0f79d49859b0abebd2eec59.svg";
+module.exports = __webpack_require__.p + "178289a66e4bc63fe9a24fba4c8acf36.svg";
 
 /***/ }),
 /* 96 */
@@ -21795,6 +21841,10 @@ module.exports = Block.extend({
       });
     }
   },
+  focusAtStart: function focusAtStart() {
+    var editor = this.getTextEditor(this.editorIds[0]);
+    this.focusOn(editor);
+  },
   focusAtEnd: function focusAtEnd() {
     var lastEditorId = this.editorIds[this.editorIds.length - 1];
     this.appendToTextEditor(lastEditorId);
@@ -21859,6 +21909,8 @@ var _require = __webpack_require__(39),
     getTotalLength = _require.getTotalLength,
     isAtStart = _require.isAtStart,
     isAtEnd = _require.isAtEnd,
+    isSelectedFromStart = _require.isSelectedFromStart,
+    isSelectedToEnd = _require.isSelectedToEnd,
     selectToEnd = _require.selectToEnd;
 
 var ScribeListBlockPlugin = function ScribeListBlockPlugin(block) {
@@ -21916,25 +21968,39 @@ var ScribeListBlockPlugin = function ScribeListBlockPlugin(block) {
           content = rangeToHTML(selectToEnd(scribe));
           block.addListItemAfterCurrent(content);
         }
-      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1 && isAtStart(scribe)) {
-        ev.preventDefault();
-        var previousListItem = block.previousListItem();
+      } else if (["Left", "ArrowLeft", "Up", "ArrowUp"].indexOf(ev.key) > -1) {
+        if (ev.shiftKey && isSelectedFromStart(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtStart(scribe)) {
+          ev.preventDefault();
+          var previousListItem = block.previousListItem();
 
-        if (previousListItem) {
-          block.focusOn(previousListItem, {
-            focusAtEnd: true
-          });
-        } else {
-          block.mediator.trigger("block:focusPrevious", block.blockID);
+          if (previousListItem) {
+            block.focusOn(previousListItem, {
+              focusAtEnd: true
+            });
+          } else {
+            block.mediator.trigger("block:focusPrevious", block.blockID);
+          }
         }
-      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1 && isAtEnd(scribe)) {
-        ev.preventDefault();
-        var nextListItem = block.nextListItem();
+      } else if (["Right", "ArrowRight", "Down", "ArrowDown"].indexOf(ev.key) > -1) {
+        if (ev.shiftKey && isSelectedToEnd(scribe)) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          document.activeElement && document.activeElement.blur();
+          block.mediator.trigger("selection:block", block);
+        } else if (isAtEnd(scribe)) {
+          ev.preventDefault();
+          var nextListItem = block.nextListItem();
 
-        if (nextListItem) {
-          block.focusOn(nextListItem);
-        } else {
-          block.mediator.trigger("block:focusNext", block.blockID);
+          if (nextListItem) {
+            block.focusOn(nextListItem);
+          } else {
+            block.mediator.trigger("block:focusNext", block.blockID);
+          }
         }
       } else if (ev.key === "Backspace" && isAtStart(scribe)) {
         ev.preventDefault();
@@ -22261,8 +22327,6 @@ Object.assign(Editor.prototype, __webpack_require__(6), __webpack_require__(9), 
    * If we have JSON then we need to build all of our blocks from this.
    */
   build: function build() {
-    var _this = this;
-
     Dom.hide(this.el);
     this.errorHandler = new ErrorHandler(this.outer, this.mediator, this.options.errorsContainer);
     this.store = new EditorStore(this.el.value, this.mediator);
@@ -22289,15 +22353,6 @@ Object.assign(Editor.prototype, __webpack_require__(6), __webpack_require__(9), 
 
     window.addEventListener('click', this.hideAllTheThings);
     document.body.addEventListener('keydown', this.disableBackButton);
-
-    if (config.selectionMouse) {
-      window.addEventListener('mouseup', function () {
-        window.mouseDown = false;
-
-        _this.mediator.trigger("selection:complete");
-      });
-    }
-
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
 
@@ -22452,13 +22507,13 @@ Object.assign(Editor.prototype, __webpack_require__(6), __webpack_require__(9), 
    * Call `validateAndSaveBlock` on each block found in the dom.
    */
   validateBlocks: function validateBlocks(shouldValidate) {
-    var _this2 = this;
+    var _this = this;
 
     Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function (block, idx) {
-      var _block = _this2.blockManager.findBlockById(block.getAttribute('id'));
+      var _block = _this.blockManager.findBlockById(block.getAttribute('id'));
 
       if (!_.isUndefined(_block)) {
-        _this2.validateAndSaveBlock(_block, shouldValidate);
+        _this.validateAndSaveBlock(_block, shouldValidate);
       }
     });
   },
@@ -22515,10 +22570,10 @@ Object.assign(Editor.prototype, __webpack_require__(6), __webpack_require__(9), 
     return this.blockManager.getBlockPosition(block);
   },
   getBlocks: function getBlocks() {
-    var _this3 = this;
+    var _this2 = this;
 
     return [].map.call(this.wrapper.querySelectorAll('.st-block'), function (blockEl) {
-      return _this3.findBlockById(blockEl.getAttribute('id'));
+      return _this2.findBlockById(blockEl.getAttribute('id'));
     });
   },
 
@@ -22860,13 +22915,14 @@ var _ = __webpack_require__(0);
 
 var Dom = __webpack_require__(3);
 
+var TYPE = 'application/vnd.sirtrevor+json';
+
 var SelectionHandler = function SelectionHandler(wrapper, mediator, editor) {
   this.wrapper = wrapper;
   this.mediator = mediator;
   this.editor = editor;
   this.options = editor.options;
-  this.startIndex = undefined;
-  this.endIndex = undefined;
+  this.startIndex = this.endIndex = 0;
   this.selecting = false;
 
   this._bindFunctions();
@@ -22878,6 +22934,7 @@ var SelectionHandler = function SelectionHandler(wrapper, mediator, editor) {
 
 Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_require__(29), {
   eventNamespace: 'selection',
+  bound: ['onCopy', 'onCut', 'onKeyDown', 'onMouseUp', 'onPaste'],
   mediatedEvents: {
     'start': 'start',
     'render': 'render',
@@ -22886,7 +22943,8 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     'copy': 'copy',
     'update': 'update',
     'delete': 'delete',
-    'cancel': 'cancel'
+    'cancel': 'cancel',
+    'block': 'block'
   },
   cancelSelectAll: function cancelSelectAll() {
     // Don't select if within an input field
@@ -22899,59 +22957,82 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     }
   },
   initialize: function initialize() {
-    var _this = this;
+    if (!this.enabled()) return false;
+    window.addEventListener("keydown", this.onKeyDown, false);
+    window.addEventListener('mouseup', this.onMouseUp, false);
+    document.addEventListener('copy', this.onCopy, false);
 
-    window.addEventListener("keydown", function (e) {
-      e = e || window.event;
-      var ctrl = e.ctrlKey || e.metaKey;
-      if (!ctrl) return;
+    if (this.options.selectionCut) {
+      document.addEventListener('cut', this.onCut, false);
+    }
 
-      if (_this.options.selectionCopy && e.key === "a") {
-        if (_this.cancelSelectAll()) return;
-        e.preventDefault();
-
-        _this.mediator.trigger("selection:all");
-      } else if (_this.options.selectionCopy && e.key === "c") {
-        if (!_this.selecting) return;
-        e.preventDefault();
-
-        _this.mediator.trigger("selection:copy");
-      } else if (_this.options.selectionDelete && e.key === "x") {
-        _this.mediator.trigger("selection:delete");
-      }
-    }, false);
-    window.addEventListener("click", function () {
-      _this.mediator.trigger("selection:complete");
-
-      _this.mediator.trigger("selection:cancel");
-    });
+    if (this.options.selectionPaste) {
+      document.addEventListener('paste', this.onPaste, false);
+    }
+  },
+  enabled: function enabled() {
+    return !!this.options.selectionCopy;
   },
   start: function start(index) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    if (!this.enabled()) return false;
+    options = Object.assign({
+      mouseEnabled: false
+    }, options);
     this.startIndex = this.endIndex = index;
-    window.mouseDown = true;
+    this.selecting = true;
+
+    if (options.mouseEnabled) {
+      window.mouseDown = true;
+      this.selecting = false;
+      window.addEventListener("mousemove", this.onMouseMove);
+    }
+
     this.mediator.trigger("selection:render");
-    window.addEventListener("mousemove", this.onMouseMove);
+  },
+  startAtEnd: function startAtEnd() {
+    this.start(this.editor.getBlocks().length - 1);
+  },
+  move: function move(offset) {
+    this.start(this.endIndex + offset);
   },
   onMouseMove: function onMouseMove() {},
   update: function update(index) {
+    if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
-    this.selecting = this.startIndex !== this.endIndex;
+    if (index !== this.startIndex) this.selecting = true;
+    this.removeNativeSelection();
     this.mediator.trigger("selection:render");
   },
+  expand: function expand(offset) {
+    this.update(this.endIndex + offset);
+  },
+  expandToStart: function expandToStart() {
+    this.update(0);
+  },
+  expandToEnd: function expandToEnd() {
+    this.update(this.editor.getBlocks().length - 1);
+  },
+  focusAtEnd: function focusAtEnd() {
+    var block = this.editor.getBlocks()[this.endIndex];
+    block.el.scrollIntoView({
+      behavior: "smooth"
+    });
+  },
   complete: function complete() {
-    this.selecting = false;
     window.removeEventListener("mousemove", this.onMouseMove);
   },
   all: function all() {
+    if (!this.enabled()) return false;
     this.removeNativeSelection();
     var blocks = this.editor.getBlocks();
     this.selecting = true;
     this.startIndex = 0;
-    this.endIndex = blocks.length;
+    this.endIndex = blocks.length - 1;
     this.mediator.trigger("selection:render");
   },
   cancel: function cancel() {
-    this.mouseDown = false;
+    window.mouseDown = false;
     this.selecting = false;
     this.render();
   },
@@ -22969,34 +23050,38 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     document.activeElement && document.activeElement.blur();
   },
   render: function render() {
-    var _this2 = this;
+    var _this = this;
 
+    var visible = this.selecting;
     this.editor.getBlocks().forEach(function (block, idx) {
-      block.select(_this2.selecting && _this2.indexSelected(idx));
+      block.select(visible && _this.indexSelected(idx));
     });
   },
   getClipboardData: function getClipboardData() {
-    var _this3 = this;
+    var _this2 = this;
 
     this.editor.getData();
-    var output = [];
+    var htmlOutput = [];
+    var textOutput = [];
+    var dataOutput = [];
     this.editor.getBlocks().forEach(function (block, idx) {
-      if (_this3.indexSelected(idx)) output.push(block.asClipboardHTML());
+      if (_this2.indexSelected(idx)) {
+        var html = block.asClipboardHTML();
+        var text = html;
+        htmlOutput.push(html);
+        textOutput.push(text);
+        dataOutput.push(block.getData());
+      }
     });
-    return output.join("\n");
+    return {
+      html: htmlOutput.join(""),
+      text: textOutput.join("\n\n"),
+      data: dataOutput
+    };
   },
   copy: function copy() {
-    var copyArea = document.body.querySelector(".st-copy-area");
-
-    if (!copyArea) {
-      copyArea = Dom.createElement("div", {
-        contenteditable: true,
-        class: 'st-copy-area st-utils__hidden'
-      });
-      document.body.appendChild(copyArea);
-    }
-
-    copyArea.innerHTML = this.getClipboardData();
+    var copyArea = this.createFakeCopyArea();
+    copyArea.innerHTML = this.getClipboardData().html;
     var selection = window.getSelection();
     var range = document.createRange();
     range.selectNodeContents(copyArea);
@@ -23010,17 +23095,129 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
       console.log("Copy could not be performed");
     }
   },
-  delete: function _delete() {
-    var _this4 = this;
+  createFakeCopyArea: function createFakeCopyArea() {
+    var copyArea = document.body.querySelector(".st-copy-area");
 
-    this.editor.getBlocks().forEach(function (blockEl, idx) {
-      if (_this4.indexSelected(idx)) _this4.mediator.trigger("block:remove", block.blockID, {
+    if (!copyArea) {
+      copyArea = Dom.createElement("div", {
+        contenteditable: true,
+        class: 'st-copy-area st-utils__hidden'
+      });
+      document.body.appendChild(copyArea);
+    }
+
+    return copyArea;
+  },
+  delete: function _delete() {
+    var _this3 = this;
+
+    this.editor.getBlocks().forEach(function (block, idx) {
+      if (!_this3.indexSelected(idx)) return;
+
+      _this3.mediator.trigger("block:remove", block.blockID, {
         focusOnNext: true
       });
     });
+    this.cancel();
   },
   indexSelected: function indexSelected(index) {
-    return index >= Math.min(this.startIndex, this.endIndex) && index <= Math.max(this.startIndex, this.endIndex);
+    return index >= this.getStartIndex() && index <= this.getEndIndex();
+  },
+  block: function block(_block) {
+    var blockPosition = this.editor.blockManager.getBlockPosition(_block.el);
+    this.mediator.trigger("formatter:hide");
+    this.removeNativeSelection();
+    this.start(blockPosition);
+  },
+  getStartIndex: function getStartIndex() {
+    return Math.min(this.startIndex, this.endIndex);
+  },
+  getEndIndex: function getEndIndex() {
+    return Math.max(this.startIndex, this.endIndex);
+  },
+  getStartBlock: function getStartBlock() {
+    return this.editor.getBlocks()[this.getStartIndex()];
+  },
+  getEndBlock: function getEndBlock() {
+    return this.editor.getBlocks()[this.getEndIndex()];
+  },
+  onKeyDown: function onKeyDown(ev) {
+    ev = ev || window.event;
+    var ctrlKey = ev.ctrlKey || ev.metaKey;
+    var key = ev.key;
+
+    if (this.selecting && key === "Backspace") {
+      ev.preventDefault();
+      this.delete();
+    } else if (ctrlKey && key === "a") {
+      if (!this.selecting && this.cancelSelectAll()) return;
+      ev.preventDefault();
+      this.mediator.trigger("selection:all");
+    } else if (this.selecting) {
+      if (["Down", "ArrowDown"].indexOf(key) > -1) {
+        ev.preventDefault();
+        if (ev.shiftKey && ev.altKey) this.expandToEnd();else if (ev.shiftKey) this.expand(1);else if (ev.altKey) this.startAtEnd();else {
+          this.cancel();
+          this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, {
+            force: true
+          });
+          return;
+        }
+        this.focusAtEnd();
+      } else if (["Up", "ArrowUp"].indexOf(key) > -1) {
+        ev.preventDefault();
+        if (ev.shiftKey && ev.altKey) this.expandToStart();else if (ev.shiftKey) this.expand(-1);else if (ev.altKey) this.start(0);else {
+          this.cancel();
+          this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, {
+            force: true
+          });
+          return;
+        }
+        this.focusAtEnd();
+      } else if (this.options.selectionCut && !ev.metaKey && ["Shift", "Control", "Meta", "Alt"].indexOf(key) === -1) {
+        var nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
+        this.delete();
+
+        if (nextBlock) {
+          this.mediator.trigger("block:createBefore", "text", "", nextBlock, {
+            autoFocus: true
+          });
+        } else {
+          this.mediator.trigger("block:create", "text", "", {
+            autoFocus: true
+          });
+        }
+      }
+    }
+  },
+  onMouseUp: function onMouseUp() {
+    if (!window.mouseDown) {
+      this.mediator.trigger("selection:complete");
+      this.mediator.trigger("selection:cancel");
+      return;
+    }
+
+    window.mouseDown = false;
+    this.mediator.trigger("selection:complete");
+    this.mediator.trigger("selection:render");
+  },
+  copySelection: function copySelection(ev) {
+    var content = this.getClipboardData();
+    ev.clipboardData.setData(TYPE, JSON.stringify(content.data));
+    ev.clipboardData.setData('text/html', content.html);
+    ev.clipboardData.setData('text/plain', content.text);
+    ev.preventDefault();
+  },
+  onCopy: function onCopy(ev) {
+    if (!this.selecting) return;
+    this.copySelection(ev);
+  },
+  onCut: function onCut(ev) {
+    if (!this.selecting) return;
+    this.copySelection(ev);
+    this.delete();
+  },
+  onPaste: function onPaste(ev) {// TODO
   }
 });
 module.exports = SelectionHandler;
