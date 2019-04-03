@@ -11,7 +11,7 @@
 - [ ] Allow selection of individual list items.
 - [ ] Automated testing for copy / paste.
 
-### 0.8.1 - Can selectively copy content
+### 0.8.1 - Add Copy / Paste
 * Selection keyboard behaviour.
 * Selection mouse behaviour.
 * Native browser selection behaviour.
