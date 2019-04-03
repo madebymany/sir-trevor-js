@@ -49,12 +49,14 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     'rerender': 'rerenderBlock',
     'replace': 'replaceBlock',
     'focusPrevious': 'focusPreviousBlock',
-    'focusNext': 'focusNextBlock'
+    'focusNext': 'focusNextBlock',
+    'paste': 'paste'
   },
 
   initialize: function() {},
 
-  createBlock: function(type, data, previousSibling, options) {
+  createBlock: function(type, data, previousSibling, options = {}) {
+    options = Object.assign({ autoFocus: false, focusAtEnd: false }, options);
     type = utils.classify(type);
 
     // Run validations
@@ -67,8 +69,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this._incrementBlockTypeCount(type);
     this.renderBlock(block, previousSibling);
 
-    if (options && options.autoFocus) {
+    if (options.autoFocus) {
       block.focus();
+    } else if (options.focusAtEnd) {
+      block.focusAtEnd();
     }
 
     this.triggerBlockCountUpdate();
@@ -79,7 +83,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     utils.log("Block created of type " + type);
   },
 
-  createBlockBefore: function(type, data, nextBlock, options) {
+  createBlockBefore: function(type, data, nextBlock, options = {}) {
+    options = Object.assign({ autoFocus: false, focusAtEnd: false }, options);
     type = utils.classify(type);
 
     // Run validations
@@ -98,8 +103,10 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       this.renderBlock(block, this.wrapper.querySelector(".st-top-controls"));
     }
 
-    if (options && options.autoFocus) {
+    if (options.autoFocus) {
       block.focus();
+    } else if (options.focusAtEnd) {
+      block.focusAtEnd();
     }
 
     this.triggerBlockCountUpdate();
@@ -114,7 +121,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     options = Object.assign({
       transposeContent: false,
       focusOnPrevious: false,
-      focusOnNext: false
+      focusOnNext: false,
+      createNextBlock: false
     }, options);
 
     var block = this.findBlockById(blockID);
@@ -183,8 +191,12 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       previousBlock.focusAtEnd();
     }
 
-    if (options.focusOnNext && nextBlock) {
-      nextBlock.focus();
+    if (options.focusOnNext) {
+      if (nextBlock) {
+        nextBlock.focus();
+      } else if (options.createNextBlock) {
+        this.createBlock("text", null, null, { autoFocus: true });
+      }
     }
 
     this._decrementBlockTypeCount(type);
@@ -288,6 +300,31 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
         block.focusAtEnd();
       }
     }
+  },
+
+  paste: function(blocks) {
+    var currentBlock = utils.getBlockBySelection();
+
+    if (currentBlock) {
+      currentBlock.split();
+
+      var nextBlock = this.getNextBlock(currentBlock);
+
+      if (currentBlock.isEmpty()) {
+        this.removeBlock(currentBlock.blockID);
+      }
+
+      if (nextBlock) {
+        blocks.forEach((block) => {
+          this.createBlockBefore(block.type, block.data, nextBlock, { focusAtEnd: true });
+        });
+        return;
+      }
+    }
+
+    blocks.forEach((block) => {
+      this.createBlock(block.type, block.data, undefined, { focusAtEnd: true });
+    });
   },
 
   triggerBlockCountUpdate: function() {

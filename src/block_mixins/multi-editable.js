@@ -5,6 +5,8 @@ var selectionRange = require('selection-range');
 var _ = require('../lodash');
 var ScribeInterface = require('../scribe-interface');
 
+var { trimScribeContent } = require('../blocks/scribe-plugins/shared');
+
 module.exports = {
   mixinName: 'MultiEditable',
 
@@ -65,6 +67,9 @@ module.exports = {
 
   appendToTextEditor: function(id, content) {
     var scribe = this.getTextEditor(id).scribe;
+
+    trimScribeContent(scribe);
+
     var range = document.createRange();
     range.selectNodeContents(scribe.el);
     range.collapse(false);

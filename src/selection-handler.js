@@ -38,17 +38,20 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     'block': 'block'
   },
 
-  cancelSelectAll: function() {
+  canSelect: function() {
     // Don't select if within an input field
     var editorEl1 = Dom.getClosest(document.activeElement, 'input');
-    if (editorEl1 !== document.body) return true;
+
+    if (editorEl1 !== document.body) return false;
 
     var editorEl2 = Dom.getClosest(document.activeElement, '.st-outer');
 
     // Don't select all if focused on element outside of the editor.
     if (this.options.selectionLimitToEditor) {
-      if (editorEl2 !== this.wrapper) return true;
+      if (editorEl2 !== this.wrapper) return false;
     }
+
+    return true;
   },
 
   initialize: function() {
@@ -63,7 +66,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     }
 
     if (this.options.selectionPaste) {
-      document.addEventListener('paste', this.onPaste, false);
+      document.addEventListener('paste', this.onPaste, true);
     }
   },
 
@@ -220,10 +223,18 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     return copyArea;
   },
 
-  delete: function() {
+  delete: function(options = {}) {
+    options = Object.assign({ createNextBlock: true }, options);
+
     this.editor.getBlocks().forEach((block, idx) => {
       if (!this.indexSelected(idx)) return;
-      this.mediator.trigger("block:remove", block.blockID, { focusOnNext: true });
+      this.mediator.trigger(
+        "block:remove",
+        block.blockID, {
+          focusOnNext: true,
+          createNextBlock: options.createNextBlock
+        }
+      );
     });
     this.cancel();
   },
@@ -266,7 +277,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
       ev.preventDefault();
       this.delete();
     } else if (ctrlKey && key === "a") {
-      if (!this.selecting && this.cancelSelectAll()) return;
+      if (!this.selecting && !this.canSelect()) return;
       ev.preventDefault();
       this.mediator.trigger("selection:all");
     } else if (this.selecting) {
@@ -292,14 +303,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
           return;
         }
         this.focusAtEnd();
-      } else if (this.options.selectionCut && !ev.metaKey && ["Shift", "Control", "Meta", "Alt"].indexOf(key) === -1) {
-        const nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
-        this.delete();
-        if (nextBlock) {
-          this.mediator.trigger("block:createBefore", "text", "", nextBlock, { autoFocus: true });
-        } else {
-          this.mediator.trigger("block:create", "text", "", { autoFocus: true });
-        }
       }
     }
   },
@@ -339,7 +342,25 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   onPaste: function(ev) {
-    // TODO
+    // Fix Edge types DomStringList.
+    var types = [].slice.call(ev.clipboardData.types);
+    if (types.includes(TYPE)) {
+      if (!this.selecting && !this.canSelect()) return;
+
+      ev.preventDefault();
+      ev.stopPropagation();
+      let data = JSON.parse(ev.clipboardData.getData(TYPE));
+      if (this.selecting) {
+        const nextBlock = this.editor.getBlocks()[this.getEndIndex() + 1];
+        this.delete({ createNextBlock: false });
+        if (nextBlock && !nextBlock.isEmpty()) {
+          this.mediator.trigger("block:createBefore", "text", "", nextBlock, { autoFocus: true });
+        } else {
+          this.mediator.trigger("block:create", "text", "", null, { autoFocus: true });
+        }
+      }
+      this.mediator.trigger("block:paste", data);
+    }
   }
 });
 

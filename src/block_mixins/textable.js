@@ -2,6 +2,11 @@
 
 var selectionRange = require('selection-range');
 
+var {
+  createBlocksFromParagraphs,
+  getTotalLength
+} = require("../blocks/scribe-plugins/shared");
+
 module.exports = {
   mixinName: 'Textable',
 
@@ -11,7 +16,11 @@ module.exports = {
 
   focusAtEnd: function() {
     this.focus();
-    this.selectText();
+
+    var length = getTotalLength(this._scribe);
+    if (length > 0) {
+      selectionRange(this._scribe.el, { start: length });
+    }
   },
 
   selectText: function() {
@@ -78,5 +87,9 @@ module.exports = {
         end: caretPosition.end
       });
     }
+  },
+
+  split: function() {
+    createBlocksFromParagraphs(this, this._scribe);
   }
 };
