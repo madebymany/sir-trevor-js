@@ -205,6 +205,9 @@
     opacity: 1; }
 
 .st-block-addition-top__button {
+  background: none;
+  border: none;
+  outline: none;
   position: absolute;
   top: 0;
   left: 76px;
