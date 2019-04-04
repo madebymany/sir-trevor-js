@@ -9825,7 +9825,8 @@ var BlockManager = function BlockManager(SirTrevor) {
     return acc;
   }, {});
   this.instance_scope = SirTrevor.ID;
-  this.mediator = SirTrevor.mediator; // REFACTOR: this is a hack until I can focus on reworking the blockmanager
+  this.mediator = SirTrevor.mediator;
+  this.editor = SirTrevor; // REFACTOR: this is a hack until I can focus on reworking the blockmanager
 
   this.wrapper = SirTrevor.wrapper;
   this.blocks = [];
@@ -10032,18 +10033,25 @@ Object.assign(BlockManager.prototype, __webpack_require__(6), __webpack_require_
 
     if (this.options.selectionMouse) {
       blockElement.addEventListener("mouseenter", function () {
-        if (!window.mouseDown) return;
+        if (!_this.editor.mouseDown) return;
 
         var blockPosition = _this.getBlockPosition(block.el);
 
         _this.mediator.trigger("selection:update", blockPosition);
       });
-      blockElement.addEventListener("mousedown", function () {
+      blockElement.addEventListener("mousedown", function (ev) {
         var blockPosition = _this.getBlockPosition(block.el);
 
-        _this.mediator.trigger("selection:start", blockPosition, {
-          mouseEnabled: true
-        });
+        var options = {
+          mouseEnabled: true,
+          expand: ev.shiftKey
+        };
+
+        if (ev.shiftKey) {
+          _this.mediator.trigger("selection:update", blockPosition, options);
+        } else {
+          _this.mediator.trigger("selection:start", blockPosition, options);
+        }
       });
     }
   },
@@ -23068,7 +23076,7 @@ var SelectionHandler = function SelectionHandler(wrapper, mediator, editor) {
 
 Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_require__(30), {
   eventNamespace: 'selection',
-  bound: ['onCopy', 'onCut', 'onKeyDown', 'onMouseUp', 'onPaste'],
+  bound: ['onCopy', 'onCut', 'onKeyDown', 'onMouseUp', 'onMouseDown', 'onPaste'],
   mediatedEvents: {
     'start': 'start',
     'render': 'render',
@@ -23119,7 +23127,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     this.selecting = true;
 
     if (options.mouseEnabled) {
-      window.mouseDown = true;
+      this.editor.mouseDown = true;
       this.selecting = false;
       window.addEventListener("mousemove", this.onMouseMove);
     }
@@ -23134,11 +23142,21 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
   },
   onMouseMove: function onMouseMove() {},
   update: function update(index) {
+    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+    options = Object.assign({
+      mouseEnabled: false
+    }, options);
     if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
     if (index !== this.startIndex) this.selecting = true;
     this.removeNativeSelection();
     this.mediator.trigger("selection:render");
+
+    if (options.mouseEnabled) {
+      this.editor.mouseDown = true;
+      window.addEventListener("mousemove", this.onMouseMove);
+      window.addEventListener('mousedown', this.onMouseDown);
+    }
   },
   expand: function expand(offset) {
     this.update(this.endIndex + offset);
@@ -23168,7 +23186,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     this.mediator.trigger("selection:render");
   },
   cancel: function cancel() {
-    window.mouseDown = false;
+    this.editor.mouseDown = false;
     this.selecting = false;
     this.render();
   },
@@ -23319,15 +23337,24 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     }
   },
   onMouseUp: function onMouseUp() {
-    if (!window.mouseDown) {
+    if (!this.editor.mouseDown) {
+      window.addEventListener('mousedown', this.onMouseDown);
       this.mediator.trigger("selection:complete");
       this.mediator.trigger("selection:cancel");
       return;
     }
 
-    window.mouseDown = false;
+    this.editor.mouseDown = false;
     this.mediator.trigger("selection:complete");
     this.mediator.trigger("selection:render");
+  },
+  onMouseDown: function onMouseDown(ev) {
+    if (!this.editor.mouseDown) {
+      window.removeEventListener('mousedown', this.onMouseDown);
+      this.mediator.trigger("selection:complete");
+      this.mediator.trigger("selection:cancel");
+      return;
+    }
   },
   copySelection: function copySelection(ev) {
     var content = this.getClipboardData();

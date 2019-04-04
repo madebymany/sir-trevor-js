@@ -22,6 +22,7 @@ var BlockManager = function(SirTrevor) {
   }, {});
   this.instance_scope = SirTrevor.ID;
   this.mediator = SirTrevor.mediator;
+  this.editor = SirTrevor;
 
   // REFACTOR: this is a hack until I can focus on reworking the blockmanager
   this.wrapper = SirTrevor.wrapper;
@@ -228,15 +229,20 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
     if (this.options.selectionMouse) {
       blockElement.addEventListener("mouseenter", () => {
-        if (!window.mouseDown) return;
+        if (!this.editor.mouseDown) return;
 
         var blockPosition = this.getBlockPosition(block.el);
         this.mediator.trigger("selection:update", blockPosition);
       });
 
-      blockElement.addEventListener("mousedown", () => {
+      blockElement.addEventListener("mousedown", (ev) => {
         var blockPosition = this.getBlockPosition(block.el);
-        this.mediator.trigger("selection:start", blockPosition, { mouseEnabled: true });
+        var options = { mouseEnabled: true, expand: ev.shiftKey };
+        if (ev.shiftKey) {
+          this.mediator.trigger("selection:update", blockPosition, options);
+        } else {
+          this.mediator.trigger("selection:start", blockPosition, options);
+        }
       });
     }
   },

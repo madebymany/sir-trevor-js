@@ -24,7 +24,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   eventNamespace: 'selection',
 
-  bound: ['onCopy', 'onCut', 'onKeyDown', 'onMouseUp', 'onPaste'],
+  bound: ['onCopy', 'onCut', 'onKeyDown', 'onMouseUp', 'onMouseDown', 'onPaste'],
 
   mediatedEvents: {
     'start': 'start',
@@ -83,7 +83,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     this.selecting = true;
 
     if (options.mouseEnabled) {
-      window.mouseDown = true;
+      this.editor.mouseDown = true;
       this.selecting = false;
       window.addEventListener("mousemove", this.onMouseMove);
     }
@@ -101,12 +101,20 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   onMouseMove: function() {},
 
-  update: function(index) {
+  update: function(index, options = {}) {
+    options = Object.assign({ mouseEnabled: false }, options);
+
     if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
     if (index !== this.startIndex) this.selecting = true;
     this.removeNativeSelection();
     this.mediator.trigger("selection:render");
+
+    if (options.mouseEnabled) {
+      this.editor.mouseDown = true;
+      window.addEventListener("mousemove", this.onMouseMove);
+      window.addEventListener('mousedown', this.onMouseDown);
+    }
   },
 
   expand(offset) {
@@ -143,7 +151,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   cancel: function() {
-    window.mouseDown = false;
+    this.editor.mouseDown = false;
     this.selecting = false;
     this.render();
   },
@@ -308,15 +316,25 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   onMouseUp: function() {
-    if (!window.mouseDown) {
+    if (!this.editor.mouseDown) {
+      window.addEventListener('mousedown', this.onMouseDown);
       this.mediator.trigger("selection:complete");
       this.mediator.trigger("selection:cancel");
       return;
     }
 
-    window.mouseDown = false;
+    this.editor.mouseDown = false;
     this.mediator.trigger("selection:complete");
     this.mediator.trigger("selection:render");
+  },
+
+  onMouseDown: function(ev) {
+    if (!this.editor.mouseDown) {
+      window.removeEventListener('mousedown', this.onMouseDown);
+      this.mediator.trigger("selection:complete");
+      this.mediator.trigger("selection:cancel");
+      return;
+    }
   },
 
   copySelection: function(ev) {
