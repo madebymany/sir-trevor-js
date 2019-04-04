@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FROM_BRANCH=master
+FROM_BRANCH=improve-mouse-selection
 TO_BRANCH=dist
 ORIGIN_REMOTE=origin
 
