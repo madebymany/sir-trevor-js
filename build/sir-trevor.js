@@ -5883,7 +5883,8 @@ Object.assign(Block.prototype, SimpleBlock.fn, __webpack_require__(84), {
   select: function select(selected) {
     this.el.classList.toggle("st-block--is-selected", selected);
   },
-  split: function split() {}
+  split: function split() {},
+  asClipboardHTML: function asClipboardHTML() {}
 });
 Block.extend = __webpack_require__(89); // Allow our Block to be extended.
 
