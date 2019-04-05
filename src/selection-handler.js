@@ -77,14 +77,22 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   start: function(index, options = {}) {
     if (!this.enabled()) return false;
 
-    options = Object.assign({ mouseEnabled: false }, options);
+    options = Object.assign({
+      mouseEnabled: false,
+      expand: false
+    }, options);
 
-    this.startIndex = this.endIndex = index;
+    this.endIndex = index;
+
+    if (!options.expand) this.startIndex = this.endIndex;
+
     this.selecting = true;
 
     if (options.mouseEnabled) {
       this.editor.mouseDown = true;
-      this.selecting = false;
+      this.selecting = this.startIndex !== this.endIndex;
+      this.removeNativeSelection();
+      console.log("move:on");
       window.addEventListener("mousemove", this.onMouseMove);
     }
 
@@ -101,20 +109,12 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
 
   onMouseMove: function() {},
 
-  update: function(index, options = {}) {
-    options = Object.assign({ mouseEnabled: false }, options);
-
+  update: function(index) {
     if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
-    if (index !== this.startIndex) this.selecting = true;
+    if (this.startIndex !== this.endIndex) this.selecting = true;
     this.removeNativeSelection();
     this.mediator.trigger("selection:render");
-
-    if (options.mouseEnabled) {
-      this.editor.mouseDown = true;
-      window.addEventListener("mousemove", this.onMouseMove);
-      window.addEventListener('mousedown', this.onMouseDown);
-    }
   },
 
   expand(offset) {
@@ -135,6 +135,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   complete: function() {
+    console.log("move:off");
     window.removeEventListener("mousemove", this.onMouseMove);
   },
 
@@ -291,9 +292,9 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     } else if (this.selecting) {
       if (["Down", "ArrowDown"].indexOf(key) > -1) {
         ev.preventDefault();
-        if (ev.shiftKey && ev.altKey) this.expandToEnd();
+        if (ev.shiftKey && ctrlKey) this.expandToEnd();
         else if (ev.shiftKey) this.expand(1);
-        else if (ev.altKey) this.startAtEnd();
+        else if (ctrlKey) this.startAtEnd();
         else {
           this.cancel();
           this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, { force: true });
@@ -302,9 +303,9 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
         this.focusAtEnd();
       } else if (["Up", "ArrowUp"].indexOf(key) > -1) {
         ev.preventDefault();
-        if (ev.shiftKey && ev.altKey) this.expandToStart();
+        if (ev.shiftKey && ctrlKey) this.expandToStart();
         else if (ev.shiftKey) this.expand(-1);
-        else if (ev.altKey) this.start(0);
+        else if (ctrlKey) this.start(0);
         else {
           this.cancel();
           this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, { force: true });

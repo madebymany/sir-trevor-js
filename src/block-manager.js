@@ -237,12 +237,8 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
       blockElement.addEventListener("mousedown", (ev) => {
         var blockPosition = this.getBlockPosition(block.el);
-        var options = { mouseEnabled: true, expand: ev.shiftKey };
-        if (ev.shiftKey) {
-          this.mediator.trigger("selection:update", blockPosition, options);
-        } else {
-          this.mediator.trigger("selection:start", blockPosition, options);
-        }
+        var options = { mouseEnabled: true, expand: ev.shiftKey || ev.metaKey };
+        this.mediator.trigger("selection:start", blockPosition, options);
       });
     }
   },

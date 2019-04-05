@@ -10044,14 +10044,10 @@ Object.assign(BlockManager.prototype, __webpack_require__(6), __webpack_require_
 
         var options = {
           mouseEnabled: true,
-          expand: ev.shiftKey
+          expand: ev.shiftKey || ev.metaKey
         };
 
-        if (ev.shiftKey) {
-          _this.mediator.trigger("selection:update", blockPosition, options);
-        } else {
-          _this.mediator.trigger("selection:start", blockPosition, options);
-        }
+        _this.mediator.trigger("selection:start", blockPosition, options);
       });
     }
   },
@@ -23121,14 +23117,18 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     if (!this.enabled()) return false;
     options = Object.assign({
-      mouseEnabled: false
+      mouseEnabled: false,
+      expand: false
     }, options);
-    this.startIndex = this.endIndex = index;
+    this.endIndex = index;
+    if (!options.expand) this.startIndex = this.endIndex;
     this.selecting = true;
 
     if (options.mouseEnabled) {
       this.editor.mouseDown = true;
-      this.selecting = false;
+      this.selecting = this.startIndex !== this.endIndex;
+      this.removeNativeSelection();
+      console.log("move:on");
       window.addEventListener("mousemove", this.onMouseMove);
     }
 
@@ -23142,21 +23142,11 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
   },
   onMouseMove: function onMouseMove() {},
   update: function update(index) {
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    options = Object.assign({
-      mouseEnabled: false
-    }, options);
     if (index < 0 || index >= this.editor.getBlocks().length) return;
     this.endIndex = index;
-    if (index !== this.startIndex) this.selecting = true;
+    if (this.startIndex !== this.endIndex) this.selecting = true;
     this.removeNativeSelection();
     this.mediator.trigger("selection:render");
-
-    if (options.mouseEnabled) {
-      this.editor.mouseDown = true;
-      window.addEventListener("mousemove", this.onMouseMove);
-      window.addEventListener('mousedown', this.onMouseDown);
-    }
   },
   expand: function expand(offset) {
     this.update(this.endIndex + offset);
@@ -23174,6 +23164,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     });
   },
   complete: function complete() {
+    console.log("move:off");
     window.removeEventListener("mousemove", this.onMouseMove);
   },
   all: function all() {
@@ -23315,7 +23306,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     } else if (this.selecting) {
       if (["Down", "ArrowDown"].indexOf(key) > -1) {
         ev.preventDefault();
-        if (ev.shiftKey && ev.altKey) this.expandToEnd();else if (ev.shiftKey) this.expand(1);else if (ev.altKey) this.startAtEnd();else {
+        if (ev.shiftKey && ctrlKey) this.expandToEnd();else if (ev.shiftKey) this.expand(1);else if (ctrlKey) this.startAtEnd();else {
           this.cancel();
           this.mediator.trigger("block:focusNext", this.getEndBlock().blockID, {
             force: true
@@ -23325,7 +23316,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
         this.focusAtEnd();
       } else if (["Up", "ArrowUp"].indexOf(key) > -1) {
         ev.preventDefault();
-        if (ev.shiftKey && ev.altKey) this.expandToStart();else if (ev.shiftKey) this.expand(-1);else if (ev.altKey) this.start(0);else {
+        if (ev.shiftKey && ctrlKey) this.expandToStart();else if (ev.shiftKey) this.expand(-1);else if (ctrlKey) this.start(0);else {
           this.cancel();
           this.mediator.trigger("block:focusPrevious", this.getStartBlock().blockID, {
             force: true
