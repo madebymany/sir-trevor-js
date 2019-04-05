@@ -91,7 +91,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     if (options.mouseEnabled) {
       this.editor.mouseDown = true;
       this.selecting = this.startIndex !== this.endIndex;
-      this.removeNativeSelection();
+      if (selecting) this.removeNativeSelection();
       window.addEventListener("mousemove", this.onMouseMove);
     }
 
