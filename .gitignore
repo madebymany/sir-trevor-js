@@ -10,6 +10,7 @@ website/.bundle/
 website/.tmp/
 website/bower_components/
 website/build/
+website/node_modules/
 website/vendor/
 build/**/*.debug.*
 build/**/*.test.*
