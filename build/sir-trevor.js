@@ -23128,8 +23128,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     if (options.mouseEnabled) {
       this.editor.mouseDown = true;
       this.selecting = this.startIndex !== this.endIndex;
-      this.removeNativeSelection();
-      console.log("move:on");
+      if (selecting) this.removeNativeSelection();
       window.addEventListener("mousemove", this.onMouseMove);
     }
 
@@ -23165,7 +23164,6 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     });
   },
   complete: function complete() {
-    console.log("move:off");
     window.removeEventListener("mousemove", this.onMouseMove);
   },
   all: function all() {

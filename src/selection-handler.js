@@ -91,8 +91,7 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
     if (options.mouseEnabled) {
       this.editor.mouseDown = true;
       this.selecting = this.startIndex !== this.endIndex;
-      this.removeNativeSelection();
-      console.log("move:on");
+      if (selecting) this.removeNativeSelection();
       window.addEventListener("mousemove", this.onMouseMove);
     }
 
@@ -135,7 +134,6 @@ Object.assign(SelectionHandler.prototype, require('./function-bind'), require('.
   },
 
   complete: function() {
-    console.log("move:off");
     window.removeEventListener("mousemove", this.onMouseMove);
   },
 
