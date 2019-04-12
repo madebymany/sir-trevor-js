@@ -23128,7 +23128,7 @@ Object.assign(SelectionHandler.prototype, __webpack_require__(6), __webpack_requ
     if (options.mouseEnabled) {
       this.editor.mouseDown = true;
       this.selecting = this.startIndex !== this.endIndex;
-      if (selecting) this.removeNativeSelection();
+      if (this.selecting) this.removeNativeSelection();
       window.addEventListener("mousemove", this.onMouseMove);
     }
 
