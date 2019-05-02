@@ -19872,8 +19872,12 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (roo
     return inlineElementNames.indexOf(node.nodeName) !== -1;
   }
 
+  function isScribeMarker(node) {
+    return node.nodeName === "EM" && node.outerHTML === '<em class="scribe-marker" style=""></em>';
+  }
+
   HTMLJanitor.prototype.clean = function (html) {
-    const sandbox = document.implementation.createHTMLDocument();
+    const sandbox = document.implementation.createHTMLDocument('');
     const root = sandbox.createElement("div");
     root.innerHTML = html;
 
@@ -19949,14 +19953,16 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (roo
         break;
       }
 
-      // Sanitize attributes
-      for (var a = 0; a < node.attributes.length; a += 1) {
-        var attr = node.attributes[a];
+      if (!isScribeMarker(node)) {
+        // Sanitize attributes
+        for (var a = 0; a < node.attributes.length; a += 1) {
+          var attr = node.attributes[a];
 
-        if (shouldRejectAttr(attr, allowedAttrs, node)) {
-          node.removeAttribute(attr.name);
-          // Shift the array to continue looping.
-          a = a - 1;
+          if (shouldRejectAttr(attr, allowedAttrs, node)) {
+            node.removeAttribute(attr.name);
+            // Shift the array to continue looping.
+            a = a - 1;
+          }
         }
       }
 

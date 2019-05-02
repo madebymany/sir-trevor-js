@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.8.1-beta8",
+  "version": "0.8.1-beta9",
   "main": "build/sir-trevor.js",
   "repository": {
     "type": "git",
@@ -45,7 +45,6 @@
     "grunt-jasmine-nodejs": "^1.6.1",
     "grunt-karma": "^3.0.1",
     "grunt-webpack": "^3.1.3",
-    "html-janitor": "git://github.com/madebymany/html-janitor.git#ie-support",
     "jest": "^23.6.0",
     "jsonp-promise": "^0.1.2",
     "karma": "^3.1.4",
@@ -72,7 +71,7 @@
     "scribe-editor": "git://github.com/madebymany/scribe.git#st-1.0.0",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",
     "scribe-plugin-link-prompt-command": "^1.0.0",
-    "scribe-plugin-sanitizer": "^0.1.11",
+    "scribe-plugin-sanitizer": "git://github.com/madebymany/scribe-plugin-sanitizer.git#st-1.0.0",
     "selection-range": "^1.1.0",
     "selenium-webdriver": "3.6.0",
     "spin.js": "^4.0.0",
