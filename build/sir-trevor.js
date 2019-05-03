@@ -17361,7 +17361,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
             event.preventDefault();
 
             scribe.transactionManager.run(function () {
-
+              
               if (!range.collapsed) {
                 range.deleteContents();
               }
@@ -17382,11 +17382,11 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
               // Safari does not update the endoffset after inserting the BR element
               // so we have to do it ourselves.
-              // References:
+              // References: 
               // https://bugs.webkit.org/show_bug.cgi?id=63538#c3
               // https://dom.spec.whatwg.org/#dom-range-selectnode
               range.setEndAfter(brNode);
-
+              
               // After inserting the BR into the range is no longer collapsed, so
               // we have to collapse it again.
               // TODO: Older versions of Firefox require this argument even though
@@ -19811,7 +19811,7 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
     // browser to ensure elements are selectable.
     var configAllowMarkers = merge(cloneDeep(config), {
       tags: {
-        em: {class: 'scribe-marker'},
+        em: {class: 'scribe-marker', style: true},
         br: {}
       }
     });
@@ -19952,7 +19952,7 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (roo
         this._sanitize(document, parentNode);
         break;
       }
-
+      
       if (!isScribeMarker(node)) {
         // Sanitize attributes
         for (var a = 0; a < node.attributes.length; a += 1) {
