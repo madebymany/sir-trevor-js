@@ -24,6 +24,14 @@ module.exports = Block.extend({
 
   configureScribe: function(scribe) {
     scribe.use(new ScribeListBlockPlugin(this));
+    scribe.on('content-changed', () => {
+      setTimeout(() => {
+        if (scribe.getHTML() === "") {
+          scribe.setHTML("<br>");
+        }
+
+      }, 0);
+    });
   },
 
   editorHTML: '<ul class="st-list-block__list"></ul>',
