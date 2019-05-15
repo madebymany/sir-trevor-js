@@ -268,6 +268,7 @@ module.exports = {
         title: "link",
         iconName: "fmt-link",
         cmd: "linkPrompt",
+        keyCode: 75,
         text: "link"
       }, {
         name: "Unlink",
@@ -21833,6 +21834,13 @@ module.exports = Block.extend({
   },
   configureScribe: function configureScribe(scribe) {
     scribe.use(new ScribeListBlockPlugin(this));
+    scribe.on('content-changed', function () {
+      setTimeout(function () {
+        if (scribe.getHTML() === "") {
+          scribe.setHTML("<br>");
+        }
+      }, 0);
+    });
   },
   editorHTML: '<ul class="st-list-block__list"></ul>',
   listItemEditorHTML: '<li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li>',
