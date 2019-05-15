@@ -86,6 +86,7 @@ module.exports = {
           title: "link",
           iconName: "fmt-link",
           cmd: "linkPrompt",
+          keyCode: 75,
           text : "link",
         },
         {
