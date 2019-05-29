@@ -754,7 +754,8 @@ img {
   margin-left: -1px; }
 
 .st-top-controls .st-block-addition,
-.st-block:last-child:not(.st-block--empty):not(.st-block--textable) .st-block-addition {
+.st-block:last-child:not(.st-block--empty):not(.st-block--textable) .st-block-addition,
+.st-block[data-type="quote"]:last-child .st-block-addition {
   display: block; }
 
 .st--hide-top-controls .st-top-controls .st-block-addition {
