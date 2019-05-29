@@ -5,11 +5,14 @@
 ## 0.8.x
 
 ### ????
-- [ ] Improve Firefox content pasting.
 - [ ] Improve edge content pasting.
 - [ ] Add undo / redo functionality.
 - [ ] Allow selection of individual list items.
 - [ ] Automated testing for copy / paste.
+
+### 0.8.2 - Small fixes
+* Improve list blocks in Chrome where empty item drops down a line.
+* Added add button to bottom of quote blocks.
 
 ### 0.8.1 - Add Copy / Paste
 * Selection keyboard behaviour.
@@ -18,6 +21,7 @@
 * Enable paste of non-text content.
 * Enable cut of blocks.
 * Cross browser fixes / testing.
+* Improve Firefox content pasting.
 
 ### 0.8.0
 * Add Copy all to the editor
