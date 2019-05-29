@@ -16,7 +16,7 @@ $animation-speed: 0.2s;
   background-color:transparent;
   padding:0;
   z-index: 2;
-  
+
   &::-moz-focus-inner {
     padding:0;
     margin:0;
@@ -24,7 +24,8 @@ $animation-speed: 0.2s;
   }
 
   .st-top-controls &,
-  .st-block:last-child:not(.st-block--empty):not(.st-block--textable) & {
+  .st-block:last-child:not(.st-block--empty):not(.st-block--textable) &,
+  .st-block[data-type="quote"]:last-child & {
     display: block;
   }
 }
