@@ -10,6 +10,9 @@
 - [ ] Allow selection of individual list items.
 - [ ] Automated testing for copy / paste.
 
+### 0.8.3
+* Added add button to bottom of quote blocks.
+
 ### 0.8.2 - Small fixes
 * Improve list blocks in Chrome where empty item drops down a line.
 
