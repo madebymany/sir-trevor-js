@@ -27,6 +27,11 @@ module.exports = Block.extend({
 
   icon_name: 'video',
 
+  drop_options: {
+    title: _.result(block, "drop_title"),
+    re_render_on_reorder: true
+  },
+
   loadData: function(data){
     if (!this.providers.hasOwnProperty(data.source)) { return; }
 

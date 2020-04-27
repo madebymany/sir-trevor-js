@@ -42,7 +42,8 @@ var Locales = {
         'upload_error': "There was a problem with your upload"
       },
       video: {
-        'title': "Video"
+        'title': "Video",
+        'drop_title': "Video URL"
       },
       tweet: {
         'title': "Tweet",

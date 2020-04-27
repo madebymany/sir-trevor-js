@@ -33,7 +33,8 @@ SirTrevor.Locales.ru = {
       'upload_error': "Есть проблемы с загрузкой"
     },
     video: {
-      'title': "Видео"
+      'title': "Видео",
+      'drop_title': "URL видео"
     },
     tweet: {
       'title': "Твит",
