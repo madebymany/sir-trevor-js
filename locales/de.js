@@ -35,7 +35,8 @@ SirTrevor.Locales.de = {
       'upload_error': "Es wurde ein Problem beim Upload festgestellt"
     },
     video: {
-      'title': "Video"
+      'title': "Video",
+      'drop_title': "Video URL"
     },
     tweet: {
       'title': "Tweet",

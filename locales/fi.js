@@ -33,7 +33,8 @@ SirTrevor.Locales.fi = {
       'upload_error': "Tiedoston lataamisessa oli ongelma"
     },
     video: {
-      'title': "Video"
+      'title': "Video",
+      'drop_title': "Videon URL-osoite",
     },
     tweet: {
       'title': "Tweet",

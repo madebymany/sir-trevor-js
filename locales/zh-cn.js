@@ -33,7 +33,8 @@ SirTrevor.Locales.cn = {
       'upload_error': "载入图片失败"
     },
     video: {
-      'title': "视频"
+      'title': "视频",
+      'drop_title': "影片网址"
     },
     tweet: {
       'title': "Tweet",

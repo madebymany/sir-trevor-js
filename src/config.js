@@ -1,11 +1,14 @@
 "use strict";
 
 var drop_options = {
+  title: function() {
+    return _.result(block, "title")
+  },
   html: ['<div class="st-block__dropzone">',
     '<svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#<%= _.result(block, "icon_name") %>"/></svg>',
-    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
+    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "drop_options.title") + "</span>" }) %>',
     '</p></div>'].join('\n'),
-    re_render_on_reorder: false
+  re_render_on_reorder: false
 };
 
 var paste_options = {

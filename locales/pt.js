@@ -33,7 +33,8 @@ SirTrevor.Locales.pt = {
       'upload_error': "Sugerio um problema com o upload da imagem"
     },
     video: {
-      'title': "Vídeo"
+      'title': "Vídeo",
+      'drop_title': "URL do Vídeo"
     },
     tweet: {
       'title': "Tweet",
