@@ -109,6 +109,27 @@ module.exports = {
           text: "heading"
         },
         {
+          name: "Heading Level 2",
+          title: "heading 2",
+          iconName: "fmt-heading-2",
+          cmd: "heading-level-2",
+          text: "heading 2"
+        },
+        {
+          name: "Heading Level 3",
+          title: "heading 3",
+          iconName: "fmt-heading-3",
+          cmd: "heading-level-3",
+          text: "heading 3"
+        },
+        {
+          name: "Heading Level 4",
+          title: "heading 4",
+          iconName: "fmt-heading-4",
+          cmd: "heading-level-4",
+          text: "heading 4"
+        },
+        {
           name: "Quote",
           title: "quote",
           iconName: "fmt-quote",

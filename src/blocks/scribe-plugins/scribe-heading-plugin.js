@@ -16,12 +16,14 @@ var scribeHeadingPlugin = function(block) {
     };
 
     headingCommand.execute = function headingCommandExecute(value) {
+      var blockType = getBlockType()
       var data = {
         format: 'html',
+        level: blockType == 'Heading' ? 2 : null,
         text: block.getScribeInnerContent()
       };
 
-      block.mediator.trigger("block:replace", block.el, getBlockType(), data);
+      block.mediator.trigger("block:replace", block.el, blockType, data);
     };
 
     scribe.commands.heading = headingCommand;
