@@ -70,7 +70,6 @@
     "sass-loader": "^7.1.0",
     "scribe-editor": "git://github.com/madebymany/scribe.git#st-1.0.0",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",
-    "scribe-plugin-link-prompt-command": "^1.0.0",
     "scribe-plugin-sanitizer": "git://github.com/madebymany/scribe-plugin-sanitizer.git#st-1.0.0",
     "selection-range": "^1.1.0",
     "selenium-webdriver": "3.6.0",
