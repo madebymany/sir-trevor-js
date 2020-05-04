@@ -38,6 +38,7 @@ SirTrevor.Locales.fi = {
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "Tweet URL-osoite",
       'fetch_error': "Viestin hakemisessa oli ongelma"
     },
     embedly: {

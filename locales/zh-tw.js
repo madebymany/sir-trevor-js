@@ -38,6 +38,7 @@ SirTrevor.Locales.cn_TW = {
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "鳴叫網址",
       'fetch_error': "獲取tweet失敗"
     },
     embedly: {

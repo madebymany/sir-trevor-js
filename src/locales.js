@@ -47,6 +47,7 @@ var Locales = {
       },
       tweet: {
         'title': "Tweet",
+        'drop_title': "Tweet URL",
         'fetch_error': "There was a problem fetching your tweet"
       },
       embedly: {

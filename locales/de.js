@@ -40,6 +40,7 @@ SirTrevor.Locales.de = {
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "Tweet URL",
       'fetch_error': "Es wurde ein Problem beim Laden des Tweets festgestellt"
     },
     embedly: {

@@ -40,6 +40,7 @@ SirTrevor.Locales.fr = {
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "URL de Tweet",
       'fetch_error': "Un problème est survenu lors de la récupération de votre tweet"
     },
     embedly: {

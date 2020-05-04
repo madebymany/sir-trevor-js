@@ -28,7 +28,7 @@ module.exports = Block.extend({
   icon_name: 'video',
 
   drop_options: {
-    title: i18n.t(`blocks:video:drop_title`),
+    title: i18n.t('blocks:video:drop_title')
   },
 
   loadData: function(data){
