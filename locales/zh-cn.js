@@ -48,6 +48,9 @@ SirTrevor.Locales.cn = {
     },
     heading: {
       'title': '标题'
+    },
+    headingLevel: {
+      'title': '标题'
     }
   }
 }

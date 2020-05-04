@@ -48,6 +48,9 @@ SirTrevor.Locales.ru = {
     },
     heading: {
       'title': 'Заголовок'
+    },
+    headingLevel: {
+      'title': 'Заголовок'
     }
   }
 };

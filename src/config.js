@@ -101,33 +101,19 @@ module.exports = {
           cmd: "unlink",
           text : "link",
         },
-        {
+        /*{
           name: "Heading",
           title: "heading",
           iconName: "fmt-heading",
           cmd: "heading",
           text: "heading"
-        },
+        },*/
         {
-          name: "Heading Level 2",
-          title: "heading 2",
-          iconName: "fmt-heading-2",
-          cmd: "heading-level-2",
-          text: "heading 2"
-        },
-        {
-          name: "Heading Level 3",
-          title: "heading 3",
-          iconName: "fmt-heading-3",
-          cmd: "heading-level-3",
-          text: "heading 3"
-        },
-        {
-          name: "Heading Level 4",
-          title: "heading 4",
-          iconName: "fmt-heading-4",
-          cmd: "heading-level-4",
-          text: "heading 4"
+          name: "Heading Level",
+          title: "heading",
+          iconName: "fmt-heading-level",
+          cmd: "headingLevel",
+          text: "heading"
         },
         {
           name: "Quote",

@@ -48,6 +48,9 @@ SirTrevor.Locales.fi = {
     },
     heading: {
       'title': 'Otsikko'
+    },
+    headingLevel: {
+      'title': 'Otsikko'
     }
   }
 };

@@ -63,3 +63,20 @@
 .st-format-btn--Unlink {
   text-decoration: line-through;
 }
+
+.st-format-btn--Heading[data-state] {
+  position: relative;
+
+  &::after {
+    content: attr(data-state);
+    font-weight: 800;
+    position: absolute;
+    right: 12px;
+    bottom: 17px;
+  }
+
+  &[data-state="false"]::after {
+    content: "_";
+  }
+}
+
