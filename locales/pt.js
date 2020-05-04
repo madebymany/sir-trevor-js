@@ -38,6 +38,7 @@ SirTrevor.Locales.pt = {
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "URL do Tweet",
       'fetch_error': "Sugerio um problema na busca da sua tweet"
     },
     embedly: {

@@ -38,6 +38,7 @@ SirTrevor.Locales.pt_BR = {
         },
         tweet: {
           'title': "Tweet",
+          'drop_title': "URL do Tweet"
           'fetch_error': "Houve um problema ao carregar seu tweet"
         },
         embedly: {

@@ -38,6 +38,7 @@ SirTrevor.Locales.ru = {
     },
     tweet: {
       'title': "Твит",
+      'drop_title': "URL Твит",
       'fetch_error': "Есть проблемы с загрузкой"
     },
     embedly: {

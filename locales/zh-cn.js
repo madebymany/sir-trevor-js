@@ -38,6 +38,7 @@ SirTrevor.Locales.cn = {
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "鸣叫网址",
       'fetch_error': "获取tweet失败"
     },
     embedly: {
