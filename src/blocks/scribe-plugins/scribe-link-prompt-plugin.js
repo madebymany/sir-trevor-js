@@ -88,11 +88,11 @@ const scribeLinkPromptPlugin = function(block) {
     const linkPromptCommand = new scribe.api.Command('linkPrompt');
     linkPromptCommand.nodeName = 'A';
 
-    headingCommand.queryEnabled = () => {
+    linkPromptCommand.queryEnabled = () => {
       return block.inline_editable;
     };
 
-    headingCommand.queryState = () => {
+    linkPromptCommand.queryState = () => {
       /**
        * We override the native `document.queryCommandState` for links because
        * the `createLink` and `unlink` commands are not supported.
@@ -104,7 +104,7 @@ const scribeLinkPromptPlugin = function(block) {
       }.bind(this));
     };
 
-    headingCommand.execute = function headingCommandExecute(passedLink) {
+    linkPromptCommand.execute = function linkPromptCommandExecute(passedLink) {
       var link;
       var selection = new scribe.api.Selection();
       var range = selection.range;
@@ -154,7 +154,7 @@ const scribeLinkPromptPlugin = function(block) {
       }
     };
 
-    scribe.commands.link = linkCommand;
+    scribe.commands.link = linkPromptCommand;
   };
 };
 
