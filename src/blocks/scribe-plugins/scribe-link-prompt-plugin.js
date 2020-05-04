@@ -85,7 +85,7 @@ const scribeLinkPromptPlugin = function(block) {
   }
 
   return function(scribe) {
-    const linkPromptCommand = new scribe.api.Command('link');
+    const linkPromptCommand = new scribe.api.Command('linkPrompt');
     linkPromptCommand.nodeName = 'A';
 
     headingCommand.queryEnabled = () => {
