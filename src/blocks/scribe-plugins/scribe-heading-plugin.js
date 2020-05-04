@@ -19,7 +19,6 @@ var scribeHeadingPlugin = function(block) {
       var blockType = getBlockType()
       var data = {
         format: 'html',
-        level: blockType == 'Heading' ? 2 : null,
         text: block.getScribeInnerContent()
       };
 

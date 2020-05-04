@@ -46,6 +46,9 @@ SirTrevor.Locales.cn_TW = {
     },
     heading: {
       'title': '標題'
+    },
+    headingLevel: {
+      'title': '標題'
     }
   }
 }

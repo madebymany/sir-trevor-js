@@ -1,38 +1,43 @@
 "use strict";
 
-var scribeHeadingLevelPlugin = function(level) {
-  return function(block) {
-    return function(scribe) {
-      
-      const headingCommand = new scribe.api.Command(`heading-level-${level}`);
-      headingCommand.queryEnabled = () => {
-        return block.inline_editable;
-      };
-      headingCommand.queryState = () => {
-        return block.type === 'heading' && block.level === level;
-      };
-      headingCommand.queryLevel = () => {
-        return block.level;
-      };
-
-      const getBlockType = function() {
-        return headingCommand.queryState() ? 'Text' : 'Heading';
-      };
-
-      headingCommand.execute = function headingCommandExecute(value) {
-        const blockType = getBlockType()
-        var data = {
-          format: 'html',
-          level: blockType == 'Heading' ? level : null,
-          text: block.getScribeInnerContent()
-        };
-
-        block.mediator.trigger("block:replace", block.el, blockType, data);
-      };
-
-      scribe.commands.heading = headingCommand;
+var scribeHeadingLevelPlugin = function(block) {
+  return function(scribe) {
+    
+    const headingLevelCommand = new scribe.api.Command(`headingLevel`);
+    headingLevelCommand.queryEnabled = () => {
+      return block.inline_editable;
     };
+    headingLevelCommand.queryState = () => {
+      if (block.type === 'heading') {
+        return block.getBlockData().level || 2;
+      } else {
+        return false;
+      }
+    };
+
+    headingLevelCommand.execute = function headingLevelCommandExecute(value) {
+      var level = block.getBlockData().level + 1;
+      var blockType = 'Heading';
+
+      if (!level || level < 2) {
+        level = 2;
+      } else if (level > 4) {
+        level = null;
+        blockType = 'Text';
+      }
+
+
+      var data = {
+        format: 'html',
+        level: level,
+        text: block.getScribeInnerContent()
+      };
+
+      block.mediator.trigger("block:replace", block.el, blockType, data);
+    };
+
+    scribe.commands.headingLevel = headingLevelCommand;
   };
 };
 
-module.exports = scribeHeadingPlugin;
+module.exports = scribeHeadingLevelPlugin;

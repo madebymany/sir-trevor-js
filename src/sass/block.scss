@@ -312,3 +312,19 @@ ul.st-text-block {
     bottom: -6px;
   }
 }
+
+.st-block[data-type="heading"] {
+  &[data-level="2"] {
+    font-size: 110%;
+  }
+
+  &[data-level="3"] {
+    font-size: 100%;
+    text-decoration: underline;
+  }
+
+  &[data-level="4"] {
+    font-size: 90%;
+    opacity: 0.6;
+  }
+}

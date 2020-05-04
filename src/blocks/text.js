@@ -9,7 +9,7 @@ var stToHTML = require('../to-html');
 
 var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
 var ScribePastePlugin = require('./scribe-plugins/scribe-paste-plugin');
-var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
+var ScribeHeadingLevelPlugin = require('./scribe-plugins/scribe-heading-level-plugin');
 var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
 
 module.exports = Block.extend({
@@ -27,7 +27,7 @@ module.exports = Block.extend({
   configureScribe: function(scribe) {
     scribe.use(new ScribeTextBlockPlugin(this));
     scribe.use(new ScribePastePlugin(this));
-    scribe.use(new ScribeHeadingPlugin(this));
+    scribe.use(new ScribeHeadingLevelPlugin(this));
     scribe.use(new ScribeQuotePlugin(this));
 
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));

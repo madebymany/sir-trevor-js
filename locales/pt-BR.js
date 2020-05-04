@@ -46,6 +46,9 @@ SirTrevor.Locales.pt_BR = {
         },
         heading: {
           'title': "Título"
+        },
+        headingLevel: {
+          'title': "Título"
         }
       }
     };

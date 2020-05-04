@@ -8,7 +8,7 @@ var _ = require('../lodash');
 
 var Block = require('../block');
 var stToHTML = require('../to-html');
-var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
+var ScribeHeadingLevelPlugin = require('./scribe-plugins/scribe-heading-level-plugin');
 var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
 
 var template = _.template([
@@ -33,7 +33,7 @@ module.exports = Block.extend({
   },
 
   configureScribe: function(scribe) {
-    scribe.use(new ScribeHeadingPlugin(this));
+    scribe.use(new ScribeHeadingLevelPlugin(this));
     scribe.use(new ScribeQuotePlugin(this));
   },
 

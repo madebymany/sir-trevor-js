@@ -102,8 +102,10 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   highlightSelectedButtons: function() {
     [].forEach.call(this.el.querySelectorAll(".st-format-btn"), (btn) => {
       var cmd = btn.getAttribute('data-cmd');
-      btn.classList.toggle("st-format-btn--is-active",
-                      this.block.queryTextBlockCommandState(cmd));
+      var state = this.block.queryTextBlockCommandState(cmd)
+      btn.classList.toggle("st-format-btn--is-active", Boolean(state));
+      btn.dataset.state = state;
+
       btn = null;
     });
   },
