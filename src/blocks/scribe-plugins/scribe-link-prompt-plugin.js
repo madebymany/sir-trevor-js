@@ -20,7 +20,7 @@ const scribeLinkPromptPlugin = function(block) {
       // For emails we just look for a `@` symbol as it is easier.
       regexp: /@/,
       message: 'The URL you entered appears to be an email address. ' +
-      'Do you want to add the required “mailto:” prefix?',
+               'Do you want to add the required “mailto:” prefix?',
       action: function(link) {
         return 'mailto:' + link;
       }
@@ -29,7 +29,7 @@ const scribeLinkPromptPlugin = function(block) {
       // For tel numbers check for + and numerical values
       regexp: /\+?\d+/,
       message: 'The URL you entered appears to be a telephone number. ' +
-                'Do you want to add the required “tel:” prefix?',
+               'Do you want to add the required “tel:” prefix?',
       action: function(link) {
         return 'tel:' + link;
       }
@@ -81,7 +81,7 @@ const scribeLinkPromptPlugin = function(block) {
   function runTransforms(transforms, initialLink) {
     return transforms.reduce(function(currentLinkValue, transform) {
       return transform(currentLinkValue);
-      }, initialLink);
+    }, initialLink);
   }
 
   return function(scribe) {
@@ -99,9 +99,9 @@ const scribeLinkPromptPlugin = function(block) {
        * As per: http://jsbin.com/OCiJUZO/1/edit?js,console,output
        */
       var selection = new scribe.api.Selection();
-      return !! selection.getContaining(function (node) {
-        return node.nodeName === this.nodeName;
-      }.bind(this));
+      return !! selection.getContaining(function(node) {
+        return node.nodeName === linkPromptCommand.nodeName;
+      });
     };
 
     linkPromptCommand.execute = function linkPromptCommandExecute(passedLink) {
@@ -109,8 +109,8 @@ const scribeLinkPromptPlugin = function(block) {
       var selection = new scribe.api.Selection();
       var range = selection.range;
       var anchorNode = selection.getContaining(function(node) {
-        return node.nodeName === this.nodeName;
-      }.bind(this));
+        return node.nodeName === linkPromptCommand.nodeName;
+      });
 
       var initialLink = anchorNode ? anchorNode.href : '';
 
@@ -127,7 +127,7 @@ const scribeLinkPromptPlugin = function(block) {
         return;
       }
 
-      if (options && options.validation) {
+      if (block && block.validation) {
         var validationResult = block.validation(link);
 
         if (!validationResult.valid) {
@@ -142,19 +142,20 @@ const scribeLinkPromptPlugin = function(block) {
         selection.selection.addRange(range);
       }
 
-      link = window.prompt('Enter a link target (Enter "_blank" to make the link open in a new tab, leave black to open in the same page).');
-
       if (link) {
         if (!hasKnownProtocol(link) ) {
           link = processPrompt(window, link);
         }
 
-        link = runTransforms(options.transforms.post, link);
-        scribe.api.SimpleCommand.prototype.execute.call(this, link);
+        link = runTransforms(block.transforms.post, link);
+
+        var target = window.prompt('Enter a link target (Enter "_blank" to make the link open in a new tab, leave black to open in the same page).');  
+        var html = `<a href="${link}" target="${target}">${selection.selection}</a>`;
+        document.execCommand('insertHTML', false, html);
       }
     };
 
-    scribe.commands.link = linkPromptCommand;
+    scribe.commands.linkPrompt = linkPromptCommand;
   };
 };
 
