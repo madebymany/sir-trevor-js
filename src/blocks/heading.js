@@ -8,8 +8,8 @@ var Block = require('../block');
 var stToHTML = require('../to-html');
 
 var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
-var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
 var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
+var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
 
 module.exports = Block.extend({
 
@@ -18,8 +18,8 @@ module.exports = Block.extend({
   editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
 
   configureScribe: function(scribe) {
-    scribe.use(new ScribeTextBlockPlugin(this));
     scribe.use(new ScribeHeadingPlugin(this));
+    scribe.use(new ScribeTextBlockPlugin(this));
     scribe.use(new ScribeQuotePlugin(this));
 
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
@@ -38,12 +38,17 @@ module.exports = Block.extend({
 
   icon_name: 'heading',
 
-  loadData: function(data){
+  loadData: function(data) {
     if (this.options.convertFromMarkdown && data.format !== "html") {
       this.setTextBlockHTML(stToHTML(data.text, this.type));
     } else {
       this.setTextBlockHTML(data.text);
     }
+
+    const level = data.level || this.editorOptions.defaultHeadingLevel;
+
+    this.setData({ level });
+    this.el.dataset.level = level;
   },
 
   onBlockRender: function() {
@@ -56,6 +61,6 @@ module.exports = Block.extend({
 
   asClipboardHTML: function() {
     var data = this.getBlockData();
-    return `<h2>${data.text}</h2>`;
+    return `<h${data.level}>${data.text}</h${data.level}>`;
   }
 });

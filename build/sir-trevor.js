@@ -253,6 +253,8 @@ module.exports = {
     errorsContainer: undefined,
     convertFromMarkdown: true,
     joinListBlocksOnBlockRemove: false,
+    headingLevels: [2],
+    defaultHeadingLevel: 2,
     formatBar: {
       commands: [{
         name: "Bold",
@@ -7505,26 +7507,36 @@ module.exports = BlockReorder;
 
 var scribeHeadingPlugin = function scribeHeadingPlugin(block) {
   return function (scribe) {
-    var headingCommand = new scribe.api.Command('heading');
+    var _block$editorOptions = block.editorOptions,
+        defaultHeadingLevel = _block$editorOptions.defaultHeadingLevel,
+        headingLevels = _block$editorOptions.headingLevels;
+    headingLevels = headingLevels.sort();
+    var minHeadingLevel = headingLevels[0];
+    var maxHeadingLevel = headingLevels[headingLevels.length - 1];
+    var headingCommand = new scribe.api.Command("heading");
 
     headingCommand.queryEnabled = function () {
       return block.inline_editable;
     };
 
     headingCommand.queryState = function () {
-      return block.type === 'heading';
-    };
-
-    var getBlockType = function getBlockType() {
-      return headingCommand.queryState() ? 'Text' : 'Heading';
+      if (block.type === 'heading') {
+        return block.getBlockData().level || defaultHeadingLevel || minHeadingLevel;
+      } else {
+        return false;
+      }
     };
 
     headingCommand.execute = function headingCommandExecute(value) {
+      var nextIndex = headingLevels.indexOf(block.getBlockData().level) + 1;
+      var level = headingLevels[nextIndex];
+      var blockType = level ? 'Heading' : 'Text';
       var data = {
         format: 'html',
+        level: level,
         text: block.getScribeInnerContent()
       };
-      block.mediator.trigger("block:replace", block.el, getBlockType(), data);
+      block.mediator.trigger("block:replace", block.el, blockType, data);
     };
 
     scribe.commands.heading = headingCommand;
@@ -10644,7 +10656,11 @@ Object.assign(FormatBar.prototype, __webpack_require__(6), __webpack_require__(3
 
     [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function (btn) {
       var cmd = btn.getAttribute('data-cmd');
-      btn.classList.toggle("st-format-btn--is-active", _this.block.queryTextBlockCommandState(cmd));
+
+      var state = _this.block.queryTextBlockCommandState(cmd);
+
+      btn.classList.toggle("st-format-btn--is-active", Boolean(state));
+      btn.dataset.state = state;
       btn = null;
     });
   },
@@ -10813,7 +10829,7 @@ module.exports = SirTrevor;
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "178289a66e4bc63fe9a24fba4c8acf36.svg";
+module.exports = __webpack_require__.p + "f72a184ef9b7d08104bbd4f1a096ba2b.svg";
 
 /***/ }),
 /* 96 */
@@ -21766,16 +21782,16 @@ var stToHTML = __webpack_require__(22);
 
 var ScribeTextBlockPlugin = __webpack_require__(90);
 
-var ScribeHeadingPlugin = __webpack_require__(40);
-
 var ScribeQuotePlugin = __webpack_require__(41);
+
+var ScribeHeadingPlugin = __webpack_require__(40);
 
 module.exports = Block.extend({
   type: 'heading',
   editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
   configureScribe: function configureScribe(scribe) {
-    scribe.use(new ScribeTextBlockPlugin(this));
     scribe.use(new ScribeHeadingPlugin(this));
+    scribe.use(new ScribeTextBlockPlugin(this));
     scribe.use(new ScribeQuotePlugin(this));
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
@@ -21795,6 +21811,12 @@ module.exports = Block.extend({
     } else {
       this.setTextBlockHTML(data.text);
     }
+
+    var level = data.level || this.editorOptions.defaultHeadingLevel;
+    this.setData({
+      level: level
+    });
+    this.el.dataset.level = level;
   },
   onBlockRender: function onBlockRender() {
     this.toggleEmptyClass();
@@ -21804,7 +21826,7 @@ module.exports = Block.extend({
   },
   asClipboardHTML: function asClipboardHTML() {
     var data = this.getBlockData();
-    return "<h2>".concat(data.text, "</h2>");
+    return "<h".concat(data.level, ">").concat(data.text, "</h").concat(data.level, ">");
   }
 });
 
