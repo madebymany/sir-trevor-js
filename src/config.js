@@ -63,8 +63,8 @@ module.exports = {
     errorsContainer: undefined,
     convertFromMarkdown: true,
     joinListBlocksOnBlockRemove: false,
-    headingLevels: [2,3,4],
-    defaultHeadingLevel: 3,
+    headingLevels: [2],
+    defaultHeadingLevel: 2,
     formatBar: {
       commands: [
         {
