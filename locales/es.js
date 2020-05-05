@@ -48,9 +48,6 @@ SirTrevor.Locales.es = {
     },
     heading: {
       'title': 'Título'
-    },
-    headingLevel: {
-      'title': 'Título'
     }
   }
 };

@@ -50,9 +50,6 @@ SirTrevor.Locales.fr = {
     },
     heading: {
       'title': 'Titre'
-    },
-    headingLevel: {
-      'title': 'Titre'
     }
   }
 };
