@@ -199,8 +199,13 @@ module.exports = utils;
 "use strict";
 
 
+var _ = __webpack_require__(0);
+
 var drop_options = {
-  html: ['<div class="st-block__dropzone">', '<svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#<%= _.result(block, "icon_name") %>"/></svg>', '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>', '</p></div>'].join('\n'),
+  title: function title(block) {
+    return i18n.t("blocks:".concat(block.type, ":drop_title")) || _.result(block, "title");
+  },
+  html: ['<div class="st-block__dropzone">', '<svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#<%= _.result(block, "icon_name") %>"/></svg>', '<p><%= i18n.t("general:drop", { block: "<span>" + block.drop_options.title(block) + "</span>" }) %>', '</p></div>'].join('\n'),
   re_render_on_reorder: false
 };
 var paste_options = {
@@ -15001,10 +15006,12 @@ var Locales = {
         'upload_error': "There was a problem with your upload"
       },
       video: {
-        'title': "Video"
+        'title': "Video",
+        'drop_title': "Video URL"
       },
       tweet: {
         'title': "Tweet",
+        'drop_title': "Tweet URL",
         'fetch_error': "There was a problem fetching your tweet"
       },
       embedly: {

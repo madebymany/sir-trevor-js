@@ -42,10 +42,12 @@ var Locales = {
         'upload_error': "There was a problem with your upload"
       },
       video: {
-        'title': "Video"
+        'title': "Video",
+        'drop_title': "Video URL"
       },
       tweet: {
         'title': "Tweet",
+        'drop_title': "Tweet URL",
         'fetch_error': "There was a problem fetching your tweet"
       },
       embedly: {

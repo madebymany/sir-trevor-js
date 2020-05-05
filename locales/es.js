@@ -33,10 +33,12 @@ SirTrevor.Locales.es = {
       'upload_error': "Hay un problema con la subida"
     },
     video: {
-      'title': "Vídeo"
+      'title': "Vídeo",
+      'drop_title': "URL del Vídeo",
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "Tweet URL",
       'fetch_error': "Se produjo un problema al recuperar su tweet"
     },
     embedly: {

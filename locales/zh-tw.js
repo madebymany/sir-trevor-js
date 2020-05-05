@@ -33,10 +33,12 @@ SirTrevor.Locales.cn_TW = {
       'upload_error': "載入圖片失敗"
     },
     video: {
-      'title': "視頻"
+      'title': "視頻",
+      'drop_title': "影片網址"
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "鳴叫網址",
       'fetch_error': "獲取tweet失敗"
     },
     embedly: {

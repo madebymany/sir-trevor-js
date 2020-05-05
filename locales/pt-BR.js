@@ -33,10 +33,12 @@ SirTrevor.Locales.pt_BR = {
           'upload_error': "Houve um problema com o seu upload"
         },
         video: {
-          'title': "Video"
+          'title': "Video",
+          'drop_title': "URL do Vídeo"
         },
         tweet: {
           'title': "Tweet",
+          'drop_title': "URL do Tweet"
           'fetch_error': "Houve um problema ao carregar seu tweet"
         },
         embedly: {

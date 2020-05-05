@@ -35,10 +35,12 @@ SirTrevor.Locales.fr = {
       'upload_error': "Il y a un problème avec votre téléchargement"
     },
     video: {
-      'title': "Vidéo"
+      'title': "Vidéo",
+      'drop_title': "URL de la Vidéo",
     },
     tweet: {
       'title': "Tweet",
+      'drop_title': "URL de Tweet",
       'fetch_error': "Un problème est survenu lors de la récupération de votre tweet"
     },
     embedly: {
