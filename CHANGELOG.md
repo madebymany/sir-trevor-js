@@ -10,6 +10,11 @@
 - [ ] Allow selection of individual list items.
 - [ ] Automated testing for copy / paste.
 
+### 0.8.3 - New block functionality
+* Add config for multiple heading levels.
+* Allow drop_option label customisation.
+* [ ] Add external link plugin.
+
 ### 0.8.2 - Small fixes
 * Improve list blocks in Chrome where empty item drops down a line.
 * Added add button to bottom of quote blocks.
