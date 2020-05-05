@@ -3,7 +3,8 @@
 var scribeHeadingPlugin = function(block) {
   return function(scribe) {
 
-    const { defaultHeadingLevel, headingLevels } = block.editorOptions;
+    let { defaultHeadingLevel, headingLevels } = block.editorOptions;
+    headingLevels = headingLevels.sort();
     const minHeadingLevel = headingLevels[0];
     const maxHeadingLevel = headingLevels[headingLevels.length - 1];
 
@@ -20,16 +21,9 @@ var scribeHeadingPlugin = function(block) {
     };
 
     headingCommand.execute = function headingCommandExecute(value) {
-      var level = block.getBlockData().level + 1;
-      var blockType = 'Heading';
-
-      if (!level || level < minHeadingLevel) {
-        level = minHeadingLevel;
-      } else if (level > maxHeadingLevel) {
-        level = null;
-        blockType = 'Text';
-      }
-
+      const nextIndex = headingLevels.indexOf(block.getBlockData().level) + 1;
+      const level = headingLevels[nextIndex];
+      const blockType = level ? 'Heading' : 'Text';
 
       var data = {
         format: 'html',

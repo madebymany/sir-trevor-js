@@ -45,8 +45,10 @@ module.exports = Block.extend({
       this.setTextBlockHTML(data.text);
     }
 
-    data.level = data.level || this.editorOptions.defaultHeadingLevel;
-    this.el.dataset.level = data.level;
+    const level = data.level || this.editorOptions.defaultHeadingLevel;
+
+    this.setData({ level });
+    this.el.dataset.level = level;
   },
 
   onBlockRender: function() {
