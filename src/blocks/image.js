@@ -12,10 +12,6 @@ module.exports = Block.extend({
 
   icon_name: 'image',
 
-  drop_options: {
-    title: i18n.t('blocks:image:title'),
-  },
-
   loadData: function(data){
     // Create our image tag
     this.editor.innerHTML = '';

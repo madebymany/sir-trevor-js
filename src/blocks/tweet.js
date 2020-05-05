@@ -23,7 +23,6 @@ module.exports = Block.extend({
   fetchable: true,
 
   drop_options: {
-    title: i18n.t('blocks:tweet:drop_title'),
     re_render_on_reorder: true
   },
 

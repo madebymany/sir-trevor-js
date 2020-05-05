@@ -1,10 +1,14 @@
 "use strict";
 
+var _ = require('./lodash');
+
 var drop_options = {
-  title: () => i18n.t(`blocks:${block.type}:title`),
+  title: (block) => {
+    return i18n.t(`blocks:${block.type}:drop_title`) || _.result(block, "title");
+  },
   html: ['<div class="st-block__dropzone">',
     '<svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#<%= _.result(block, "icon_name") %>"/></svg>',
-    '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(_.result(block, "drop_options"), "title") + "</span>" }) %>',
+    '<p><%= i18n.t("general:drop", { block: "<span>" + block.drop_options.title(block) + "</span>" }) %>',
     '</p></div>'].join('\n'),
   re_render_on_reorder: false
 };
