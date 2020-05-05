@@ -22,7 +22,7 @@ module.exports.create = function(SirTrevor) {
     // REFACTOR: block create event expects data as second argument.
     /*jshint validthis:true */
     SirTrevor.mediator.trigger(
-      "block:create", 'Text', null, this.parentNode.parentNode.id ? this.parentNode.parentNode : this.parentNode
+      "block:create", SirTrevor.options.defaultType || "Text", null, this.parentNode.parentNode.id ? this.parentNode.parentNode : this.parentNode
     );
   }
 
