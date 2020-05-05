@@ -11,9 +11,9 @@
 - [ ] Automated testing for copy / paste.
 
 ### 0.8.3 - New block functionality
-* Add config for multiple heading levels.
-* Allow drop_option label customisation.
-* [ ] Add external link plugin.
+* Add config for multiple heading levels. https://github.com/madebymany/sir-trevor-js/pull/581
+* Allow drop_option label customisation. https://github.com/madebymany/sir-trevor-js/pull/580
+* [ ] Add external link plugin. https://github.com/madebymany/sir-trevor-js/pull/582
 
 ### 0.8.2 - Small fixes
 * Improve list blocks in Chrome where empty item drops down a line.
