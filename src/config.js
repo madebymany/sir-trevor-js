@@ -63,6 +63,8 @@ module.exports = {
     errorsContainer: undefined,
     convertFromMarkdown: true,
     joinListBlocksOnBlockRemove: false,
+    headingLevels: [2,3,4],
+    defaultHeadingLevel: 3,
     formatBar: {
       commands: [
         {
@@ -96,18 +98,11 @@ module.exports = {
           cmd: "unlink",
           text : "link",
         },
-        /*{
+        {
           name: "Heading",
           title: "heading",
           iconName: "fmt-heading",
           cmd: "heading",
-          text: "heading"
-        },*/
-        {
-          name: "Heading Level",
-          title: "heading",
-          iconName: "fmt-heading-level",
-          cmd: "headingLevel",
           text: "heading"
         },
         {
