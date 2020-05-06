@@ -68,6 +68,27 @@ Call a function once the Editor has rendered.
 }
 ```
 
+**`headingLevels`**
+Set the heading levels that can be set with the heading block
+*Defaults to [2]*.
+
+```js
+{
+  headingLevels: [1,2,3,4,5,6]
+}
+```
+
+
+**`defaultHeadingLevel`**
+Set the default heading level when a heading block is added
+*Defaults to 2*.
+
+```js
+{
+  defaultHeadingLevel: 2
+}
+```
+
 <a name="2-1"></a>
 ## Block Options
 
