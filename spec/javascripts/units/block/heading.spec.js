@@ -11,7 +11,8 @@ describe("Blocks: Heading block", function() {
       data,
       editor.id,
       editor.mediator,
-      options
+      options,
+      editor.options
     );
     block.render();
     return block.getBlockData();
