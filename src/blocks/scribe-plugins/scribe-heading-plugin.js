@@ -2,7 +2,6 @@
 
 var scribeHeadingPlugin = function(block) {
   return function(scribe) {
-
     let { defaultHeadingLevel, headingLevels } = block.editorOptions;
     headingLevels = headingLevels.sort();
     const minHeadingLevel = headingLevels[0];
