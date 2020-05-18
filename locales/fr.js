@@ -7,7 +7,6 @@ SirTrevor.Locales.fr = {
     'close':            'fermer',
     'position':         'Position',
     'wait':             'Veuillez patienter...',
-    'link':             'Entrez un lien',
     'yes':              'Oui',
     'no':               'Non'
   },
@@ -17,7 +16,21 @@ SirTrevor.Locales.fr = {
     'block_empty': "__name__ ne doit pas être vide",
     'type_missing': "Vous devez avoir un bloc de type __type__",
     'required_type_empty': "Un bloc requis de type __type__ est vide",
-    'load_fail': "Il y a un problème avec le chargement des données du document"
+    'load_fail': "Il y a un problème avec le chargement des données du document",
+    'link_empty': "This link appears to be empty",
+    'link_invalid': "The link is not valid"
+  },
+  formatters: {
+    link: {
+      'prompt': "Entrez un lien",
+      'new_tab': "Opens in a new tab",
+      'message': "The URL you entered appears to be __type__. Do you want to add the required “__prefix__” prefix?",
+      types: {
+        'email': 'an email address',
+        'telephone': 'a telephone number',
+        'url': 'a link'
+      }
+    }
   },
   blocks: {
     text: {

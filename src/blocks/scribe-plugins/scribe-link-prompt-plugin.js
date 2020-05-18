@@ -1,8 +1,25 @@
 "use strict";
 
+var selectionRange = require('selection-range');
+var Modal = require('../../packages/modal');
+var _ = require('../../lodash');
+
+var MODAL_FORM_TEMPLATE = [
+  '<p>',
+    '<input id="<%= modal.id %>-url" type="text" value="<%= url %>" />',
+  '</p>',
+  '<p>',
+    '<label>',
+      '<input id="<%= modal.id %>-target" type="checkbox" <%= new_tab ? \'checked="checked"\' : "" %>>',
+      i18n.t("formatters:link:new_tab"),
+    '</label>',
+  '</p>'
+].join("\n");
+
 const scribeLinkPromptPlugin = function(block) {
   // ===== INIT ===== //
   var block = block || {};
+  var modal = new Modal();
 
   if (!block.transforms) {
     block.transforms = {};
@@ -19,8 +36,7 @@ const scribeLinkPromptPlugin = function(block) {
     {
       // For emails we just look for a `@` symbol as it is easier.
       regexp: /@/,
-      message: 'The URL you entered appears to be an email address. ' +
-               'Do you want to add the required “mailto:” prefix?',
+      message: i18n.t("formatters:link:message", { type: i18n.t("formatters:link:types:email"), prefix: 'mailto:' }),
       action: function(link) {
         return 'mailto:' + link;
       }
@@ -28,16 +44,14 @@ const scribeLinkPromptPlugin = function(block) {
     {
       // For tel numbers check for + and numerical values
       regexp: /\+?\d+/,
-      message: 'The URL you entered appears to be a telephone number. ' +
-               'Do you want to add the required “tel:” prefix?',
+      message: i18n.t("formatters:link:message", { type: i18n.t("formatters:link:types:telephone"), prefix: 'tel:' }),
       action: function(link) {
         return 'tel:' + link;
       }
     },
     {
       regexp: /.+/,
-      message: 'The URL you entered appears to be a link. ' +
-                'Do you want to add the required “http://” prefix?',
+      message: i18n.t("formatters:link:message", { type: i18n.t("formatters:link:types:url"), prefix: 'http://' }),
       action: function(link) {
         return 'http://' + link;
       }
@@ -105,36 +119,11 @@ const scribeLinkPromptPlugin = function(block) {
     };
 
     linkPromptCommand.execute = function linkPromptCommandExecute(passedLink) {
-      var link;
       var selection = new scribe.api.Selection();
       var range = selection.range;
       var anchorNode = selection.getContaining(function(node) {
         return node.nodeName === linkPromptCommand.nodeName;
       });
-
-      var initialLink = anchorNode ? anchorNode.href : '';
-
-      if (!passedLink)  {
-        link = window.prompt('Enter a link.', initialLink);
-      } else {
-        link = passedLink;
-      }
-
-      link = runTransforms(block.transforms.pre, link);
-
-      if (!emptyLink(link)) {
-        window.alert('This link appears empty');
-        return;
-      }
-
-      if (block && block.validation) {
-        var validationResult = block.validation(link);
-
-        if (!validationResult.valid) {
-          window.alert(validationResult.message || 'The link is not valid');
-          return;
-        }
-      }
 
       if (anchorNode) {
         range.selectNode(anchorNode);
@@ -142,17 +131,54 @@ const scribeLinkPromptPlugin = function(block) {
         selection.selection.addRange(range);
       }
 
-      if (link) {
-        if (!hasKnownProtocol(link) ) {
-          link = processPrompt(window, link);
+      var initialLink = anchorNode ? anchorNode.href : '';
+      var initialTabState = anchorNode && anchorNode.target == '_blank';
+
+      var form = _.template(MODAL_FORM_TEMPLATE, {
+        modal: modal,
+        url: passedLink || initialLink,
+        new_tab: initialTabState
+      })
+
+      modal.show({
+        title: i18n.t("formatters:link:prompt"),
+        description: form
+      }, function(modal) {
+        var link = modal.el.querySelector(`#${modal.id}-url`).value
+        var target = modal.el.querySelector(`#${modal.id}-target`).checked ? '_blank' : null
+        link = runTransforms(block.transforms.pre, link);
+
+        if (!emptyLink(link)) {
+          window.alert( i18n.t("errors:link_empty"));
+          return false;
         }
 
-        link = runTransforms(block.transforms.post, link);
+        if (block && block.validation) {
+          var validationResult = block.validation(link);
+  
+          if (!validationResult.valid) {
+            window.alert(validationResult.message ||  i18n.t("errors:link_invalid"));
+            return false;
+          }
+        }
 
-        var target = window.prompt('Enter a link target (Enter "_blank" to make the link open in a new tab, leave black to open in the same page).');  
-        var html = `<a href="${link}" target="${target}">${selection.selection}</a>`;
-        document.execCommand('insertHTML', false, html);
-      }
+        if (link) {
+          if (!hasKnownProtocol(link) ) {
+            link = processPrompt(window, link);
+          }
+  
+          link = runTransforms(block.transforms.post, link);
+
+          var selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+
+          var html = `<a href="${link}" target="${target}">${selection}</a>`;
+          document.execCommand('insertHTML', false, html);
+        }
+
+        return true;
+      })
     };
 
     scribe.commands.linkPrompt = linkPromptCommand;

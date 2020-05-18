@@ -6,8 +6,7 @@ SirTrevor.Locales.fi = {
     'upload':           '...tai valitse tiedosto',
     'close':            'sulje',
     'position':         'Sijainti',
-    'wait':             'Odota hetki...',
-    'link':             'Kirjoita osoite'
+    'wait':             'Odota hetki...'
   },
   errors: {
     'title': "Seuraavat virheet:",
@@ -15,7 +14,21 @@ SirTrevor.Locales.fi = {
     'block_empty': "__name__ ei saa olla tyhjä",
     'type_missing': "__type__ on pakollinen lohko",
     'required_type_empty': "Pakollinen __type__-lohko on tyhjä",
-    'load_fail': "Sisällön lataamisessa on ongelma"
+    'load_fail': "Sisällön lataamisessa on ongelma",
+    'link_empty': "This link appears to be empty",
+    'link_invalid': "The link is not valid"
+  },
+  formatters: {
+    link: {
+      'prompt': "Kirjoita osoite",
+      'new_tab': "Opens in a new tab",
+      'message': "The URL you entered appears to be __type__. Do you want to add the required “__prefix__” prefix?",
+      types: {
+        'email': 'an email address',
+        'telephone': 'a telephone number',
+        'url': 'a link'
+      }
+    }
   },
   blocks: {
     text: {

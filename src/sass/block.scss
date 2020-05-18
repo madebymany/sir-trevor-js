@@ -128,7 +128,7 @@
   @include st-input-active;
   font-size: $text-block-font-size;
   line-height: 1.45;
-  overflow:visible;
+  overflow: visible;
 
   .st-block--empty & {
     line-height: 55px;
@@ -240,20 +240,11 @@ ul.st-text-block {
 }
 
 .st-upload-btn {
-  border: 0;
-  background: $base-ui-color;
-  border-radius: 0.2em;
-  padding: 0.35em 1em;
-  font-size: 1.125em;
-  cursor: pointer;
-  color: #fff;
-  position: relative;
-  z-index: 10;
+  @include st-btn;
 }
 
 .st-block__upload-container:hover .st-upload-btn {
-  background:$accent-color;
-  color: #fff;
+  @include st-btn-hover;
 }
 
 .st-block__editor--with-square-media {

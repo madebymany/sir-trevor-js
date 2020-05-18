@@ -372,7 +372,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
         if (blocks.length > 0) { return false; }
 
         this.mediator.trigger('errors:add', {
-          text: i18n.t("errors:required_type_empty", {type: type})
+          text: i18n.t("errors:required_type_empty", { type: type })
         });
 
         utils.log("A required block type " + type + " is empty");

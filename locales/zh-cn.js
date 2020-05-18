@@ -6,8 +6,7 @@ SirTrevor.Locales.cn = {
     'upload': '...或者点击上传',
     'close': '关闭',
     'position': '位置',
-    'wait': '处理中，请稍候...',
-    'link': '请填写要插入的链接'
+    'wait': '处理中，请稍候...'
   },
   errors: {
     'title': "发生了以下的错误:",
@@ -15,7 +14,21 @@ SirTrevor.Locales.cn = {
     'block_empty': "__name__ 不能为空",
     'type_missing': "你必须至少有一个 __type__ 类型的模块",
     'required_type_empty': "一个必须不为空的模块 __type__ 目前为空",
-    'load_fail': "载入文档内容失败"
+    'load_fail': "载入文档内容失败",
+    'link_empty': "This link appears to be empty",
+    'link_invalid': "The link is not valid"
+  },
+  formatters: {
+    link: {
+      'prompt': 请填写要插入的链接",
+      'new_tab': "Opens in a new tab",
+      'message': "The URL you entered appears to be __type__. Do you want to add the required “__prefix__” prefix?",
+      types: {
+        'email': 'an email address',
+        'telephone': 'a telephone number',
+        'url': 'a link'
+      }
+    }
   },
   blocks: {
     text: {

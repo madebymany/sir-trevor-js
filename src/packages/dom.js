@@ -99,9 +99,15 @@ Dom.createDocumentFragmentFromString = function(html) {
   elem.innerHTML = html;
 
   while (elem.childNodes[0]) {
-      frag.appendChild(elem.childNodes[0]);
+    frag.appendChild(elem.childNodes[0]);
   }
   return frag;
+};
+
+Dom.createElementFromString = function(html) {
+  var elem = document.createElement('div');
+  elem.innerHTML = html;
+  return elem.childNodes[0];
 };
 
 module.exports = Dom;
