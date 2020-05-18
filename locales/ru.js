@@ -6,8 +6,7 @@ SirTrevor.Locales.ru = {
     'upload':           '... или выберите файл',
     'close':            'Закрыть',
     'position':         'Позиция',
-    'wait':             'Пожалуйста, подождите ...',
-    'link':             'Введите ссылку'
+    'wait':             'Пожалуйста, подождите ...'
   },
   errors: {
     'title': "У вас есть следующие ошибки:",
@@ -15,7 +14,21 @@ SirTrevor.Locales.ru = {
     'block_empty': "__name__ не должно быть пустым",
     'type_missing': "Вы должны иметь блок типа __type__",
     'required_type_empty': "Нужный тип блока __type__ пуст",
-    'load_fail': "Есть проблема при загрузке содержимого документа"
+    'load_fail': "Есть проблема при загрузке содержимого документа",
+    'link_empty': "This link appears to be empty",
+    'link_invalid': "The link is not valid"
+  },
+  formatters: {
+    link: {
+      'prompt': "Введите ссылку",
+      'new_tab': "Opens in a new tab",
+      'message': "The URL you entered appears to be __type__. Do you want to add the required “__prefix__” prefix?",
+      types: {
+        'email': 'an email address',
+        'telephone': 'a telephone number',
+        'url': 'a link'
+      }
+    }
   },
   blocks: {
     text: {
