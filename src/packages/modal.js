@@ -6,7 +6,8 @@
  * Displayed for extra options.
  */
 
-var MicroModal = require('micromodal').default;
+
+var MicroModal = require('micromodal/lib/src/index').default;
 var Dom = require("./dom");
 var _ = require('../lodash');
 

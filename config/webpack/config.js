@@ -19,8 +19,14 @@ module.exports = {
     rules: [
       {
         test: /\.js?$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: "babel-loader"
+        exclude: function(modulePath) {
+          return /node_modules/.test(modulePath) &&
+            !/node_modules\/micromodal/.test(modulePath);
+        },
+        loader: "babel-loader",
+        options: {
+          "presets": ["@babel/preset-env"]
+        }
       }
     ]
   },

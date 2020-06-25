@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "es5-shim": "^4.5.12",
-    "micromodal": "^0.4.6",
     "svg4everybody": "^2.1.9"
   },
   "devDependencies": {
@@ -61,6 +60,7 @@
     "lodash.result": "^2.4.1",
     "lodash.template": "^2.4.1",
     "lodash.uniqueid": "^2.4.1",
+    "micromodal": "https://github.com/madebymany/Micromodal/tarball/patch-1",
     "mini-css-extract-plugin": "^0.5.0",
     "morgan": ">=1.9.1",
     "mversion": "^1.12.0",
