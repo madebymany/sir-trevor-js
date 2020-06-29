@@ -19798,7 +19798,7 @@ var Dom = __webpack_require__(3);
 
 var _ = __webpack_require__(0);
 
-var template = ['<div class="modal micromodal-slide" id="<%= id %>" aria-hidden="true">', '<div class="modal__overlay" tabindex="-1" data-micromodal-close>', '<form class="modal__container" role="dialog" aria-modal="true" aria-labelledby="<%= id %>-title" novalidate>', '<header class="modal__header">', '<h2 class="modal__title" id="<%= id %>-title"><%= args.title %></h2>', '<button class="modal__close" aria-label="Close modal" data-micromodal-close></button>', '</header>', '<main class="modal__content" id="<%= id %>-content"><%= args.description %></main>', '<footer class="modal__footer">', '<button id="<%= id %>-submit" class="modal__btn">', i18n.t("general:submit"), '</button>', '</footer>', '</form>', '</div>', '</div>'].join("\n");
+var template = ['<div class="st-modal st-micromodal-slide" id="<%= id %>" aria-hidden="true">', '<div class="st-modal__overlay" tabindex="-1" data-micromodal-close>', '<form class="st-modal__container" role="dialog" aria-modal="true" aria-labelledby="<%= id %>-title" novalidate>', '<header class="st-modal__header">', '<h2 class="st-modal__title" id="<%= id %>-title"><%= args.title %></h2>', '<button class="st-modal__close" aria-label="Close modal" data-micromodal-close></button>', '</header>', '<main class="st-modal__content" id="<%= id %>-content"><%= args.description %></main>', '<footer class="st-modal__footer">', '<button id="<%= id %>-submit" class="st-modal__btn">', i18n.t("general:submit"), '</button>', '</footer>', '</form>', '</div>', '</div>'].join("\n");
 
 var Modal = function Modal() {
   this.initialize();
