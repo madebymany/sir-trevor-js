@@ -6,8 +6,7 @@ SirTrevor.Locales.es = {
     'upload':           '...o seleccione un fichero',
     'close':            'cerrar',
     'position':         'Posición',
-    'wait':             'Por favor, espere...',
-    'link':             'Introduce un link'
+    'wait':             'Por favor, espere...'
   },
   errors: {
     'title': "Aparecerá el siguiente error :",
@@ -15,7 +14,21 @@ SirTrevor.Locales.es = {
     'block_empty': "__name__ no debe estar vacío",
     'type_missing': "Debe tene un tipo de bloque __type__",
     'required_type_empty': "Un bloque obligatorio de tipo __type__ está vacío",
-    'load_fail': "Hay un problema con la carga de datos"
+    'load_fail': "Hay un problema con la carga de datos",
+    'link_empty': "This link appears to be empty",
+    'link_invalid': "The link is not valid"
+  },
+  formatters: {
+    link: {
+      'prompt': "Introduce un link",
+      'new_tab': "Opens in a new tab",
+      'message': "The URL you entered appears to be __type__. Do you want to add the required “__prefix__” prefix?",
+      types: {
+        'email': 'an email address',
+        'telephone': 'a telephone number',
+        'url': 'a link'
+      }
+    }
   },
   blocks: {
     text: {

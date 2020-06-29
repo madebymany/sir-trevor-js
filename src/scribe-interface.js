@@ -5,7 +5,7 @@ var Scribe = require('scribe-editor');
 var config = require('./config');
 
 var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
-var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
+var scribePluginLinkPromptCommand = require('./blocks/scribe-plugins/scribe-link-prompt-plugin');
 var scribePluginSanitizer = require('scribe-plugin-sanitizer');
 
 var sanitizeDefaults = {

@@ -374,7 +374,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
                   'class': 'st-outer notranslate',
                   'dropzone': 'copy link move'});
 
-    var wrapper = Dom.createElement("div", {'class': 'st-blocks'});
+    var wrapper = Dom.createElement("div", { 'class': 'st-blocks' });
 
     // Wrap our element in lots of containers *eww*
 

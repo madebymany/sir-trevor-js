@@ -17,9 +17,9 @@ describe("Block", function(){
       el: element,
       blockTypes: ["Text"]
     });
-    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
-    block_two = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator);
-    block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID, editor.mediator);
+    block = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator, {}, editor.options);
+    block_two = new SirTrevor.Blocks.Text({}, editor.ID, editor.mediator, {}, editor.options);
+    block_three = new SirTrevor.Blocks.ComplexType({}, editor.ID, editor.mediator, {}, editor.options);
   });
 
   afterEach(function(){
@@ -179,13 +179,13 @@ describe("Block", function(){
       var data = {
         text: '<p><br></p>',
         format: 'html',
-        inputtext1: 'inputtext1', 
-        textarea1: 'textarea1', 
-        checkbox1: '1', 
+        inputtext1: 'inputtext1',
+        textarea1: 'textarea1',
+        checkbox1: '1',
         checkbox2: '',
         checkbox3: 'off',
         checkbox4: 'on',
-        radio1: 'radio12', 
+        radio1: 'radio12',
         select1: 'select12',
         'select2': ''
       };

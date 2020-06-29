@@ -10,7 +10,6 @@
 @mixin st-input {
   font-size: inherit;
   margin: 0;
-  /*padding: 0.3em 0;*/
 }
 
 .st-block input[type="text"],
@@ -22,6 +21,12 @@
 @mixin st-input-active {
   outline: none;
   border: none;
+}
+
+@mixin st-input-styled {
+  color: $base-ui-color;
+  border: 0.1em solid #d4d4d4;
+  padding: 0.6em;
 }
 
 .st-block [contenteditable="true"],
@@ -39,7 +44,32 @@
 .st-block input[type="text"],
 .st-block input[type="text"]:active,
 .st-block input[type="text"]:focus {
-  color: #42474b;
-  border: 0.1em solid #d4d4d4;
-  padding:.6em;
+  @include st-input-styled;
+}
+
+// Generic styles
+@mixin st-btn-hover {
+  background: $accent-color;
+  color: #fff;
+}
+
+@mixin st-btn {
+  border: 0;
+  background: $base-ui-color;
+  border-radius: 0.2em;
+  padding: 0.35em 1em;
+  font-size: 1.125em;
+  cursor: pointer;
+  color: #fff;
+  position: relative;
+  z-index: 10;
+
+  &:hover {
+    @include st-btn-hover;
+  }
+}
+
+.st-block__upload-container:hover .st-upload-btn {
+  background: $accent-color;
+  color: #fff;
 }

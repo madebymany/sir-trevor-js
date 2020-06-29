@@ -14,9 +14,9 @@ var Locales = {
       'close':            'close',
       'position':         'Position',
       'wait':             'Please wait...',
-      'link':             'Enter a link',
       'yes':              'Yes',
-      'no':               'No'
+      'no':               'No',
+      'submit':           'Submit'
     },
     errors: {
       'title': "You have the following errors:",
@@ -24,7 +24,21 @@ var Locales = {
       'block_empty': "__name__ must not be empty",
       'type_missing': "You must have a block of type __type__",
       'required_type_empty': "A required block type __type__ is empty",
-      'load_fail': "There was a problem loading the contents of the document"
+      'load_fail': "There was a problem loading the contents of the document",
+      'link_empty': "This link appears to be empty",
+      'link_invalid': "The link is not valid"
+    },
+    formatters: {
+      link: {
+        'prompt': "Enter a link",
+        'new_tab': "Opens in a new tab",
+        'message': "The URL you entered appears to be __type__. Do you want to add the required “__prefix__” prefix?",
+        types: {
+          'email': 'an email address',
+          'telephone': 'a telephone number',
+          'url': 'a link'
+        }
+      }
     },
     blocks: {
       text: {
