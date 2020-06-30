@@ -142,7 +142,7 @@ const scribeLinkPromptPlugin = function(block) {
 
       modal.show({
         title: i18n.t("formatters:link:prompt"),
-        description: form
+        content: form
       }, function(modal) {
         var link = modal.el.querySelector(`#${modal.id}-url`).value
         var target = modal.el.querySelector(`#${modal.id}-target`).checked ? '_blank' : null

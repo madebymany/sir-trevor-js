@@ -16,10 +16,10 @@ var template = [
     '<div class="st-modal__overlay" tabindex="-1" data-micromodal-close>',
       '<form class="st-modal__container" role="dialog" aria-modal="true" aria-labelledby="<%= id %>-title" novalidate>',
         '<header class="st-modal__header">',
-          '<h2 class="st-modal__title" id="<%= id %>-title"><%= args.title %></h2>',
-          '<button class="st-modal__close" aria-label="Close modal" data-micromodal-close></button>',
+          '<h2 class="st-modal__title" id="<%= id %>-title"></h2>',
+          '<a class="st-modal__close" aria-label="Close modal" data-micromodal-close></a>',
         '</header>',
-        '<main class="st-modal__content" id="<%= id %>-content"><%= args.description %></main>',
+        '<main class="st-modal__content" id="<%= id %>-content"></main>',
         '<footer class="st-modal__footer">',
           '<button id="<%= id %>-submit" class="st-modal__btn">',
             i18n.t("general:submit"),
@@ -40,7 +40,29 @@ Object.assign(Modal.prototype, {
 
   initialize: function() {
     this.el = document.getElementById(this.id);
+
+    if (!this.el) {
+      var element = _.template(template, { id: this.id });
+      element = Dom.createElementFromString(element);
+      document.body.appendChild(element);
+      this.el = element;
+    }
+
+    this.elTitle = document.getElementById(`${this.id}-title`);
+    this.elContent = document.getElementById(`${this.id}-content`);
+    this.form = this.el.querySelector('form');
+    this.form.addEventListener('submit', event => this.onSubmit(event));
+
     MicroModal.init();
+  },
+
+  onSubmit: function(event) {
+    if (this.callback) {
+      this.submit();
+    }
+
+    event.preventDefault();
+    return false;
   },
 
   submit: function() {
@@ -51,28 +73,19 @@ Object.assign(Modal.prototype, {
 
   show: function(args, callback) {
     this.callback = callback;
-    var element = _.template(template, { id: this.id, args: args });
-    element = Dom.createElementFromString(element);
-    element.querySelector('form').addEventListener('submit', event => {
-      this.submit();
-      event.preventDefault();
-    })
-
-    if (this.el) {
-      document.body.replaceChild(element, this.el)
-    } else {
-      document.body.appendChild(element);
-    }
-
-    this.el = element;
+    this.elTitle.innerText = args.title;
+    this.elContent.innerHTML = args.content
     MicroModal.show(this.id);
   },
 
   hide: function() {
+    this.callback = null;
+    this.el.querySelector('form').reset();
     MicroModal.close(this.id);
   },
 
   remove: function() {
+    this.callback = null;
     MicroModal.close(this.id);
     Dom.remove(this.el);
   },

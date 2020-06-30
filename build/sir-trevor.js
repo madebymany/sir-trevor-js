@@ -9029,7 +9029,7 @@ var scribeLinkPromptPlugin = function scribeLinkPromptPlugin(block) {
 
       modal.show({
         title: i18n.t("formatters:link:prompt"),
-        description: form
+        content: form
       }, function (modal) {
         var link = modal.el.querySelector("#".concat(modal.id, "-url")).value;
         var target = modal.el.querySelector("#".concat(modal.id, "-target")).checked ? '_blank' : null;
@@ -19798,7 +19798,7 @@ var Dom = __webpack_require__(3);
 
 var _ = __webpack_require__(0);
 
-var template = ['<div class="st-modal st-micromodal-slide" id="<%= id %>" aria-hidden="true">', '<div class="st-modal__overlay" tabindex="-1" data-micromodal-close>', '<form class="st-modal__container" role="dialog" aria-modal="true" aria-labelledby="<%= id %>-title" novalidate>', '<header class="st-modal__header">', '<h2 class="st-modal__title" id="<%= id %>-title"><%= args.title %></h2>', '<button class="st-modal__close" aria-label="Close modal" data-micromodal-close></button>', '</header>', '<main class="st-modal__content" id="<%= id %>-content"><%= args.description %></main>', '<footer class="st-modal__footer">', '<button id="<%= id %>-submit" class="st-modal__btn">', i18n.t("general:submit"), '</button>', '</footer>', '</form>', '</div>', '</div>'].join("\n");
+var template = ['<div class="st-modal st-micromodal-slide" id="<%= id %>" aria-hidden="true">', '<div class="st-modal__overlay" tabindex="-1" data-micromodal-close>', '<form class="st-modal__container" role="dialog" aria-modal="true" aria-labelledby="<%= id %>-title" novalidate>', '<header class="st-modal__header">', '<h2 class="st-modal__title" id="<%= id %>-title"></h2>', '<a class="st-modal__close" aria-label="Close modal" data-micromodal-close></a>', '</header>', '<main class="st-modal__content" id="<%= id %>-content"></main>', '<footer class="st-modal__footer">', '<button id="<%= id %>-submit" class="st-modal__btn">', i18n.t("general:submit"), '</button>', '</footer>', '</form>', '</div>', '</div>'].join("\n");
 
 var Modal = function Modal() {
   this.initialize();
@@ -19807,8 +19807,35 @@ var Modal = function Modal() {
 Object.assign(Modal.prototype, {
   id: 'sirtrevor-modal',
   initialize: function initialize() {
+    var _this = this;
+
     this.el = document.getElementById(this.id);
+
+    if (!this.el) {
+      var element = _.template(template, {
+        id: this.id
+      });
+
+      element = Dom.createElementFromString(element);
+      document.body.appendChild(element);
+      this.el = element;
+    }
+
+    this.elTitle = document.getElementById("".concat(this.id, "-title"));
+    this.elContent = document.getElementById("".concat(this.id, "-content"));
+    this.form = this.el.querySelector('form');
+    this.form.addEventListener('submit', function (event) {
+      return _this.onSubmit(event);
+    });
     MicroModal.init();
+  },
+  onSubmit: function onSubmit(event) {
+    if (this.callback) {
+      this.submit();
+    }
+
+    event.preventDefault();
+    return false;
   },
   submit: function submit() {
     if (this.callback(this)) {
@@ -19816,35 +19843,18 @@ Object.assign(Modal.prototype, {
     }
   },
   show: function show(args, callback) {
-    var _this = this;
-
     this.callback = callback;
-
-    var element = _.template(template, {
-      id: this.id,
-      args: args
-    });
-
-    element = Dom.createElementFromString(element);
-    element.querySelector('form').addEventListener('submit', function (event) {
-      _this.submit();
-
-      event.preventDefault();
-    });
-
-    if (this.el) {
-      document.body.replaceChild(element, this.el);
-    } else {
-      document.body.appendChild(element);
-    }
-
-    this.el = element;
+    this.elTitle.innerText = args.title;
+    this.elContent.innerHTML = args.content;
     MicroModal.show(this.id);
   },
   hide: function hide() {
+    this.callback = null;
+    this.el.querySelector('form').reset();
     MicroModal.close(this.id);
   },
   remove: function remove() {
+    this.callback = null;
     MicroModal.close(this.id);
     Dom.remove(this.el);
   }
