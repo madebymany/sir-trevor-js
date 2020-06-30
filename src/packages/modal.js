@@ -69,6 +69,7 @@ Object.assign(Modal.prototype, {
   },
 
   hide: function() {
+    this.el.querySelector('form').reset();
     MicroModal.close(this.id);
   },
 
