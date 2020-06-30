@@ -17,7 +17,7 @@ var template = [
       '<form class="st-modal__container" role="dialog" aria-modal="true" aria-labelledby="<%= id %>-title" novalidate>',
         '<header class="st-modal__header">',
           '<h2 class="st-modal__title" id="<%= id %>-title"></h2>',
-          '<button class="st-modal__close" aria-label="Close modal" data-micromodal-close></button>',
+          '<a class="st-modal__close" aria-label="Close modal" data-micromodal-close></a>',
         '</header>',
         '<main class="st-modal__content" id="<%= id %>-content"></main>',
         '<footer class="st-modal__footer">',
