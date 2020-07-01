@@ -2,19 +2,23 @@
 
 var selectionRange = require('selection-range');
 var Modal = require('../../packages/modal');
-var _ = require('../../lodash');
 
-var MODAL_FORM_TEMPLATE = [
-  '<p>',
-    '<input id="<%= modal.id %>-url" type="text" value="<%= url %>" />',
-  '</p>',
-  '<p>',
-    '<label>',
-      '<input id="<%= modal.id %>-target" type="checkbox" <%= new_tab ? \'checked="checked"\' : "" %>>',
-      i18n.t("formatters:link:new_tab"),
-    '</label>',
-  '</p>'
-].join("\n");
+var MODAL_FORM_TEMPLATE = ({ enableExternalLinks, modal, new_tab, url }) => {
+  var checkbox = enableExternalLinks ? `
+    <p>
+      <label>
+        <input id="${modal.id}-target" type="checkbox" ${new_tab ? 'checked="checked"' : ""} />
+        ${i18n.t("formatters:link:new_tab")}
+      </label>
+    </p>` : '';
+
+  return `
+    <p>
+      <input id="${modal.id}-url" type="text" value="${url}" />
+    </p>
+    ${checkbox}
+  `;
+}
 
 const scribeLinkPromptPlugin = function(block) {
   // ===== INIT ===== //
@@ -133,19 +137,22 @@ const scribeLinkPromptPlugin = function(block) {
 
       var initialLink = anchorNode ? anchorNode.href : '';
       var initialTabState = anchorNode && anchorNode.target == '_blank';
-
-      var form = _.template(MODAL_FORM_TEMPLATE, {
+      console.log(block);
+      var form = MODAL_FORM_TEMPLATE({
         modal: modal,
         url: passedLink || initialLink,
-        new_tab: initialTabState
-      })
+        new_tab: initialTabState,
+        enableExternalLinks: block.editorOptions.enableExternalLinks
+      });
 
       modal.show({
         title: i18n.t("formatters:link:prompt"),
         content: form
       }, function(modal) {
-        var link = modal.el.querySelector(`#${modal.id}-url`).value
-        var target = modal.el.querySelector(`#${modal.id}-target`).checked ? '_blank' : null
+        var link = modal.el.querySelector(`#${modal.id}-url`).value;
+        var targetEl = modal.el.querySelector(`#${modal.id}-target`);
+
+        var target = targetEl && targetEl.checked ? ' target="_blank"' : "";
         link = runTransforms(block.transforms.pre, link);
 
         if (!emptyLink(link)) {
@@ -155,7 +162,7 @@ const scribeLinkPromptPlugin = function(block) {
 
         if (block && block.validation) {
           var validationResult = block.validation(link);
-  
+
           if (!validationResult.valid) {
             window.alert(validationResult.message ||  i18n.t("errors:link_invalid"));
             return false;
@@ -166,14 +173,14 @@ const scribeLinkPromptPlugin = function(block) {
           if (!hasKnownProtocol(link) ) {
             link = processPrompt(window, link);
           }
-  
+
           link = runTransforms(block.transforms.post, link);
 
           var selection = window.getSelection();
           selection.removeAllRanges();
           selection.addRange(range);
 
-          var html = `<a href="${link}" target="${target}">${selection}</a>`;
+          var html = `<a href="${link}"${target}>${selection}</a>`;
           document.execCommand('insertHTML', false, html);
         }
 

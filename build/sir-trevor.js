@@ -305,7 +305,8 @@ module.exports = {
     selectionCopy: true,
     selectionCut: true,
     selectionPaste: true,
-    selectionLimitToEditor: true
+    selectionLimitToEditor: true,
+    enableExternalLinks: false
   }
 };
 
@@ -5836,7 +5837,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, __webpack_require__(84), {
 
     if (!_.isUndefined(textBlock) && _.isUndefined(this._scribe)) {
       var configureScribe = _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
-      this._scribe = ScribeInterface.initScribeInstance(textBlock, this.scribeOptions, configureScribe);
+      this._scribe = ScribeInterface.initScribeInstance(textBlock, this.scribeOptions, configureScribe, this.editorOptions);
     }
   },
   addMouseupListener: function addMouseupListener() {
@@ -8793,7 +8794,7 @@ var sanitizeDefaults = {
   em: true
 };
 module.exports = {
-  initScribeInstance: function initScribeInstance(el, scribeOptions, configureScribe) {
+  initScribeInstance: function initScribeInstance(el, scribeOptions, configureScribe, editorOptions) {
     scribeOptions = scribeOptions || {};
     var scribeConfig = {
       debug: config.scribeDebug
@@ -8811,7 +8812,9 @@ module.exports = {
     }
 
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
-    scribe.use(scribePluginLinkPromptCommand());
+    scribe.use(scribePluginLinkPromptCommand({
+      editorOptions: editorOptions
+    }));
     scribe.use(scribePluginSanitizer({
       tags: tags
     }));
@@ -8893,9 +8896,14 @@ var selectionRange = __webpack_require__(11);
 
 var Modal = __webpack_require__(193);
 
-var _ = __webpack_require__(0);
-
-var MODAL_FORM_TEMPLATE = ['<p>', '<input id="<%= modal.id %>-url" type="text" value="<%= url %>" />', '</p>', '<p>', '<label>', '<input id="<%= modal.id %>-target" type="checkbox" <%= new_tab ? \'checked="checked"\' : "" %>>', i18n.t("formatters:link:new_tab"), '</label>', '</p>'].join("\n");
+var MODAL_FORM_TEMPLATE = function MODAL_FORM_TEMPLATE(_ref) {
+  var enableExternalLinks = _ref.enableExternalLinks,
+      modal = _ref.modal,
+      new_tab = _ref.new_tab,
+      url = _ref.url;
+  var checkbox = enableExternalLinks ? "\n    <p>\n      <label>\n        <input id=\"".concat(modal.id, "-target\" type=\"checkbox\" ").concat(new_tab ? 'checked="checked"' : "", " />\n        ").concat(i18n.t("formatters:link:new_tab"), "\n      </label>\n    </p>") : '';
+  return "\n    <p>\n      <input id=\"".concat(modal.id, "-url\" type=\"text\" value=\"").concat(url, "\" />\n    </p>\n    ").concat(checkbox, "\n  ");
+};
 
 var scribeLinkPromptPlugin = function scribeLinkPromptPlugin(block) {
   // ===== INIT ===== //
@@ -9020,19 +9028,20 @@ var scribeLinkPromptPlugin = function scribeLinkPromptPlugin(block) {
 
       var initialLink = anchorNode ? anchorNode.href : '';
       var initialTabState = anchorNode && anchorNode.target == '_blank';
-
-      var form = _.template(MODAL_FORM_TEMPLATE, {
+      console.log(block);
+      var form = MODAL_FORM_TEMPLATE({
         modal: modal,
         url: passedLink || initialLink,
-        new_tab: initialTabState
+        new_tab: initialTabState,
+        enableExternalLinks: block.editorOptions.enableExternalLinks
       });
-
       modal.show({
         title: i18n.t("formatters:link:prompt"),
         content: form
       }, function (modal) {
         var link = modal.el.querySelector("#".concat(modal.id, "-url")).value;
-        var target = modal.el.querySelector("#".concat(modal.id, "-target")).checked ? '_blank' : null;
+        var targetEl = modal.el.querySelector("#".concat(modal.id, "-target"));
+        var target = targetEl && targetEl.checked ? ' target="_blank"' : "";
         link = runTransforms(block.transforms.pre, link);
 
         if (!emptyLink(link)) {
@@ -9058,7 +9067,7 @@ var scribeLinkPromptPlugin = function scribeLinkPromptPlugin(block) {
           var selection = window.getSelection();
           selection.removeAllRanges();
           selection.addRange(range);
-          var html = "<a href=\"".concat(link, "\" target=\"").concat(target, "\">").concat(selection, "</a>");
+          var html = "<a href=\"".concat(link, "\"").concat(target, ">").concat(selection, "</a>");
           document.execCommand('insertHTML', false, html);
         }
 
@@ -16473,7 +16482,7 @@ module.exports = {
     editor.addEventListener('keyup', this.getSelectionForFormatter);
     editor.addEventListener('mouseup', this.getSelectionForFormatter);
     var configureScribe = _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
-    var scribe = ScribeInterface.initScribeInstance(editor, this.scribeOptions, configureScribe);
+    var scribe = ScribeInterface.initScribeInstance(editor, this.scribeOptions, configureScribe, this.editorOptions);
     scribe.setContent(content);
     var editorObject = {
       node: isTextTemplate ? wrapper.removeChild(wrapper.firstChild) : editor,

@@ -23,7 +23,7 @@ var sanitizeDefaults = {
 
 module.exports = {
 
-  initScribeInstance: function(el, scribeOptions, configureScribe) {
+  initScribeInstance: function(el, scribeOptions, configureScribe, editorOptions) {
 
     scribeOptions = scribeOptions || {};
 
@@ -41,7 +41,7 @@ module.exports = {
     }
 
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
-    scribe.use(scribePluginLinkPromptCommand());
+    scribe.use(scribePluginLinkPromptCommand({ editorOptions }));
     scribe.use(scribePluginSanitizer({tags: tags}));
 
     if (_.isFunction(configureScribe)) {
