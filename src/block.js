@@ -389,7 +389,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
       var configureScribe =
         _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
       this._scribe = ScribeInterface.initScribeInstance(
-        textBlock, this.scribeOptions, configureScribe
+        textBlock, this.scribeOptions, configureScribe, this.editorOptions
       );
     }
   },

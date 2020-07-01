@@ -37,7 +37,7 @@ module.exports = {
     var configureScribe =
       _.isFunction(this.configureScribe) ? this.configureScribe.bind(this) : null;
     var scribe = ScribeInterface.initScribeInstance(
-      editor, this.scribeOptions, configureScribe
+      editor, this.scribeOptions, configureScribe, this.editorOptions
     );
 
     scribe.setContent(content);

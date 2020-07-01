@@ -127,6 +127,7 @@ module.exports = {
     selectionCopy: true,
     selectionCut: true,
     selectionPaste: true,
-    selectionLimitToEditor: true
+    selectionLimitToEditor: true,
+    enableExternalLinks: false
   }
 };
