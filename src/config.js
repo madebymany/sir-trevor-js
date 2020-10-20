@@ -78,7 +78,7 @@ module.exports = {
           iconName: "fmt-bold",
           cmd: "bold",
           keyCode: 66,
-          text : "B"
+          text: "B"
         },
         {
           name: "Italic",
@@ -86,7 +86,15 @@ module.exports = {
           iconName: "fmt-italic",
           cmd: "italic",
           keyCode: 73,
-          text : "i"
+          text: "i"
+        },
+        {
+          name: "Superscript",
+          title: "superscript",
+          iconName: "fmt-superscript",
+          cmd: "superscript",
+          keyCode: 190,
+          text: "superscript"
         },
         {
           name: "Link",
@@ -94,14 +102,14 @@ module.exports = {
           iconName: "fmt-link",
           cmd: "linkPrompt",
           keyCode: 75,
-          text : "link",
+          text: "link",
         },
         {
           name: "Unlink",
           title: "unlink",
           iconName: "fmt-unlink",
           cmd: "unlink",
-          text : "link",
+          text: "link",
         },
         {
           name: "Heading",
