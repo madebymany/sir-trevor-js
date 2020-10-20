@@ -18,7 +18,8 @@ var sanitizeDefaults = {
   i: true,
   b: true,
   strong: true,
-  em: true
+  em: true,
+  sup: true
 };
 
 module.exports = {

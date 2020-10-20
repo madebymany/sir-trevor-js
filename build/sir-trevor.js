@@ -8791,7 +8791,8 @@ var sanitizeDefaults = {
   i: true,
   b: true,
   strong: true,
-  em: true
+  em: true,
+  sup: true
 };
 module.exports = {
   initScribeInstance: function initScribeInstance(el, scribeOptions, configureScribe, editorOptions) {
@@ -10844,7 +10845,7 @@ module.exports = SirTrevor;
 /* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__.p + "f72a184ef9b7d08104bbd4f1a096ba2b.svg";
+module.exports = __webpack_require__.p + "e00d9b62b203893a0d3b803f90c52f84.svg";
 
 /***/ }),
 /* 96 */
