@@ -89,14 +89,6 @@ module.exports = {
           text: "i"
         },
         {
-          name: "Superscript",
-          title: "superscript",
-          iconName: "fmt-superscript",
-          cmd: "superscriptPrompt",
-          keyCode: 190,
-          text: "superscript"
-        },
-        {
           name: "Link",
           title: "link",
           iconName: "fmt-link",
