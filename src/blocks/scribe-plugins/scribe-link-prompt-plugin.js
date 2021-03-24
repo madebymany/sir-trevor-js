@@ -137,7 +137,7 @@ const scribeLinkPromptPlugin = function(block) {
 
       var initialLink = anchorNode ? anchorNode.href : '';
       var initialTabState = anchorNode && anchorNode.target == '_blank';
-      console.log(block);
+
       var form = MODAL_FORM_TEMPLATE({
         modal: modal,
         url: passedLink || initialLink,
