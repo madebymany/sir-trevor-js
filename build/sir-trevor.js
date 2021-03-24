@@ -22150,8 +22150,7 @@ var Dom = __webpack_require__(3);
 
 var MODAL_FORM_TEMPLATE = function MODAL_FORM_TEMPLATE(_ref) {
   var modal = _ref.modal,
-      title = _ref.title,
-      canRemove = _ref.canRemove;
+      title = _ref.title;
   return "\n    <p>\n      <input id=\"".concat(modal.id, "-sup-title\" type=\"text\" value=\"").concat(title, "\" />\n    </p>\n  ");
 };
 
@@ -22224,7 +22223,7 @@ var scribeSuperscriptPromptPlugin = function scribeSuperscriptPromptPlugin(block
           var selection = window.getSelection();
           selection.removeAllRanges();
           selection.addRange(range);
-          document.execCommand('superscript', false, false);
+          document.execCommand('insertHTML', false, "<span>".concat(anchorNode.innerHTML, "</span>"));
           modal.hide();
           return true;
         });

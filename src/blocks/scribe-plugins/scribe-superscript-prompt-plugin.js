@@ -4,7 +4,7 @@ var selectionRange = require('selection-range');
 var Modal = require('../../packages/modal');
 var Dom = require('../../packages/dom');
 
-var MODAL_FORM_TEMPLATE = ({ modal, title, canRemove }) => {
+var MODAL_FORM_TEMPLATE = ({ modal, title }) => {
   return `
     <p>
       <input id="${modal.id}-sup-title" type="text" value="${title}" />
@@ -87,7 +87,7 @@ const scribeSuperscriptPromptPlugin = function(block) {
           selection.removeAllRanges();
           selection.addRange(range);
 
-          document.execCommand('superscript', false, false);
+          document.execCommand('insertHTML', false, `<span>${anchorNode.innerHTML}</span>`);
 
           modal.hide();
 
