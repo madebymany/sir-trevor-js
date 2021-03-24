@@ -55,9 +55,12 @@
   color: rgba(0,0,0,.8);
 }
 
-.st-modal__btn {
+.st-modal__footer button {
   @include st-btn;
   font-size: 1em;
+
+  display: inline-block;
+  margin-right: 1rem;
 }
 
 

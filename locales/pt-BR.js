@@ -28,6 +28,9 @@ SirTrevor.Locales.pt_BR = {
             'telephone': 'a telephone number',
             'url': 'a link'
           }
+        },
+        superscript: {
+          prompt: "Atributo de título (opcional)"
         }
       },
       blocks: {

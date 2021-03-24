@@ -8,7 +8,7 @@
 
 
 var MicroModal = require('micromodal/lib/src/index').default;
-var Dom = require("./dom");
+var Dom = require('./dom');
 var _ = require('../lodash');
 
 var template = [
@@ -24,6 +24,7 @@ var template = [
           '<button id="<%= id %>-submit" class="st-modal__btn">',
             i18n.t("general:submit"),
           '</button>',
+          '<span class="st-modal__buttons"></span>',
         '</footer>',
       '</form>',
     '</div>',
@@ -35,7 +36,6 @@ var Modal = function() {
 };
 
 Object.assign(Modal.prototype, {
-
   id: 'sirtrevor-modal',
 
   initialize: function() {
@@ -50,6 +50,7 @@ Object.assign(Modal.prototype, {
 
     this.elTitle = document.getElementById(`${this.id}-title`);
     this.elContent = document.getElementById(`${this.id}-content`);
+    this.elButtons = this.el.querySelector('.st-modal__buttons');
     this.form = this.el.querySelector('form');
     this.form.addEventListener('submit', event => this.onSubmit(event));
 
@@ -74,7 +75,9 @@ Object.assign(Modal.prototype, {
   show: function(args, callback) {
     this.callback = callback;
     this.elTitle.innerText = args.title;
-    this.elContent.innerHTML = args.content
+    this.elContent.innerHTML = args.content;
+    this.elButtons.innerHTML = "";
+    this.elButtons.appendChild(args.buttons || Dom.createElementFromString("<div />"));
     MicroModal.show(this.id);
   },
 
