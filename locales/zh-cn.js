@@ -28,6 +28,9 @@ SirTrevor.Locales.cn = {
         'telephone': 'a telephone number',
         'url': 'a link'
       }
+    },
+    superscript: {
+      prompt: "标题属性（可选）"
     }
   },
   blocks: {

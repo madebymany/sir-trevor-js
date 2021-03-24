@@ -858,7 +858,7 @@ ul.st-text-block {
   line-height: 1.5;
   color: rgba(0, 0, 0, 0.8); }
 
-.st-modal__btn {
+.st-modal__footer button {
   border: 0;
   background: #42474b;
   border-radius: 0.2em;
@@ -868,8 +868,10 @@ ul.st-text-block {
   color: #fff;
   position: relative;
   z-index: 10;
-  font-size: 1em; }
-  .st-modal__btn:hover {
+  font-size: 1em;
+  display: inline-block;
+  margin-right: 1rem; }
+  .st-modal__footer button:hover {
     background: #17bb75;
     color: #fff; }
 
