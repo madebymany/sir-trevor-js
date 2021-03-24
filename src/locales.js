@@ -38,6 +38,9 @@ var Locales = {
           'telephone': 'a telephone number',
           'url': 'a link'
         }
+      },
+      superscript: {
+        'prompt': "Title attribute (optional)"
       }
     },
     blocks: {

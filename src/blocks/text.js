@@ -12,6 +12,7 @@ var ScribePastePlugin = require('./scribe-plugins/scribe-paste-plugin');
 var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
 var ScribeLinkPromptPlugin = require('./scribe-plugins/scribe-link-prompt-plugin');
 var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
+var ScribeSuperscriptPromptPlugin = require('./scribe-plugins/scribe-superscript-prompt-plugin');
 
 module.exports = Block.extend({
 
@@ -31,6 +32,7 @@ module.exports = Block.extend({
     scribe.use(new ScribeHeadingPlugin(this));
     scribe.use(new ScribeLinkPromptPlugin(this));
     scribe.use(new ScribeQuotePlugin(this));
+    scribe.use(new ScribeSuperscriptPromptPlugin(this));
 
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
