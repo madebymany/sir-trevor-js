@@ -69,31 +69,20 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
   onDragStart: function(ev) {
     var block = this.block;
 
-    this.dragEl = block.cloneNode(true);
-    this.dragEl.classList.add("st-drag-element");
-    this.dragEl.style.top = `${block.offsetTop}px`;
-    this.dragEl.style.left = `${block.offsetLeft}px`;
-
-    block.parentNode.appendChild(this.dragEl);
-
-    ev.dataTransfer.setDragImage(this.dragEl, 0, 0);
+    // Without this blocks are not commited to their new position
     ev.dataTransfer.setData("text/plain", this.blockId());
-    this.mediator.trigger("block-controls:hide");
 
+    this.mediator.trigger("block-controls:hide");
     EventBus.trigger("block:reorder:dragstart");
-    block.classList.add('st-block--dragging');
   },
 
   onDragEnd: function(ev) {
     EventBus.trigger("block:reorder:dragend");
-    this.block.classList.remove('st-block--dragging');
-    this.dragEl.parentNode.removeChild(this.dragEl);
   },
 
   render: function() {
     return this;
   }
-
 });
 
 module.exports = BlockReorder;
