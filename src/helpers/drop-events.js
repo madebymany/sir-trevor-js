@@ -13,7 +13,10 @@ function dragOver(e) {
 }
 
 function dragLeave(e) {
-  e.currentTarget.classList.remove('st-drag-over');
+  const blocks = Array.from(document.querySelectorAll('.st-block--textable'))
+  blocks.map(block => {
+    block.classList.remove('st-drag-over')
+  })
   e.preventDefault();
   e.stopPropagation();
 }
