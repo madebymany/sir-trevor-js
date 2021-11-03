@@ -22,7 +22,10 @@ var config = webpackConfigMerger(require("./config"), {
           },
           {
             loader: "sass-loader",
-            options: { sourceMap: true, outputStyle: "uncompressed" }
+            options: {
+              sourceMap: true,
+              sassOptions: { outputStyle: "expanded" }
+            }
           }
         ]
       },
