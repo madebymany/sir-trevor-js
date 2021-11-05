@@ -377,10 +377,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _initTextBlocks: function() {
+    var observer = new MutationObserver(this.clearInsertedStyles);
+
     Array.prototype.forEach.call(this.getTextBlock(), (el) => {
       el.addEventListener('keyup', this.getSelectionForFormatter);
       el.addEventListener('mousedown', this.addMouseupListener.bind(this));
-      el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
+      observer.observe(el, { childList: true });
     });
 
     var textBlock = this.getTextBlock()[0];
@@ -413,12 +415,16 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     }, 1);
   },
 
-  clearInsertedStyles: function(e) {
-    var target = e.target;
-    if (_.isUndefined(target.tagName)) {
-      target = target.parentNode;
-    }
-    target.removeAttribute('style'); // Hacky fix for Chrome.
+  clearInsertedStyles: function(mutations) {
+    mutations.forEach(function(mutation) {
+      for (var i = 0; i < mutation.addedNodes.length; i++) {
+        var target = mutation.addedNodes[i];
+        if (_.isUndefined(target.tagName)) {
+          target = target.parentNode;
+        }
+        target.removeAttribute('style'); // Hacky fix for Chrome.
+      }
+    });
   },
 
   hasTextBlock: function() {
