@@ -37,6 +37,9 @@ module.exports = {
   instances: [],
 
   defaults: {
+    // If set to false will not allow users to add/remove or move blocks
+    modifyBlocks: true,
+
     defaultType: false,
     spinner: {
       className: 'st-spinner',
