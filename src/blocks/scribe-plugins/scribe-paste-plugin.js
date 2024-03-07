@@ -46,7 +46,7 @@ function stripInlineStyles(value) {
   tempContainer.innerHTML = value;
 
   const els = tempContainer.querySelectorAll("*");
-  els.forEach(el => el.removeAttribute("class"));
+  els.forEach(el => el.removeAttribute("style"));
 
   return tempContainer.innerHTML;
 }
