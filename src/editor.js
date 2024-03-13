@@ -105,7 +105,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // External event listeners
     window.addEventListener('click', this.hideAllTheThings);
-    document.body.addEventListener('keydown', this.disableBackButton);
 
     this.createBlocks();
     this.wrapper.classList.add('st-ready');
@@ -158,7 +157,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Remove external event listeners
     window.removeEventListener('click', this.hideAllTheThings);
-    document.body.removeEventListener('keydown', this.disableBackButton);
 
     // Clear the store
     this.store.reset();
@@ -314,23 +312,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     utils.log("Adding data for block " + block.blockID + " to block store:",
               blockData);
     this.store.addData(blockData);
-  },
-
-  /*
-   * Disable back button so when a block loses focus the user
-   * pressing backspace multiple times doesn't close the page.
-   */
-  disableBackButton: function(e) {
-    var target = e.target || e.srcElement;
-    if (e.keyCode === 8) {
-      if (target.getAttribute('contenteditable') ||
-          target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA') {
-        return;
-      }
-
-      e.preventDefault();
-    }
   },
 
   findBlockById: function(block_id) {
