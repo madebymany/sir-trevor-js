@@ -24,7 +24,7 @@ function handleListItems(block, listItemsToCreate) {
   return [];
 }
 
-// In firefox when you paste any text it wraps in a paragraph block which we don't want.
+// In firefox when you paste any text is wraps in a paragraph block which we don't want.
 function removeWrappingParagraphForFirefox(value) {
   var fakeContent = document.createElement('div');
   fakeContent.innerHTML = value;
@@ -37,18 +37,6 @@ function removeWrappingParagraphForFirefox(value) {
   }
 
   return value;
-}
-
-// When content is pasted from a Word Processing document, malformed inline styles can sneak into the data. 
-// This ensures the inline styles are stripped out, favouring the domain styles.
-function stripInlineStyles(value) {
-  const tempContainer = document.createElement('div');
-  tempContainer.innerHTML = value;
-
-  const els = tempContainer.querySelectorAll("*");
-  els.forEach(el => el.removeAttribute("style"));
-
-  return tempContainer.innerHTML;
 }
 
 var scribePastePlugin = function(block) {
@@ -67,7 +55,6 @@ var scribePastePlugin = function(block) {
     insertHTMLCommandPatch.execute = function (value) {
       scribe.transactionManager.run(() => {
 
-        value = stripInlineStyles(value);
         value = removeWrappingParagraphForFirefox(value);
 
         scribe.api.CommandPatch.prototype.execute.call(this, value);
