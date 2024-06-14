@@ -337,17 +337,19 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
    //Init functions for adding functionality
   _initUIComponents: function() {
 
-    this.addDeleteControls();
+    if (config.defaults.modifyBlocks) {
+      this.addDeleteControls();
 
-    this.positioner = new BlockPositioner(this.el, this.mediator);
+      this.positioner = new BlockPositioner(this.el, this.mediator);
 
-    this._withUIComponent(this.positioner, '.st-block-ui-btn__reorder',
-                          this.onPositionerClick);
+      this._withUIComponent(this.positioner, '.st-block-ui-btn__reorder',
+                            this.onPositionerClick);
 
-    this._withUIComponent(new BlockReorder(this.el, this.mediator));
+      this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
-    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete',
-                          this.onDeleteClick);
+      this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete',
+                            this.onDeleteClick);
+    }
 
     this.onFocus();
     this.onBlur();

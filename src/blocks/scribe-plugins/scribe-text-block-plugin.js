@@ -9,13 +9,15 @@ var {
   selectToEnd
 } = require('./shared.js');
 
+var config = require('./../../config');
+
 var ScribeTextBlockPlugin = function(block) {
   return function(scribe) {
     var isAtStartBoolean = false;
 
     scribe.el.addEventListener('keydown', function(ev) {
 
-      if (block.supressKeyListeners) {
+      if (block.supressKeyListeners || !config.defaults.modifyBlocks) {
         return;
       }
 
@@ -69,7 +71,7 @@ var ScribeTextBlockPlugin = function(block) {
 
     scribe.el.addEventListener('keyup', function(ev) {
 
-      if (block.supressKeyListeners) {
+      if (block.supressKeyListeners || !config.defaults.modifyBlocks) {
         return;
       }
 
